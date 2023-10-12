@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from 'vue';
 
-const email = ref('');
+const account = ref('');
 const password = ref('');
 
 </script>
@@ -22,9 +22,9 @@ const password = ref('');
       <v-col cols="12" md="6" lg="5" class="align-self-center align-content-center">
         <h1 class="mb-15">Welcome to TeleTHU!</h1>
         <v-text-field
-            label="Email"
-            v-model="email"
-            prepend-icon="mdi-email"
+            label="Account"
+            v-model="account"
+            prepend-icon="mdi-account"
             type="email"
             class="mb-3"
         ></v-text-field>
