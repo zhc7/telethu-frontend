@@ -1,21 +1,25 @@
 import {ref} from "vue";
 import axios from "axios";
+import { DEBUG, BASE_API_URL } from "./const/constants"
 
 const user = ref("")
-const url = "http://localhost:8000/"
 
 const login = (userName, password) => {
-    user.value = userName
-    console.log("login " + userName)
-    axios.post(url + "users/login", {userName, password}).then((res) => {
-        user.value = res.data
+    user.value = userName;
+    if (DEBUG) {
+        console.log("login " + userName);
+    }
+    axios.post(BASE_API_URL + "users/login", {userName, password}).then((res) => {
+        user.value = res.data;
     })
 }
 
 const register = (userName, password) => {
-    console.log("register " + userName)
-    axios.post(url + "users/register", {userName, password}).then((res) => {
-        user.value = res.data
+    if (DEBUG) {
+        console.log("register " + userName);
+    }
+    axios.post(BASE_API_URL + "users/register", {userName, password}).then((res) => {
+        user.value = res.data;
     })
 }
 

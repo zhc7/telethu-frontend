@@ -2,6 +2,7 @@
 import {ref} from 'vue';
 import {login, register} from '../auth.js';
 import {useRouter} from 'vue-router';
+import {DEBUG} from '../const/constants.js'
 
 const signupDialog = ref(null);
 const account = ref('');

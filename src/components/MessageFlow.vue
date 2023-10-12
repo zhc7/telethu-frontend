@@ -1,21 +1,21 @@
 <script setup>
-
-import {ref} from "vue";
-import {user} from "../auth.js"
+import { ref } from "vue";
+import { user } from "../auth.js";
+import { DEBUG } from "../const/constants.js"
 
 // use props
-const props = defineProps([
-  'room_id',
-])
+const props = defineProps(["room_id"]);
 
 const messages = ref([]);
-const inputMessage = ref('');
+const inputMessage = ref("");
 
-const url = 'ws://localhost:8000/ws/chat/' + props.room_id + '/';
+const url = "ws://localhost:8000/ws/chat/" + props.room_id + "/";
 let socket = new WebSocket(url);
 
 socket.onopen = () => {
-  console.log('WebSocket Client Connected');
+  if (DEBUG) {
+    console.log("WebSocket Client Connected");
+  }
 };
 
 socket.onmessage = (e) => {
@@ -24,43 +24,50 @@ socket.onmessage = (e) => {
 };
 
 socket.onclose = (e) => {
-  console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+  if (DEBUG) {
+    console.log(
+      "Socket is closed. Reconnect will be attempted in 1 second.",
+      e.reason
+    );
+  }
   setTimeout(() => {
     socket = new WebSocket(url);
   }, 1000);
 };
 
 socket.onerror = (err) => {
-  console.error('Socket encountered error: ', err.message, 'Closing socket');
+  console.error("Socket encountered error: ", err.message, "Closing socket");
   socket.close();
 };
 
 const sendMessage = () => {
-  if (inputMessage.value.trim() !== '') {
+  if (inputMessage.value.trim() !== "") {
     const message = {
       stamp: Date.now(),
       user: user.value,
-      message: inputMessage.value
-    }
-    socket.send(JSON.stringify(message))
+      message: inputMessage.value,
+    };
+    socket.send(JSON.stringify(message));
     // messages.value.push(message)
-    inputMessage.value = ''
+    inputMessage.value = "";
   }
-}
-
+};
 </script>
 
 <template>
-  <h1>
-    Room: {{ props.room_id }} User: {{ user }}
-  </h1>
+  <h1>Room: {{ props.room_id }} User: {{ user }}</h1>
   <div class="chat-container">
     <div v-for="message in messages" :key="message.stamp" class="message">
-      <strong>{{ message.user }}</strong>: {{ message.message }}
+      <strong>{{ message.user }}</strong
+      >: {{ message.message }}
     </div>
   </div>
   <div class="input-container">
-    <input v-model="inputMessage" @keyup.enter="sendMessage" placeholder="请输入消息"/>
+    <input
+      v-model="inputMessage"
+      @keyup.enter="sendMessage"
+      placeholder="请输入消息"
+    />
     <button @click="sendMessage">发送</button>
   </div>
 </template>
