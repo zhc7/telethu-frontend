@@ -1,8 +1,17 @@
 <script setup>
 import {ref} from 'vue';
+import {login} from '../auth.js';
+import {useRouter} from 'vue-router';
 
 const account = ref('');
 const password = ref('');
+
+const router = useRouter();
+
+const submit = () => {
+  login(account.value, password.value);
+  router.push("/chat/0")
+}
 
 </script>
 
@@ -39,7 +48,7 @@ const password = ref('');
 
         <v-row>
           <v-col cols="6">
-            <v-btn color="primary" size="large" class="login-btn">登录</v-btn>  <!-- 登录按钮 -->
+            <v-btn color="primary" size="large" class="login-btn" @click="submit">登录</v-btn>  <!-- 登录按钮 -->
           </v-col>
           <v-col cols="6">
             <div class="flex-grow-1 text-right">

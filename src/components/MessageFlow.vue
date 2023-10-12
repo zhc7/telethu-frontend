@@ -1,6 +1,7 @@
 <script setup>
 
 import {ref} from "vue";
+import {user} from "../auth.js"
 
 // use props
 const props = defineProps([
@@ -9,8 +10,6 @@ const props = defineProps([
 
 const messages = ref([]);
 const inputMessage = ref('');
-
-const userId = Math.floor(Math.random() * 100);
 
 const url = 'ws://localhost:8000/ws/chat/' + props.room_id + '/';
 let socket = new WebSocket(url);
@@ -40,7 +39,7 @@ const sendMessage = () => {
   if (inputMessage.value.trim() !== '') {
     const message = {
       stamp: Date.now(),
-      user: 'User' + userId,
+      user: user.value,
       message: inputMessage.value
     }
     socket.send(JSON.stringify(message))
@@ -53,7 +52,7 @@ const sendMessage = () => {
 
 <template>
   <h1>
-    Room: {{ props.room_id }}
+    Room: {{ props.room_id }} User: {{ user }}
   </h1>
   <div class="chat-container">
     <div v-for="message in messages" :key="message.stamp" class="message">
