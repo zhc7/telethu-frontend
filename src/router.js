@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
-import TestComponent from './components/test.vue'
+const TestComponent = () => import('./components/test.vue');
 
 
 const router = createRouter({
@@ -28,4 +28,4 @@ const router = createRouter({
     ]
 })
 
-export default router
+export default router;
