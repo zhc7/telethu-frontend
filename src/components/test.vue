@@ -1,7 +1,8 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { fakeChatList } from "../testdata/fakechats.js";
-import { formatChatMessageTime } from "../utils/datetime.js"
+import { formatChatMessageTime } from "../utils/datetime.js";
+const tab = ref(1);
 const chatList = ref(fakeChatList);
 
 const selectedChat = ref({});
@@ -10,7 +11,7 @@ const messages = ref([]);
 
 <template>
   <v-container fluid>
-    <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="center">
+    <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="center" class="nav-section">
       <v-tab :value="1">CHAT</v-tab>
       <v-tab :value="2">CONTACTS</v-tab>
       <v-tab :value="3">SETTINGS</v-tab>
@@ -44,15 +45,84 @@ const messages = ref([]);
                   {{ chat.latest }}
                 </v-row>
               </v-col>
-              <div class="chat-time">formatChatMessageTime(chat.time)</div>
+              <div class="chat-time">{{ formatChatMessageTime(chat.time) }}</div>
             </v-row>
             <!-- end chat-item -->
             <v-divider class="border-opacity-50"></v-divider>
           </div>
         </v-card>
       </v-col>
-      <v-col :cols="8" class="middle-section">Middle Part</v-col>
+      <v-col :cols="8" class="middle-section">
+        
+      </v-col>
       <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+.v-container {
+  width: 72vw;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.nav-section {
+  margin-bottom: 2px;
+}
+
+.v-btn {
+  font-size: 0.72em !important;
+}
+
+.title-tele {
+  background-color: black;
+  color: orange;
+  padding: 3px;
+  font-weight: 1000;
+  border-radius: 0 2px;
+}
+
+.title-THU {
+  font-size: 0.9em;
+  background-color: orange;
+  color: black;
+  padding: 3px;
+  font-weight: 1000;
+}
+
+.chat-list {
+  max-height: 1000px;
+  height: 90vh;
+  background-color: #333;
+  color: #ddd;
+  border: 1px solid;
+  border-radius: 0;
+}
+
+.chat-item {
+  position: relative;
+  margin: 0.2em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+}
+
+.chat-title {
+  font-weight: 800;
+  color: #fff;
+}
+
+.chat-detail {
+  font-weight: 300;
+  color: #bbb;
+  font-size: 0.9em;
+}
+
+.chat-time {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  font-size: 0.6em;
+}
+</style>
