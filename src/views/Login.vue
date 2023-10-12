@@ -1,10 +1,18 @@
 <script setup>
-import { ref } from 'vue';
-import SignUp from './SignUp.vue';
+import {ref} from 'vue';
+import {login} from '../auth.js';
+import {useRouter} from 'vue-router';
 
 const signupDialog = ref(null);
 const email = ref('');
 const password = ref('');
+
+const router = useRouter();
+
+const submit = () => {
+  login(account.value, password.value);
+  router.push("/chat/0")
+}
 const dialog = ref(false);
 
 const showSignUpDialog = () => {
@@ -45,7 +53,7 @@ const showSignUpDialog = () => {
 
                 <v-row>
                     <v-col cols="6">
-                        <v-btn color="primary" class="login-btn">登录</v-btn> <!-- 登录按钮 -->
+                        <v-btn color="primary" class="login-btn" @click="submit">登录</v-btn> <!-- 登录按钮 -->
                     </v-col>
                     <v-col cols="6">
                         <div class="flex-grow-1 text-right">
