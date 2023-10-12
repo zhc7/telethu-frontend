@@ -13,25 +13,35 @@ const showSignUpDialog = () => {
 </script>
 
 <template>
-    <v-container fluid>
-        <v-row class="fill-height">
+  <v-container fluid>
+    <v-row class="fill-height">
 
-            <!-- 左侧图标区域 -->
-            <v-col cols="5" class="text-center align-self-center">
-                <!-- 替换下面的路径为你的图标路径 -->
-                <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%;">
-            </v-col>
-            <v-col cols="2">
-                <!-- 空内容或其他内容 -->
-            </v-col>
-            <!-- 右侧登录表单区域 -->
-            <v-col cols="5" class="align-self-center">
-                <h1 class="mb-15">Welcome to TeleTHU!</h1>
-                <v-text-field label="Email" v-model="email" prepend-icon="mdi-email" type="email"
-                    class="mb-3"></v-text-field>
+      <!-- 左侧图标区域 -->
+      <v-col md="6" lg="5" class="d-none d-sm-inline-block text-center align-self-center">
+        <!-- 替换下面的路径为你的图标路径 -->
+        <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%;">
+      </v-col>
+      <v-col md="2" class="d-none d-lg-inline-block">
+        <!-- 空内容或其他内容 -->
+      </v-col>
+      <!-- 右侧登录表单区域 -->
+      <v-col cols="12" md="6" lg="5" class="align-self-center align-content-center">
+        <h1 class="mb-15">Welcome to TeleTHU!</h1>
+        <v-text-field
+            label="Account"
+            v-model="account"
+            prepend-icon="mdi-account"
+            type="email"
+            class="mb-3"
+        ></v-text-field>
 
-                <v-text-field label="Password" v-model="password" prepend-icon="mdi-lock" type="password"
-                    class="mb-5"></v-text-field>
+        <v-text-field
+            label="Password"
+            v-model="password"
+            prepend-icon="mdi-lock"
+            type="password"
+            class="mb-5"
+        ></v-text-field>
 
                 <v-row>
                     <v-col cols="6">
@@ -102,7 +112,7 @@ const showSignUpDialog = () => {
 
     <SignUp ref="signupDialog" />
 </template>
-  
+
 
 <style>
 .login-btn {
