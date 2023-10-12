@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
 const TestComponent = () => import('./components/test.vue');
+const Board = () => import('./views/Board.vue');
 
 
 const router = createRouter({
@@ -24,6 +25,10 @@ const router = createRouter({
         {
             path: '/test',
             component: TestComponent,
+        },
+        {
+            path: '/board',
+            component: Board,
         }
     ]
 })
