@@ -2,12 +2,18 @@
 
 import {ref} from "vue";
 
+// use props
+const props = defineProps([
+  'room_id',
+])
+
 const messages = ref([]);
 const inputMessage = ref('');
 
 const userId = Math.floor(Math.random() * 100);
 
-let socket = new WebSocket('ws://localhost:8000/ws/chat/1/');
+const url = 'ws://localhost:8000/ws/chat/' + props.room_id + '/';
+let socket = new WebSocket(url);
 
 socket.onopen = () => {
   console.log('WebSocket Client Connected');
@@ -21,7 +27,7 @@ socket.onmessage = (e) => {
 socket.onclose = (e) => {
   console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
   setTimeout(() => {
-    socket = new WebSocket('ws://localhost:8000/ws/chat/1/');
+    socket = new WebSocket(url);
   }, 1000);
 };
 
@@ -38,7 +44,7 @@ const sendMessage = () => {
       message: inputMessage.value
     }
     socket.send(JSON.stringify(message))
-    messages.value.push(message)
+    // messages.value.push(message)
     inputMessage.value = ''
   }
 }
@@ -46,8 +52,11 @@ const sendMessage = () => {
 </script>
 
 <template>
+  <h1>
+    Room: {{ props.room_id }}
+  </h1>
   <div class="chat-container">
-    <div v-for="message in messages" :key="message.id" class="message">
+    <div v-for="message in messages" :key="message.stamp" class="message">
       <strong>{{ message.user }}</strong>: {{ message.message }}
     </div>
   </div>
@@ -59,25 +68,25 @@ const sendMessage = () => {
 
 <style scoped>
 .chat-container {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    margin: 20px;
-    padding: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  margin: 20px;
+  padding: 10px;
 }
 
 .input-container {
-    display: flex;
-    margin: 20px;
+  display: flex;
+  margin: 20px;
 }
 
 .input-container input {
-    flex-grow: 1;
-    padding: 5px;
-    margin-right: 10px;
+  flex-grow: 1;
+  padding: 5px;
+  margin-right: 10px;
 }
 
 .input-container button {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 </style>

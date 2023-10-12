@@ -1,9 +1,10 @@
 <script setup>
 import Login from './views/Login.vue';
+import MessageFlow from "./components/MessageFlow.vue";
 </script>
 
 <template>
-  <Login />
+  <MessageFlow room_id="0"/>
 </template>
 
 <style scoped>
