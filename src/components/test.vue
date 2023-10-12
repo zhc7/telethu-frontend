@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { fakeChatList } from "../testdata/fakechats.js";
-import { formatChatMessageTime } from "../utils/datetime.js"
+import { formatChatMessageTime } from "../utils/datetime.js";
 const chatList = ref(fakeChatList);
 
 const selectedChat = ref({});
@@ -44,14 +44,16 @@ const messages = ref([]);
                   {{ chat.latest }}
                 </v-row>
               </v-col>
-              <div class="chat-time">formatChatMessageTime(chat.time)</div>
+              <div class="chat-time">{{ formatChatMessageTime(chat.time) }}</div>
             </v-row>
             <!-- end chat-item -->
             <v-divider class="border-opacity-50"></v-divider>
           </div>
         </v-card>
       </v-col>
-      <v-col :cols="8" class="middle-section">Middle Part</v-col>
+      <v-col :cols="8" class="middle-section">
+        
+      </v-col>
       <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
     </v-row>
   </v-container>
