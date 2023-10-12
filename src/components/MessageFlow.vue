@@ -1,7 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { user } from "../auth.js";
-import { DEBUG } from "../const/constants.js"
+import {
+  DEBUG,
+  TEST_SERVER,
+  BASE_WS_URL,
+  LANGUAGE,
+} from "../const/constants.js";
 
 // use props
 const props = defineProps(["room_id"]);
@@ -9,7 +14,7 @@ const props = defineProps(["room_id"]);
 const messages = ref([]);
 const inputMessage = ref("");
 
-const url = "ws://localhost:8000/ws/chat/" + props.room_id + "/";
+const url = BASE_WS_URL + "ws/chat/" + props.room_id + "/";
 let socket = new WebSocket(url);
 
 socket.onopen = () => {
@@ -20,7 +25,9 @@ socket.onopen = () => {
 
 socket.onmessage = (e) => {
   const message = JSON.parse(e.data);
-  messages.value.push(message);
+  if (message.type === "text") {
+    messages.value.push(message);
+  }
 };
 
 socket.onclose = (e) => {
@@ -48,7 +55,9 @@ const sendMessage = () => {
       message: inputMessage.value,
     };
     socket.send(JSON.stringify(message));
-    // messages.value.push(message)
+    if (TEST_SERVER) {
+      messages.value.push(message);
+    }
     inputMessage.value = "";
   }
 };
@@ -58,7 +67,7 @@ const sendMessage = () => {
   <h1>Room: {{ props.room_id }} User: {{ user }}</h1>
   <div class="chat-container">
     <div v-for="message in messages" :key="message.stamp" class="message">
-      <strong>{{ message.user }}</strong
+      <strong>{{ message.user ? message.user : "Someone" }}</strong
       >: {{ message.message }}
     </div>
   </div>

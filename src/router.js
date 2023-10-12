@@ -1,7 +1,9 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
-const Login = () => import('./views/Login.vue')
-const MessageFlow = () => import('./components/MessageFlow.vue')
+const Login = () => import('./views/Login.vue');
+const MessageFlow = () => import('./components/MessageFlow.vue');
+import TestComponent from './components/test.vue'
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -19,6 +21,10 @@ const router = createRouter({
             component: MessageFlow,
             props: true,
         },
+        {
+            path: '/test',
+            component: TestComponent,
+        }
     ]
 })
 

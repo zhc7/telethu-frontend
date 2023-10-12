@@ -1,8 +1,8 @@
 <script setup>
-import {ref} from 'vue';
-import {login, register} from '../auth.js';
-import {useRouter} from 'vue-router';
-import {DEBUG} from '../const/constants.js'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { login, register } from '../auth.js';
+import { DEBUG } from '../const/constants.js'
 
 const signupDialog = ref(null);
 const account = ref('');
@@ -19,18 +19,14 @@ const dialog = ref(false);
 
 const submitRegister = () => {
   register(account.value, password.value);
-  dialog.value = false
+  dialog.value = false;
 }
 
-const showSignUpDialog = () => {
-  signupDialog.value.open();
-};
 </script>
 
 <template>
   <v-container fluid>
     <v-row class="fill-height">
-
       <!-- 左侧图标区域 -->
       <v-col md="6" lg="5" class="d-none d-sm-inline-block text-center align-self-center">
         <!-- 替换下面的路径为你的图标路径 -->
@@ -120,12 +116,9 @@ const showSignUpDialog = () => {
             </div>
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
   </v-container>
-
-  <SignUp ref="signupDialog"/>
 </template>
 
 
