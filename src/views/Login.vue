@@ -1,77 +1,118 @@
-<script>
+<script setup>
 import { ref } from 'vue';
+import SignUp from './SignUp.vue';
 
-export default {
-  name: 'LoginComponent',
-  setup() {
-    const email = ref('');
-    const password = ref('');
+const signupDialog = ref(null);
+const email = ref('');
+const password = ref('');
+const dialog = ref(false);
 
-    // 可以在这里添加更多的逻辑，如登录函数等
-
-    return {
-      email,
-      password
-    };
-  }
-}
+const showSignUpDialog = () => {
+    signupDialog.value.open();
+};
 </script>
 
 <template>
     <v-container fluid>
-      <v-row class="fill-height">
-  
-        <!-- 左侧图标区域 -->
-        <v-col cols="5" class="text-center align-self-center">
-          <!-- 替换下面的路径为你的图标路径 -->
-          <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%;">
-        </v-col>
-        <v-col cols="2">
-            <!-- 空内容或其他内容 -->
-        </v-col>
-        <!-- 右侧登录表单区域 -->
+        <v-row class="fill-height">
+
+            <!-- 左侧图标区域 -->
+            <v-col cols="5" class="text-center align-self-center">
+                <!-- 替换下面的路径为你的图标路径 -->
+                <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%;">
+            </v-col>
+            <v-col cols="2">
+                <!-- 空内容或其他内容 -->
+            </v-col>
+            <!-- 右侧登录表单区域 -->
             <v-col cols="5" class="align-self-center">
                 <h1 class="mb-15">Welcome to TeleTHU!</h1>
-                <v-text-field
-                    label="Email"
-                    v-model="email"
-                    prepend-icon="mdi-email"
-                    type="email"
-                    class="mb-3"
-                ></v-text-field>
-        
-                <v-text-field
-                    label="Password"
-                    v-model="password"
-                    prepend-icon="mdi-lock"
-                    type="password"
-                    class="mb-5"
-                ></v-text-field>
+                <v-text-field label="Email" v-model="email" prepend-icon="mdi-email" type="email"
+                    class="mb-3"></v-text-field>
+
+                <v-text-field label="Password" v-model="password" prepend-icon="mdi-lock" type="password"
+                    class="mb-5"></v-text-field>
 
                 <v-row>
                     <v-col cols="6">
-                        <v-btn color="primary" class="login-btn">登录</v-btn>  <!-- 登录按钮 -->
+                        <v-btn color="primary" class="login-btn">登录</v-btn> <!-- 登录按钮 -->
                     </v-col>
                     <v-col cols="6">
-                            <div class="flex-grow-1 text-right">
-                                <p>Didn't have an account?</p>
-                                <a href="/signup">Sign up right now!</a>  <!-- 注册链接 -->
-                            </div>
+                        <div class="flex-grow-1 text-right">
+                            <p>Didn't have an account?</p>
+                            <!-- Sign up dialog -->>
+                            <v-dialog v-model="dialog" persistent width="1024">
+                                <template v-slot:activator="{ props }">
+                                    <a href="#" class="ref-text" v-bind="props">
+                                        Sign up right now!
+                                    </a>
+                                </template>
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="text-h5">User Profile</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-row>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field label="First name*" required></v-text-field>
+                                                </v-col>
+                                                <v-col cols="12" sm="6" md="4">
+                                                    <v-text-field label="Last name*"
+                                                        hint="example of persistent helper text" persistent-hint
+                                                        required></v-text-field>
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-text-field label="Email*" required></v-text-field>
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-text-field label="Password*" type="password" required></v-text-field>
+                                                </v-col>
+                                                <v-col cols="12" sm="6">
+                                                    <v-select :items="['0-17', '18-29', '30-54', '54+']" label="Age*"
+                                                        required></v-select>
+                                                </v-col>
+                                                <v-col cols="12" sm="6">
+                                                    <v-autocomplete
+                                                        :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
+                                                        label="Interests" multiple></v-autocomplete>
+                                                </v-col>
+                                            </v-row>
+                                        </v-container>
+                                        <small>*indicates required field</small>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+                                            Close
+                                        </v-btn>
+                                        <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+                                            Save
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </div>
                     </v-col>
                 </v-row>
-  
+
             </v-col>
         </v-row>
     </v-container>
+
+    <SignUp ref="signupDialog" />
 </template>
   
 
 <style>
 .login-btn {
     width: 88px;
-    height: 49.5px!important;
+    height: 49.5px !important;
     margin-right: 40px;
     align-items: center;
 }
-
+.ref-text {
+    color: primary;
+    cursor: pointer;
+}
 </style>
