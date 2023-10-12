@@ -53,7 +53,6 @@ const submitRegister = () => {
             type="password"
             class="mb-5"
         ></v-text-field>
-
         <v-row>
           <v-col cols="6">
             <v-btn color="primary" class="login-btn" @click="submit">登录</v-btn> <!-- 登录按钮 -->
