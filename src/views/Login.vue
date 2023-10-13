@@ -19,7 +19,7 @@ const submit = () => {
 const dialog = ref(false);
 
 const submitRegister = () => {
-  if (password.value != confirmPassword.value) {
+  if (password.value !== confirmPassword.value) {
     alert("Password not match!");
     return;
   }
