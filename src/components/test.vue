@@ -20,7 +20,7 @@ const messages = ref([]);
     </v-tabs>
     <v-divider class="border-opacity-50"></v-divider>
     <v-row class="align-self-center align-content-center main-section">
-      <v-col :cols="4" class="left-section">
+      <v-col cols="12" sm="4" class="left-section">
         <v-card class="mx-auto flex-fixed chat-list">
           <div class="chat-header">
             <v-card-item class="pt-3 pb-2">
