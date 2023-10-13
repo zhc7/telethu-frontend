@@ -5,7 +5,7 @@ export const fakeChatList = ref([
         'prependAvatar': '../assets/download.jpeg',
         'type': 'person',
         'time': Date.UTC(2023, 9, 12, 17, 0, 0),
-        'latest': 'Are you there?',
+        'latest': 'Are you there? I am here, so is she. Hurry up!',
         'mute': false,
     },
     {

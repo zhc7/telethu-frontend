@@ -1,9 +1,10 @@
 <script setup>
 import {ref} from "vue";
-import {fakeChatList} from "../testdata/fakechats.js";
-import {formatChatMessageTime} from "../utils/datetime.js";
+import { fakeChatList } from "../testdata/fakechats.js";
+import NavBar from "./NavBar.vue";
+import ChatItem from "./ChatItem.vue";
 
-const tab = ref(1);
+const curTab = ref(1);
 const chatList = ref(fakeChatList);
 
 const selectedChat = ref({});
@@ -12,16 +13,13 @@ const messages = ref([]);
 
 <template>
   <v-container fluid>
-    <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="center" class="nav-section">
-      <v-tab :value="1">CHAT</v-tab>
-      <v-tab :value="2">CONTACTS</v-tab>
-      <v-tab :value="3">SETTINGS</v-tab>
-      <v-tab :value="4">PROFILE</v-tab>
-    </v-tabs>
+    <v-row no-gutters align="center" justify="center" class="section">
+      <NavBar @switch="newValue => {curTab = newValue}"></NavBar>
+    </v-row>
     <v-divider class="border-opacity-50"></v-divider>
-    <v-row class="align-self-center align-content-center main-section">
-      <v-col cols="12" sm="4" class="left-section">
-        <v-card class="mx-auto flex-fixed chat-list">
+    <v-row no-gutters class="main-section">
+      <v-col class="left-section">
+        <v-card class="chat-list">
           <div class="chat-header">
             <v-card-item class="pt-3 pb-2">
               <template #subtitle>
@@ -32,28 +30,21 @@ const messages = ref([]);
           </div>
           <v-divider class="border-opacity-50"></v-divider>
           <div v-for="(chat, index) in chatList" :key="index">
-            <v-row :key="index" align="center" class="chat-item">
-              <v-col cols="3">
-                <v-avatar size="2em">
-                  <img src="../assets/download.jpeg" alt="download"/>
-                </v-avatar>
-              </v-col>
-              <v-col>
-                <v-row class="chat-title">
-                  <span>{{ chat.title }}</span>
-                </v-row>
-                <v-row class="chat-detail">
-                  {{ chat.latest }}
-                </v-row>
-              </v-col>
-              <div class="chat-time">{{ formatChatMessageTime(chat.time) }}</div>
-            </v-row>
-            <!-- end chat-item -->
-            <v-divider class="border-opacity-50"></v-divider>
+            <ChatItem :chat="chat" :index="index"></ChatItem>
           </div>
         </v-card>
       </v-col>
-      <v-col :cols="8" class="middle-section">
+      <v-col class="middle-section">
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+                class="text-ellipsis"
+                filled
+                label="长文本示例"
+                v-model="longText"
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </v-col>
       <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
     </v-row>
@@ -61,6 +52,10 @@ const messages = ref([]);
 </template>
 
 <style scoped>
+* {
+  padding: 0;
+  margin: 0;
+}
 .v-container {
   width: 100%;
   height: 100vh;
@@ -74,6 +69,14 @@ const messages = ref([]);
 
 .v-btn {
   font-size: 0.72em !important;
+}
+
+.left-section {
+  max-width: 300px;
+}
+
+.middle-section {
+  border: 1px solid;
 }
 
 .title-tele {
@@ -99,30 +102,5 @@ const messages = ref([]);
   color: #ddd;
   border: 1px solid;
   border-radius: 0;
-}
-
-.chat-item {
-  position: relative;
-  margin: 0.2em;
-  padding-top: 0.4em;
-  padding-bottom: 0.4em;
-}
-
-.chat-title {
-  font-weight: 800;
-  color: #fff;
-}
-
-.chat-detail {
-  font-weight: 300;
-  color: #bbb;
-  font-size: 0.9em;
-}
-
-.chat-time {
-  position: absolute;
-  right: 1em;
-  top: 1em;
-  font-size: 0.6em;
 }
 </style>
