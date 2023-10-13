@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { login, register } from "../auth.js";
-import { DEBUG } from "../const/constants.js";
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
+import {login, register, user} from "../auth.js";
+import {DEBUG} from "../const/constants.js";
 
 const signupDialog = ref(null);
 const account = ref("");
@@ -10,17 +10,30 @@ const password = ref("");
 const confirmPassword = ref("");
 
 const router = useRouter();
+const hint = ref("");
+const confirmPasswordError = ref("");
+
+if (user.value !== "") {
+  router.push("/chat/0");
+}
 
 const submit = () => {
-  login(account.value, password.value);
-  router.push("/chat/0");
+  login(account.value, password.value)
+      .then((message) => {
+        console.log("received message: " + message)
+        if (message === "") {
+          router.push("/chat/0");
+        } else {
+          hint.value = "Wrong password or message"
+        }
+      })
 };
 
 const dialog = ref(false);
 
 const submitRegister = () => {
   if (password.value !== confirmPassword.value) {
-    alert("Password not match!");
+    confirmPasswordError.value = "Password not match";
     return;
   }
   register(account.value, password.value);
@@ -29,48 +42,51 @@ const submitRegister = () => {
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row class="fill-height">
+  <v-container class="pa-10">
+    <v-row>
       <!-- 左侧图标区域 -->
       <v-col
-        md="6"
-        lg="5"
-        class="d-none d-sm-inline-block text-center align-self-center"
+          md="6"
+          lg="5"
+          class="d-none d-sm-inline-block text-center align-self-center"
       >
         <!-- 替换下面的路径为你的图标路径 -->
-        <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%" />
+        <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%"/>
       </v-col>
       <v-col md="2" class="d-none d-lg-inline-block">
         <!-- 空内容或其他内容 -->
       </v-col>
       <!-- 右侧登录表单区域 -->
       <v-col
-        cols="12"
-        md="6"
-        lg="5"
-        class="align-self-center align-content-center"
+          cols="12"
+          md="6"
+          lg="5"
+          class="align-self-center align-content-center"
       >
         <h1 class="mb-15">Welcome to TeleTHU!</h1>
         <v-text-field
-          label="Account"
-          v-model="account"
-          prepend-icon="mdi-account"
-          type="email"
-          class="mb-3"
+            label="Account"
+            v-model="account"
+            prepend-icon="mdi-account"
+            type="email"
+            class="mb-3"
+            :error="hint"
         ></v-text-field>
 
         <v-text-field
-          label="Password"
-          v-model="password"
-          prepend-icon="mdi-lock"
-          type="password"
-          class="mb-7"
+            label="Password"
+            v-model="password"
+            prepend-icon="mdi-lock"
+            type="password"
+            :error-messages="hint"
+            class="mb-7"
         ></v-text-field>
 
         <v-row>
           <v-col cols="6">
             <v-btn color="primary" class="login-btn" @click="submit"
-              >Sign in</v-btn
+            >Sign in
+            </v-btn
             >
             <!-- 登录按钮 -->
           </v-col>
@@ -78,7 +94,7 @@ const submitRegister = () => {
             <div class="flex-grow-1 text-right">
               <p>Didn't have an account?</p>
               <!-- Sign up dialog -->>
-              <v-dialog v-model="dialog" persistent width="540">
+              <v-dialog v-model="dialog" persistent width="60vw">
                 <template v-slot:activator="{ props }">
                   <a href="#" class="ref-text" v-bind="props">
                     Sign up right now!
@@ -96,25 +112,26 @@ const submitRegister = () => {
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            label="Account*"
-                            v-model="account"
-                            required
+                              label="Account*"
+                              v-model="account"
+                              required
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            label="Password*"
-                            v-model="password"
-                            type="password"
-                            required
+                              label="Password*"
+                              v-model="password"
+                              type="password"
+                              required
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            label="Confirm Possword*"
-                            v-model="confirmPassword"
-                            type="password"
-                            required
+                              label="Confirm Password*"
+                              v-model="confirmPassword"
+                              type="password"
+                              :error-messages="confirmPasswordError"
+                              required
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -123,16 +140,16 @@ const submitRegister = () => {
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="dialog = false"
+                        color="blue-darken-1"
+                        variant="text"
+                        @click="dialog = false"
                     >
                       Close
                     </v-btn>
                     <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="submitRegister"
+                        color="blue-darken-1"
+                        variant="text"
+                        @click="submitRegister"
                     >
                       Sign up
                     </v-btn>
@@ -148,15 +165,7 @@ const submitRegister = () => {
 </template>
 
 <style>
-.login-btn {
-  width: 88px;
-  height: 49.5px !important;
-  margin-right: 40px;
-  align-items: center;
-}
-
 .ref-text {
-  color: primary;
   cursor: pointer;
 }
 </style>
