@@ -3,6 +3,8 @@ import {ref} from "vue";
 import { fakeChatList } from "../testdata/fakechats.js";
 import NavBar from "./NavBar.vue";
 import ChatItem from "./ChatItem.vue";
+import LogoHeader from "./LogoHeader.vue";
+
 
 const curTab = ref(1);
 const chatList = ref(fakeChatList);
@@ -19,8 +21,8 @@ const messages = ref([]);
     <v-divider class="border-opacity-50"></v-divider>
     <v-row no-gutters class="main-section">
       <v-col class="left-section">
+        <LogoHeader></LogoHeader>
         <v-card class="chat-list">
-
           <v-divider class="border-opacity-50"></v-divider>
           <div v-for="(chat, index) in chatList" :key="index">
             <ChatItem :chat="chat" :index="index"></ChatItem>
@@ -30,12 +32,7 @@ const messages = ref([]);
       <v-col class="middle-section">
         <v-row>
           <v-col cols="6">
-            <v-text-field
-                class="text-ellipsis"
-                filled
-                label="长文本示例"
-                v-model="longText"
-            ></v-text-field>
+            unimplemented
           </v-col>
         </v-row>
       </v-col>
@@ -66,26 +63,11 @@ const messages = ref([]);
 
 .left-section {
   max-width: 300px;
+  border: 1px solid;
 }
 
 .middle-section {
   border: 1px solid;
-}
-
-.title-tele {
-  background-color: black;
-  color: orange;
-  padding: 3px;
-  font-weight: 1000;
-  border-radius: 0 2px;
-}
-
-.title-THU {
-  font-size: 0.9em;
-  background-color: orange;
-  color: black;
-  padding: 3px;
-  font-weight: 1000;
 }
 
 .chat-list {
@@ -93,7 +75,7 @@ const messages = ref([]);
   height: 90vh;
   background-color: #333;
   color: #ddd;
-  border: 1px solid;
-  border-radius: 0;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
 }
 </style>
