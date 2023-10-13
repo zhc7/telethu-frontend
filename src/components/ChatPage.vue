@@ -1,10 +1,12 @@
 <script setup>
 import {ref} from "vue";
-import { fakeChatList } from "../testdata/fakechats.js";
+import {fakeChatList} from "../testdata/fakechats.js";
 import NavBar from "./NavBar.vue";
 import ChatItem from "./ChatItem.vue";
 import LogoHeader from "./LogoHeader.vue";
-
+import ChatHeader from "./ChatHeader.vue";
+import MessageArea from "./MessageArea.vue";
+import MessageTextArea from "./MessageTextArea.vue";
 
 const curTab = ref(1);
 const chatList = ref(fakeChatList);
@@ -30,10 +32,12 @@ const messages = ref([]);
         </v-card>
       </v-col>
       <v-col class="middle-section">
-        <v-row>
-          <v-col cols="6">
-            unimplemented
-          </v-col>
+        <ChatHeader :title="'abcd'"></ChatHeader>
+        <v-row no-gutters class="message-area">
+          <MessageArea></MessageArea>
+        </v-row>
+        <v-row no-gutters class="message-text-area">
+          <MessageTextArea></MessageTextArea>
         </v-row>
       </v-col>
       <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
@@ -46,6 +50,7 @@ const messages = ref([]);
   padding: 0;
   margin: 0;
 }
+
 .v-container {
   width: 100%;
   height: 100vh;
@@ -75,7 +80,15 @@ const messages = ref([]);
   height: 90vh;
   background-color: #333;
   color: #ddd;
+  border-radius: 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
+}
+
+.chat-header {
+}
+
+.message-area {
+  height: 50vh;
 }
 </style>
