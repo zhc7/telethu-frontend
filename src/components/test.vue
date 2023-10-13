@@ -20,14 +20,7 @@ const messages = ref([]);
     <v-row no-gutters class="main-section">
       <v-col class="left-section">
         <v-card class="chat-list">
-          <div class="chat-header">
-            <v-card-item class="pt-3 pb-2">
-              <template #subtitle>
-                <span class="title-tele">Tele</span>
-                <span class="title-THU">THU</span>
-              </template>
-            </v-card-item>
-          </div>
+
           <v-divider class="border-opacity-50"></v-divider>
           <div v-for="(chat, index) in chatList" :key="index">
             <ChatItem :chat="chat" :index="index"></ChatItem>
