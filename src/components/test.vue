@@ -1,7 +1,8 @@
 <script setup>
-import { ref, reactive } from "vue";
-import { fakeChatList } from "../testdata/fakechats.js";
-import { formatChatMessageTime } from "../utils/datetime.js";
+import {ref} from "vue";
+import {fakeChatList} from "../testdata/fakechats.js";
+import {formatChatMessageTime} from "../utils/datetime.js";
+
 const tab = ref(1);
 const chatList = ref(fakeChatList);
 
@@ -24,8 +25,8 @@ const messages = ref([]);
           <div class="chat-header">
             <v-card-item class="pt-3 pb-2">
               <template #subtitle>
-                <span class="title-tele">Tele</span
-                ><span class="title-THU">THU</span>
+                <span class="title-tele">Tele</span>
+                <span class="title-THU">THU</span>
               </template>
             </v-card-item>
           </div>
@@ -34,7 +35,7 @@ const messages = ref([]);
             <v-row :key="index" align="center" class="chat-item">
               <v-col cols="3">
                 <v-avatar size="2em">
-                  <img src="../assets/download.jpeg" />
+                  <img src="../assets/download.jpeg" alt="download"/>
                 </v-avatar>
               </v-col>
               <v-col>
@@ -53,7 +54,6 @@ const messages = ref([]);
         </v-card>
       </v-col>
       <v-col :cols="8" class="middle-section">
-        
       </v-col>
       <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
     </v-row>
@@ -62,9 +62,9 @@ const messages = ref([]);
 
 <style scoped>
 .v-container {
-  width: 72vw;
+  width: 100%;
   height: 100vh;
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
 }
 
