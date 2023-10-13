@@ -21,6 +21,8 @@
 }
 
 .chat-header {
+  min-height: 60px;
+  border: 1px solid;
   height: 8vh;
 }
 

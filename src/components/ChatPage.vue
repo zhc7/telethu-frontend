@@ -33,20 +33,18 @@ const messages = ref([]);
       </v-col>
       <v-col class="middle-section">
         <ChatHeader :title="'abcd'"></ChatHeader>
-        <v-row no-gutters class="message-area">
-          <MessageArea></MessageArea>
-        </v-row>
-        <v-row no-gutters class="message-text-area">
-          <MessageTextArea></MessageTextArea>
-        </v-row>
+        <MessageArea></MessageArea>
+        <MessageTextArea></MessageTextArea>
       </v-col>
       <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
     </v-row>
+    <v-row no-gutters class="spacing-section"></v-row>
   </v-container>
 </template>
 
 <style scoped>
 * {
+  box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
@@ -77,7 +75,7 @@ const messages = ref([]);
 
 .chat-list {
   max-height: 1000px;
-  height: 90vh;
+  height: 100vh;
   background-color: #333;
   color: #ddd;
   border-radius: 0;
@@ -85,10 +83,7 @@ const messages = ref([]);
   border-bottom: 1px solid;
 }
 
-.chat-header {
-}
-
-.message-area {
-  height: 50vh;
+.spacing-section {
+  height: 10vh;
 }
 </style>

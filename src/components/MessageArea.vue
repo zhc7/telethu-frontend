@@ -5,5 +5,19 @@ const messageList = ref([]);
 </script>
 
 <template>
-  MessageArea: unimplemented.
+  <v-row no-gutters class="message-area">
+    MessageArea: unimplemented.
+  </v-row>
 </template>
+
+<style scoped>
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+.message-area {
+  border: 1px solid;
+  height: 66vh;
+}
+</style>

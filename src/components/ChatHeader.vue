@@ -13,13 +13,18 @@ defineProps(['title', 'mute'])
 </template>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+}
+
 .chat-title {
   width: 100%;
   height: 8vh;
+  min-height: 60px;
   background-color: #000;
   font-weight: 700;
   font-size: 1.2em;
-  border-bottom: 1px solid;
+  border: 1px solid;
 }
 
 .chat-title > div {
