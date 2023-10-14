@@ -1,6 +1,6 @@
 <script setup>
 import {ProcessMessage} from "../utils/messageutils.js";
-import {formatChatMessageTime} from "../utils/datetime.js";
+import {FormatChatMessageTime} from "../utils/datetime.js";
 
 defineProps(['chat', 'index'])
 </script>
@@ -20,7 +20,7 @@ defineProps(['chat', 'index'])
         <span>{{ ProcessMessage(chat.latest) }}</span>
       </v-row>
     </v-col>
-    <div class="chat-time">{{ formatChatMessageTime(chat.time) }}</div>
+    <div class="chat-time">{{ FormatChatMessageTime(chat.time) }}</div>
   </v-row>
   <!-- end chat-item -->
   <v-divider class="border-opacity-50"></v-divider>

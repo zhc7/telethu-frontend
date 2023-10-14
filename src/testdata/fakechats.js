@@ -5,7 +5,7 @@ export const fakeChatList = ref([
         'prependAvatar': '../assets/download.jpeg',
         'type': 'person',
         'time': Date.UTC(2023, 9, 12, 17, 0, 0),
-        'latest': 'Are you there? I am here, so is she. Hurry up!',
+        'show': 'Are you there? I am here, so is she. Hurry up!',
         'mute': false,
     },
     {
@@ -13,7 +13,7 @@ export const fakeChatList = ref([
         'prependAvatar': '../assets/download.jpeg',
         'type': 'person',
         'time': Date.UTC(2023, 9, 12, 0, 0, 0),
-        'latest': 'Have fun!',
+        'show': 'Have fun!',
         'mute': false,
     },
     {
@@ -21,7 +21,7 @@ export const fakeChatList = ref([
         'prependAvatar': '../assets/download.jpeg',
         'type': 'person',
         'time': Date.UTC(2023, 9, 10, 0, 0, 0),
-        'latest': 'Wow, so cool!',
+        'show': 'Wow, so cool!',
         'mute': true,
     },
     {
@@ -29,7 +29,7 @@ export const fakeChatList = ref([
         'prependAvatar': '../assets/download.jpeg',
         'type': 'person',
         'time': Date.UTC(2022, 1, 5, 0, 0, 0),
-        'latest': 'I am your dad!',
+        'show': 'I am your dad!',
         'mute': true,
     },
 ]);
