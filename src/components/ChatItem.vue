@@ -6,24 +6,24 @@ defineProps(['chat', 'index'])
 </script>
 
 <template>
-    <v-row :key="index" align="center" class="chat-item">
-      <v-col cols="3">
-        <v-avatar size="2em">
-          <img src="../assets/download.jpeg" alt="download"/>
-        </v-avatar>
-      </v-col>
-      <v-col>
-        <v-row class="chat-title">
-          <span>{{ chat.title }}</span>
-        </v-row>
-        <v-row class="chat-detail">
-          <span>{{ ProcessMessage(chat.latest) }}</span>
-        </v-row>
-      </v-col>
-      <div class="chat-time">{{ formatChatMessageTime(chat.time) }}</div>
-    </v-row>
-    <!-- end chat-item -->
-    <v-divider class="border-opacity-50"></v-divider>
+  <v-row :key="index" align="center" class="chat-item">
+    <v-col cols="3">
+      <v-avatar size="2em">
+        <img src="../assets/download.jpeg" alt="download"/>
+      </v-avatar>
+    </v-col>
+    <v-col>
+      <v-row class="chat-title">
+        <span>{{ chat.title }}</span>
+      </v-row>
+      <v-row class="chat-detail">
+        <span>{{ ProcessMessage(chat.latest) }}</span>
+      </v-row>
+    </v-col>
+    <div class="chat-time">{{ formatChatMessageTime(chat.time) }}</div>
+  </v-row>
+  <!-- end chat-item -->
+  <v-divider class="border-opacity-50"></v-divider>
 </template>
 
 <style scoped>

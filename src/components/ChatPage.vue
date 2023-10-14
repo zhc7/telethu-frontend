@@ -22,14 +22,14 @@ const messages = ref([]);
     </v-row>
     <v-divider class="border-opacity-50"></v-divider>
     <v-row no-gutters class="main-section">
-      <v-col class="left-section">
-        <LogoHeader></LogoHeader>
-        <v-card class="chat-list">
-          <v-divider class="border-opacity-50"></v-divider>
-          <div v-for="(chat, index) in chatList" :key="index">
-            <ChatItem :chat="chat" :index="index"></ChatItem>
-          </div>
-        </v-card>
+      <v-col cols="12" sm="4" class="left-section">
+        <v-navigation-drawer>
+          <v-list-item title="My Application" subtitle="Vuetify"></v-list-item>
+          <v-divider></v-divider>
+          <v-list-item link title="List Item 1"></v-list-item>
+          <v-list-item link title="List Item 2"></v-list-item>
+          <v-list-item link title="List Item 3"></v-list-item>
+        </v-navigation-drawer>
       </v-col>
       <v-col class="middle-section">
         <ChatHeader :title="'abcd'"></ChatHeader>
@@ -65,7 +65,6 @@ const messages = ref([]);
 }
 
 .left-section {
-  max-width: 300px;
   border: 1px solid;
 }
 

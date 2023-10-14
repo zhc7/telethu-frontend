@@ -3,14 +3,12 @@
 </script>
 
 <template>
-  <v-row align="center" justify="center" class="chat-header">
-    <v-card-item class="pt-3 pb-2">
-      <template #subtitle>
-        <span class="title-tele">Tele</span>
-        <span class="title-THU">THU</span>
-      </template>
-    </v-card-item>
-  </v-row>
+  <v-card-item class="pt-3 pb-2">
+    <template #subtitle>
+      <span class="title-tele">Tele</span>
+      <span class="title-THU">THU</span>
+    </template>
+  </v-card-item>
 </template>
 
 <style scoped>
@@ -18,12 +16,6 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-.chat-header {
-  min-height: 60px;
-  border: 1px solid;
-  height: 8vh;
 }
 
 .title-tele {
