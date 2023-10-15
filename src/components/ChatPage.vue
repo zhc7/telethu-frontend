@@ -1,36 +1,77 @@
 <script setup>
-import {ref} from "vue";
+import {ref} from 'vue'
 import {fakeChatList} from "../testdata/fakechats.js";
-import NavBar from "./NavBar.vue";
-import ChatHeader from "./ChatHeader.vue";
 import ChatList from "./ChatList.vue";
-import MessageArea from "./MessageArea.vue";
-import MessageInputArea from "./MessageInputArea.vue";
+import SentMessage from "./SentMessage.vue";
+import ReceivedMessage from "./ReceivedMessage.vue";
+
 
 const curTab = ref(1);
-const chatListHeight = ref("0px");
-
 const chatList = ref(fakeChatList);
+const curChat = ref('')
 
-const selectedChat = ref(undefined);
-const messages = ref([]);
-
+const selectChat = (newChatId) => {
+  chatList.value.forEach((chat) => {
+    if (chat.id === newChatId) {
+      curChat.value = chat;
+    }
+  })
+};
 </script>
 
 <template>
-  <v-container fluid class="d-flex flex-column">
-    <v-row no-gutters align="center" justify="center" class="nav-section pb-2" ref="navSection">
-      <NavBar @switch="newValue => {curTab = newValue}"></NavBar>
-    </v-row>
-    <v-row no-gutters class="fill-height main-section" ref="mainSection">
-      <v-col cols="12" sm="4" class="pl-2 pr-2 fill-height">
-        <ChatList :chat-list="chatList" @select="curChat"></ChatList>
+  <v-container class="d-flex flex-column pt-0" fluid>
+    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="nav-section">
+      <v-tab :value="1">CHAT</v-tab>
+      <v-tab :value="2">CONTACTS</v-tab>
+      <v-tab :value="3">SETTINGS</v-tab>
+      <v-tab :value="4">PROFILE</v-tab>
+    </v-tabs>
+    <v-divider></v-divider>
+    <v-row class="mt-auto mb-2 fill-height main-section">
+      <v-col cols="12" sm="4" class="fill-height chat-list">
+        <ChatList :chat-list="chatList" @select="(newChatId) => selectChat(newChatId)"></ChatList>
       </v-col>
-      <v-col class="bl-2 br-2 align-content-end">
-        <ChatHeader :title="selectedChat" class="mb-auto"></ChatHeader>
-        <MessageArea></MessageArea>
-        <v-row class="mt-auto message-input-area">
-          <MessageInputArea class="align-self-end"></MessageInputArea>
+      <v-col cols="12" sm="8" class="fill-height d-flex flex-column message-area">
+        <v-row class="mt-1 align-center">
+          <v-card class="chat-title" style="width: 100%">
+            <v-card-item>
+              <template #prepend>
+                <v-avatar size="30">
+                  <img src="../assets/download.jpeg"/>
+                </v-avatar>
+              </template>
+              <v-card-title>
+                <span class="pr-3">{{ curChat.id }}</span>
+                <span v-if="curChat.mute"><v-icon>mdi-account</v-icon></span>
+              </v-card-title>
+            </v-card-item>
+          </v-card>
+          <v-divider></v-divider>
+
+        </v-row>
+        <v-row class="fill-height d-flex flex-column conversation-area">
+          <div>
+            <v-row no-gutters>
+              <v-col cols="8" offset="4">
+                <v-list>
+                  <SentMessage/>
+                </v-list>
+              </v-col>
+            </v-row>
+            <!--            <v-row no-gutters>-->
+            <!--              <v-col cols="8">-->
+            <!--                <v-list >-->
+            <!--                  <v-row no-gutters>-->
+            <!--                    <ReceivedMessage/>-->
+            <!--                  </v-row>-->
+            <!--                </v-list>-->
+            <!--              </v-col>-->
+            <!--            </v-row>-->
+          </div>
+        </v-row>
+        <v-row class="bg-yellow">
+          <v-textarea></v-textarea>
         </v-row>
       </v-col>
     </v-row>
@@ -38,31 +79,28 @@ const messages = ref([]);
 </template>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 .v-container {
-  width: 100%;
   height: 100vh;
-  margin: 0;
-  padding: 0.2em;
+  width: 100%;
 }
 
-.left-section {
-  height: inherit;
+.main-section {
   overflow: scroll;
 }
 
-
-
-.message-input-area {
+.chat-list {
   overflow: scroll;
 }
 
-.v-list-item--active {
-  background-color: #8cf;
+.conversation-area {
+  overflow: scroll;
 }
+
+.message-text {
+  max-width: 200px;
+}
+
 </style>
+<script setup>
+</script>
+

@@ -37,7 +37,7 @@ defineEmits(['select'])
 .chat-time {
   font-size: 0.75em;
   position: absolute;
-  right: 0.8em;
+  right: 1.6em;
   top: 1em;
   color: #888
 }
