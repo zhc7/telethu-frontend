@@ -30,8 +30,8 @@ class User(models.Model):
         return token
     
 class Relationship(models.Model):
-    first_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='first_user')
-    secend_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='second_user')
+    first_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='rel_first')
+    secend_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='rel_second')
     connected_time = models.DateTimeField()
     met_choices = (
         (0, 'Id'),
@@ -43,10 +43,19 @@ class Relationship(models.Model):
     met = models.IntegerField(choices=met_choices)
     state_choices = (
         (0, 'Requested'),
-        (1, 'Passed'),
+        (1, 'Valid'),
         (2, 'Deleted'),
     )
     state = models.IntegerField(choices=state_choices, default=0)
     mute1 = models.BooleanField(default=False)
     mute2 = models.BooleanField(default=False)
-    
+
+class Block(models.Model):
+    first_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='block_first')
+    second_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='block_second')
+    state_choices = (
+        (0, 'Valid'),
+        (1, 'Expired'),
+    )
+    state = models.IntegerField(choices=state_choices)
+    time = models.DateTimeField(auto_now_add=True)
