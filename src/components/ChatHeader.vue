@@ -4,13 +4,15 @@ defineProps(['title', 'mute'])
 
 <template>
   <v-card class="chat-title">
-    <v-card-item align="left">
+    <v-card-item>
       <template #prepend>
         <v-avatar size="30">
           <img src="../assets/download.jpeg"/>
         </v-avatar>
       </template>
-      {{ title }}
+      <v-list-item-title>
+        {{ title }}
+      </v-list-item-title>
     </v-card-item>
   </v-card>
 </template>
@@ -22,7 +24,7 @@ defineProps(['title', 'mute'])
 
 .chat-title {
   background-color: #eee;
-  color: #000!important;
+  color: #000 !important;
 }
 
 .chat-title > div {

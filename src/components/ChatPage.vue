@@ -3,50 +3,35 @@ import {ref} from "vue";
 import {fakeChatList} from "../testdata/fakechats.js";
 import NavBar from "./NavBar.vue";
 import ChatHeader from "./ChatHeader.vue";
+import ChatList from "./ChatList.vue";
 import MessageArea from "./MessageArea.vue";
-import MessageTextArea from "./MessageTextArea.vue";
-import {ProcessMessage} from "../utils/messageutils.js"
-import {FormatChatMessageTime} from "../utils/datetime.js"
+import MessageInputArea from "./MessageInputArea.vue";
 
 const curTab = ref(1);
+const chatListHeight = ref("0px");
+
 const chatList = ref(fakeChatList);
 
 const selectedChat = ref(undefined);
 const messages = ref([]);
+
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row no-gutters align="center" justify="center" class="section">
+  <v-container fluid class="d-flex flex-column">
+    <v-row no-gutters align="center" justify="center" class="nav-section pb-2" ref="navSection">
       <NavBar @switch="newValue => {curTab = newValue}"></NavBar>
     </v-row>
-    <v-row>
-      <v-col cols="12" sm="4">
-        <v-list v-model="selectedChat">
-          <div v-for="(chat, index) in chatList">
-            <v-list-item :key="index"
-                         :value="index"
-                         @click="selectedChat = index"
-                         align="left"
-                         class="pa-3 pl-6 chat-list-item"
-                         rounded="lg"
-            >
-              <template #prepend>
-                <v-avatar><img src="../assets/download.jpeg" alt="avatar"/></v-avatar>
-              </template>
-              <v-list-item-title v-text="chat.title">
-              </v-list-item-title>
-              <v-list-item-subtitle>{{ chat.show }}</v-list-item-subtitle>
-              <div class="chat-time">{{ FormatChatMessageTime(chat.time) }}</div>
-            </v-list-item>
-            <v-divider></v-divider>
-          </div>
-        </v-list>
+    <v-row no-gutters class="fill-height main-section" ref="mainSection">
+      <v-col cols="12" sm="4" class="pl-2 pr-2 fill-height">
+        <ChatList :chat-list="chatList" @select="curChat"></ChatList>
       </v-col>
-      <v-col class="middle-section">
-        <ChatHeader :title="'abcd'"></ChatHeader>
+      <v-col class="bl-2 br-2 align-content-end">
+        <ChatHeader :title="selectedChat" class="mb-auto"></ChatHeader>
         <MessageArea></MessageArea>
-        <MessageTextArea></MessageTextArea>
+        <v-row class="mt-auto message-input-area">
+          <MessageInputArea class="align-self-end"></MessageInputArea>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -66,27 +51,18 @@ const messages = ref([]);
   padding: 0.2em;
 }
 
-.nav-section {
-  margin-bottom: 2px;
+.left-section {
+  height: inherit;
+  overflow: scroll;
 }
 
-.v-btn {
-  font-size: 0.72em !important;
+
+
+.message-input-area {
+  overflow: scroll;
 }
 
-.chat-list-item {
-  position: relative;
-}
-
-.chat-time {
-  font-size: 0.75em;
-  position: absolute;
-  right: 0.8em;
-  top: 1em;
-  color: #888
-}
-
-.spacing-section {
-  height: 10vh;
+.v-list-item--active {
+  background-color: #8cf;
 }
 </style>

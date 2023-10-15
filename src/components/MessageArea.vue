@@ -16,8 +16,4 @@ const messageList = ref([]);
   padding: 0;
   margin: 0;
 }
-.message-area {
-  border: 1px solid;
-  height: 66vh;
-}
 </style>
