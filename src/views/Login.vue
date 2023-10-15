@@ -24,7 +24,7 @@ const submit = () => {
         if (message === "") {
           router.push("/chat/0");
         } else {
-          hint.value = "Wrong password or message"
+          hint.value = "Wrong username or password"
         }
       })
 };
@@ -70,7 +70,7 @@ const submitRegister = () => {
             prepend-icon="mdi-account"
             type="email"
             class="mb-3"
-            :error="hint"
+            :error="hint !== ''"
         ></v-text-field>
 
         <v-text-field
