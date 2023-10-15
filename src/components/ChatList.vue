@@ -1,9 +1,22 @@
 <script setup>
+import {computed} from "vue";
 import {ProcessMessage} from "../utils/messageutils.js";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 
 defineProps(['chatList']);
 defineEmits(['select'])
+
+const GetDisplayText = (messages) => {
+  if (!messages[-1]) {
+    console.log('not -1' + messages[-1])
+    return '';
+  }
+  if (messages[-1].type !== 'text') {
+    return messages[-1].type;
+  }
+  return messages[-1].content;
+};
+
 </script>
 
 <template>
@@ -21,7 +34,7 @@ defineEmits(['select'])
         </template>
         <v-list-item-title v-text="chat.title">
         </v-list-item-title>
-        <v-list-item-subtitle>{{ chat.show }}</v-list-item-subtitle>
+        <v-list-item-subtitle>{{ (chat.messages) }}</v-list-item-subtitle>
         <div class="chat-time">{{ FormatChatMessageTime(chat.time) }}</div>
       </v-list-item>
       <v-divider></v-divider>

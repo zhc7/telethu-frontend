@@ -1,5 +1,6 @@
-import { ref } from "vue";
-export const fakeChatList = ref([
+import {ref} from "vue";
+
+export const fakeContacts = [
     {
         'title': 'Alice',
         'id': 'Alice2004',
@@ -9,6 +10,56 @@ export const fakeChatList = ref([
         'time': Date.UTC(2023, 9, 12, 17, 0, 0),
         'show': 'Are you there? I am here, so is she. Hurry up!',
         'mute': false,
+        'messages': [
+            {
+                'sender': 'Alice2004',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 10, 0, 0, 0),
+                'type': 'text',
+                'content': 'Hello, are you there? ',
+                'state': 'read',
+            },
+            {
+                'sender': 'Alice2004',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 10, 0, 0, 30),
+                'type': 'text',
+                'content': 'I have something urgent. ',
+                'state': 'read',
+            },
+            {
+                'sender': 'Shenium',
+                'receiver': 'Alice',
+                'time': Date.UTC(2023, 9, 10, 0, 1, 30),
+                'type': 'text',
+                'content': "What's up?",
+                'state': 'read',
+            },
+            {
+                'sender': 'Alice2004',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 10, 0, 1, 45),
+                'type': 'text',
+                'content': 'Have you done your homework yet? ',
+                'state': 'read',
+            },
+            {
+                'sender': 'Shenium',
+                'receiver': 'Alice2004',
+                'time': Date.UTC(2023, 9, 10, 0, 2, 30),
+                'type': 'text',
+                'content': 'OMG, no! ',
+                'state': 'read',
+            },
+            {
+                'sender': 'Alice2004',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 10, 0, 4, 30),
+                'type': 'text',
+                'content': 'Can you figure out how to solve the equation in problem 1.27? It seems that Riesz theorem fails to solve it. ',
+                'state': 'read',
+            },
+        ],
     },
     {
         'title': 'Bob',
@@ -19,6 +70,7 @@ export const fakeChatList = ref([
         'time': Date.UTC(2023, 9, 12, 0, 0, 0),
         'show': 'Have fun!',
         'mute': true,
+        'messages': [],
     },
     {
         'title': 'Cindy',
@@ -29,5 +81,6 @@ export const fakeChatList = ref([
         'time': Date.UTC(2023, 9, 10, 0, 0, 0),
         'show': 'Wow, so cool!',
         'mute': true,
+        'messages': [],
     },
-]);
+];

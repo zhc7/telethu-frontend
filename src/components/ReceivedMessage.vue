@@ -1,5 +1,5 @@
 <script setup>
-defineProps([])
+defineProps(['contentType', 'content', 'state'])
 </script>
 
 <template>
@@ -35,7 +35,7 @@ defineProps([])
       <v-list-item-avatar>
         <v-avatar>
           <v-img
-              src="https://cdn.vuetifyjs.com/images/john.jpg"
+              src="https://cdn.vuetifyjs.com/images/alice.jpg"
               alt="John"
           ></v-img>
         </v-avatar>
