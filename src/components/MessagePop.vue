@@ -46,9 +46,15 @@ onMounted(() => {
                       rounded="lg"
                       outlined
                   >
-                    <span>
-                      {{ message.content }}
-                    </span>
+                    <span v-if="message.type === 'text'">{{ message.content }}</span>
+                    <v-img
+                        v-if="message.type === 'image'"
+                        class="align-end text-white"
+                        height="200"
+                        width="200"
+                        :src="message.content"
+                        cover
+                    />
                   </v-card>
                 </div>
               </v-col>
@@ -58,7 +64,7 @@ onMounted(() => {
                 <v-avatar>
                   <v-img
                       :src="userRef.avatar"
-                      alt="John"
+                      :alt="userRef.title"
                   ></v-img>
                 </v-avatar>
               </v-avatar>

@@ -110,6 +110,14 @@ export const fakeContacts = [
                 'content': 'Sure! ',
                 'state': 'sent',
             },
+            {
+                'sender': 'Cindy2012',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 14, 1, 4, 0),
+                'type': 'image',
+                'content': 'public/Shenium.png',
+                'state': 'sent',
+            },
         ],
     },
 ];

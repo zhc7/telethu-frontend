@@ -9,7 +9,7 @@ import {fakeContacts} from "../testdata/fakechats.js";
 
 const contacts = ref(fakeContacts);
 
-const curTab = ref(2);
+const curTab = ref(1);
 
 
 const activeChat = ref(undefined);
