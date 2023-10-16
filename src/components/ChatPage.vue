@@ -24,8 +24,8 @@ const ScrollToBottom = () => {
 </script>
 
 <template>
-  <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
-    <v-col cols="12" sm="4">
+  <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height">
+    <v-col cols="12" sm="4" class="pa-0">
       <ChatList :chat-list="contacts" @select="(newChatId) => selectChat(newChatId)"></ChatList>
     </v-col>
     <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
@@ -44,7 +44,7 @@ const ScrollToBottom = () => {
           </v-card-item>
         </v-card>
       </v-row>
-      <v-row class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto">
+      <v-row class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1" id="message-flow">
           <MessagePop v-for="(message, index) in curChat.messages" :message="message"
                       :final="index === curChat.messages.length - 1"
@@ -52,14 +52,18 @@ const ScrollToBottom = () => {
           />
         </div>
       </v-row>
-      <v-row class="flex-0-0">
+      <v-row class="d-flex" style="align-items: center">
         <v-textarea
-            :label="curChat.id"
+            rows="1"
+            auto-grow
+            variant="outlined"
+            label="message"
+            class="ma-2 ml-4 message-input"
+            color="blue"
+            hide-details
+            flat
         ></v-textarea>
-      </v-row>
-      <v-row justify="end" class="ml-4 mr-4 mt-auto mb-0 flex-0-0">
-        <v-btn color="success" class="mr-2">Send</v-btn>
-        <v-btn class="mr-2">clear</v-btn>
+        <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send"/>
       </v-row>
     </v-col>
   </v-row>
@@ -77,4 +81,9 @@ const ScrollToBottom = () => {
   top: 1em;
   color: #888
 }
+
+.v-btn:focus {
+  outline: none !important;
+}
+
 </style>
