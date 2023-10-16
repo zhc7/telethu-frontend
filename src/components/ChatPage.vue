@@ -34,7 +34,7 @@ const ScrollToBottom = () => {
           <v-card-item>
             <template #prepend>
               <v-avatar size="30">
-                <v-img src="/public/download.jpeg"/>
+                <v-img src="/public/Shenium.png"/>
               </v-avatar>
             </template>
             <v-card-title>
@@ -48,6 +48,7 @@ const ScrollToBottom = () => {
         <div class="overflow-y-auto flex-1-1" id="message-flow">
           <MessagePop v-for="(message, index) in curChat.messages" :message="message"
                       :final="index === curChat.messages.length - 1"
+                      :avatar="curChat.avatar"
                       @finished="ScrollToBottom()"
           />
         </div>

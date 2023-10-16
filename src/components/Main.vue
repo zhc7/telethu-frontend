@@ -3,11 +3,13 @@ import {ref} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 
+import {userRef} from "../globals.js";
+
 import {fakeContacts} from "../testdata/fakechats.js";
 
 const contacts = ref(fakeContacts);
 
-const curTab = ref(1);
+const curTab = ref(2);
 
 </script>
 
