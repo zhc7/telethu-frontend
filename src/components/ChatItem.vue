@@ -9,7 +9,7 @@ defineProps(['chat', 'index'])
   <v-row :key="index" align="center" class="chat-item">
     <v-col cols="3">
       <v-avatar size="2em">
-        <img src="../assets/download.jpeg" alt="download"/>
+        <v-img src="/public/download.jpeg" contain/>
       </v-avatar>
     </v-col>
     <v-col>

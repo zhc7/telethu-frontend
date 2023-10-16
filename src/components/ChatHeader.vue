@@ -7,7 +7,7 @@ defineProps(['title', 'mute'])
     <v-card-item>
       <template #prepend>
         <v-avatar size="30">
-          <img src="../assets/download.jpeg"/>
+          <v-img src="/public/download.jpeg" contain/>
         </v-avatar>
       </template>
       <v-list-item-title>

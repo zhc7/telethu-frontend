@@ -37,7 +37,7 @@ const submit = () => {
           class="d-none d-sm-inline-block text-center align-self-center"
       >
         <!-- 替换下面的路径为你的图标路径 -->
-        <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%"/>
+        <img src="/public/vue.svg" alt="Logo" style="max-width: 100%"/>
       </v-col>
       <!-- 右侧登录表单区域 -->
       <v-col

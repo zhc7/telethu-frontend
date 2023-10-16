@@ -39,7 +39,7 @@ const selectChat = (newChatId) => {
             <v-card-item>
               <template #prepend>
                 <v-avatar size="30">
-                  <img src="../assets/download.jpeg"/>
+                  <v-img src="/public/download.jpeg" />
                 </v-avatar>
               </template>
               <v-card-title>

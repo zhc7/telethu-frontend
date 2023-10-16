@@ -49,7 +49,7 @@ const GetDisplayTime = (chat) => {
                    rounded="lg"
       >
         <template #prepend>
-          <v-avatar><img src="../assets/download.jpeg" alt="avatar"/></v-avatar>
+          <v-avatar><v-img src="/public/download.jpeg" contain/></v-avatar>
         </template>
         <v-list-item-title v-text="chat.title">
         </v-list-item-title>
