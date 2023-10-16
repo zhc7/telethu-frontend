@@ -72,7 +72,7 @@ const selectContact = (newContactId) => {
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
             <v-btn-group justify="center">
-              <v-btn color="green" class="ma-1" @click="$emit('chat', selectedContact.id)">CHAT</v-btn>
+              <v-btn color="green" class="ma-1" @click="$emit('chat', selectedContact)">CHAT</v-btn>
               <v-btn color="info" class="ma-1">RECOMMEND</v-btn>
               <v-btn color="red" class="ma-1">DELETE</v-btn>
               <v-btn color="grey" class="ma-1" @click="">BLOCK</v-btn>

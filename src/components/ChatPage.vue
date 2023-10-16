@@ -6,19 +6,21 @@ import {ref, defineProps, defineEmits, onMounted} from "vue";
 import {fakeContacts} from "../testdata/fakechats.js";
 
 const props = defineProps(['contacts', 'active'])
+const emits = defineEmits(['chat']);
 
-const curChat = ref('');
+const selectedChat = ref('');
 const selectChat = (newChatId) => {
   props.contacts.forEach((chat) => {
     if (chat.id === newChatId) {
-      curChat.value = chat;
+      selectedChat.value = chat;
     }
-  })
+  });
+  emits('chat', selectedChat.value);
 };
 
 onMounted(() => {
   console.log(props.active);
-  curChat.value = props.active;
+  selectedChat.value = props.active;
 });
 
 const ScrollToBottom = () => {
@@ -33,7 +35,7 @@ const ScrollToBottom = () => {
     <v-col cols="12" sm="4" class="pa-0">
       <ChatList :chat-list="contacts" @select="(newChatId) => selectChat(newChatId)"></ChatList>
     </v-col>
-    <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
+    <v-col v-if="selectedChat" cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
       <v-row no-gutters class="align-center flex-0-0">
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688" elevation="6">
           <v-card-item>
@@ -43,17 +45,17 @@ const ScrollToBottom = () => {
               </v-avatar>
             </template>
             <v-card-title>
-              <span class="pr-3">{{ curChat.title }}</span>
-              <span v-if="curChat.mute"><v-icon>mdi-account</v-icon></span>
+              <span class="pr-3">{{ selectedChat.title }}</span>
+              <span v-if="selectedChat.mute"><v-icon>mdi-account</v-icon></span>
             </v-card-title>
           </v-card-item>
         </v-card>
       </v-row>
       <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1" id="message-flow">
-          <MessagePop v-for="(message, index) in curChat.messages" :message="message"
-                      :final="index === curChat.messages.length - 1"
-                      :avatar="curChat.avatar"
+          <MessagePop v-for="(message, index) in selectedChat.messages" :message="message"
+                      :final="index === selectedChat.messages.length - 1"
+                      :avatar="selectedChat.avatar"
                       @finished="ScrollToBottom()"
           />
         </div>
