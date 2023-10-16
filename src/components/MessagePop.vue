@@ -1,6 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
+import {nowRef} from "../globals.js";
 
 defineProps(['message']);
 
@@ -16,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row no-gutters justify="center" class="ma-3s">{{ computed(() => FormatChatMessageTime(message.time)) }}
+  <v-row no-gutters justify="center" class="ma-3s">{{ FormatChatMessageTime(nowRef, message.time) }}
   </v-row>
   <v-row no-gutters>
     <v-col cols="8" :offset="message.sender === user ? 4 : 0">

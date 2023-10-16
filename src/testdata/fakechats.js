@@ -98,6 +98,15 @@ export const fakeContacts = [
         'time': Date.UTC(2023, 9, 10, 0, 0, 0),
         'show': 'Wow, so cool!',
         'mute': true,
-        'messages': [],
+        'messages': [
+            {
+                'sender': 'Cindy2012',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 14, 1, 4, 0),
+                'type': 'text',
+                'content': 'Sure! ',
+                'state': 'sent',
+            },
+        ],
     },
 ];

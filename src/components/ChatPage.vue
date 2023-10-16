@@ -1,5 +1,6 @@
 <script setup>
-import {reactive, ref} from 'vue'
+import {reactive, ref, onMounted} from 'vue'
+import {nowRef} from "../globals.js";
 import {fakeContacts} from "../testdata/fakechats.js";
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
@@ -8,7 +9,7 @@ import {FormatChatMessageTime} from "../utils/datetime.js";
 
 const curTab = ref(1);
 const contactList = ref(fakeContacts);
-const curChat = ref('')
+const curChat = ref('');
 
 const selectChat = (newChatId) => {
   contactList.value.forEach((chat) => {
@@ -56,8 +57,9 @@ const selectChat = (newChatId) => {
           </div>
         </v-row>
         <v-row>
+<!--          :label="FormatChatMessageTime(nowRef, Date.UTC(2023, 9, 14, 0, 0, 1))"-->
           <v-textarea
-            label="Type your message here"
+              :label="nowRef.value"
           ></v-textarea>
         </v-row>
         <v-row justify="end" class="ml-4 mr-4 mt-auto mb-0">

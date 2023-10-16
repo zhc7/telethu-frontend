@@ -1,6 +1,8 @@
 import {ref} from 'vue';
-export const nowRef = ref(new Date().getTime());
+
+export const nowRef = ref(Date.now());
 
 const TimeUpdater = setInterval(() => {
-    nowRef.value = new Date().getTime();
+    console.log(Date.now());
+    nowRef.value = Date.now();
 }, 30000);

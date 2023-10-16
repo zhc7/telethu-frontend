@@ -3,6 +3,7 @@ import {computed, ref} from "vue";
 import {ProcessMessage} from "../utils/messageutils.js";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 import {fakeContacts} from "../testdata/fakechats.js";
+import {nowRef} from "../globals.js";
 
 defineEmits(['select']);
 const chatList = ref(fakeContacts);
@@ -53,7 +54,7 @@ const GetDisplayTime = (chat) => {
         <v-list-item-title v-text="chat.title">
         </v-list-item-title>
         <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
-        <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(chat.hotMessage.time) : '' }}</div>
+        <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
       </v-list-item>
       <v-divider></v-divider>
     </div>
