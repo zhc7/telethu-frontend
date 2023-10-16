@@ -57,6 +57,7 @@ const ScrollToBottom = () => {
         <v-textarea
             rows="1"
             auto-grow
+            max-rows="4"
             variant="outlined"
             label="message"
             class="ma-2 ml-4 message-input"
