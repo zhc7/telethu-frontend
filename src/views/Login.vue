@@ -1,35 +1,22 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { login, register } from "../auth.js";
 import { DEBUG } from "../const/constants.js";
+import signUp from "../components/SignUp.vue";
 
-const signupDialog = ref(null);
 const account = ref("");
 const password = ref("");
-const confirmPassword = ref("");
-
-const router = useRouter();
+const passwordVisible = ref(false);
 
 const submit = () => {
   login(account.value, password.value);
   router.push("/chat/0");
 };
-
-const dialog = ref(false);
-
-const submitRegister = () => {
-  if (password.value !== confirmPassword.value) {
-    alert("Password not match!");
-    return;
-  }
-  register(account.value, password.value);
-  dialog.value = false;
-};
 </script>
 
 <template>
-  <v-container fluid>
+  <v-container fluid class="login-page">
     <v-row class="fill-height">
       <!-- 左侧图标区域 -->
       <v-col
@@ -57,13 +44,17 @@ const submitRegister = () => {
           prepend-icon="mdi-account"
           type="email"
           class="mb-3"
+          variant="outlined"
         ></v-text-field>
 
         <v-text-field
           label="Password"
           v-model="password"
           prepend-icon="mdi-lock"
-          type="password"
+          :type="passwordVisible ? 'text' : 'password'"
+          :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+          @click:append-inner="passwordVisible = !passwordVisible"
+          variant="outlined"
           class="mb-7"
         ></v-text-field>
 
@@ -72,74 +63,10 @@ const submitRegister = () => {
             <v-btn color="primary" class="login-btn" @click="submit"
               >Sign in</v-btn
             >
-            <!-- 登录按钮 -->
           </v-col>
           <v-col cols="6">
-            <div class="flex-grow-1 text-right">
-              <p>Didn't have an account?</p>
-              <!-- Sign up dialog -->>
-              <v-dialog v-model="dialog" persistent width="540">
-                <template v-slot:activator="{ props }">
-                  <a href="#" class="ref-text" v-bind="props">
-                    Sign up right now!
-                  </a>
-                </template>
-                <v-card>
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12">
-                          <h2>Sign up</h2>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                          <v-text-field label="Name*" required></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            label="Account*"
-                            v-model="account"
-                            required
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            label="Password*"
-                            v-model="password"
-                            type="password"
-                            required
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            label="Confirm Possword*"
-                            v-model="confirmPassword"
-                            type="password"
-                            required
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="dialog = false"
-                    >
-                      Close
-                    </v-btn>
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="submitRegister"
-                    >
-                      Sign up
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </div>
+            <!-- Sign up dialog -->
+            <signUp />
           </v-col>
         </v-row>
       </v-col>
@@ -158,5 +85,10 @@ const submitRegister = () => {
 .ref-text {
   color: primary;
   cursor: pointer;
+}
+.login-page {
+  width: auto;
+  margin: 0 auto;
+  display: inline-block; /* 这将使元素的宽度由内容决定 */
 }
 </style>
