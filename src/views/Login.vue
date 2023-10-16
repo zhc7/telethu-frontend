@@ -1,13 +1,19 @@
 <script setup>
 import signUp from "../components/SignUp.vue";
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {login, register, user} from "../auth.js";
-import {DEBUG} from "../const/constants.js";
+import {login, user} from "../auth.js";
 
 const account = ref("");
 const password = ref("");
 const passwordVisible = ref(false);
+
+const router = useRouter();
+const hint = ref("");
+
+if (user.value !== "") {
+  router.push("/chat/0");
+}
 
 const submit = () => {
   login(account.value, password.value)
@@ -16,7 +22,7 @@ const submit = () => {
         if (message === "") {
           router.push("/chat/0");
         } else {
-          hint.value = "Wrong username or password"
+          hint.value = message;
         }
       })
 };
@@ -38,27 +44,29 @@ const submit = () => {
           offset="1"
           cols="4"
           class="align-self-center align-content-center"
-          
+
       >
         <h1 class="mb-15">Welcome to TeleTHU!</h1>
         <v-text-field
-          label="Account"
-          v-model="account"
-          prepend-icon="mdi-account"
-          type="email"
-          class="mb-3"
-          variant="outlined"
+            label="Account"
+            v-model="account"
+            prepend-icon="mdi-account"
+            type="email"
+            class="mb-3"
+            variant="outlined"
+            :error="hint !== ''"
         ></v-text-field>
 
         <v-text-field
-          label="Password"
-          v-model="password"
-          prepend-icon="mdi-lock"
-          :type="passwordVisible ? 'text' : 'password'"
-          :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-          @click:append-inner="passwordVisible = !passwordVisible"
-          variant="outlined"
-          class="mb-7"
+            label="Password"
+            v-model="password"
+            prepend-icon="mdi-lock"
+            :type="passwordVisible ? 'text' : 'password'"
+            :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="passwordVisible = !passwordVisible"
+            variant="outlined"
+            class="mb-7"
+            :error-messages="hint"
         ></v-text-field>
 
         <v-row>
@@ -70,7 +78,7 @@ const submit = () => {
           </v-col>
           <v-col cols="6">
             <!-- Sign up dialog -->
-            <signUp />
+            <signUp/>
           </v-col>
         </v-row>
       </v-col>
@@ -82,10 +90,5 @@ const submit = () => {
 .v-container {
   width: 100%;
   height: 100%;
-
-}
-
-.ref-text {
-  cursor: pointer;
 }
 </style>
