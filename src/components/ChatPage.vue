@@ -29,7 +29,7 @@ const ScrollToBottom = () => {
       <ChatList :chat-list="contacts" @select="(newChatId) => selectChat(newChatId)"></ChatList>
     </v-col>
     <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
-      <v-row class="align-center flex-0-0">
+      <v-row no-gutters class="align-center flex-0-0">
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688" elevation="6">
           <v-card-item>
             <template #prepend>
@@ -44,7 +44,7 @@ const ScrollToBottom = () => {
           </v-card-item>
         </v-card>
       </v-row>
-      <v-row class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
+      <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1" id="message-flow">
           <MessagePop v-for="(message, index) in curChat.messages" :message="message"
                       :final="index === curChat.messages.length - 1"
@@ -53,7 +53,7 @@ const ScrollToBottom = () => {
           />
         </div>
       </v-row>
-      <v-row class="d-flex" style="align-items: center">
+      <v-row no-gutters class="d-flex" style="align-items: center">
         <v-textarea
             rows="1"
             auto-grow
