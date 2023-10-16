@@ -47,12 +47,11 @@ const GetDisplayTime = (chat) => {
         align="left"
         class="pa-3 pl-6 chat-list-item"
         rounded="lg"
-        color="primary"
         v-for="chat in chatList"
     >
       <template #prepend>
         <v-avatar>
-          <v-img src="/public/download.jpeg" contain />
+          <v-img src="/public/download.jpeg" contain/>
         </v-avatar>
       </template>
       <v-list-item-title v-text="chat.title">
@@ -74,5 +73,13 @@ const GetDisplayTime = (chat) => {
   right: 1.6em;
   top: 1em;
   color: #888
+}
+
+.v-list-item.v-list-item--active {
+  background-color: #248aff !important;
+  color: white !important;
+}
+.v-list-item.v-list-item--active .chat-time {
+  color: white !important;
 }
 </style>
