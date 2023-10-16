@@ -28,11 +28,11 @@ const selectChat = (newChatId) => {
       <v-tab :value="4">PROFILE</v-tab>
     </v-tabs>
     <v-divider class="d-flex flex-0-0"></v-divider>
-    <v-row class="mt-auto mb-2 d-flex flex-column flex-1-1 overflow-y-auto">
+    <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
       <v-col cols="12" sm="4">
         <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>
       </v-col>
-      <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto">
+      <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
         <v-row class="align-center flex-0-0">
           <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688">
             <v-card-item>
