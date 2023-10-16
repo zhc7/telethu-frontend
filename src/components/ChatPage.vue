@@ -20,20 +20,20 @@ const selectChat = (newChatId) => {
 </script>
 
 <template>
-  <v-container class="d-flex flex-column pt-0" fluid>
-    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="d-flex flex-grow-0 flex-shrink-0">
+  <v-container class="d-flex flex-column pt-0" style="max-height: 100vh;">
+    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="flex-0-0">
       <v-tab :value="1">CHAT</v-tab>
       <v-tab :value="2">CONTACTS</v-tab>
       <v-tab :value="3">SETTINGS</v-tab>
       <v-tab :value="4">PROFILE</v-tab>
     </v-tabs>
-    <v-divider></v-divider>
-    <v-row class="mt-auto mb-2 fill-height main-section">
-      <v-col cols="12" sm="4" class="fill-height chat-list">
+    <v-divider class="d-flex flex-0-0"></v-divider>
+    <v-row class="mt-auto mb-2 d-flex flex-column flex-1-1 overflow-y-auto">
+      <v-col cols="12" sm="4">
         <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>
       </v-col>
-      <v-col cols="12" sm="8" class="fill-height d-flex flex-column flex-grow-1">
-        <v-row class="align-center">
+      <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto">
+        <v-row class="align-center flex-0-0">
           <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688">
             <v-card-item>
               <template #prepend>
@@ -47,19 +47,18 @@ const selectChat = (newChatId) => {
               </v-card-title>
             </v-card-item>
           </v-card>
-
         </v-row>
-        <v-row class="fill-height d-flex flex-column pt-3 conversation-area">
-          <div>
+        <v-row class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto">
+          <div class="overflow-y-auto flex-1-1">
             <MessagePop v-for="message in curChat.messages" :message="message"/>
           </div>
         </v-row>
-        <v-row>
+        <v-row class="flex-0-0">
           <v-textarea
               :label="nowRef.value"
           ></v-textarea>
         </v-row>
-        <v-row justify="end" class="ml-4 mr-4 mt-auto mb-0">
+        <v-row justify="end" class="ml-4 mr-4 mt-auto mb-0 flex-0-0">
           <v-btn color="success" class="mr-2">Send</v-btn>
           <v-btn class="mr-2">clear</v-btn>
         </v-row>
@@ -84,10 +83,6 @@ const selectChat = (newChatId) => {
   right: 1.6em;
   top: 1em;
   color: #888
-}
-
-.conversation-area {
-  overflow-y: scroll;
 }
 
 .message-text {
