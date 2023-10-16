@@ -30,7 +30,7 @@ const ScrollToBottom = () => {
     </v-col>
     <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
       <v-row class="align-center flex-0-0">
-        <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688">
+        <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688" elevation="6">
           <v-card-item>
             <template #prepend>
               <v-avatar size="30">
