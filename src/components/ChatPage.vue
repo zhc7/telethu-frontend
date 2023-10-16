@@ -2,10 +2,10 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {ref, defineProps, defineEmits} from "vue";
+import {ref, defineProps, defineEmits, onMounted} from "vue";
 import {fakeContacts} from "../testdata/fakechats.js";
 
-const props = defineProps(['contacts'])
+const props = defineProps(['contacts', 'active'])
 
 const curChat = ref('');
 const selectChat = (newChatId) => {
@@ -15,6 +15,11 @@ const selectChat = (newChatId) => {
     }
   })
 };
+
+onMounted(() => {
+  console.log(props.active);
+  curChat.value = props.active;
+});
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow');

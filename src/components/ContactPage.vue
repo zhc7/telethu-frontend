@@ -3,6 +3,7 @@ import {defineProps, ref} from "vue";
 import ContactList from "./ContactList.vue";
 
 const props = defineProps(['contacts']);
+const emits = defineEmits((['chat']));
 
 const selectedContact = ref('');
 
@@ -25,7 +26,7 @@ const selectContact = (newContactId) => {
       />
     </v-col>
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
-      <v-card class="mb-auto mt-6">
+      <v-card v-if="selectedContact" class="mb-auto mt-6">
         <v-avatar size="80">
           <v-img :src="selectedContact.avatar"/>
         </v-avatar>
@@ -71,9 +72,10 @@ const selectContact = (newContactId) => {
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
             <v-btn-group justify="center">
-              <v-btn color="green" class="ma-1">RECOMMEND</v-btn>
+              <v-btn color="green" class="ma-1" @click="$emit('chat', selectedContact.id)">CHAT</v-btn>
+              <v-btn color="info" class="ma-1">RECOMMEND</v-btn>
               <v-btn color="red" class="ma-1">DELETE</v-btn>
-              <v-btn color="grey" class="ma-1">BLOCK</v-btn>
+              <v-btn color="grey" class="ma-1" @click="">BLOCK</v-btn>
             </v-btn-group>
           </v-card-actions>
         </v-card-item>

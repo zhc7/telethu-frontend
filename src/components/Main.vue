@@ -11,6 +11,18 @@ const contacts = ref(fakeContacts);
 
 const curTab = ref(2);
 
+
+const activeChat = ref(undefined);
+const ActivateChat = (contactId) => {
+  console.log(contactId);
+  contacts.value.forEach((contact) => {
+    if (contact.id === contactId) {
+      activeChat.value = contact;
+    }
+  });
+  curTab.value = 1;
+};
+
 </script>
 
 <template>
@@ -21,8 +33,9 @@ const curTab = ref(2);
       <v-tab :value="3">SETTINGS</v-tab>
       <v-tab :value="4">PROFILE</v-tab>
     </v-tabs>
-    <ChatPage v-if="curTab === 1" :contacts="contacts"/>
-    <ContactPage v-if="curTab === 2" :contacts="contacts"/>
+    <ChatPage v-if="curTab === 1" :contacts="contacts" :active="activeChat"/>
+    <ContactPage v-if="curTab === 2" :contacts="contacts"
+    @chat="(contactId) => ActivateChat(contactId)"/>
   </v-container>
 </template>
 
