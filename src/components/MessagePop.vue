@@ -25,14 +25,14 @@ onMounted(() => {
         <div>
           <v-list-item>
             <template v-if="user === message.receiver" #prepend class="mb-auto">
-              <v-list-item-avatar :style="{ height: contentHeight }">
+              <v-avatar :style="{ height: contentHeight }">
                 <v-avatar>
                   <v-img
                       :src="'https://cdn.vuetifyjs.com/images/lists/' + (user === message.sender ? 1 : 3) + '.jpg'"
                       alt="John"
                   ></v-img>
                 </v-avatar>
-              </v-list-item-avatar>
+              </v-avatar>
             </template>
             <v-row class="pa-2" :justify="user === message.sender ? 'end' : 'start'">
               <v-col cols="auto">
