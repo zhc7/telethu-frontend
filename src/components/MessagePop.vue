@@ -3,7 +3,8 @@ import {onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 
-defineProps(['message']);
+const props = defineProps(['message', 'final']);
+const emits = defineEmits((['finished']));
 
 const messagePop = ref(1);
 const contentHeight = ref('40px');
@@ -12,7 +13,9 @@ const user = 'Shenium';
 onMounted(() => {
   const height = messagePop.value.offsetHeight;
   contentHeight.value = Math.max(height, 40) + 'px';
-  console.log(contentHeight.value)
+  if (props.final) {
+    emits('finished');
+  }
 });
 </script>
 

@@ -17,6 +17,11 @@ const selectChat = (newChatId) => {
     }
   })
 };
+
+const ScrollToBottom = () => {
+  const container = document.getElementById('message-flow');
+  container.scrollTop = container.scrollHeight;
+};
 </script>
 
 <template>
@@ -49,8 +54,11 @@ const selectChat = (newChatId) => {
           </v-card>
         </v-row>
         <v-row class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto">
-          <div class="overflow-y-auto flex-1-1">
-            <MessagePop v-for="message in curChat.messages" :message="message"/>
+          <div class="overflow-y-auto flex-1-1" id="message-flow">
+            <MessagePop v-for="(message, index) in curChat.messages" :message="message"
+                        :final="index === curChat.messages.length - 1"
+                        @finished="ScrollToBottom()"
+            />
           </div>
         </v-row>
         <v-row class="flex-0-0">
