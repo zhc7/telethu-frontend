@@ -1,6 +1,6 @@
 const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-export function formatChatMessageTime(timestamp) {
+export const FormatChatMessageTime = (timestamp) => {
     timestamp = parseFloat(timestamp);
     console.log(timestamp);
     const now = new Date().getTime();

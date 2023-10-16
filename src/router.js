@@ -4,6 +4,7 @@ const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
 const TestComponent = () => import('./components/ChatPage.vue');
 const Board = () => import('./views/Board.vue');
+const ChatPage = () => import ('./components/ChatPage.vue')
 
 
 const router = createRouter({
@@ -29,6 +30,10 @@ const router = createRouter({
         {
             path: '/board',
             component: Board,
+        },
+        {
+            path: '/layout',
+            component: ChatPage,
         }
     ]
 })

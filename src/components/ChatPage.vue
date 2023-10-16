@@ -1,89 +1,129 @@
 <script setup>
-import {ref} from "vue";
-import {fakeChatList} from "../testdata/fakechats.js";
-import NavBar from "./NavBar.vue";
-import ChatItem from "./ChatItem.vue";
-import LogoHeader from "./LogoHeader.vue";
-import ChatHeader from "./ChatHeader.vue";
-import MessageArea from "./MessageArea.vue";
-import MessageTextArea from "./MessageTextArea.vue";
+import {reactive, ref} from 'vue'
+import {fakeContacts} from "../testdata/fakechats.js";
+import ChatList from "./ChatList.vue";
+import SentMessage from "./SentMessage.vue";
+import {FormatChatMessageTime} from "../utils/datetime.js";
+
 
 const curTab = ref(1);
-const chatList = ref(fakeChatList);
+const contactList = ref(fakeContacts);
+const curChat = ref('')
 
-const selectedChat = ref({});
-const messages = ref([]);
+const selectChat = (newChatId) => {
+  contactList.value.forEach((chat) => {
+    if (chat.id === newChatId) {
+      curChat.value = chat;
+    }
+  })
+};
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row no-gutters align="center" justify="center" class="section">
-      <NavBar @switch="newValue => {curTab = newValue}"></NavBar>
-    </v-row>
-    <v-divider class="border-opacity-50"></v-divider>
-    <v-row no-gutters class="main-section">
-      <v-col class="left-section">
-        <LogoHeader></LogoHeader>
-        <v-card class="chat-list">
-          <v-divider class="border-opacity-50"></v-divider>
-          <div v-for="(chat, index) in chatList" :key="index">
-            <ChatItem :chat="chat" :index="index"></ChatItem>
+  <v-container class="d-flex flex-column pt-0" fluid>
+    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="nav-section">
+      <v-tab :value="1">CHAT</v-tab>
+      <v-tab :value="2">CONTACTS</v-tab>
+      <v-tab :value="3">SETTINGS</v-tab>
+      <v-tab :value="4">PROFILE</v-tab>
+    </v-tabs>
+    <v-divider></v-divider>
+    <v-row class="mt-auto mb-2 fill-height main-section">
+      <v-col cols="12" sm="4" class="fill-height chat-list">
+        <v-list class="fill-height">
+          <div v-for="contact in contactList">
+            <v-list-item :key="contact.id"
+                         :value="contact.id"
+                         @click="curChat = contact"
+                         align="left"
+                         class="pa-3 pl-6 chat-list-item"
+                         rounded="lg"
+            >
+              <template #prepend>
+                <v-avatar><img src="../assets/download.jpeg" alt="avatar"/></v-avatar>
+              </template>
+              <v-list-item-title v-text="contact.title">
+              </v-list-item-title>
+              <v-list-item-subtitle>{{ contact.message && contact.messages[0] && contact.messages[0].content }}</v-list-item-subtitle>
+              <div class="chat-time">{{ FormatChatMessageTime(contact.time) }}</div>
+            </v-list-item>
+            <v-divider></v-divider>
           </div>
-        </v-card>
+        </v-list>
+<!--        <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>-->
       </v-col>
-      <v-col class="middle-section">
-        <ChatHeader :title="'abcd'"></ChatHeader>
-        <MessageArea></MessageArea>
-        <MessageTextArea></MessageTextArea>
+      <v-col cols="12" sm="8" class="fill-height d-flex flex-column message-area">
+        <v-row class="mt-1 align-center">
+          <v-card class="chat-title" style="width: 100%">
+            <v-card-item>
+              <template #prepend>
+                <v-avatar size="30">
+                  <img src="../assets/download.jpeg"/>
+                </v-avatar>
+              </template>
+              <v-card-title>
+                <span class="pr-3">{{ curChat.title }}</span>
+                <span v-if="curChat.mute"><v-icon>mdi-account</v-icon></span>
+              </v-card-title>
+            </v-card-item>
+          </v-card>
+          <v-divider></v-divider>
+
+        </v-row>
+        <v-row class="fill-height d-flex flex-column conversation-area">
+          <div>
+            <SentMessage v-for="message in curChat.messages" :message="message"/>
+          </div>
+        </v-row>
+        <v-row>
+          <v-textarea
+            label="Type your message here"
+          ></v-textarea>
+        </v-row>
+        <v-row justify="end" class="ml-4 mr-4 mt-auto mb-0">
+          <v-btn color="success" class="mr-2">Send</v-btn>
+          <v-btn class="mr-2">clear</v-btn>
+        </v-row>
       </v-col>
-      <!-- <v-col :cols="2" class="right-section">Right Part</v-col> -->
     </v-row>
-    <v-row no-gutters class="spacing-section"></v-row>
   </v-container>
 </template>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 .v-container {
-  width: 100%;
   height: 100vh;
-  margin: 0;
-  padding: 0;
+  width: 100%;
 }
 
-.nav-section {
-  margin-bottom: 2px;
-}
-
-.v-btn {
-  font-size: 0.72em !important;
-}
-
-.left-section {
-  max-width: 300px;
-  border: 1px solid;
-}
-
-.middle-section {
-  border: 1px solid;
+.main-section {
+  overflow: scroll;
 }
 
 .chat-list {
-  max-height: 1000px;
-  height: 100vh;
-  background-color: #333;
-  color: #ddd;
-  border-radius: 0;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
+  overflow: scroll;
 }
 
-.spacing-section {
-  height: 10vh;
+.chat-list-item {
+  position: relative;
 }
+
+.chat-time {
+  font-size: 0.75em;
+  position: absolute;
+  right: 1.6em;
+  top: 1em;
+  color: #888
+}
+
+.conversation-area {
+  overflow: scroll;
+}
+
+.message-text {
+  max-width: 200px;
+}
+
 </style>
+<script setup>
+</script>
+
