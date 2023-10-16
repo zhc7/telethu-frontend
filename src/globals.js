@@ -1,5 +1,10 @@
 import {ref} from 'vue';
 
+export const userRef = {
+    'id': 'Shenium',
+    'name': 'Shenium',
+    'avatar': '/public/Shenium.png',
+}
 export const nowRef = ref(Date.now());
 
 const TimeUpdater = setInterval(() => {

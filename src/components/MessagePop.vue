@@ -1,9 +1,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef} from "../globals.js";
+import {nowRef, userRef} from "../globals.js";
 
-const props = defineProps(['message', 'final']);
+const props = defineProps(['message', 'final', 'avatar']);
 const emits = defineEmits((['finished']));
 
 const messagePop = ref(1);
@@ -31,7 +31,7 @@ onMounted(() => {
               <v-avatar :style="{ height: contentHeight }" class="align-start pt-1">
                 <v-avatar>
                   <v-img
-                      :src="'https://cdn.vuetifyjs.com/images/lists/' + (user === message.sender ? 1 : 3) + '.jpg'"
+                      :src="avatar"
                       alt="John"
                   ></v-img>
                 </v-avatar>
@@ -57,7 +57,7 @@ onMounted(() => {
               <v-avatar :style="{ height: contentHeight }">
                 <v-avatar>
                   <v-img
-                      src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
+                      :src="userRef.avatar"
                       alt="John"
                   ></v-img>
                 </v-avatar>
