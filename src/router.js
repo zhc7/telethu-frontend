@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from "vue-router";
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
 const TestComponent = () => import('./components/ChatPage.vue');
-const Board = () => import('./views/Board.vue');
 const ChatPage = () => import ('./components/ChatPage.vue')
 
 
@@ -26,10 +25,6 @@ const router = createRouter({
         {
             path: '/test',
             component: TestComponent,
-        },
-        {
-            path: '/board',
-            component: Board,
         },
         {
             path: '/layout',

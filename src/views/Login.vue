@@ -23,26 +23,22 @@ const submit = () => {
 </script>
 
 <template>
-  <v-container fluid class="login-page">
-    <v-row class="fill-height">
+  <v-container fluid>
+    <v-row class="fill-height ml-10 mr-10">
       <!-- 左侧图标区域 -->
       <v-col
-          md="6"
-          lg="5"
+          cols="6"
           class="d-none d-sm-inline-block text-center align-self-center"
       >
         <!-- 替换下面的路径为你的图标路径 -->
         <img src="../assets/vue.svg" alt="Logo" style="max-width: 100%"/>
       </v-col>
-      <v-col md="2" class="d-none d-lg-inline-block">
-        <!-- 空内容或其他内容 -->
-      </v-col>
       <!-- 右侧登录表单区域 -->
       <v-col
-          cols="12"
-          md="6"
-          lg="5"
+          offset="1"
+          cols="4"
           class="align-self-center align-content-center"
+          
       >
         <h1 class="mb-15">Welcome to TeleTHU!</h1>
         <v-text-field
@@ -83,17 +79,13 @@ const submit = () => {
 </template>
 
 <style>
-.v-container.login-page {
+.v-container {
   width: 100%;
   height: 100%;
+
 }
 
 .ref-text {
   cursor: pointer;
-}
-.login-page {
-  width: auto;
-  margin: 0 auto;
-  display: inline-block; /* 这将使元素的宽度由内容决定 */
 }
 </style>
