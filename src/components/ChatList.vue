@@ -1,21 +1,39 @@
 <script setup>
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import {ProcessMessage} from "../utils/messageutils.js";
 import {FormatChatMessageTime} from "../utils/datetime.js";
+import {fakeContacts} from "../testdata/fakechats.js";
 
-defineProps(['chatList']);
-defineEmits(['select'])
+defineEmits(['select']);
+const chatList = ref(fakeContacts);
 
-const GetDisplayText = (messages) => {
-  if (!messages[-1]) {
-    console.log('not -1' + messages[-1])
+chatList.value.map((chat) => {
+  if (chat.messages.length === 0) {
+    chat.hotMessage = undefined;
+  } else {
+    chat.hotMessage = chat.messages[chat.messages.length - 1];
+  }
+  return chat;
+});
+
+const GetDisplayText = (chat) => {
+  if (chat.messages.length === 0) {
     return '';
   }
-  if (messages[-1].type !== 'text') {
-    return messages[-1].type;
+  const lastIndex = chat.messages.length - 1;
+  if (chat.messages[lastIndex].type !== 'text') {
+    return chat.messages[lastIndex].type;
   }
-  return messages[-1].content;
+  return chat.messages[lastIndex].content;
 };
+
+const GetDisplayTime = (chat) => {
+  if (chat.messages.length === 0) {
+    return '';
+  }
+  const lastIndex = chat.messages.length - 1;
+  return FormatChatMessageTime(chat.messages[lastIndex].time);
+}
 
 </script>
 
@@ -34,8 +52,8 @@ const GetDisplayText = (messages) => {
         </template>
         <v-list-item-title v-text="chat.title">
         </v-list-item-title>
-        <v-list-item-subtitle>{{ chat.messages.value }}</v-list-item-subtitle>
-        <div class="chat-time">{{ FormatChatMessageTime(chat.time) }}</div>
+        <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
+        <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(chat.hotMessage.time) : '' }}</div>
       </v-list-item>
       <v-divider></v-divider>
     </div>
