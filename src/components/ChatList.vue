@@ -34,7 +34,7 @@ const GetDisplayText = (messages) => {
         </template>
         <v-list-item-title v-text="chat.title">
         </v-list-item-title>
-        <v-list-item-subtitle>{{ (chat.messages) }}</v-list-item-subtitle>
+        <v-list-item-subtitle>{{ chat.messages.value }}</v-list-item-subtitle>
         <div class="chat-time">{{ FormatChatMessageTime(chat.time) }}</div>
       </v-list-item>
       <v-divider></v-divider>

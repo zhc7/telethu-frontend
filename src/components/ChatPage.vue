@@ -3,6 +3,7 @@ import {reactive, ref} from 'vue'
 import {fakeContacts} from "../testdata/fakechats.js";
 import ChatList from "./ChatList.vue";
 import SentMessage from "./SentMessage.vue";
+import {FormatChatMessageTime} from "../utils/datetime.js";
 
 
 const curTab = ref(1);
@@ -29,7 +30,27 @@ const selectChat = (newChatId) => {
     <v-divider></v-divider>
     <v-row class="mt-auto mb-2 fill-height main-section">
       <v-col cols="12" sm="4" class="fill-height chat-list">
-        <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>
+        <v-list class="fill-height">
+          <div v-for="contact in contactList">
+            <v-list-item :key="contact.id"
+                         :value="contact.id"
+                         @click="curChat = contact"
+                         align="left"
+                         class="pa-3 pl-6 chat-list-item"
+                         rounded="lg"
+            >
+              <template #prepend>
+                <v-avatar><img src="../assets/download.jpeg" alt="avatar"/></v-avatar>
+              </template>
+              <v-list-item-title v-text="contact.title">
+              </v-list-item-title>
+              <v-list-item-subtitle>{{ contact.message && contact.messages[0] && contact.messages[0].content }}</v-list-item-subtitle>
+              <div class="chat-time">{{ FormatChatMessageTime(contact.time) }}</div>
+            </v-list-item>
+            <v-divider></v-divider>
+          </div>
+        </v-list>
+<!--        <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>-->
       </v-col>
       <v-col cols="12" sm="8" class="fill-height d-flex flex-column message-area">
         <v-row class="mt-1 align-center">
@@ -80,6 +101,18 @@ const selectChat = (newChatId) => {
 
 .chat-list {
   overflow: scroll;
+}
+
+.chat-list-item {
+  position: relative;
+}
+
+.chat-time {
+  font-size: 0.75em;
+  position: absolute;
+  right: 1.6em;
+  top: 1em;
+  color: #888
 }
 
 .conversation-area {

@@ -70,7 +70,24 @@ export const fakeContacts = [
         'time': Date.UTC(2023, 9, 12, 0, 0, 0),
         'show': 'Have fun!',
         'mute': true,
-        'messages': [],
+        'messages': [
+            {
+                'sender': 'Bob2002',
+                'receiver': 'Shenium',
+                'time': Date.UTC(2023, 9, 15, 1, 3, 30),
+                'type': 'text',
+                'content': 'Do you have time? ',
+                'state': 'read',
+            },
+            {
+                'sender': 'Shenium',
+                'receiver': 'Bob2002',
+                'time': Date.UTC(2023, 9, 15, 1, 4, 0),
+                'type': 'text',
+                'content': 'Sure! ',
+                'state': 'sent',
+            }
+        ],
     },
     {
         'title': 'Cindy',
