@@ -40,25 +40,26 @@ const GetDisplayTime = (chat) => {
 
 <template>
   <v-list class="fill-height">
-    <div v-for="chat in chatList">
-      <v-list-item :key="chat.id"
-                   :value="chat.id"
-                   @click="$emit('select', chat.id)"
-                   align="left"
-                   class="pa-3 pl-6 chat-list-item"
-                   rounded="lg"
-                   color="primary"
-      >
-        <template #prepend>
-          <v-avatar><v-img :src="chat.avatar" contain /></v-avatar>
-        </template>
-        <v-list-item-title v-text="chat.title">
-        </v-list-item-title>
-        <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
-        <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
-      </v-list-item>
-      <v-divider></v-divider>
-    </div>
+    <v-list-item
+        :key="chat.id"
+        :value="chat.id"
+        @click="$emit('select', chat.id)"
+        align="left"
+        class="pa-3 pl-6 chat-list-item"
+        rounded="lg"
+        color="primary"
+        v-for="chat in chatList"
+    >
+      <template #prepend>
+        <v-avatar>
+          <v-img src="/public/download.jpeg" contain />
+        </v-avatar>
+      </template>
+      <v-list-item-title v-text="chat.title">
+      </v-list-item-title>
+      <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
+      <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
+    </v-list-item>
   </v-list>
 </template>
 

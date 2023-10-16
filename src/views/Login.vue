@@ -86,7 +86,7 @@ const submit = () => {
   </v-container>
 </template>
 
-<style>
+<style scoped>
 .v-container {
   width: 100%;
   height: 100%;
