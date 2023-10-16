@@ -1,10 +1,9 @@
 <script setup>
-import {reactive, ref, onMounted} from 'vue'
+import {ref} from 'vue'
 import {nowRef} from "../globals.js";
 import {fakeContacts} from "../testdata/fakechats.js";
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {FormatChatMessageTime} from "../utils/datetime.js";
 
 
 const curTab = ref(1);
@@ -39,7 +38,7 @@ const selectChat = (newChatId) => {
             <v-card-item>
               <template #prepend>
                 <v-avatar size="30">
-                  <v-img src="/public/download.jpeg" />
+                  <v-img src="/public/download.jpeg"/>
                 </v-avatar>
               </template>
               <v-card-title>
@@ -57,7 +56,6 @@ const selectChat = (newChatId) => {
           </div>
         </v-row>
         <v-row>
-<!--          :label="FormatChatMessageTime(nowRef, Date.UTC(2023, 9, 14, 0, 0, 1))"-->
           <v-textarea
               :label="nowRef.value"
           ></v-textarea>
@@ -77,14 +75,6 @@ const selectChat = (newChatId) => {
   width: 100%;
 }
 
-.main-section {
-  overflow: scroll;
-}
-
-.chat-list {
-  overflow: scroll;
-}
-
 .chat-list-item {
   position: relative;
 }
@@ -98,7 +88,7 @@ const selectChat = (newChatId) => {
 }
 
 .conversation-area {
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .message-text {
@@ -106,6 +96,3 @@ const selectChat = (newChatId) => {
 }
 
 </style>
-<script setup>
-</script>
-
