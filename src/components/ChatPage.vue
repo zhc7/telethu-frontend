@@ -2,13 +2,14 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {ref} from "vue";
+import {ref, defineProps, defineEmits} from "vue";
 import {fakeContacts} from "../testdata/fakechats.js";
 
-const contactList = ref(fakeContacts);
+const props = defineProps(['contacts'])
+
 const curChat = ref('');
 const selectChat = (newChatId) => {
-  contactList.value.forEach((chat) => {
+  props.contacts.forEach((chat) => {
     if (chat.id === newChatId) {
       curChat.value = chat;
     }
@@ -25,7 +26,7 @@ const ScrollToBottom = () => {
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
-      <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>
+      <ChatList :chat-list="contacts" @select="(newChatId) => selectChat(newChatId)"></ChatList>
     </v-col>
     <v-col cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
       <v-row class="align-center flex-0-0">

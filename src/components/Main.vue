@@ -1,11 +1,11 @@
 <script setup>
 import {ref} from 'vue'
-import {nowRef} from "../globals.js";
-import {fakeContacts} from "../testdata/fakechats.js";
-import ChatList from "./ChatList.vue";
-import MessagePop from "./MessagePop.vue";
-import ChatTab from './ChatPage.vue'
+import ChatPage from './ChatPage.vue'
+import ContactPage from "./ContactPage.vue";
 
+import {fakeContacts} from "../testdata/fakechats.js";
+
+const contacts = ref(fakeContacts);
 
 const curTab = ref(1);
 
@@ -20,7 +20,8 @@ const curTab = ref(1);
       <v-tab :value="4">PROFILE</v-tab>
     </v-tabs>
     <v-divider class="d-flex flex-0-0"></v-divider>
-      <ChatTab v-if="curTab === 1"></ChatTab>
+    <ChatPage v-if="curTab === 1" :contacts="contacts"/>
+    <ContactPage v-if="curTab === 2" :contacts="contacts"/>
   </v-container>
 </template>
 
@@ -29,7 +30,6 @@ const curTab = ref(1);
   height: 100vh;
   width: 100%;
 }
-
 
 
 </style>
