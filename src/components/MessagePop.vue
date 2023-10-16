@@ -52,14 +52,14 @@ onMounted(() => {
               </v-col>
             </v-row>
             <template v-if="user === message.sender" #append class="mb-auto">
-              <v-list-item-avatar :style="{ height: contentHeight }">
+              <v-avatar :style="{ height: contentHeight }">
                 <v-avatar>
                   <v-img
                       src="https://cdn.vuetifyjs.com/images/lists/2.jpg"
                       alt="John"
                   ></v-img>
                 </v-avatar>
-              </v-list-item-avatar>
+              </v-avatar>
             </template>
           </v-list-item>
         </div>
