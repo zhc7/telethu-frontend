@@ -1,11 +1,11 @@
 import {ref} from 'vue';
 const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-
+import {nowRef} from '../globals.js'
 export const FormatChatMessageTime = (now, timestamp) => {
     timestamp = parseFloat(timestamp);
-    console.log(timestamp);
-    const diff = now.value - timestamp;
+    const diff = nowRef.value - timestamp;
+    console.log('nowValue' + nowRef.value);
 
     if (diff < 60000) {
         return `${Math.floor(diff / 1000)} seconds ago`;

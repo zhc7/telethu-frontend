@@ -55,7 +55,7 @@ const selectChat = (newChatId) => {
         </v-row>
         <v-row class="flex-0-0">
           <v-textarea
-              :label="nowRef.value"
+              :label="nowRef"
           ></v-textarea>
         </v-row>
         <v-row justify="end" class="ml-4 mr-4 mt-auto mb-0 flex-0-0">

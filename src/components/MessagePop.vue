@@ -25,7 +25,7 @@ onMounted(() => {
         <div>
           <v-list-item>
             <template v-if="user === message.receiver" #prepend class="mb-auto">
-              <v-avatar :style="{ height: contentHeight }">
+              <v-avatar :style="{ height: contentHeight }" class="align-start pt-1">
                 <v-avatar>
                   <v-img
                       :src="'https://cdn.vuetifyjs.com/images/lists/' + (user === message.sender ? 1 : 3) + '.jpg'"
@@ -50,7 +50,7 @@ onMounted(() => {
                 </div>
               </v-col>
             </v-row>
-            <template v-if="user === message.sender" #append class="mb-auto">
+            <template v-if="user === message.sender" #append class="align-start pa-1">
               <v-avatar :style="{ height: contentHeight }">
                 <v-avatar>
                   <v-img

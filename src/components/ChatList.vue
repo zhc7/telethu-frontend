@@ -50,7 +50,7 @@ const GetDisplayTime = (chat) => {
                    color="primary"
       >
         <template #prepend>
-          <v-avatar><v-img src="/public/download.jpeg" contain/></v-avatar>
+          <v-avatar><v-img src="/public/download.jpeg" contain /></v-avatar>
         </template>
         <v-list-item-title v-text="chat.title">
         </v-list-item-title>
