@@ -27,8 +27,8 @@ const submit = () => {
     <v-row class="fill-height">
       <!-- 左侧图标区域 -->
       <v-col
-          md="6"
-          lg="5"
+          cols="12"
+          sm="4"
           class="d-none d-sm-inline-block text-center align-self-center"
       >
         <!-- 替换下面的路径为你的图标路径 -->
@@ -40,8 +40,9 @@ const submit = () => {
       <!-- 右侧登录表单区域 -->
       <v-col
           cols="12"
-          md="6"
-          lg="5"
+          sm="4"
+          md="3"
+          lg="2"
           class="align-self-center align-content-center"
       >
         <h1 class="mb-15">Welcome to TeleTHU!</h1>
