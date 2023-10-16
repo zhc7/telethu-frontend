@@ -43,12 +43,11 @@ onMounted(() => {
                       rounded="lg"
                       outlined
                   >
-             <span>
-               {{ message.content }}
-             </span>
+                    <span>
+                      {{ message.content }}
+                    </span>
                   </v-card>
                 </div>
-
               </v-col>
             </v-row>
             <template v-if="user === message.sender" #append class="mb-auto">
@@ -70,5 +69,4 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 </style>

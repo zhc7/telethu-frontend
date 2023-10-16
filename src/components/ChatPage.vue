@@ -21,7 +21,7 @@ const selectChat = (newChatId) => {
 
 <template>
   <v-container class="d-flex flex-column pt-0" fluid>
-    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="nav-section">
+    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="d-flex flex-grow-0 flex-shrink-0">
       <v-tab :value="1">CHAT</v-tab>
       <v-tab :value="2">CONTACTS</v-tab>
       <v-tab :value="3">SETTINGS</v-tab>
@@ -32,9 +32,9 @@ const selectChat = (newChatId) => {
       <v-col cols="12" sm="4" class="fill-height chat-list">
         <ChatList :chat-list="contactList" @select="(newChatId) => selectChat(newChatId)"></ChatList>
       </v-col>
-      <v-col cols="12" sm="8" class="fill-height d-flex flex-column message-area">
-        <v-row class="mt-1 align-center">
-          <v-card class="chat-title" style="width: 100%">
+      <v-col cols="12" sm="8" class="fill-height d-flex flex-column flex-grow-1">
+        <v-row class="align-center">
+          <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688">
             <v-card-item>
               <template #prepend>
                 <v-avatar size="30">
@@ -47,7 +47,6 @@ const selectChat = (newChatId) => {
               </v-card-title>
             </v-card-item>
           </v-card>
-          <v-divider></v-divider>
 
         </v-row>
         <v-row class="fill-height d-flex flex-column pt-3 conversation-area">

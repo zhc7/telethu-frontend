@@ -47,6 +47,7 @@ const GetDisplayTime = (chat) => {
                    align="left"
                    class="pa-3 pl-6 chat-list-item"
                    rounded="lg"
+                   color="primary"
       >
         <template #prepend>
           <v-avatar><v-img src="/public/download.jpeg" contain/></v-avatar>
