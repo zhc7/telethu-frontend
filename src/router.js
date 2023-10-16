@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
-const TestComponent = () => import('./components/ChatPage.vue');
-const ChatPage = () => import ('./components/ChatPage.vue')
+const TestComponent = () => import('./components/Main.vue');
+const ChatPage = () => import ('./components/Main.vue')
 
 
 const router = createRouter({
