@@ -8,7 +8,7 @@ import {fakeContacts} from "../testdata/fakechats.js";
 const props = defineProps(['contacts', 'active'])
 const emits = defineEmits(['chat']);
 
-const selectedChat = ref('');
+const selectedChat = ref();
 const selectChat = (newChatId) => {
   props.contacts.forEach((chat) => {
     if (chat.id === newChatId) {

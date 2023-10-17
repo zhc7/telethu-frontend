@@ -5,7 +5,7 @@ import ContactList from "./ContactList.vue";
 const props = defineProps(['contacts']);
 const emits = defineEmits((['chat']));
 
-const selectedContact = ref('');
+const selectedContact = ref();
 
 const selectContact = (newContactId) => {
   props.contacts.forEach((contact) => {
@@ -39,7 +39,7 @@ const selectContact = (newContactId) => {
               @{{ selectedContact.id }}
             </v-list-item-subtitle>
             <v-list-item-title v-if="selectedContact.name">
-              {{ seletedContact.title }}
+              {{ selectedContact.title }}
             </v-list-item-title>
             <v-divider class="ma-4"/>
             <v-list-item class="text-grey-darken-3">
