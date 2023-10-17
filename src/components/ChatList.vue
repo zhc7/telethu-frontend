@@ -4,9 +4,19 @@ import {ProcessMessage} from "../utils/messageutils.js";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 import {fakeContacts} from "../testdata/fakechats.js";
 import {nowRef} from "../globals.js";
+import List from "./List.vue";
+import ListItem from "./ListItem.vue";
 
-defineEmits(['select']);
+const props = defineProps(['modelValue'])
+const emit = defineEmits(["update:modelValue"])
 const chatList = ref(fakeContacts);
+const selected = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    emit('update:modelValue', value);
+    console.log("list", value);
+  }
+});
 
 chatList.value.map((chat) => {
   if (chat.messages.length === 0) {
@@ -39,11 +49,10 @@ const GetDisplayTime = (chat) => {
 </script>
 
 <template>
-  <v-list class="fill-height">
-    <v-list-item
+  <List class="fill-height" v-model="selected">
+    <ListItem
         :key="chat.id"
-        :value="chat.id"
-        @click="$emit('select', chat.id)"
+        :k="chat.id"
         align="left"
         class="pa-3 pl-6 chat-list-item"
         rounded="lg"
@@ -58,8 +67,8 @@ const GetDisplayTime = (chat) => {
       </v-list-item-title>
       <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
       <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
-    </v-list-item>
-  </v-list>
+    </ListItem>
+  </List>
 </template>
 
 <style scoped>

@@ -2,21 +2,28 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {ref, defineProps, defineEmits, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import {fakeContacts} from "../testdata/fakechats.js";
 
 const props = defineProps(['contacts', 'active'])
-const emits = defineEmits(['chat']);
-
+const emit = defineEmits(['chat']);
 const selectedChat = ref();
-const selectChat = (newChatId) => {
-  props.contacts.forEach((chat) => {
-    if (chat.id === newChatId) {
-      selectedChat.value = chat;
-    }
-  });
-  emits('chat', selectedChat.value);
-};
+const id2contact = {};
+
+for (const chat of props.contacts) {
+  id2contact[chat.id] = chat;
+}
+
+const _selectedChatId = ref();
+const selectedChatId = computed({
+  get: () => _selectedChatId.value,
+  set: (value) => {
+    _selectedChatId.value = value;
+    emit('chat', id2contact[value]);
+    selectedChat.value = id2contact[value];
+  }
+});
+
 
 onMounted(() => {
   console.log(props.active);
@@ -33,7 +40,7 @@ const ScrollToBottom = () => {
 <template>
   <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4" class="pa-0">
-      <ChatList :chat-list="contacts" @select="(newChatId) => selectChat(newChatId)"></ChatList>
+      <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
     </v-col>
     <v-col v-if="selectedChat" cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
       <v-row no-gutters class="align-center flex-0-0">

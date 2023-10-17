@@ -1,9 +1,11 @@
 <script setup>
-import {defineProps, ref} from "vue";
+import {defineProps, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
 const props = defineProps(['contacts']);
 const emits = defineEmits((['chat']));
+
+const selectedContactId = ref();
 
 const selectedContact = ref();
 
@@ -15,6 +17,8 @@ const selectContact = (newContactId) => {
   })
 };
 
+watch(selectedContactId, selectContact);
+
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const selectContact = (newContactId) => {
     <v-col cols="12" sm="4">
       <ContactList
           :contacts="contacts"
-          @select="(newContactId) => selectContact(newContactId)"
+          v-model="selectedContactId"
       />
     </v-col>
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
