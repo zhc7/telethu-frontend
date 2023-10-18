@@ -7,15 +7,18 @@ const {selected, updateSelected} = inject("selected")
 </script>
 
 <template>
-<v-list-item
-    v-bind="$attrs"
-    @click="updateSelected(props.k)"
-    :active="selected === props.k"
-    rounded="lg"
-    class="pa-3 pl-6"
->
-  <slot/>
-</v-list-item>
+  <v-list-item
+      v-bind="$attrs"
+      @click="updateSelected(props.k)"
+      :active="selected === props.k"
+      rounded="lg"
+      class="pa-3 pl-6"
+  >
+    <template #prepend>
+      <slot name="prepend"/>
+    </template>
+    <slot/>
+  </v-list-item>
 </template>
 
 <style scoped>
