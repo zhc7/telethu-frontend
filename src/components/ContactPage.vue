@@ -75,11 +75,11 @@ watch(selectedContactId, selectContact);
           </v-list>
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
-            <v-btn-group justify="center">
-              <v-btn color="green" class="ma-1" @click="$emit('chat', selectedContact)">CHAT</v-btn>
-              <v-btn color="info" class="ma-1">RECOMMEND</v-btn>
-              <v-btn color="red" class="ma-1">DELETE</v-btn>
-              <v-btn color="grey" class="ma-1" @click="">BLOCK</v-btn>
+            <v-btn-group color="info" variant="outlined" divided>
+              <v-btn @click="$emit('chat', selectedContact)">CHAT</v-btn>
+              <v-btn>RECOMMEND</v-btn>
+              <v-btn>DELETE</v-btn>
+              <v-btn @click="">BLOCK</v-btn>
             </v-btn-group>
           </v-card-actions>
         </v-card-item>
@@ -88,3 +88,9 @@ watch(selectedContactId, selectContact);
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+.v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
+    margin-inline-start: 0;
+}
+</style>

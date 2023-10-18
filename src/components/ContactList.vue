@@ -26,24 +26,20 @@ const selected = computed({
         My Friends
       </template>
     </v-list-item>
-    <div v-for="contact in personContacts">
-      <ListItem :key="contact.id"
-                :k="contact.id"
-                align="left"
-                class="pa-3 pl-6 chat-list-item"
-                rounded="lg"
-                color="primary"
-      >
-        <template #prepend>
-          <v-avatar>
-            <v-img src="/public/download.jpeg" contain/>
-          </v-avatar>
-        </template>
-        <v-list-item-title v-text="contact.title">
-        </v-list-item-title>
-      </ListItem>
-      <v-divider></v-divider>
-    </div>
+    <ListItem :key="contact.id"
+              :k="contact.id"
+              align="left"
+              class="pa-3 pl-6 chat-list-item"
+              v-for="contact in personContacts"
+    >
+      <template #prepend>
+        <v-avatar>
+          <v-img src="/public/download.jpeg" contain/>
+        </v-avatar>
+      </template>
+      <v-list-item-title v-text="contact.title">
+      </v-list-item-title>
+    </ListItem>
     <v-list-item>
       <span class="text-blue-grey-lighten-2">
         {{ personContacts.length }} friends in total
