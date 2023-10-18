@@ -1,9 +1,10 @@
 import {ref} from "vue";
 import axios from "axios";
-import {BASE_API_URL, DEBUG} from "./const/constants"
+import {BASE_API_URL, DEBUG} from "constants"
 import {useLocalStorage} from "@vueuse/core"
 
-const user = useLocalStorage("user", "");
+const userId = useLocalStorage("userId", "");
+const userName = useLocalStorage("userName", "");
 const token = useLocalStorage("token", "");
 
 const login = (userName, password) => {
@@ -11,8 +12,9 @@ const login = (userName, password) => {
         console.log("login " + userName);
     }
     return axios.post(BASE_API_URL + "users/login", {userName, password}).then((res) => {
-        user.value = userName;
+        userName.value = userName;
         token.value = res.data.token;
+        userId.value = res.data.userId;
         return "";
     }).catch((err) => {
         console.log("error caught");
@@ -29,8 +31,8 @@ const register = (userName, password) => {
         console.log("register " + userName);
     }
     axios.post(BASE_API_URL + "users/register", {userName, password}).then((res) => {
-        user.value = res.data;
+        userName.value = res.data;
     })
 }
 
-export {user, login, register}
+export {userId, userName, token, login, register}
