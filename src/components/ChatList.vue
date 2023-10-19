@@ -1,15 +1,13 @@
 <script setup>
-import {computed, ref} from "vue";
-import {ProcessMessage} from "../utils/messageutils.js";
+import {computed, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
-import {fakeContacts} from "../testdata/fakechats.js";
 import {nowRef} from "../globals.js";
+import {contacts} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(["update:modelValue"])
-const chatList = ref(fakeContacts);
 const selected = computed({
   get: () => props.modelValue,
   set: (value) => {
@@ -19,34 +17,24 @@ const selected = computed({
 });
 
 
-// chatList.value.map((chat) => {
-//   if (chat.messages.length === 0) {
-//     chat.hotMessage = undefined;
-//   } else {
-//     chat.hotMessage = chat.messages[chat.messages.length - 1];
-//   }
-//   return chat;
-// });
+// values of contacts.value
+const chatList = ref();
 
-const GetDisplayText = (chat) => {
-  if (chat.messages.length === 0) {
-    return '';
-  }
-  const lastIndex = chat.messages.length - 1;
-  if (chat.messages[lastIndex].type !== 'text') {
-    return chat.messages[lastIndex].type;
-  }
-  return chat.messages[lastIndex].content;
-};
-
-const GetDisplayTime = (chat) => {
-  if (chat.messages.length === 0) {
-    return '';
-  }
-  const lastIndex = chat.messages.length - 1;
-  return FormatChatMessageTime(chat.messages[lastIndex].time);
+const UpdateChatList = () => {
+  chatList.value = Object.values(contacts.value).sort((a, b) => (a.time - b.time));
+  chatList.value.map((chat) => {
+    if (chat.messages.length === 0) {
+      chat.hotMessage = undefined;
+    } else {
+      chat.hotMessage = chat.messages[chat.messages.length - 1];
+    }
+    return chat;
+  });
 }
 
+UpdateChatList();
+
+watch(contacts, UpdateChatList);
 </script>
 
 <template>
@@ -54,8 +42,7 @@ const GetDisplayTime = (chat) => {
     <ListItem
         :key="chat.id"
         :k="chat.id"
-        align="left"
-        class="pa-3 pl-6 chat-list-item"
+        class="pa-3 pl-6 chat-list-item text-left"
         rounded="lg"
         v-for="chat in chatList"
     >
@@ -83,13 +70,5 @@ const GetDisplayTime = (chat) => {
   right: 1.6em;
   top: 1em;
   color: #888
-}
-
-.v-list-item.v-list-item--active {
-  background-color: #248aff !important;
-  color: white !important;
-}
-.v-list-item.v-list-item--active .chat-time {
-  color: white !important;
 }
 </style>
