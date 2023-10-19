@@ -45,11 +45,13 @@ const createSocket = (user_id) => {
 
 const sendMessage = (receiverId, inputMessage) => {
     const message = {
-        stamp: Date.now(),
+        time: Date.now(),
         token: token.value,
-        message: inputMessage.value,
+        m_type: "text",
+        content: inputMessage,
         receiver: receiverId,
     };
+    console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 };
 
