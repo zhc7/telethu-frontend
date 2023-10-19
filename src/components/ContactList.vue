@@ -2,11 +2,12 @@
 import {computed, defineProps} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
+import {contacts} from "../chat.js";
 
-const props = defineProps(['contacts', "modelValue"]);
+const props = defineProps(["modelValue"]);
 const emit = defineEmits((['select', "update:modelValue"]))
 const personContacts = computed(() => {
-  return props.contacts.filter((contact) => (contact.type === 'person')).sort((a, b) => (a.title > b.title));
+  return Object.values(contacts.value).filter((contact) => (contact.type === 'person')).sort((a, b) => (a.title > b.title));
 });
 
 const selected = computed({

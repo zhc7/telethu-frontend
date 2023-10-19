@@ -1,8 +1,8 @@
 <script setup>
 import {defineProps, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
+import {contacts} from "../chat.js";
 
-const props = defineProps(['contacts']);
 const emits = defineEmits((['chat']));
 
 const selectedContactId = ref();
@@ -10,11 +10,7 @@ const selectedContactId = ref();
 const selectedContact = ref();
 
 const selectContact = (newContactId) => {
-  props.contacts.forEach((contact) => {
-    if (contact.id === newContactId) {
-      selectedContact.value = contact;
-    }
-  })
+  selectedContact.value = contacts.value[newContactId];
 };
 
 watch(selectedContactId, selectContact);
@@ -91,6 +87,6 @@ watch(selectedContactId, selectContact);
 
 <style scoped>
 .v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
-    margin-inline-start: 0;
+  margin-inline-start: 0;
 }
 </style>

@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
+import {token} from "./auth.js";
 
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
-const TestComponent = () => import('./components/Test.vue');
-const ChatPage = () => import ('./components/Main.vue')
+const Test = () => import('./components/Test.vue');
+const Main = () => import ('./components/Main.vue')
 
 
 const router = createRouter({
@@ -11,26 +12,34 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/login'
+            redirect: '/chat',
         },
         {
             path: '/login',
             component: Login,
         },
         {
-            path: '/chat/:room_id',
-            component: MessageFlow,
-            props: true,
-        },
-        {
             path: '/test',
-            component: TestComponent,
+            component: Test,
         },
         {
-            path: '/layout',
-            component: ChatPage,
+            path: '/:page',
+            component: Main,
+            props: true,
         }
     ]
+})
+
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login') {
+        next();
+    } else {
+        if (token.value === "") {
+            next('/login');
+        } else {
+            next();
+        }
+    }
 })
 
 export default router;

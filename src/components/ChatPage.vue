@@ -6,20 +6,18 @@ import {ref, onMounted, computed} from "vue";
 import {contacts, sendMessage, createSocket} from "../chat.js";
 import {userId} from "../auth.js";
 
-const props = defineProps(['active'])
-const emit = defineEmits(['chat']);
-const selectedChat = ref();
+const props = defineProps(["modelValue"])
+const emit = defineEmits(['update:modelValue']);
 const message = ref("");
 
-const _selectedChatId = ref();
 const selectedChatId = computed({
-  get: () => _selectedChatId.value,
+  get: () => props.modelValue,
   set: (value) => {
-    _selectedChatId.value = value;
-    emit('chat', contacts.value[value]);
-    selectedChat.value = contacts.value[value];
+    emit('update:modelValue', value);
   }
 });
+
+const selectedChat = computed(() => contacts.value[selectedChatId.value]);
 
 const handleSendMessage = () => {
   sendMessage(selectedChatId.value, message.value);
@@ -27,8 +25,6 @@ const handleSendMessage = () => {
 
 
 onMounted(() => {
-  console.log(props.active);
-  selectedChat.value = props.active;
   createSocket(userId.value);
 });
 

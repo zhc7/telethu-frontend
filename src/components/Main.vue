@@ -1,41 +1,47 @@
 <script setup>
-import {ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
-
-import {userRef} from "../globals.js";
-
 import {fakeContacts} from "../testdata/fakechats.js";
+import {useRouter} from "vue-router";
 
 const contacts = ref(fakeContacts);
-
+const router = useRouter();
 const curTab = ref(1);
 
+const props = defineProps(['page'])
+const activePage = computed({
+  get: () => {
+    console.log("getting " + props.page);
+    return props.page;
+  },
+  set: (value) => {
+    console.log("pushing " + value);
+    router.replace(value);
+  }
+});
 
 const activeChat = ref(undefined);
 const ActivateChat = (chat) => {
-  contacts.value.forEach((contact) => {
-    if (contact.id === chat.id) {
-      activeChat.value = chat;
-    }
-  });
-  curTab.value = 1;
+  activeChat.value = chat;
+  activePage.value = 'chat';
 };
-
+onMounted(() => {
+  console.log("page " + activePage.value);
+})
 </script>
 
 <template>
   <v-container class="d-flex flex-column pt-0 ma-0" style="max-height: 100vh;">
-    <v-tabs v-model="curTab" color="deep-purple-accent-4" align-tabs="center" class="flex-0-0">
-      <v-tab :value="1">CHAT</v-tab>
-      <v-tab :value="2">CONTACTS</v-tab>
-      <v-tab :value="3">SETTINGS</v-tab>
-      <v-tab :value="4">PROFILE</v-tab>
+    <v-tabs v-model="activePage" color="deep-purple-accent-4" align-tabs="center" class="flex-0-0">
+      <v-tab value="chat">CHAT</v-tab>
+      <v-tab value="contacts">CONTACTS</v-tab>
+      <v-tab value="settings">SETTINGS</v-tab>
+      <v-tab value="profile">PROFILE</v-tab>
     </v-tabs>
-    <ChatPage v-if="curTab === 1" :active="activeChat"
-    @chat="(chat) => activeChat = chat"/>
-    <ContactPage v-if="curTab === 2" :contacts="contacts"
-    @chat="(chat) => ActivateChat(chat)"/>
+    <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
+    <ContactPage v-if="activePage === 'contacts'" :contacts="contacts"
+                 @chat="(chat) => ActivateChat(chat)"/>
   </v-container>
 </template>
 
