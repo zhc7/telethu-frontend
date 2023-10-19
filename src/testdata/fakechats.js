@@ -1,5 +1,3 @@
-import {ref} from "vue";
-
 export const fakeContacts = {
     "2": {
         'title': 'Alice',

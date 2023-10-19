@@ -7,7 +7,9 @@ import {contacts} from "../chat.js";
 const props = defineProps(["modelValue"]);
 const emit = defineEmits((['select', "update:modelValue"]))
 const personContacts = computed(() => {
-  return Object.values(contacts.value).filter((contact) => (contact.type === 'person')).sort((a, b) => (a.title > b.title));
+  return Object.values(contacts.value)
+      .filter((contact) => (contact.type === 'person'))
+      .sort((a, b) => (a.title.localeCompare(b.title)));
 });
 
 const selected = computed({
@@ -29,8 +31,7 @@ const selected = computed({
     </v-list-item>
     <ListItem :key="contact.id"
               :k="contact.id"
-              align="left"
-              class="pa-3 pl-6 chat-list-item"
+              class="pa-3 pl-6 chat-list-item text-left"
               v-for="contact in personContacts"
     >
       <template #prepend>

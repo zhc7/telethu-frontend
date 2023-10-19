@@ -85,20 +85,4 @@ const ScrollToBottom = () => {
 </template>
 
 <style scoped>
-.chat-list-item {
-  position: relative;
-}
-
-.chat-time {
-  font-size: 0.75em;
-  position: absolute;
-  right: 1.6em;
-  top: 1em;
-  color: #888
-}
-
-.v-btn:focus {
-  outline: none !important;
-}
-
 </style>

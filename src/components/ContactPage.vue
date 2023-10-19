@@ -1,9 +1,9 @@
 <script setup>
-import {defineProps, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 import {contacts} from "../chat.js";
 
-const emits = defineEmits((['chat']));
+defineEmits((['chat']));
 
 const selectedContactId = ref();
 
@@ -64,7 +64,7 @@ watch(selectedContactId, selectContact);
                   Email:
                 </v-col>
                 <v-col cols="6" class="text-left">
-                  <a :href="'#'">Cindy@telethu.org</a>
+                  <a href="#">Cindy@telethu.org</a>
                 </v-col>
               </v-row>
             </v-list-item>
