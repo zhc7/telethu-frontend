@@ -72,7 +72,7 @@ watch(selectedContactId, selectContact);
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
             <v-btn-group color="info" variant="outlined" divided>
-              <v-btn @click="$emit('chat', selectedContact)">CHAT</v-btn>
+              <v-btn @click="$emit('chat', selectedContactId)">CHAT</v-btn>
               <v-btn>RECOMMEND</v-btn>
               <v-btn>DELETE</v-btn>
               <v-btn @click="">BLOCK</v-btn>
