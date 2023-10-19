@@ -3,31 +3,33 @@
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {ref, onMounted, computed} from "vue";
-import {fakeContacts} from "../testdata/fakechats.js";
+import {contacts, sendMessage, createSocket} from "../chat.js";
+import {userId} from "../auth.js";
 
-const props = defineProps(['contacts', 'active'])
+const props = defineProps(['active'])
 const emit = defineEmits(['chat']);
 const selectedChat = ref();
-const id2contact = {};
-
-for (const chat of props.contacts) {
-  id2contact[chat.id] = chat;
-}
+const message = ref("");
 
 const _selectedChatId = ref();
 const selectedChatId = computed({
   get: () => _selectedChatId.value,
   set: (value) => {
     _selectedChatId.value = value;
-    emit('chat', id2contact[value]);
-    selectedChat.value = id2contact[value];
+    emit('chat', contacts.value[value]);
+    selectedChat.value = contacts.value[value];
   }
 });
+
+const handleSendMessage = () => {
+  sendMessage(selectedChatId.value, message.value);
+};
 
 
 onMounted(() => {
   console.log(props.active);
   selectedChat.value = props.active;
+  createSocket(userId.value);
 });
 
 const ScrollToBottom = () => {
@@ -76,10 +78,11 @@ const ScrollToBottom = () => {
             label="message"
             class="ma-2 ml-4 message-input"
             color="blue"
+            v-model="message"
             hide-details
             flat
         ></v-textarea>
-        <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send"/>
+        <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
     </v-col>
   </v-row>

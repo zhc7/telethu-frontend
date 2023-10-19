@@ -1,9 +1,9 @@
 import {ref} from "vue";
 
-export const fakeContacts = [
-    {
+export const fakeContacts = {
+    "2": {
         'title': 'Alice',
-        'id': 'Alice2004',
+        "id": "2",
         'avatar': '/public/download.jpeg',
         'type': 'person',
         'editing': 'I am here ',
@@ -62,9 +62,9 @@ export const fakeContacts = [
             },
         ],
     },
-    {
+    "3": {
         'title': 'Bob',
-        'id': 'Bob2002',
+        "id": "3",
         'avatar': '/public/download.jpeg',
         'type': 'person',
         'editing': '',
@@ -91,9 +91,9 @@ export const fakeContacts = [
             }
         ],
     },
-    {
-        'title': 'Cindy',
-        'id': 'Cindy2012',
+    "4": {
+        'title': 'Tom',
+        "id": "4",
         'avatar': '/public/download.jpeg',
         'type': 'person',
         'editing': '',
@@ -120,4 +120,4 @@ export const fakeContacts = [
             },
         ],
     },
-];
+};

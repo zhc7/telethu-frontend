@@ -1,20 +1,20 @@
 import {ref} from "vue";
 import axios from "axios";
-import {BASE_API_URL, DEBUG} from "constants"
+import {BASE_API_URL, DEBUG} from "./constants.js"
 import {useLocalStorage} from "@vueuse/core"
 
 const userId = useLocalStorage("userId", "");
 const userName = useLocalStorage("userName", "");
 const token = useLocalStorage("token", "");
 
-const login = (userName, password) => {
+const login = (account, password) => {
     if (DEBUG) {
-        console.log("login " + userName);
+        console.log("login " + account);
     }
-    return axios.post(BASE_API_URL + "users/login", {userName, password}).then((res) => {
-        userName.value = userName;
+    return axios.post(BASE_API_URL + "users/login", {userName: account, password}).then((res) => {
+        userName.value = account;
         token.value = res.data.token;
-        userId.value = res.data.userId;
+        userId.value = res.data.user_id;
         return "";
     }).catch((err) => {
         console.log("error caught");
@@ -26,11 +26,11 @@ const login = (userName, password) => {
     });
 }
 
-const register = (userName, password) => {
+const register = (account, password) => {
     if (DEBUG) {
-        console.log("register " + userName);
+        console.log("register " + account);
     }
-    axios.post(BASE_API_URL + "users/register", {userName, password}).then((res) => {
+    axios.post(BASE_API_URL + "users/register", {userName: account, password}).then((res) => {
         userName.value = res.data;
     })
 }

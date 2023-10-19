@@ -2,43 +2,55 @@ import {token} from "./auth.js";
 import {BASE_WS_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
 import {ref} from "vue";
+import {fakeContacts} from "./testdata/fakechats.js";
 
-let socket = new WebSocket(BASE_WS_URL);
-const messages = ref({});
+const contacts = ref(fakeContacts);
 
-socket.onopen = () => {
-    if (DEBUG) {
-        console.log("WebSocket Client Connected");
-    }
-};
+let socket;
+// const messages = ref({});
 
-socket.onmessage = (e) => {
-    const message = JSON.parse(e.data);
-    messages.value[message.userId].push(message);
-};
+const createSocket = (user_id) => {
+    let uri = BASE_WS_URL + "ws/chat/" + user_id + "/";
+    socket = new WebSocket(uri);
 
-socket.onclose = (e) => {
-    if (DEBUG) {
-        console.log(
-            "Socket is closed. Reconnect will be attempted in 1 second.",
-            e.reason
-        );
-    }
-    setTimeout(() => {
-        socket = new WebSocket(BASE_WS_URL);
-    }, 1000);
-};
+    socket.onopen = () => {
+        if (DEBUG) {
+            console.log("WebSocket Client Connected");
+        }
+    };
 
-socket.onerror = (err) => {
-    console.error("Socket encountered error: ", err.message, "Closing socket");
-    socket.close();
-};
+    socket.onmessage = (e) => {
+        const message = JSON.parse(e.data);
+        contacts.value[message.user_id].messages.push(message);
+    };
 
-const sendMessage = (inputMessage) => {
+    socket.onclose = (e) => {
+        if (DEBUG) {
+            console.log(
+                "Socket is closed. Reconnect will be attempted in 1 second.",
+                e.reason
+            );
+        }
+        setTimeout(() => {
+            socket = new WebSocket(uri);
+        }, 1000);
+    };
+
+    socket.onerror = (err) => {
+        console.error("Socket encountered error: ", err.message, "Closing socket");
+        socket.close();
+    };
+}
+
+
+const sendMessage = (receiverId, inputMessage) => {
     const message = {
         stamp: Date.now(),
         token: token.value,
         message: inputMessage.value,
+        receiver: receiverId,
     };
     socket.send(JSON.stringify(message));
 };
+
+export {sendMessage, contacts, createSocket}

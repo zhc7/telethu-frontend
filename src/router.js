@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
-const TestComponent = () => import('./components/Main.vue');
+const TestComponent = () => import('./components/Test.vue');
 const ChatPage = () => import ('./components/Main.vue')
 
 

@@ -2,7 +2,7 @@
 import signUp from "../components/SignUp.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {login, user} from "../auth.js";
+import {login, userId} from "../auth.js";
 
 const account = ref("");
 const password = ref("");
@@ -11,8 +11,8 @@ const passwordVisible = ref(false);
 const router = useRouter();
 const hint = ref("");
 
-if (user.value !== "") {
-  router.push("/chat/0");
+if (userId.value !== "") {
+  router.push("/layout");
 }
 
 const submit = () => {

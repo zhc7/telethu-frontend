@@ -32,7 +32,7 @@ const ActivateChat = (chat) => {
       <v-tab :value="3">SETTINGS</v-tab>
       <v-tab :value="4">PROFILE</v-tab>
     </v-tabs>
-    <ChatPage v-if="curTab === 1" :contacts="contacts" :active="activeChat"
+    <ChatPage v-if="curTab === 1" :active="activeChat"
     @chat="(chat) => activeChat = chat"/>
     <ContactPage v-if="curTab === 2" :contacts="contacts"
     @chat="(chat) => ActivateChat(chat)"/>

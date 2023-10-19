@@ -18,14 +18,15 @@ const selected = computed({
   }
 });
 
-chatList.value.map((chat) => {
-  if (chat.messages.length === 0) {
-    chat.hotMessage = undefined;
-  } else {
-    chat.hotMessage = chat.messages[chat.messages.length - 1];
-  }
-  return chat;
-});
+
+// chatList.value.map((chat) => {
+//   if (chat.messages.length === 0) {
+//     chat.hotMessage = undefined;
+//   } else {
+//     chat.hotMessage = chat.messages[chat.messages.length - 1];
+//   }
+//   return chat;
+// });
 
 const GetDisplayText = (chat) => {
   if (chat.messages.length === 0) {
