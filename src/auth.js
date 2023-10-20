@@ -5,16 +5,20 @@ import {useLocalStorage} from "@vueuse/core"
 
 const userId = useLocalStorage("userId", "");
 const userName = useLocalStorage("userName", "");
+export const userEmail = useLocalStorage("userEmail", "");
 const token = useLocalStorage("token", "");
 
-const login = (account, password) => {
+const login = (email, password) => {
     if (DEBUG) {
-        console.log("login " + account);
+        console.log("login " + email);
     }
-    return axios.post(BASE_API_URL + "users/login", {userName: account, password}).then((res) => {
-        userName.value = account;
+    return axios.post(BASE_API_URL + "users/login", {userEmail: email, password}).then((res) => {
+        userEmail.value = email;
+        console.log(res.data);
         token.value = res.data.token;
-        userId.value = res.data.user_id;
+        userId.value = res.data["user_id"];
+        userName.value = res.data["UserName"];
+        console.log(token.value, userId.value, userName.value);
         return "";
     }).catch((err) => {
         console.log("error caught");
@@ -26,12 +30,12 @@ const login = (account, password) => {
     });
 }
 
-const register = (account, password) => {
+const register = (name, email, password) => {
     if (DEBUG) {
-        console.log("register " + account);
+        console.log("register " + email);
     }
-    axios.post(BASE_API_URL + "users/register", {userName: account, password}).then((res) => {
-        userName.value = res.data;
+    axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
+        console.log("register succeeded");
     })
 }
 

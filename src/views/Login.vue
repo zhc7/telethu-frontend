@@ -12,7 +12,7 @@ const router = useRouter();
 const hint = ref("");
 
 if (userId.value !== "") {
-  router.push("/layout");
+  router.push("/");
 }
 
 const submit = () => {
@@ -20,7 +20,7 @@ const submit = () => {
       .then((message) => {
         console.log("received message: " + message)
         if (message === "") {
-          router.push("/chat/0");
+          router.push("/");
         } else {
           hint.value = message;
         }
@@ -42,7 +42,8 @@ const submit = () => {
       <!-- 右侧登录表单区域 -->
       <v-col
           offset="1"
-          cols="4"
+          cols="12"
+          sm="4"
           class="align-self-center align-content-center"
 
       >
