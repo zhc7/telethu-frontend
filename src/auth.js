@@ -3,7 +3,7 @@ import axios from "axios";
 import {BASE_API_URL, DEBUG} from "./constants.js"
 import {useLocalStorage} from "@vueuse/core"
 
-const userId = useLocalStorage("userId", "");
+const userId = useLocalStorage("userId", -1);
 const userName = useLocalStorage("userName", "");
 export const userEmail = useLocalStorage("userEmail", "");
 const token = useLocalStorage("token", "");
@@ -16,7 +16,7 @@ const login = (email, password) => {
         userEmail.value = email;
         console.log(res.data);
         token.value = res.data.token;
-        userId.value = res.data["user_id"];
+        userId.value = parseInt(res.data["user_id"]);
         userName.value = res.data["UserName"];
         console.log(token.value, userId.value, userName.value);
         return "";
@@ -30,6 +30,13 @@ const login = (email, password) => {
     });
 }
 
+const logout = () => {
+    token.value = "";
+    userName.value = "";
+    userEmail.value = "";
+    userId.value = -1;
+}
+
 const register = (name, email, password) => {
     if (DEBUG) {
         console.log("register " + email);
@@ -39,4 +46,4 @@ const register = (name, email, password) => {
     })
 }
 
-export {userId, userName, token, login, register}
+export {userId, userName, token, login, register, logout}

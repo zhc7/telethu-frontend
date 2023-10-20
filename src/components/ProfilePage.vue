@@ -1,14 +1,13 @@
 <script setup>
 import {token, userName, userId, userEmail} from "../auth.js";
 import {useRouter} from "vue-router";
+import {logout} from "../auth.js";
 
 const router = useRouter();
 
 const handleLogout = () => {
-  token.value = "";
-  userName.value = "";
-  userId.value = "";
-  router.push("/login");
+  logout();
+  router.push('/login');
 }
 </script>
 

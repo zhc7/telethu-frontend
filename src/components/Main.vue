@@ -2,11 +2,10 @@
 import {computed, onMounted, ref} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
-import {fakeContacts} from "../testdata/fakechats.js";
 import {useRouter} from "vue-router";
 import ProfilePage from "./ProfilePage.vue";
+import {createSocket, getContacts} from "../chat.js";
 
-const contacts = ref(fakeContacts);
 const router = useRouter();
 const curTab = ref(1);
 
@@ -27,8 +26,10 @@ const ActivateChat = (chat) => {
   activeChat.value = chat;
   activePage.value = 'chat';
 };
+
 onMounted(() => {
   console.log("page " + activePage.value);
+  getContacts().then(createSocket);
 })
 </script>
 
@@ -41,8 +42,7 @@ onMounted(() => {
       <v-tab value="profile">PROFILE</v-tab>
     </v-tabs>
     <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
-    <ContactPage v-if="activePage === 'contacts'" :contacts="contacts"
-                 @chat="(chat) => ActivateChat(chat)"/>
+    <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
     <ProfilePage v-if="activePage === 'profile'"/>
   </v-container>
 </template>

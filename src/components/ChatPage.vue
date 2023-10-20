@@ -21,12 +21,8 @@ const selectedChat = computed(() => contacts.value[selectedChatId.value]);
 
 const handleSendMessage = () => {
   sendMessage(selectedChatId.value, message.value);
+  message.value = "";
 };
-
-
-onMounted(() => {
-  createSocket(userId.value);
-});
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow');
@@ -46,11 +42,11 @@ const ScrollToBottom = () => {
           <v-card-item>
             <template #prepend>
               <v-avatar size="30">
-                <v-img src="/public/Shenium.png"/>
+                <v-img :src="selectedChat.avatar"/>
               </v-avatar>
             </template>
             <v-card-title>
-              <span class="pr-3">{{ selectedChat.title }}</span>
+              <span class="pr-3">{{ selectedChat.username }}</span>
               <span v-if="selectedChat.mute"><v-icon>mdi-account</v-icon></span>
             </v-card-title>
           </v-card-item>

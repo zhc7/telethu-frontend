@@ -1,13 +1,16 @@
 <script setup>
 import {ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
-import {contacts} from "../chat.js";
+import {acceptFriend, contacts} from "../chat.js";
+import {addFriend} from "../chat.js";
 
 defineEmits((['chat']));
 
 const selectedContactId = ref();
 
 const selectedContact = ref();
+
+const friendId = ref();
 
 const selectContact = (newContactId) => {
   selectedContact.value = contacts.value[newContactId];
@@ -20,8 +23,10 @@ watch(selectedContactId, selectContact);
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
+      <v-text-field label="friendId" v-model="friendId"/>
+      <v-btn @click="addFriend(friendId)">Add</v-btn>
+      <v-btn @click="acceptFriend(friendId)">Accept</v-btn>
       <ContactList
-          :contacts="contacts"
           v-model="selectedContactId"
       />
     </v-col>
@@ -33,14 +38,11 @@ watch(selectedContactId, selectContact);
         <v-card-item>
           <v-list>
             <v-list-item-title>
-              {{ selectedContact.title }}
+              {{ selectedContact.username }}
             </v-list-item-title>
             <v-list-item-subtitle>
               @{{ selectedContact.id }}
             </v-list-item-subtitle>
-            <v-list-item-title v-if="selectedContact.name">
-              {{ selectedContact.title }}
-            </v-list-item-title>
             <v-divider class="ma-4"/>
             <v-list-item class="text-grey-darken-3">
               <v-row>

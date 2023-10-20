@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {contacts} from "../chat.js";
@@ -22,7 +22,9 @@ const chatList = ref();
 
 const UpdateChatList = () => {
   chatList.value = Object.values(contacts.value).sort((a, b) => (a.time - b.time));
+  console.log("updating chat list", chatList.value);
   chatList.value.map((chat) => {
+    if (chat.messages === undefined) chat.messages = [];
     if (chat.messages.length === 0) {
       chat.hotMessage = undefined;
     } else {
@@ -32,9 +34,12 @@ const UpdateChatList = () => {
   });
 }
 
-UpdateChatList();
-
 watch(contacts, UpdateChatList);
+
+onMounted(() => {
+  console.log("chat list mounted");
+  UpdateChatList();
+})
 </script>
 
 <template>
@@ -48,10 +53,10 @@ watch(contacts, UpdateChatList);
     >
       <template #prepend>
         <v-avatar>
-          <v-img src="/public/download.jpeg" contain/>
+          <v-img :src="chat.avatar" contain/>
         </v-avatar>
       </template>
-      <v-list-item-title v-text="chat.title">
+      <v-list-item-title v-text="chat.username">
       </v-list-item-title>
       <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
       <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
