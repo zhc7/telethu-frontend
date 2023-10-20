@@ -4,6 +4,7 @@ import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {fakeContacts} from "../testdata/fakechats.js";
 import {useRouter} from "vue-router";
+import ProfilePage from "./ProfilePage.vue";
 
 const contacts = ref(fakeContacts);
 const router = useRouter();
@@ -42,6 +43,7 @@ onMounted(() => {
     <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
     <ContactPage v-if="activePage === 'contacts'" :contacts="contacts"
                  @chat="(chat) => ActivateChat(chat)"/>
+    <ProfilePage v-if="activePage === 'profile'"/>
   </v-container>
 </template>
 
