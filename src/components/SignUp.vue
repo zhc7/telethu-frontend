@@ -6,13 +6,14 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
 
 const dialog = ref(false);
+const signupName = ref("");
 const signupAccount = ref("");
 const signupPassword = ref("");
 const confirmPassword = ref("");
 
 const rules = {
     signupAccount: { required, email },
-    signupPassword: { required, minLength: minLength(8)}
+    signupPassword: { required }
 }
 const $v = useVuelidate(rules, { signupAccount, signupPassword });
 
@@ -31,7 +32,7 @@ const submitRegister = () => {
     confirmPassword.value = "";
     return;
   }
-  register(signupAccount.value, signupPassword.value);
+  register(signupName.value, signupAccount.value, signupPassword.value);
   dialog.value = false;
 };
 </script>
@@ -51,10 +52,11 @@ const submitRegister = () => {
               <v-col cols="12">
                 <h2>Sign up</h2>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12">
                 <v-text-field
                   label="Name*"
                   variant="outlined"
+                  v-model="signupName"
                   color="primary"
                   required
                   clearable
@@ -87,7 +89,7 @@ const submitRegister = () => {
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  label="Confirm Possword*"
+                  label="Confirm Password*"
                   v-model="confirmPassword"
                   type="password"
                   variant="outlined"
