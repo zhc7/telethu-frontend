@@ -1,5 +1,5 @@
 <script setup>
-import {computed, defineProps, onMounted} from 'vue';
+import {computed, defineProps, onMounted, watch} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../chat.js";
@@ -18,6 +18,10 @@ const selected = computed({
     emit('update:modelValue', value);
   }
 });
+
+watch(props.modelValue, () => {
+  console.log(props.modelValue);
+})
 
 </script>
 

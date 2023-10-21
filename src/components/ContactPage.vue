@@ -117,7 +117,6 @@ watch(selectedContactId, selectContact);
           </v-card-actions>
         </v-card-item>
       </v-card>
-
     </v-col>
   </v-row>
 </template>
