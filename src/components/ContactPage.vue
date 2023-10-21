@@ -10,7 +10,16 @@ const selectedContactId = ref();
 
 const selectedContact = ref();
 
-const friendId = ref();
+const searchFriendId = ref();
+const addFriendId = ref();
+
+const searchFriend = ref(true);
+const buttonColor = ref("purple");
+
+const addFriendMode = () => {
+  searchFriend.value = !searchFriend.value;
+  buttonColor.value = searchFriend.value ? "white" : "purple";
+};
 
 const selectContact = (newContactId) => {
   selectedContact.value = contacts.value[newContactId];
@@ -23,9 +32,13 @@ watch(selectedContactId, selectContact);
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
-      <v-text-field label="friendId" v-model="friendId"/>
-      <v-btn @click="addFriend(friendId)">Add</v-btn>
-      <v-btn @click="acceptFriend(friendId)">Accept</v-btn>
+      <v-row class="mt-1" cols="12">
+        <v-text-field v-if="searchFriend" label="friendId" v-model="searchFriendId" variant="outlined"/>
+        <v-text-field v-else label="Add new friends by email!" append-inner-icon="mdi-magnify" @click:append-inner="addFriend(searchFriendId)" v-model="addFriendId" variant="outlined" color="primary"/>
+        <v-btn @click="addFriendMode" class="fill-height" :color="buttonColor" cols="4">
+          <v-icon>mdi-account-multiple-plus</v-icon>
+        </v-btn>
+      </v-row>
       <ContactList
           v-model="selectedContactId"
       />
