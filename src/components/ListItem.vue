@@ -19,6 +19,9 @@ const {selected} = inject("selected")
       <slot name="prepend"/>
     </template>
     <slot/>
+    <template #append>
+      <slot name="append"/>
+    </template>
   </v-list-item>
 </template>
 

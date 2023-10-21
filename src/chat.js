@@ -42,7 +42,7 @@ const getContacts = async () => {
             if (DEBUG) {
                 console.log(response.data);
             }
-            let newContacts = {};
+            const newContacts = {};
             for (let contact of response.data["friends"]) {
                 newContacts[contact.id] = contact;
                 console.log("contacts updated");
@@ -61,8 +61,13 @@ const applyList = async () => {
             if (DEBUG) {
                 console.log(response.data);
             }
-            friendRequests.value = response.data["friends"];
-        })
+            const newRequests = {};
+            for (let request of response.data["friends"]) {
+                newRequests[request.id] = request;
+                console.log("requests updated");
+            }
+            friendRequests.value = newRequests;
+        });
 }
 
 const createSocket = () => {

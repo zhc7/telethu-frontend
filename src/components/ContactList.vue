@@ -8,8 +8,7 @@ const props = defineProps(["modelValue"]);
 const emit = defineEmits((["update:modelValue"]))
 const personContacts = computed(() => {
   return Object.values(contacts.value)
-      // .filter((contact) => (contact.type === 'person'))
-      .sort((a, b) => (a.title.localeCompare(b.title)));
+      .sort((a, b) => (a.username.localeCompare(b.username)));
 });
 
 const selected = computed({
