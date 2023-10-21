@@ -3,7 +3,6 @@ import {token} from "./auth.js";
 
 const Login = () => import('./views/Login.vue');
 const MessageFlow = () => import('./components/MessageFlow.vue');
-const Test = () => import('./components/Test.vue');
 const Main = () => import ('./components/Main.vue')
 
 
@@ -20,7 +19,7 @@ const router = createRouter({
         },
         {
             path: '/test',
-            component: Test,
+            component: Main,
         },
         {
             path: '/:page',

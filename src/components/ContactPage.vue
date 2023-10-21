@@ -1,8 +1,7 @@
 <script setup>
 import {ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
-import {acceptFriend, contacts} from "../chat.js";
-import {addFriend} from "../chat.js";
+import {addFriend, contacts} from "../chat.js";
 
 defineEmits((['chat']));
 
@@ -32,12 +31,38 @@ watch(selectedContactId, selectContact);
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
-      <v-row class="mt-1" cols="12">
-        <v-text-field v-if="searchFriend" label="friendId" v-model="searchFriendId" variant="outlined"/>
-        <v-text-field v-else label="Add new friends by email!" append-inner-icon="mdi-magnify" @click:append-inner="addFriend(searchFriendId)" v-model="addFriendId" variant="outlined" color="primary"/>
-        <v-btn @click="addFriendMode" class="fill-height" :color="buttonColor" cols="4">
-          <v-icon>mdi-account-multiple-plus</v-icon>
-        </v-btn>
+      <v-container>
+        <v-row no-gutters>
+          <v-col cols="10">
+            <v-text-field
+                v-if="searchFriend"
+                :label="'Add new friend by TTID'"
+                v-model="searchFriendId"
+                variant="outlined"
+                hide-details
+            />
+<!--            <v-text-field-->
+<!--                v-else label="Add new friend by email!"-->
+<!--                append-inner-icon="mdi-magnify"-->
+<!--                @click:append-inner="addFriend(searchFriendId)"-->
+<!--                v-model="addFriendId" variant="outlined"-->
+<!--                color="primary"-->
+<!--            />-->
+          </v-col>
+          <v-col cols="2">
+            <v-btn @click="addFriendMode" :color="buttonColor" class="fill-height">
+              <v-icon>
+                mdi-account-multiple-plus
+              </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+
+
+      </v-container>
+      <v-row class="mt-1">
+
+
       </v-row>
       <ContactList
           v-model="selectedContactId"
