@@ -4,11 +4,6 @@ import {inject, onMounted} from 'vue'
 const props = defineProps(['k'])
 const {selected} = inject("selected")
 
-onMounted(() => {
-  window.setInterval(() => {
-    console.log(selected)
-  }, 1000);
-})
 
 </script>
 

@@ -19,10 +19,6 @@ const selected = computed({
   }
 });
 
-watch(props.modelValue, () => {
-  console.log(props.modelValue);
-})
-
 </script>
 
 <template>

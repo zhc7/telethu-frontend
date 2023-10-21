@@ -6,6 +6,7 @@ import {fakeContacts} from "./testdata/fakechats.js";
 import axios from "axios";
 
 const contacts = ref({});
+const friendRequests = ref([]);
 
 let socket;
 // const messages = ref({});
@@ -47,6 +48,20 @@ const getContacts = async () => {
                 console.log("contacts updated");
             }
             contacts.value = newContacts;
+        })
+}
+
+const applyList = async () => {
+    await axios.post(BASE_API_URL + "users/friends/apply_list", {}, {
+        headers: {
+            Authorization: token.value,
+        }
+    })
+        .then((response) => {
+            if (DEBUG) {
+                console.log(response.data);
+            }
+            friendRequests.value = response.data["friends"];
         })
 }
 
@@ -97,4 +112,4 @@ const sendMessage = (receiverId, inputMessage) => {
     contacts.value[receiverId].messages.push(message);
 };
 
-export {sendMessage, contacts, createSocket, getContacts, addFriend, acceptFriend}
+export {sendMessage, contacts, createSocket, getContacts, applyList, friendRequests, addFriend, acceptFriend}

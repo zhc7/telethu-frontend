@@ -1,32 +1,41 @@
 <script setup>
 import {computed, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
-import {addFriend, contacts} from "../chat.js";
+import {addFriend, contacts, applyList, friendRequests} from "../chat.js";
 
 defineEmits((['chat']));
 
 const selectedContactId = ref();
 
-const selectedContact = ref();
+const displayContact = ref();
 
 const searchInput = ref('');
 const addFriendId = ref();
 
 const searchFriendMode = ref('id');
-const buttonColor = ref("purple");
 
 const switchMode = () => {
   searchFriendMode.value = searchFriendMode.value === 'email' ? 'id' : 'email';
-  buttonColor.value = searchFriend.value ? "white" : "purple";
 };
 
 const selectContact = (newContactId) => {
-  selectedContact.value = contacts.value[newContactId];
+  if (newContactId) {
+    displayContact.value = contacts.value[newContactId];
+  }
 };
 
 const search = () => {
   selectedContactId.value = undefined;
+  displayContact.value = contacts.value['1'];
+  addFriend(searchInput.value)
+  console.log(searchInput.value)
   alert('喜报：你搜索成功了！');
+}
+
+const handleFriendRequests = () => {
+  selectedContactId.value = undefined;
+  applyList();
+  console.log(friendRequests.value);
 }
 
 watch(selectedContactId, selectContact);
@@ -57,26 +66,29 @@ watch(selectedContactId, selectContact);
           </v-col>
         </v-row>
       </v-container>
-      <v-row class="mt-1">
-
-
-      </v-row>
+      <v-container>
+        <v-list>
+          <v-list-item @click="handleFriendRequests" class="text-left">
+            Friend Requests
+          </v-list-item>
+        </v-list>
+      </v-container>
       <ContactList
           v-model="selectedContactId"
       />
     </v-col>
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
-      <v-card v-if="selectedContact" class="mb-auto mt-6">
+      <v-card v-if="displayContact" class="mb-auto mt-6">
         <v-avatar size="80">
-          <v-img :src="selectedContact.avatar"/>
+          <v-img :src="displayContact.avatar"/>
         </v-avatar>
         <v-card-item>
           <v-list>
             <v-list-item-title>
-              {{ selectedContact.username }}
+              {{ displayContact.username }}
             </v-list-item-title>
             <v-list-item-subtitle>
-              @{{ selectedContact.id }}
+              @{{ displayContact.id }}
             </v-list-item-subtitle>
             <v-divider class="ma-4"/>
             <v-list-item class="text-grey-darken-3">
@@ -117,6 +129,7 @@ watch(selectedContactId, selectContact);
           </v-card-actions>
         </v-card-item>
       </v-card>
+
     </v-col>
   </v-row>
 </template>
