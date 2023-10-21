@@ -44,6 +44,9 @@ onMounted(() => {
 
 <template>
   <List class="fill-height" v-model="selected">
+    <v-list-item>
+      TeleTHU
+    </v-list-item>
     <ListItem
         :key="chat.id"
         :k="chat.id"

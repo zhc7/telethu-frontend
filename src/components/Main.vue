@@ -59,7 +59,7 @@ onMounted(() => {
             <v-list-item prepend-icon="mdi-paper-roll" title="Profile" @click="activePage = 'profile'"></v-list-item>
           </v-list>
         </v-navigation-drawer>
-        <v-main style="">
+        <v-main class="ml-4">
           <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
           <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
           <ProfilePage v-if="activePage === 'profile'"/>

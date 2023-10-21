@@ -5,8 +5,10 @@ import {useRouter} from "vue-router";
 const router = useRouter();
 
 const handleLogout = () => {
-  logout();
-  router.push('/login');
+  if (confirm('Are you sure?')) {
+    logout();
+    router.push('/login');
+  }
 }
 </script>
 
