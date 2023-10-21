@@ -2,7 +2,7 @@
 import {inject, onMounted} from 'vue'
 
 const props = defineProps(['k'])
-const {selected, updateSelected} = inject("selected")
+const {selected} = inject("selected")
 
 onMounted(() => {
   window.setInterval(() => {
@@ -15,7 +15,7 @@ onMounted(() => {
 <template>
   <v-list-item
       v-bind="$attrs"
-      @click="updateSelected(props.k)"
+      @click="selected = props.k"
       :active="selected === props.k"
       rounded="lg"
       class="pa-3 pl-6"
