@@ -5,6 +5,7 @@ import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
 import ProfilePage from "./ProfilePage.vue";
 import {createSocket, getContacts} from "../chat.js";
+import {userId, userName} from "../auth.js";
 
 const router = useRouter();
 const curTab = ref(1);
@@ -34,16 +35,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container class="d-flex flex-column pt-0 ma-0" style="max-height: 100vh;">
-    <v-tabs v-model="activePage" color="deep-purple-accent-4" align-tabs="center" class="flex-0-0">
-      <v-tab value="chat">CHAT</v-tab>
-      <v-tab value="contacts">CONTACTS</v-tab>
-      <v-tab value="settings">SETTINGS</v-tab>
-      <v-tab value="profile">PROFILE</v-tab>
-    </v-tabs>
-    <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
-    <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
-    <ProfilePage v-if="activePage === 'profile'"/>
+  <v-container class="d-flex flex-column pt-0 ma-0" style="max-height: 100vh">
+    <v-card class="fill-height">
+      <v-layout class="fill-height">
+        <v-navigation-drawer
+            expand-on-hover
+            rail
+        >
+          <v-list>
+            <v-list-item
+                prepend-avatar="/public/Shenium.png"
+                :title="userName"
+                :subtitle="'@' + userId"
+            ></v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+
+          <v-list density="compact" nav>
+            <v-list-item prepend-icon="mdi-toilet" title="Chat" @click="activePage = 'chat'"></v-list-item>
+            <v-list-item prepend-icon="mdi-toilet" title="Contacts" @click="activePage = 'contacts'"></v-list-item>
+            <v-list-item prepend-icon="mdi-paper-roll" title="Settings" @click="activePage = 'settings'"></v-list-item>
+            <v-list-item prepend-icon="mdi-paper-roll" title="Profile" @click="activePage = 'profile'"></v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+        <v-main style="">
+          <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
+          <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
+          <ProfilePage v-if="activePage === 'profile'"/>
+        </v-main>
+      </v-layout>
+    </v-card>
+
   </v-container>
 </template>
 
