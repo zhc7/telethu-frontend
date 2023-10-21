@@ -1,11 +1,11 @@
 <script setup>
-import {computed, defineProps} from 'vue';
+import {computed, defineProps, onMounted} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../chat.js";
 
 const props = defineProps(["modelValue"]);
-const emit = defineEmits((['select', "update:modelValue"]))
+const emit = defineEmits((["update:modelValue"]))
 const personContacts = computed(() => {
   return Object.values(contacts.value)
       // .filter((contact) => (contact.type === 'person'))
@@ -16,7 +16,6 @@ const selected = computed({
   get: () => props.modelValue,
   set: (value) => {
     emit('update:modelValue', value);
-    console.log("list", value);
   }
 });
 
@@ -39,7 +38,8 @@ const selected = computed({
           <v-img src="/public/download.jpeg" contain/>
         </v-avatar>
       </template>
-      <v-list-item-title v-text="contact.title">
+      <v-list-item-title>
+        {{ contact.username }}
       </v-list-item-title>
     </ListItem>
     <v-list-item>

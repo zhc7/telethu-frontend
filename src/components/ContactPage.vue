@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 import {addFriend, contacts} from "../chat.js";
 
@@ -9,20 +9,25 @@ const selectedContactId = ref();
 
 const selectedContact = ref();
 
-const searchFriendId = ref();
+const searchInput = ref('');
 const addFriendId = ref();
 
-const searchFriend = ref(true);
+const searchFriendMode = ref('id');
 const buttonColor = ref("purple");
 
-const addFriendMode = () => {
-  searchFriend.value = !searchFriend.value;
+const switchMode = () => {
+  searchFriendMode.value = searchFriendMode.value === 'email' ? 'id' : 'email';
   buttonColor.value = searchFriend.value ? "white" : "purple";
 };
 
 const selectContact = (newContactId) => {
   selectedContact.value = contacts.value[newContactId];
 };
+
+const search = () => {
+  selectedContactId.value = undefined;
+  alert('喜报：你搜索成功了！');
+}
 
 watch(selectedContactId, selectContact);
 
@@ -32,33 +37,25 @@ watch(selectedContactId, selectContact);
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
       <v-container>
-        <v-row no-gutters>
-          <v-col cols="10">
-            <v-text-field
-                v-if="searchFriend"
-                :label="'Add new friend by TTID'"
-                v-model="searchFriendId"
-                variant="outlined"
-                hide-details
-            />
-<!--            <v-text-field-->
-<!--                v-else label="Add new friend by email!"-->
-<!--                append-inner-icon="mdi-magnify"-->
-<!--                @click:append-inner="addFriend(searchFriendId)"-->
-<!--                v-model="addFriendId" variant="outlined"-->
-<!--                color="primary"-->
-<!--            />-->
-          </v-col>
+        <v-row>
           <v-col cols="2">
-            <v-btn @click="addFriendMode" :color="buttonColor" class="fill-height">
+            <v-btn @click="switchMode" :color="searchFriendMode === 'id' ? 'purple' : 'white'" class="fill-height">
               <v-icon>
                 mdi-account-multiple-plus
               </v-icon>
             </v-btn>
           </v-col>
+          <v-col cols="10">
+            <v-text-field
+                :label="searchFriendMode === 'id' ? 'Add new friend by TTID' : 'Add new friend by email'"
+                append-inner-icon="mdi-magnify"
+                v-model="searchInput"
+                @click:append-inner="search"
+                variant="outlined"
+                hide-details
+            />
+          </v-col>
         </v-row>
-
-
       </v-container>
       <v-row class="mt-1">
 

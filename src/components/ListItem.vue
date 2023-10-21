@@ -1,8 +1,14 @@
 <script setup>
-import {inject} from 'vue'
+import {inject, onMounted} from 'vue'
 
 const props = defineProps(['k'])
 const {selected, updateSelected} = inject("selected")
+
+onMounted(() => {
+  window.setInterval(() => {
+    console.log(selected)
+  }, 1000);
+})
 
 </script>
 
@@ -22,7 +28,7 @@ const {selected, updateSelected} = inject("selected")
 </template>
 
 <style scoped>
-.v-list-item.v-list-item--active {
+.v-list-item--active {
   background-color: #248aff !important;
   color: white !important;
 }

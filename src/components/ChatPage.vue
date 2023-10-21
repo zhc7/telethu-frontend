@@ -67,9 +67,8 @@ const ScrollToBottom = () => {
             auto-grow
             max-rows="4"
             variant="outlined"
-            label="message"
+            label="Message here..."
             class="ma-2 ml-4 message-input"
-            color="blue"
             v-model="message"
             hide-details
             flat
