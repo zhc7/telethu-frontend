@@ -40,11 +40,16 @@ onMounted(() => {
       <span>{{ message.content }}</span>
     </div>
     <img
-        ref="messageImg"
         v-if="message.m_type === 'image'"
         :src="message.content"
-        style="max-width: 20vw; min-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+        style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
     />
+    <video
+      v-if="message.m_type === 'video'"
+      controls
+      :src="message.content"
+      style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+    ></video>
     <v-avatar v-if="userId !== message.receiver" class="ml-2 mr-2">
       <v-img
           :src="userRef.avatar"

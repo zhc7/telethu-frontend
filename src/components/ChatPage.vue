@@ -91,6 +91,25 @@ onMounted(() => {
                       @finished="ScrollToBottom"
                       @showProfile="displayProfile = true"
           />
+          <MessagePop :avatar="selectedChat.avatar"
+                      :message="
+                      {
+                         'sender': selectedChat.id,
+                         'receiver': userId,
+                         'm_type': 'video',
+                         'content': '/public/se.mp4',
+                         'time': Date.now(),
+                      }"/>
+          <MessagePop :avatar="selectedChat.avatar"
+                      :message="
+                      {
+                         'sender': selectedChat.id,
+                         'receiver': userId,
+                         'm_type': 'image',
+                         'content': '/public/baidu.webp',
+                         'time': Date.now(),
+                      }"/>
+
         </div>
       </v-row>
       <v-row no-gutters class="d-flex" style="align-items: center">
@@ -119,7 +138,7 @@ onMounted(() => {
 .profile-area {
   width: 0;
   transition-property: width;
-  transition-duration: 100ms;
+  transition-duration: 300ms;
   transition-delay: 0s;
 }
 

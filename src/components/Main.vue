@@ -9,6 +9,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {userName} from "../auth.js";
+import axios from "axios";
 
 const router = useRouter();
 const curTab = ref(1);
@@ -34,6 +35,7 @@ const ActivateChat = (chat) => {
 onMounted(() => {
   console.log("page " + activePage.value);
   getContacts().then(createSocket);
+  axios.get()
 })
 </script>
 
