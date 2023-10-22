@@ -91,15 +91,6 @@ onMounted(() => {
                       @finished="ScrollToBottom"
                       @showProfile="displayProfile = true"
           />
-          <MessagePop :avatar="selectedChat.avatar"
-                      :message="
-                      {
-                         'sender': selectedChat.id,
-                         'receiver': userId,
-                         'm_type': 'image',
-                         'content': '/public/baidu.webp',
-                         'time': Date.now(),
-                      }"/>
         </div>
       </v-row>
       <v-row no-gutters class="d-flex" style="align-items: center">
