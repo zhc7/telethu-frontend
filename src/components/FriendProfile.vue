@@ -2,10 +2,17 @@
 import {ref, watch} from "vue";
 
 const props = defineProps(['displayContact'])
+const dialog = ref(false)
 
 </script>
 
 <template>
+  <v-btn variant="text" @click="dialog = true">
+    <v-icon>mdi-account</v-icon>
+    <span class="pl-2">Profile</span>
+  </v-btn>
+
+  <v-dialog v-model="dialog" width="auto">
   <v-card class="mb-auto mt-6">
     <v-avatar size="80">
       <v-img :src="displayContact.avatar"/>
@@ -55,7 +62,13 @@ const props = defineProps(['displayContact'])
         </v-btn-group>
       </v-card-actions>
     </v-card-item>
+
+    <v-card-actions>
+      <v-btn color="primary" @click="dialog = false">Close Dialog</v-btn>
+    </v-card-actions>
   </v-card>
+
+  </v-dialog>
 </template>
 
 <style scoped>
