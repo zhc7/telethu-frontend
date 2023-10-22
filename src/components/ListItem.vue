@@ -16,7 +16,7 @@ const activated = inject("activated", undefined)
       :class="{'v-list-item--active': selected === props.k}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
-      <v-img :src="props.prependAvatar" contain/>
+      <v-img :src="props.prependAvatar" cover/>
     </v-avatar>
     <v-icon class="mr-1" v-if="props.prependIcon">{{ props.prependIcon }}</v-icon>
     <div class="mr-2">

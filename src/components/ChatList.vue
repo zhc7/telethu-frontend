@@ -61,7 +61,7 @@ onMounted(() => {
     >
       <template #prepend>
         <v-avatar>
-          <v-img :src="chat.avatar" contain/>
+          <v-img :src="chat.avatar" cover/>
         </v-avatar>
       </template>
       <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
