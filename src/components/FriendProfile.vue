@@ -15,7 +15,7 @@ const dialog = ref(false)
   <v-dialog v-model="dialog" width="auto">
   <v-card class="mb-auto mt-6">
     <v-avatar size="80">
-      <v-img :src="displayContact.avatar"/>
+      <v-img :src="displayContact.avatar" cover/>
     </v-avatar>
     <v-card-item>
       <v-list>

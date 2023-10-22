@@ -1,8 +1,10 @@
 <script setup>
-import signUp from "../components/SignUp.vue";
+import SignUp from "./SignUp.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {login, userId} from "../auth.js";
+import {email} from "@vuelidate/validators";
+import {DEBUG} from "../constants.js";
 
 const account = ref("");
 const password = ref("");
@@ -18,7 +20,9 @@ if (userId.value !== "") {
 const submit = () => {
   login(account.value, password.value)
       .then((message) => {
-        console.log("received message: " + message)
+        if (DEBUG) {
+          console.log("received message: " + message);
+        }
         if (message === "") {
           router.push("/");
         } else {
@@ -39,7 +43,6 @@ const submit = () => {
         <!-- 替换下面的路径为你的图标路径 -->
         <img src="/public/vue.svg" alt="Logo" style="max-width: 100%"/>
       </v-col>
-      <!-- 右侧登录表单区域 -->
       <v-col
           offset="1"
           cols="12"
@@ -78,8 +81,7 @@ const submit = () => {
             >
           </v-col>
           <v-col cols="6">
-            <!-- Sign up dialog -->
-            <signUp/>
+            <SignUp/>
           </v-col>
         </v-row>
       </v-col>

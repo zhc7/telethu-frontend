@@ -75,8 +75,8 @@ onMounted(() => {
 
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
-    <v-col cols="12" sm="4">
-      <v-list>
+    <v-col cols="12" sm="4" class="d-flex flex-column">
+      <v-list class="flex-0-0">
         <v-list-item class="bg-purple">
           <template #prepend>
             <v-icon></v-icon>
@@ -112,7 +112,6 @@ onMounted(() => {
           </v-text-field>
         </v-list-item>
       </v-list>
-
       <ContactList
           v-model="selectedContactId"
           v-show="displayType === 'contactList'"
@@ -127,7 +126,7 @@ onMounted(() => {
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
       <v-card v-if="displayRightType === 'contactDetail'" class="mb-auto mt-6">
         <v-avatar size="80">
-          <v-img :src="displayContact.avatar"/>
+          <v-img :src="displayContact.avatar" cover/>
         </v-avatar>
         <v-card-item>
           <v-list>

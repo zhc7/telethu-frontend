@@ -28,6 +28,7 @@ onMounted(() => {
       <v-img
           :src="avatar"
           alt="John"
+          cover
       />
     </v-avatar>
     <div ref="messagePop" class="pa-2 rounded-lg text-left" :class="message.receiver === userId ? 'bg-blue' : 'bg-green'">

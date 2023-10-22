@@ -8,6 +8,13 @@ const userName = useLocalStorage("userName", "");
 export const userEmail = useLocalStorage("userEmail", "");
 const token = useLocalStorage("token", "");
 
+axios.interceptors.response.use(res => res, err => {
+    if (err.response && err.response.status === 401) {
+        logout();
+    }
+    return Promise.reject(err);
+});
+
 const login = (email, password) => {
     if (DEBUG) {
         console.log("login " + email);
@@ -37,11 +44,11 @@ const logout = () => {
     userId.value = -1;
 }
 
-const register = (name, email, password) => {
+const register = async (name, email, password) => {
     if (DEBUG) {
         console.log("register " + email);
     }
-    axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
+    await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
         console.log("register succeeded");
     })
 }
