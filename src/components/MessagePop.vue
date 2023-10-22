@@ -5,7 +5,7 @@ import {nowRef, userRef} from "../globals.js";
 import {userId} from "../auth.js";
 
 const props = defineProps(['message', 'final', 'avatar']);
-const emits = defineEmits((['finished']));
+const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
 const contentHeight = ref('40px');
@@ -24,7 +24,7 @@ onMounted(() => {
     {{ FormatChatMessageTime(nowRef, message.time) }}
   </div>
   <div class="d-flex mt-2" style="max-width: 75%;" :style="{alignSelf: message.receiver === userId ? 'flex-start' : 'flex-end'}">
-    <v-avatar v-if="userId === message.receiver" class="ml-2 mr-2">
+    <v-avatar v-if="userId === message.receiver" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
           alt="John"

@@ -35,7 +35,7 @@ const selectRequest = (newRequestId) => {
 }
 
 const search = () => {
-  displayRightTypeType.value = 'searchResult';
+  displayRightType.value = 'searchResult';
   addFriend(searchInput.value)
   alert('喜报：你搜索成功了！');
 }

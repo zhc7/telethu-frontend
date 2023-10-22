@@ -38,7 +38,9 @@ const selected = computed({
     </ListItem>
     <v-list-item>
       <span class="text-blue-grey-lighten-2">
-        {{ personContacts.length }} friends in total
+        {{ personContacts.length === 0 ? 'No friends yet' : personContacts.length === 1 ? '1 friend in total' :
+         personContacts.length + ' friends in total'
+        }}
       </span>
     </v-list-item>
   </List>

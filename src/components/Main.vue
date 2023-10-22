@@ -5,10 +5,10 @@ import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
 import ProfilePage from "./ProfilePage.vue";
 import {createSocket, getContacts} from "../chat.js";
-import {userId, userName} from "../auth.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
+import {userName} from "../auth.js";
 
 const router = useRouter();
 const curTab = ref(1);
@@ -41,10 +41,12 @@ onMounted(() => {
   <v-container class="d-flex pa-0 ma-0" style="max-height: 100vh">
     <NavBar>
       <List density="compact" nav v-model="activePage">
-        <ListItem
-            prepend-avatar="/public/Shenium.png"
-            :title="userName"
-        />
+        <v-list-item class="text-left"
+                  prepend-avatar="/public/Shenium.png"
+                  :title="userName"
+                  @click="activePage = 'profile'"
+        >
+        </v-list-item>
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" title="Contacts" k="contacts"></ListItem>

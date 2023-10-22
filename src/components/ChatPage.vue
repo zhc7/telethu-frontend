@@ -2,9 +2,10 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {contacts, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
+import {DEBUG} from "../constants.js";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -41,12 +42,18 @@ const DisplayFriendProfile = () => {
 
 const handleHideProfile = (event) => {
   const avatar = document.getElementById('friend-avatar');
-  if (event.target.parentNode === avatar) {
+  if (event.target.parentNode.parentNode.classList.contains('v-avatar')) {
     console.log('is child')
   } else {
     displayProfile.value = false;
   }
 }
+
+onMounted(() => {
+  if (DEBUG) {
+    console.log(contacts.value);
+  }
+})
 
 </script>
 
@@ -54,7 +61,7 @@ const handleHideProfile = (event) => {
   <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height"
          @click="handleHideProfile($event)"
   >
-    <v-col cols="12" sm="4" class="pa-0" @click="displayProfile = false">
+    <v-col cols="12" sm="4" class="pa-0">
       <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
     </v-col>
     <v-col v-if="selectedChat" cols="12" sm="8"
@@ -81,6 +88,7 @@ const handleHideProfile = (event) => {
                       :final="index === selectedChat.messages.length - 1"
                       :avatar="selectedChat.avatar"
                       @finished="ScrollToBottom"
+                      @showProfile="displayProfile = true"
           />
         </div>
       </v-row>
@@ -101,7 +109,7 @@ const handleHideProfile = (event) => {
     </v-col>
   </v-row>
   <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayProfile" :displayContact="selectedChat"/>
+    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="displayProfile"/>
   </div>
 </template>
 

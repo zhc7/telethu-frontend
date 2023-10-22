@@ -48,7 +48,7 @@ onMounted(() => {
 <template>
   <List class="fill-height" v-model="selected">
     <v-list-item>
-      TeleTHU
+      <a href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
     </v-list-item>
     <ListItem
         :key="chat.id"
