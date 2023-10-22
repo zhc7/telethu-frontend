@@ -53,6 +53,7 @@ const handleApplyList = () => {
 
 const handleRequestPass = (id) => {
   acceptFriend(id);
+  delete friendRequests.value[id];
 }
 
 watch(selectedContactId, selectContact);
