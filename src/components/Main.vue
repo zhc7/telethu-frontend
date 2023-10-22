@@ -38,31 +38,6 @@ onMounted(() => {
 </script>
 
 <template>
-<<<<<<< HEAD
-  <v-container class="d-flex flex-column pt-0 ma-0" style="max-height: 100vh">
-    <v-navigation-drawer>
-      <v-list>
-        <v-list-item
-            prepend-avatar="/public/Shenium.png"
-            :title="userName"
-            :subtitle="'@' + userId"
-            @click="activePage = 'profile'"
-        ></v-list-item>
-      </v-list>
-      <v-divider></v-divider>
-      <v-list density="compact" nav>
-        <v-list-item prepend-icon="mdi-toilet" title="Chat" @click="activePage = 'chat'"></v-list-item>
-        <v-list-item prepend-icon="mdi-toilet" title="Contacts" @click="activePage = 'contacts'"></v-list-item>
-        <v-list-item prepend-icon="mdi-paper-roll" title="Settings" @click="activePage = 'settings'"></v-list-item>
-        <v-list-item prepend-icon="mdi-paper-roll" title="Profile" @click="activePage = 'profile'"></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-main class="ml-4">
-      <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
-      <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
-      <ProfilePage v-if="activePage === 'profile'"/>
-    </v-main>
-=======
   <v-container class="d-flex pa-0 ma-0" style="max-height: 100vh">
     <NavBar>
       <List density="compact" nav v-model="activePage">
@@ -77,10 +52,9 @@ onMounted(() => {
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
     </NavBar>
-      <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
-      <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
-      <ProfilePage v-if="activePage === 'profile'"/>
->>>>>>> e638b19c527da66ed39c92930c9b6498cbd69c2c
+    <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
+    <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
+    <ProfilePage v-if="activePage === 'profile'"/>
   </v-container>
 </template>
 

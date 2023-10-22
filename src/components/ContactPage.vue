@@ -1,11 +1,12 @@
 <script setup>
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
 import {acceptFriend, addFriend, applyList, contacts, friendRequests} from "../chat.js";
 import RequestList from "./RequestList.vue";
 
 defineEmits((['chat']));
+const displayRightType = ref();
 const displayType = ref();
 const selectedContactId = ref();
 const selectedRequestId = ref();
@@ -20,6 +21,7 @@ const switchMode = () => {
 };
 
 const selectContact = (newContactId) => {
+  displayRightType.value = 'contactDetail';
   if (newContactId) {
     displayType.value = 'contactDetail';
     displayContact.value = contacts.value[newContactId];
@@ -27,6 +29,7 @@ const selectContact = (newContactId) => {
 };
 
 const selectRequest = (newRequestId) => {
+  displayRightType.value = 'requestDetail';
   displayRequest.value = friendRequests.value[newRequestId];
 }
 
@@ -40,7 +43,7 @@ const search = () => {
 }
 
 const handleContactList = () => {
-  displayType.value = undefined;
+  displayType.value = 'contactList';
 }
 
 const handleApplyList = () => {
@@ -53,11 +56,19 @@ const handleApplyList = () => {
 
 const handleRequestPass = (id) => {
   acceptFriend(id);
+  const friendInfo = friendRequests.value[id];
   delete friendRequests.value[id];
+  contacts.value[id] = friendInfo[friendInfo];
+  displayContact.value = friendInfo;
+  displayRightType.value = 'contactDetail';
 }
 
 watch(selectedContactId, selectContact);
 watch(selectedRequestId, selectRequest);
+
+onMounted(() => {
+  displayType.value = 'contactList';
+})
 
 </script>
 
@@ -105,7 +116,7 @@ watch(selectedRequestId, selectRequest);
       </v-container>
     </v-col>
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
-      <v-card v-if="displayType === 'contactDetail' && selectedContactId" class="mb-auto mt-6">
+      <v-card v-if="displayRightType === 'contactDetail'" class="mb-auto mt-6">
         <v-avatar size="80">
           <v-img :src="displayContact.avatar"/>
         </v-avatar>
@@ -148,7 +159,7 @@ watch(selectedRequestId, selectRequest);
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
             <v-btn-group color="info" variant="outlined" divided>
-              <v-btn @click="$emit('chat', selectedContactId)">CHAT</v-btn>
+              <v-btn @click="$emit('chat', displayContact.id)">CHAT</v-btn>
               <v-btn>RECOMMEND</v-btn>
               <v-btn>DELETE</v-btn>
               <v-btn @click="">BLOCK</v-btn>
@@ -156,7 +167,7 @@ watch(selectedRequestId, selectRequest);
           </v-card-actions>
         </v-card-item>
       </v-card>
-      <v-card v-if="displayType === 'applyList' && selectedRequestId" class="mb-auto mt-6 overflow-y-auto">
+      <v-card v-if="displayRightType === 'requestDetail'" class="mb-auto mt-6 overflow-y-auto">
         <v-avatar size="80">
           <v-img :src="displayRequest.avatar"/>
         </v-avatar>
