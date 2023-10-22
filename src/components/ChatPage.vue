@@ -40,19 +40,25 @@ const DisplayFriendProfile = () => {
 };
 
 const handleHideProfile = (event) => {
-
+  const avatar = document.getElementById('friend-avatar');
+  if (event.target.parentNode === avatar) {
+    console.log('is child')
+  } else {
+    displayProfile.value = false;
+  }
 }
 
 </script>
 
 <template>
-  <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height">
+  <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height"
+         @click="handleHideProfile($event)"
+  >
     <v-col cols="12" sm="4" class="pa-0" @click="displayProfile = false">
       <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
     </v-col>
     <v-col v-if="selectedChat" cols="12" sm="8"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
-           @click="handleHideProfile($event)"
     >
       <v-row no-gutters class="align-center flex-0-0">
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688" elevation="6">
@@ -95,7 +101,7 @@ const handleHideProfile = (event) => {
     </v-col>
   </v-row>
   <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayType === 'contactDetail'" :displayContact="selectedChat"/>
+    <FriendProfile v-if="displayProfile" :displayContact="selectedChat"/>
   </div>
 </template>
 
