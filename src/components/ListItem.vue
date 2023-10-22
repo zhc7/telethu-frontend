@@ -3,7 +3,7 @@ import {inject, onMounted} from 'vue'
 
 const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle'])
 const {selected} = inject("selected")
-const activated = inject("activated")
+const activated = inject("activated", undefined)
 
 </script>
 
