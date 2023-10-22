@@ -53,15 +53,14 @@ onMounted(() => {
         class="pa-3 pl-6 chat-list-item text-left"
         rounded="lg"
         v-for="chat in chatList"
+        :title="chat.username"
+        :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
     >
       <template #prepend>
         <v-avatar>
           <v-img :src="chat.avatar" contain/>
         </v-avatar>
       </template>
-      <v-list-item-title v-text="chat.username">
-      </v-list-item-title>
-      <v-list-item-subtitle>{{ chat.hotMessage ? chat.hotMessage.content : '' }}</v-list-item-subtitle>
       <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
     </ListItem>
   </List>
