@@ -8,11 +8,10 @@ const props = defineProps(['message', 'final', 'avatar']);
 const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
+const messageImg = ref();
 const contentHeight = ref('40px');
 
 onMounted(() => {
-  const height = messagePop.value.offsetHeight;
-  contentHeight.value = Math.max(height, 40) + 'px';
   if (props.final) {
     emits('finished');
   }
@@ -23,7 +22,8 @@ onMounted(() => {
   <div class="ma-3s justify-center">
     {{ FormatChatMessageTime(nowRef, message.time) }}
   </div>
-  <div class="d-flex mt-2" style="max-width: 75%;" :style="{alignSelf: message.receiver === userId ? 'flex-start' : 'flex-end'}">
+  <div class="d-flex mt-2" style="max-width: 75%;"
+       :style="{alignSelf: message.receiver === userId ? 'flex-start' : 'flex-end'}">
     <v-avatar v-if="userId === message.receiver" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
@@ -31,17 +31,20 @@ onMounted(() => {
           cover
       />
     </v-avatar>
-    <div ref="messagePop" class="pa-2 rounded-lg text-left" :class="message.receiver === userId ? 'bg-blue' : 'bg-green'">
-      <span v-if="message.m_type === 'text'">{{ message.content }}</span>
-      <v-img
-          v-if="message.m_type === 'image'"
-          class="align-end text-white"
-          height="200"
-          width="200"
-          :src="message.content"
-          cover
-      />
+    <div
+        v-if="message.m_type === 'text'"
+        ref="messagePop"
+        class="pa-2 rounded-lg text-left"
+        :class="message.receiver === userId ? 'bg-blue' : 'bg-green'"
+    >
+      <span>{{ message.content }}</span>
     </div>
+    <img
+        ref="messageImg"
+        v-if="message.m_type === 'image'"
+        :src="message.content"
+        style="max-width: 20vw; min-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+    />
     <v-avatar v-if="userId !== message.receiver" class="ml-2 mr-2">
       <v-img
           :src="userRef.avatar"

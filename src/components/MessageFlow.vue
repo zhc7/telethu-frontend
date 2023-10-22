@@ -36,7 +36,6 @@ socket.onclose = (e) => {
       "Socket is closed. Reconnect will be attempted in 1 second.",
       e.reason
     );
-  }
   setTimeout(() => {
     socket = new WebSocket(url);
   }, 1000);

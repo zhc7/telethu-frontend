@@ -6,6 +6,7 @@ import {computed, onMounted, ref} from "vue";
 import {contacts, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
 import {DEBUG} from "../constants.js";
+import {userId} from "../auth.js";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -90,6 +91,15 @@ onMounted(() => {
                       @finished="ScrollToBottom"
                       @showProfile="displayProfile = true"
           />
+          <MessagePop :avatar="selectedChat.avatar"
+                      :message="
+                      {
+                         'sender': selectedChat.id,
+                         'receiver': userId,
+                         'm_type': 'image',
+                         'content': '/public/baidu.webp',
+                         'time': Date.now(),
+                      }"/>
         </div>
       </v-row>
       <v-row no-gutters class="d-flex" style="align-items: center">
