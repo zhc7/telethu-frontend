@@ -8,6 +8,13 @@ const userName = useLocalStorage("userName", "");
 export const userEmail = useLocalStorage("userEmail", "");
 const token = useLocalStorage("token", "");
 
+axios.interceptors.response.use(res => res, err => {
+    if (err.response && err.response.status === 401) {
+        logout();
+    }
+    return Promise.reject(err);
+});
+
 const login = (email, password) => {
     if (DEBUG) {
         console.log("login " + email);
