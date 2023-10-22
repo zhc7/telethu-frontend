@@ -8,7 +8,7 @@ const props = defineProps(['displayContact'])
 <template>
   <v-card class="mb-auto mt-6">
     <v-avatar size="80">
-      <v-img :src="displayContact.avatar"/>
+      <v-img :src="displayContact.avatar" cover/>
     </v-avatar>
     <v-card-item>
       <v-list>

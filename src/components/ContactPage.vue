@@ -127,7 +127,7 @@ onMounted(() => {
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
       <v-card v-if="displayRightType === 'contactDetail'" class="mb-auto mt-6">
         <v-avatar size="80">
-          <v-img :src="displayContact.avatar"/>
+          <v-img :src="displayContact.avatar" cover/>
         </v-avatar>
         <v-card-item>
           <v-list>
