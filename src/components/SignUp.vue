@@ -1,9 +1,11 @@
 <script setup>
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {register} from "../auth.js";
+import {login, register} from "../auth.js";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
+
+const emits = defineEmits(["finished"])
 
 const dialog = ref(false);
 const signupName = ref("");
@@ -24,7 +26,7 @@ const timeout = ref(2000);
 
 const router = useRouter();
 
-const submitRegister = () => {
+const submitRegister = async () => {
   if (signupPassword.value !== confirmPassword.value) {
     snackbarText.value = "Password not match!";
     snackbar.value = true;
@@ -33,6 +35,8 @@ const submitRegister = () => {
     return;
   }
   register(signupName.value, signupAccount.value, signupPassword.value);
+  await login(signupAccount.value, signupPassword.value);
+  router.push('/chat')
   dialog.value = false;
 };
 </script>

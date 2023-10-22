@@ -37,11 +37,11 @@ const logout = () => {
     userId.value = -1;
 }
 
-const register = (name, email, password) => {
+const register = async (name, email, password) => {
     if (DEBUG) {
         console.log("register " + email);
     }
-    axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
+    await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
         console.log("register succeeded");
     })
 }
