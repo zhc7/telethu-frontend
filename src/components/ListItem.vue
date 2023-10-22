@@ -1,5 +1,5 @@
 <script setup>
-import {inject, onMounted} from 'vue'
+import {inject} from 'vue'
 
 const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle'])
 const {selected} = inject("selected")
@@ -27,7 +27,9 @@ const activated = inject("activated", undefined)
       <p class="text-left text-grey" v-text="props.subtitle" style="font-size: small"/>
     </div>
     <slot/>
-    <slot name="append"/>
+    <div class="ml-auto">
+      <slot name="append"/>
+    </div>
   </div>
 </template>
 

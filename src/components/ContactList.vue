@@ -1,5 +1,5 @@
 <script setup>
-import {computed, defineProps, onMounted, watch} from 'vue';
+import {computed, defineProps} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../chat.js";
@@ -22,11 +22,6 @@ const selected = computed({
 
 <template>
   <List class="fill-height" v-model="selected">
-    <v-list-item class="bg-purple">
-      <template #title>
-        My Friends
-      </template>
-    </v-list-item>
     <ListItem :key="contact.id"
               :k="contact.id"
               class="pa-3 pl-6 chat-list-item text-left"

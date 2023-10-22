@@ -23,14 +23,15 @@ const switchMode = () => {
 const selectContact = (newContactId) => {
   displayRightType.value = 'contactDetail';
   if (newContactId) {
-    displayType.value = 'contactDetail';
     displayContact.value = contacts.value[newContactId];
   }
 };
 
 const selectRequest = (newRequestId) => {
   displayRightType.value = 'requestDetail';
-  displayRequest.value = friendRequests.value[newRequestId];
+  if (newRequestId) {
+    displayRequest.value = friendRequests.value[newRequestId];
+  }
 }
 
 const search = () => {
@@ -43,12 +44,13 @@ const search = () => {
 }
 
 const handleContactList = () => {
+  displayType.value = undefined;
   displayType.value = 'contactList';
 }
 
-const handleApplyList = () => {
-  displayType.value = 'applyList';
-  selectedContactId.value = undefined;
+const handleRequestList = () => {
+  displayType.value = undefined;
+  displayType.value = 'requestList';
   applyList();
   displayApplyList.value = friendRequests.value;
   console.log(friendRequests.value);
@@ -56,9 +58,11 @@ const handleApplyList = () => {
 
 const handleRequestPass = (id) => {
   acceptFriend(id);
+  displayType.value = 'requestList'
   const friendInfo = friendRequests.value[id];
   delete friendRequests.value[id];
   contacts.value[id] = friendInfo[friendInfo];
+  contacts.value[id].messages = [];
   displayContact.value = friendInfo;
   displayRightType.value = 'contactDetail';
 }
@@ -75,45 +79,72 @@ onMounted(() => {
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
-      <v-container>
-        <v-row>
-          <v-col cols="2">
-            <v-btn @click="switchMode" :color="searchFriendMode === 'id' ? 'purple' : 'white'" class="fill-height">
-              <v-icon>
-                mdi-account-multiple-plus
-              </v-icon>
-            </v-btn>
-          </v-col>
-          <v-col cols="10">
-            <v-text-field
-                :label="searchFriendMode === 'id' ? 'Add new friend by TTID' : 'Add new friend by email'"
-                append-inner-icon="mdi-magnify"
-                v-model="searchInput"
-                @click:append-inner="search"
-                variant="outlined"
-                hide-details
-            />
-          </v-col>
-        </v-row>
-        <v-list>
-          <v-list-item @click="handleContactList" class="text-left">
-            My Friends
-          </v-list-item>
-          <v-list-item @click="handleApplyList" class="text-left">
-            Friend Requests
-          </v-list-item>
-        </v-list>
-      </v-container>
-      <v-container v-if="displayType !== 'applyList'">
-        <ContactList
-            v-model="selectedContactId"
-        />
-      </v-container>
-      <v-container v-else>
-        <RequestList
-            v-model="selectedRequestId"
-        />
-      </v-container>
+<!--      <v-row>-->
+<!--        <v-col cols="2">-->
+<!--          <v-btn @click="switchMode" :color="searchFriendMode === 'id' ? 'purple' : 'white'" class="fill-height">-->
+<!--            <v-icon>-->
+<!--              mdi-account-multiple-plus-->
+<!--            </v-icon>-->
+<!--          </v-btn>-->
+<!--        </v-col>-->
+<!--        <v-col cols="10">-->
+<!--          <v-text-field-->
+<!--              :label="searchFriendMode === 'id' ? 'Add new friend by TTID' : 'Add new friend by email'"-->
+<!--              append-inner-icon="mdi-magnify"-->
+<!--              v-model="searchInput"-->
+<!--              @click:append-inner="search"-->
+<!--              variant="outlined"-->
+<!--              hide-details-->
+<!--          />-->
+<!--        </v-col>-->
+<!--      </v-row>-->
+      <v-list>
+        <v-list-item class="bg-purple">
+          <template #prepend>
+            <v-icon></v-icon>
+          </template>
+          <v-list-item-title class="pa-3 ma-0 fill-height">
+            {{ displayType === 'contactList' ? 'Contact List' : 'Add Friends' }}
+          </v-list-item-title>
+          <template #append>
+            <v-icon
+                v-show="displayType === 'contactList'"
+                @click="handleRequestList">
+              mdi-plus
+            </v-icon>
+            <v-icon
+                v-show="displayType === 'requestList'"
+                @click="handleContactList">
+              mdi-account-multiple
+            </v-icon>
+          </template>
+        </v-list-item>
+        <v-list-item>
+          <v-text-field
+              :label="searchFriendMode === 'id' ? 'Add new friend by TTID' : 'Add new friend by email'"
+              v-model="searchInput"
+              variant="outlined"
+              hide-details
+              density="compact"
+              class="mt-3"
+          >
+            <template #append>
+              <v-icon @click="search">mdi-magnify</v-icon>
+            </template>
+          </v-text-field>
+        </v-list-item>
+      </v-list>
+
+      <ContactList
+          v-model="selectedContactId"
+          v-show="displayType === 'contactList'"
+      />
+      <RequestList
+          v-model="selectedRequestId"
+          v-show="displayType === 'requestList'"
+          :active="displayType === 'requestList'"
+          @accept="acceptId => handleRequestPass(acceptId)"
+      />
     </v-col>
     <v-col cols="12" sm="6" class="d-flex flex-column flex-1-1 justify-center offset-sm-1">
       <v-card v-if="displayRightType === 'contactDetail'" class="mb-auto mt-6">
@@ -227,5 +258,9 @@ onMounted(() => {
 <style scoped>
 .v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
   margin-inline-start: 0;
+}
+
+.v-list-item--active {
+  background-color: #248aff !important;
 }
 </style>

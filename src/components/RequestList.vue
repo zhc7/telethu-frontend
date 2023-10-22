@@ -1,14 +1,17 @@
 <script setup>
-import {computed, defineProps, onMounted, watch} from 'vue';
+import {computed, defineProps, ref} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {friendRequests} from "../chat.js";
 
 const props = defineProps(["modelValue"]);
-const emit = defineEmits((["update:modelValue"]))
+const emit = defineEmits((["update:modelValue", 'accept']))
 const requests = computed(() => {
   return Object.values(friendRequests.value);
 });
+
+const showButton = ref(false);
+
 
 const selected = computed({
   get: () => props.modelValue,
@@ -17,36 +20,28 @@ const selected = computed({
   }
 });
 
+
 </script>
 
 <template>
   <List class="fill-height" v-model="selected">
-    <v-list-item class="bg-purple">
-      <template #title>
-        Friend Requests
-      </template>
-    </v-list-item>
     <ListItem :key="request.id"
               :k="request.id"
               class="pa-3 pl-6 chat-list-item text-left"
               v-for="request in requests"
+              :title="request.username"
+              :subtitle="'@' + request.id"
     >
       <template #prepend>
         <v-avatar>
           <v-img src="/public/download.jpeg" contain/>
         </v-avatar>
       </template>
-      <v-list-item-title>
-        {{ request.username }}
-      </v-list-item-title>
-      <v-list-item-subtitle>
-        {{ request.username }}
-      </v-list-item-subtitle>
       <template #append>
-        <v-list-item-action class="justify-end v-btn--density-compact">
-          <v-btn class="v-btn--density-comfortable mr-1 bg-green">PASS</v-btn>
+        <v-list-item class="v-btn--density-compact">
+          <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="$emit('accept', request.id)">PASS</v-btn>
           <v-btn class="v-btn--density-comfortable ml-1 bg-red">REJECT</v-btn>
-        </v-list-item-action>
+        </v-list-item>
       </template>
     </ListItem>
     <v-list-item>
@@ -56,3 +51,6 @@ const selected = computed({
     </v-list-item>
   </List>
 </template>
+
+<style scoped>
+</style>

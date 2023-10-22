@@ -5,6 +5,7 @@ import {nowRef} from "../globals.js";
 import {contacts} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
+import {DEBUG} from "../constants.js";
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(["update:modelValue"])
@@ -22,7 +23,9 @@ const chatList = ref();
 
 const UpdateChatList = () => {
   chatList.value = Object.values(contacts.value).sort((a, b) => (a.time - b.time));
-  console.log("updating chat list", chatList.value);
+  if (DEBUG) {
+    console.log("updating chat list", chatList.value);
+  }
   chatList.value.map((chat) => {
     if (chat.messages === undefined) chat.messages = [];
     if (chat.messages.length === 0) {
