@@ -65,6 +65,9 @@ onMounted(() => {
         </v-avatar>
       </template>
       <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
+      <template #append>
+        <v-badge color="red" content="1" inline></v-badge>
+      </template>
     </ListItem>
   </List>
 </template>
