@@ -5,6 +5,7 @@ import MessagePop from "./MessagePop.vue";
 import {ref, onMounted, computed} from "vue";
 import {contacts, sendMessage, createSocket} from "../chat.js";
 import {userId} from "../auth.js";
+import FriendProfile from "./FriendProfile.vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -29,6 +30,13 @@ const ScrollToBottom = () => {
   container.scrollTop = container.scrollHeight;
 };
 
+const displayType = ref();
+const displayContact = ref();
+const DisplayFriendProfile = () => {
+  displayType.value = displayType.value === 'contactDetail' ? undefined : 'contactDetail';
+  displayContact.value = contacts.value[selectedChatId.value];
+};
+
 </script>
 
 <template>
@@ -41,9 +49,11 @@ const ScrollToBottom = () => {
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688" elevation="6">
           <v-card-item>
             <template #prepend>
-              <v-avatar size="30">
-                <v-img :src="selectedChat.avatar"/>
-              </v-avatar>
+              <v-btn @click="DisplayFriendProfile">
+                <v-avatar size="30">
+                  <v-img :src="selectedChat.avatar"/>
+                </v-avatar>
+              </v-btn>
             </template>
             <v-card-title>
               <span class="pr-3">{{ selectedChat.username }}</span>
@@ -75,6 +85,9 @@ const ScrollToBottom = () => {
         ></v-textarea>
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
+    </v-col>
+    <v-col cols="3">
+      <FriendProfile v-if="displayType === 'contactDetail'" :displayContact="displayContact"/>
     </v-col>
   </v-row>
 </template>
