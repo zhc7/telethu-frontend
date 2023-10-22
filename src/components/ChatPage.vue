@@ -41,7 +41,7 @@ const DisplayFriendProfile = () => {
 <template>
   <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4" class="pa-0">
-      <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
+        <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
     </v-col>
     <v-col v-if="selectedChat" cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
       <v-row no-gutters class="align-center flex-0-0">
@@ -64,7 +64,7 @@ const DisplayFriendProfile = () => {
           <MessagePop v-for="(message, index) in selectedChat.messages" :message="message"
                       :final="index === selectedChat.messages.length - 1"
                       :avatar="selectedChat.avatar"
-                      @finished="ScrollToBottom()"
+                      @finished="ScrollToBottom"
           />
         </div>
       </v-row>
@@ -83,7 +83,7 @@ const DisplayFriendProfile = () => {
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
     </v-col>
-    <v-col cols="3">
+    <v-col cols="3" class="d-none">
       <FriendProfile v-if="displayType === 'contactDetail'" :displayContact="displayContact"/>
     </v-col>
   </v-row>
