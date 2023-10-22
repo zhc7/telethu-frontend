@@ -2,9 +2,8 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {ref, onMounted, computed} from "vue";
-import {contacts, sendMessage, createSocket} from "../chat.js";
-import {userId} from "../auth.js";
+import {computed, ref} from "vue";
+import {contacts, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
 
 const props = defineProps(["modelValue"])
@@ -49,11 +48,9 @@ const DisplayFriendProfile = () => {
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" color="#009688" elevation="6">
           <v-card-item>
             <template #prepend>
-              <v-btn @click="DisplayFriendProfile">
-                <v-avatar size="30">
-                  <v-img :src="selectedChat.avatar"/>
-                </v-avatar>
-              </v-btn>
+              <v-avatar size="30" @click="DisplayFriendProfile" v-ripple>
+                <v-img :src="selectedChat.avatar"/>
+              </v-avatar>
             </template>
             <v-card-title>
               <span class="pr-3">{{ selectedChat.username }}</span>

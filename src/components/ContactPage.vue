@@ -35,11 +35,8 @@ const selectRequest = (newRequestId) => {
 }
 
 const search = () => {
-  displayType.value = 'searchResult';
-  selectedContactId.value = undefined;
-  displayContact.value = contacts.value['1']; //TMP
+  displayRightTypeType.value = 'searchResult';
   addFriend(searchInput.value)
-  console.log(searchInput.value)
   alert('喜报：你搜索成功了！');
 }
 
@@ -79,25 +76,6 @@ onMounted(() => {
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col cols="12" sm="4">
-<!--      <v-row>-->
-<!--        <v-col cols="2">-->
-<!--          <v-btn @click="switchMode" :color="searchFriendMode === 'id' ? 'purple' : 'white'" class="fill-height">-->
-<!--            <v-icon>-->
-<!--              mdi-account-multiple-plus-->
-<!--            </v-icon>-->
-<!--          </v-btn>-->
-<!--        </v-col>-->
-<!--        <v-col cols="10">-->
-<!--          <v-text-field-->
-<!--              :label="searchFriendMode === 'id' ? 'Add new friend by TTID' : 'Add new friend by email'"-->
-<!--              append-inner-icon="mdi-magnify"-->
-<!--              v-model="searchInput"-->
-<!--              @click:append-inner="search"-->
-<!--              variant="outlined"-->
-<!--              hide-details-->
-<!--          />-->
-<!--        </v-col>-->
-<!--      </v-row>-->
       <v-list>
         <v-list-item class="bg-purple">
           <template #prepend>
@@ -121,7 +99,7 @@ onMounted(() => {
         </v-list-item>
         <v-list-item>
           <v-text-field
-              :label="searchFriendMode === 'id' ? 'Add new friend by TTID' : 'Add new friend by email'"
+              :label="displayType === 'contactList' ? 'Search in contacts...' : 'Search for new friends...'"
               v-model="searchInput"
               variant="outlined"
               hide-details

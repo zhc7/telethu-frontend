@@ -19,7 +19,7 @@ provide("activated", activated);
 
 <style scoped>
 .navbar {
-  width: 70px;
+  width: 64px;
   transition-property: width;
   transition-duration: 0.15s;
   transition-timing-function: ease;
