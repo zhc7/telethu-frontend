@@ -89,7 +89,7 @@ const createSocket = () => {
     socket.onclose = (e) => {
         if (DEBUG) {
             console.log(
-                "Socket is closed. Reconnect will be attempted in 1 second.",
+                "Socket is closed. Reconnection will be attempted in 1 second.",
                 e.reason
             );
         }

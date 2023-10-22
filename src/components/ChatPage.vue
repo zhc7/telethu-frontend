@@ -2,13 +2,16 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {contacts, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
+import {DEBUG} from "../constants.js";
+import {userId} from "../auth.js";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
 const message = ref("");
+const displayProfile = ref(false);
 
 const selectedChatId = computed({
   get: () => props.modelValue,
@@ -29,21 +32,50 @@ const ScrollToBottom = () => {
   container.scrollTop = container.scrollHeight;
 };
 
+const displayType = ref();
+const displayContact = ref();
+const DisplayFriendProfile = () => {
+  displayProfile.value = true;
+  console.log(displayProfile.value)
+  displayType.value = displayType.value === 'contactDetail' ? undefined : 'contactDetail';
+  displayContact.value = contacts.value[selectedChatId.value];
+};
+
+const handleHideProfile = (event) => {
+  const avatar = document.getElementById('friend-avatar');
+  if (event.target.parentNode.parentNode.classList.contains('v-avatar')) {
+    console.log('is child')
+  } else {
+    displayProfile.value = false;
+  }
+}
+
+onMounted(() => {
+  if (DEBUG) {
+    console.log(contacts.value);
+  }
+})
 
 </script>
 
 <template>
-  <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 fill-height">
+  <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height"
+         @click="handleHideProfile($event)"
+  >
     <v-col cols="12" sm="4" class="pa-0">
-        <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
+      <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
     </v-col>
-    <v-col v-if="selectedChat" cols="12" sm="8" class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
+    <v-col v-if="selectedChat" cols="12" sm="8"
+           class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
+    >
       <v-row no-gutters class="align-center flex-0-0">
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" elevation="6">
           <v-toolbar color="#009688">
             <template #prepend>
               <v-avatar size="30">
                 <v-img :src="selectedChat.avatar"/>
+              <v-avatar size="30" @click="DisplayFriendProfile" v-ripple>
+                <v-img :src="selectedChat.avatar" id="friend-avatar"/>
               </v-avatar>
             </template>
             <v-toolbar-title>
@@ -72,7 +104,27 @@ const ScrollToBottom = () => {
                       :final="index === selectedChat.messages.length - 1"
                       :avatar="selectedChat.avatar"
                       @finished="ScrollToBottom"
+                      @showProfile="displayProfile = true"
           />
+          <MessagePop :avatar="selectedChat.avatar"
+                      :message="
+                      {
+                         'sender': selectedChat.id,
+                         'receiver': userId,
+                         'm_type': 'video',
+                         'content': '/public/se.mp4',
+                         'time': Date.now(),
+                      }"/>
+          <MessagePop :avatar="selectedChat.avatar"
+                      :message="
+                      {
+                         'sender': selectedChat.id,
+                         'receiver': userId,
+                         'm_type': 'image',
+                         'content': '/public/baidu.webp',
+                         'time': Date.now(),
+                      }"/>
+
         </div>
       </v-row>
       <v-row no-gutters class="d-flex" style="align-items: center">
@@ -90,8 +142,26 @@ const ScrollToBottom = () => {
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
     </v-col>
+    <v-col cols="3" class="d-none">
+      <FriendProfile v-if="displayType === 'contactDetail'" :displayContact="displayContact"/>
+    </v-col>
   </v-row>
+  <div class="profile-area" :class="{'profile-area--active': displayProfile}">
+    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="displayProfile"/>
+  </div>
 </template>
 
 <style scoped>
+
+.profile-area {
+  width: 0;
+  transition-property: width;
+  transition-duration: 300ms;
+  transition-delay: 0s;
+}
+
+.profile-area--active {
+  width: 25vw;
+}
+
 </style>

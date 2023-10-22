@@ -48,7 +48,7 @@ onMounted(() => {
 <template>
   <List class="fill-height" v-model="selected">
     <v-list-item>
-      TeleTHU
+      <a href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
     </v-list-item>
     <ListItem
         :key="chat.id"
@@ -64,7 +64,10 @@ onMounted(() => {
           <v-img :src="chat.avatar" cover/>
         </v-avatar>
       </template>
-      <div class="chat-time">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
+      <div class="chat-time fill-height">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>
+      <template #append>
+        <v-badge color="red" content="1" inline></v-badge>
+      </template>
     </ListItem>
   </List>
 </template>
@@ -77,8 +80,8 @@ onMounted(() => {
 .chat-time {
   font-size: 0.75em;
   position: absolute;
-  right: 1.6em;
-  top: 1em;
+  right: 4em;
+  top: 2em;
   color: #888
 }
 </style>

@@ -1,19 +1,12 @@
 <script setup>
 import {ref, watch} from "vue";
 
-const props = defineProps(['displayContact'])
-const dialog = ref(false)
+const props = defineProps(['displayContact', 'display'])
 
 </script>
 
 <template>
-  <v-btn variant="text" @click="dialog = true">
-    <v-icon>mdi-account</v-icon>
-    <span class="pl-2">Profile</span>
-  </v-btn>
-
-  <v-dialog v-model="dialog" width="auto">
-  <v-card class="mb-auto mt-6">
+  <v-card v-if="display" class="mb-auto mt-6">
     <v-avatar size="80">
       <v-img :src="displayContact.avatar" cover/>
     </v-avatar>
@@ -28,27 +21,27 @@ const dialog = ref(false)
         <v-divider class="ma-4"/>
         <v-list-item class="text-grey-darken-3">
           <v-row>
-            <v-col cols="4" offset="1" class="text-right">
+            <v-col cols="4" offset="" class="text-right">
               Location:
             </v-col>
-            <v-col cols="6" class="text-left">
+            <v-col cols="8" class="text-left">
               Beijing, China Mainland
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="4" offset="1" class="text-right">
+            <v-col cols="4" class="text-right">
               Phone:
             </v-col>
-            <v-col cols="6" class="text-left">
+            <v-col cols="8" class="text-left">
               1145141919810
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="4" offset="1" class="text-right">
+            <v-col cols="4" class="text-right">
               Email:
             </v-col>
-            <v-col cols="6" class="text-left">
-              <a href="#">Cindy@telethu.org</a>
+            <v-col cols="8" class="text-left">
+              <a href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">Cindy@telethu.org</a>
             </v-col>
           </v-row>
         </v-list-item>
@@ -62,13 +55,7 @@ const dialog = ref(false)
         </v-btn-group>
       </v-card-actions>
     </v-card-item>
-
-    <v-card-actions>
-      <v-btn color="primary" @click="dialog = false">Close Dialog</v-btn>
-    </v-card-actions>
   </v-card>
-
-  </v-dialog>
 </template>
 
 <style scoped>

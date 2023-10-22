@@ -1,8 +1,13 @@
 <script setup>
 import {logout, userId, userName} from "../auth.js";
 import {useRouter} from "vue-router";
+import {ref} from "vue";
 
 const router = useRouter();
+
+const editingMode = ref(false);
+const phoneNumberInput = ref('');
+const emailInput = ref('');
 
 const handleLogout = () => {
   if (confirm('Are you sure?')) {
@@ -10,6 +15,13 @@ const handleLogout = () => {
     router.push('/login');
   }
 }
+
+const handleEdit = () => {
+  editingMode.value = true;
+  phoneNumberInput.value = '114514';
+  emailInput.value = 'donkey@bohan.cn';
+}
+
 </script>
 
 <template>
@@ -20,7 +32,7 @@ const handleLogout = () => {
           <v-img src="/public/download.jpeg"/>
         </v-avatar>
         <v-card-item>
-          <v-row no-gutters>
+          <v-row no-gutters pa="4">
             <v-col cols="8" offset="2">
               <v-list>
                 <v-list-item-title>
@@ -30,29 +42,34 @@ const handleLogout = () => {
                   @{{ userId }}
                 </v-list-item-subtitle>
                 <v-divider class="ma-4"/>
-                <v-list-item class="text-grey-darken-3">
-                  <v-row>
+                <v-list-item class="text-grey-darken-3 pa-4">
+                  <v-row pa="2">
                     <v-col cols="4" offset="1" class="text-right">
                       Location:
                     </v-col>
                     <v-col cols="6" class="text-left">
+                      <v-icon size="10">mdi-square-edit-outline</v-icon>
                       Beijing, China Mainland
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row pa="2">
                     <v-col cols="4" offset="1" class="text-right">
                       Phone:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      1145141919810
+                      <v-icon size="10">mdi-square-edit-outline</v-icon>
+                      <span v-if="!editingMode">114514</span>
+                      <span v-if="editingMode"><input v-model="phoneNumberInput"/></span>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="4" offset="1" class="text-right">
                       Email:
                     </v-col>
-                    <v-col cols="6" class="text-left">
-                      <a href="#">Cindy@telethu.org</a>
+                    <v-col cols="6" class="text-left mb-3">
+                      <v-icon size="10">mdi-square-edit-outline</v-icon>
+                      <span v-if="!editingMode">donkey@bohan.cn</span>
+                      <span v-if="editingMode"><input v-model="emailInput"/></span>
                     </v-col>
                   </v-row>
                 </v-list-item>
@@ -62,7 +79,9 @@ const handleLogout = () => {
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
             <v-btn-group color="info" variant="outlined" divided>
-              <v-btn @click="handleLogout">LOGOUT</v-btn>
+              <v-btn v-if="!editingMode" @click="handleEdit">EDIT</v-btn>
+              <v-btn v-if="!editingMode" @click="handleLogout">LOGOUT</v-btn>
+              <v-btn v-if="editingMode" @click="handleLogout">DONE</v-btn>
             </v-btn-group>
           </v-card-actions>
         </v-card-item>

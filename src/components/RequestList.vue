@@ -5,7 +5,7 @@ import List from "./List.vue";
 import {friendRequests} from "../chat.js";
 
 const props = defineProps(["modelValue"]);
-const emit = defineEmits((["update:modelValue", 'accept']))
+const emit = defineEmits((["update:modelValue", 'accept', 'reject']))
 const requests = computed(() => {
   return Object.values(friendRequests.value);
 });
@@ -40,13 +40,13 @@ const selected = computed({
       <template #append>
         <v-list-item class="v-btn--density-compact">
           <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="$emit('accept', request.id)">PASS</v-btn>
-          <v-btn class="v-btn--density-comfortable ml-1 bg-red">REJECT</v-btn>
+          <v-btn class="v-btn--density-comfortable ml-1 bg-red" @click="$emit('reject', request.id)">REJECT</v-btn>
         </v-list-item>
       </template>
     </ListItem>
     <v-list-item>
       <span class="text-blue-grey-lighten-2">
-        {{ requests.length }} requests in total
+        {{ requests.length === 0 ? 'No requests' : requests.length === 1 ? '1 request in total' : requests.length + ' requests in total'}}
       </span>
     </v-list-item>
   </List>

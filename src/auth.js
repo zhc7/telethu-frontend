@@ -9,9 +9,9 @@ export const userEmail = useLocalStorage("userEmail", "");
 const token = useLocalStorage("token", "");
 
 axios.interceptors.response.use(res => res, err => {
-    if (err.response && err.response.status === 401) {
-        logout();
-    }
+    // if (err.response && err.response.status === 401) {
+    //     logout();
+    // }
     return Promise.reject(err);
 });
 

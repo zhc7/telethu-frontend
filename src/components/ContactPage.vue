@@ -35,7 +35,7 @@ const selectRequest = (newRequestId) => {
 }
 
 const search = () => {
-  displayRightTypeType.value = 'searchResult';
+  displayRightType.value = 'searchResult';
   addFriend(searchInput.value)
   alert('喜报：你搜索成功了！');
 }
@@ -58,8 +58,8 @@ const handleRequestPass = (id) => {
   displayType.value = 'requestList'
   const friendInfo = friendRequests.value[id];
   delete friendRequests.value[id];
-  contacts.value[id] = friendInfo[friendInfo];
-  contacts.value[id].messages = [];
+  contacts.value[id] = friendInfo[id];
+  contacts.value[id]['messages'] = [];
   displayContact.value = friendInfo;
   displayRightType.value = 'contactDetail';
 }
