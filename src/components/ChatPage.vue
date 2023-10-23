@@ -80,7 +80,7 @@ onMounted(() => {
          @click="handleHideProfile($event)"
   >
     <v-col cols="12" sm="4" class="pa-0">
-      <ChatList :chat-list="contacts" v-model="selectedChatId"></ChatList>
+      <ChatList v-model="selectedChatId"></ChatList>
     </v-col>
     <v-col v-if="selectedChat" cols="12" sm="8"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
