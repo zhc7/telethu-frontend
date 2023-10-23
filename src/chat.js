@@ -76,7 +76,7 @@ const acceptFriend = (friendId) => {
 
 const getContacts = async () => {
     console.log("getting contacts");
-    await axios.post(BASE_API_URL + "users/friends/list", {}, {
+    await axios.get(BASE_API_URL + "users/friends/list", {
         headers: {
             Authorization: token.value,
         }
@@ -96,7 +96,7 @@ const getContacts = async () => {
 }
 
 const applyList = async () => {
-    await axios.post(BASE_API_URL + "users/friends/apply_list", {}, {
+    await axios.get(BASE_API_URL + "users/friends/apply_list", {
         headers: {
             Authorization: token.value,
         }
