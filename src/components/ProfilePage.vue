@@ -1,5 +1,5 @@
 <script setup>
-import {logout, userId, userName} from "../auth.js";
+import {logout, userEmail, userId, userName} from "../auth.js";
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 
@@ -48,7 +48,7 @@ const handleEdit = () => {
                       Location:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <v-icon size="10">mdi-square-edit-outline</v-icon>
+                      <v-icon size="10" class="mr-1">mdi-square-edit-outline</v-icon>
                       Beijing, China Mainland
                     </v-col>
                   </v-row>
@@ -57,7 +57,7 @@ const handleEdit = () => {
                       Phone:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <v-icon size="10">mdi-square-edit-outline</v-icon>
+                      <v-icon size="10" class="mr-1">mdi-square-edit-outline</v-icon>
                       <span v-if="!editingMode">114514</span>
                       <span v-if="editingMode"><input v-model="phoneNumberInput"/></span>
                     </v-col>
@@ -67,8 +67,10 @@ const handleEdit = () => {
                       Email:
                     </v-col>
                     <v-col cols="6" class="text-left mb-3">
-                      <v-icon size="10">mdi-square-edit-outline</v-icon>
-                      <span v-if="!editingMode">donkey@bohan.cn</span>
+                      <v-icon size="10" class="mr-1">mdi-square-edit-outline</v-icon>
+                      <span v-if="!editingMode">
+                        {{ userEmail }}
+                      </span>
                       <span v-if="editingMode"><input v-model="emailInput"/></span>
                     </v-col>
                   </v-row>
