@@ -5,6 +5,9 @@ import {nowRef} from '../globals.js'
 export const FormatChatMessageTime = (now, timestamp) => {
     timestamp = parseFloat(timestamp);
     const diff = nowRef.value - timestamp;
+    if (diff < 10000) {
+        return 'Just now';
+    }
 
     if (diff < 60000) {
         return `${Math.floor(diff / 1000)} seconds ago`;
