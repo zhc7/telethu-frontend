@@ -6,6 +6,7 @@ import {fakeContacts} from "./testdata/fakechats.js";
 import axios from "axios";
 
 const contacts = ref({});
+const groups = ref({});
 const friendRequests = ref([]);
 
 let socket;
@@ -73,6 +74,7 @@ const applyList = async () => {
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat/" + userId.value + "/";
     socket = new WebSocket(uri);
+    let first = true;
 
     socket.onopen = () => {
         if (DEBUG) {
@@ -83,7 +85,19 @@ const createSocket = () => {
     socket.onmessage = (e) => {
         const message = JSON.parse(e.data);
         console.log(message);
-        contacts.value[message.sender].messages.push(message);
+        if (first) {
+            // meta data
+            first = false;
+        }
+        if (message.m_type <= 5) {
+            if (message.t_type === 0) {
+                contacts.value[message.sender].messages.push(message);
+            } else if (message.t_type === 1) {
+                groups.value[message.receiver].messages.push(message);
+            }
+        } else {
+            alert("not implemented");
+        }
     };
 
     socket.onclose = (e) => {
@@ -105,12 +119,14 @@ const createSocket = () => {
 }
 
 
-const sendMessage = (receiverId, inputMessage) => {
+const sendMessage = (receiverId, inputMessage, t_type) => {
     const message = {
         time: Date.now(),
-        m_type: "text",
+        m_type: 0,
+        t_type: t_type === undefined ? 0 : t_type,
         content: inputMessage,
         receiver: receiverId,
+        sender: userId.value,
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
