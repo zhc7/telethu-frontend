@@ -7,12 +7,14 @@ import {contacts, groupMetas, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId} from "../auth.js";
+import Stickers from "./Stickers.vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
 const message = ref("");
 const displayProfile = ref(false);
 const showProfileDetail = ref(false);
+const showStickers = ref(false);
 
 const selectedChatId = computed({
   get: () => props.modelValue,
@@ -145,6 +147,9 @@ onMounted(() => {
         </div>
       </v-row>
       <v-row no-gutters class="d-flex" style="align-items: center">
+        <Stickers v-if="showStickers" class="ml-4"/>
+      </v-row>
+      <v-row no-gutters class="d-flex" style="align-items: center">
         <v-textarea
             rows="1"
             auto-grow
@@ -157,6 +162,8 @@ onMounted(() => {
             flat
             clearable
             @keydown="handleTextareaKeydown"
+            :append-inner-icon="'mdi-emoticon-kiss-outline'"
+            @click:append-inner="showStickers = !showStickers"
         ></v-textarea>
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
