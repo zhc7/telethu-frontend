@@ -90,7 +90,7 @@ const getContacts = async () => {
                 newContacts[contact.id] = contact;
                 console.log("contacts updated");
             }
-            newContacts[200] = groups.value[200]; //TMP
+            // newContacts[200] = groups.value[200]; //TMP
             contacts.value = newContacts;
         })
 }
@@ -115,7 +115,7 @@ const applyList = async () => {
 }
 
 const createSocket = () => {
-    let uri = BASE_WS_URL + "ws/chat/" + userId.value + "/";
+    let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
     let first = true;
 
@@ -170,6 +170,7 @@ const sendMessage = (receiverId, inputMessage, t_type) => {
         content: inputMessage,
         receiver: receiverId,
         sender: userId.value,
+        info: "",
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
