@@ -26,8 +26,10 @@ const selectedChatId = computed({
 const selectedChat = computed(() => contacts.value[selectedChatId.value]);
 
 const handleSendMessage = () => {
-  sendMessage(selectedChatId.value, message.value);
-  message.value = "";
+  if (message.value !== "") {
+    sendMessage(selectedChatId.value, message.value);
+    message.value = "";
+  }
 };
 
 const ScrollToBottom = () => {
@@ -35,7 +37,6 @@ const ScrollToBottom = () => {
   container.scrollTop = container.scrollHeight;
 };
 
-const displayType = ref();
 const displayContact = ref();
 const DisplayFriendProfile = () => {
   displayProfile.value = displayProfile.value === false;
@@ -146,8 +147,8 @@ onMounted(() => {
 
         </div>
       </v-row>
-      <v-row no-gutters class="d-flex" style="align-items: center">
-        <Stickers v-if="showStickers" class="ml-4"/>
+      <v-row no-gutters class="d-flex" style="width: 100%">
+        <Stickers v-if="showStickers" class="ml-4" @sticker-click="handleSendMessage"/>
       </v-row>
       <v-row no-gutters class="d-flex" style="align-items: center">
         <v-textarea

@@ -1,16 +1,29 @@
 <script setup>
 
-import {ref} from "vue";
+import {ref, defineEmits} from "vue";
+
+const emit = defineEmits(['sticker-click'])
+const emitStickerClick = (stickerData) => {
+  emit('emoji-click', stickerData)
+}
 
 const stickers = ref([
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
+  "/public/dinosaurs/0.png",
+  "/public/dinosaurs/0 (1).png",
+  "/public/dinosaurs/0 (2).png",
+  "/public/dinosaurs/0 (3).png",
+  "/public/dinosaurs/0 (4).png",
+  "/public/dinosaurs/0 (5).png",
+  "/public/dinosaurs/0 (6).png",
+  "/public/dinosaurs/0 (7).png",
+  "/public/dinosaurs/0 (8).png",
+  "/public/dinosaurs/0 (9).png",
+  "/public/dinosaurs/0 (10).png",
+  "/public/dinosaurs/0 (11).png",
+  "/public/dinosaurs/0 (12).png",
+  "/public/dinosaurs/0 (13).png",
+  "/public/dinosaurs/0 (14).png",
+  "/public/dinosaurs/0 (15).png",
 ]);
 
 </script>
@@ -29,7 +42,7 @@ const stickers = ref([
             :key="n"
             cols="3"
         >
-          <img :src="stickers[n]" alt="sticker" class="sticker"/>
+          <img :src="stickers[n - 1]" alt="sticker" @click="emitStickerClick(stickers[n - 1])"/>
         </v-col>
       </v-row>
     </div>
@@ -39,7 +52,7 @@ const stickers = ref([
 
 <style scoped>
 .sticker {
-  width: 100px;
-  height: 100px;
+  width: 50%;
+  height: 100%;
 }
 </style>
