@@ -56,12 +56,12 @@ onMounted(() => {
         class="pa-3 pl-6 chat-list-item text-left"
         rounded="lg"
         v-for="chat in chatList"
-        :title="chat.username"
+        :title="chat.type !== 'grp' ? chat.username : chat.name"
         :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
     >
       <template #prepend>
         <v-avatar>
-          <v-img :src="chat.avatar" cover/>
+          <v-img :src="chat.type !== 'grp' ? chat.avatar : '/public/baidu.webp'" cover/>
         </v-avatar>
       </template>
       <div class="chat-time fill-height">{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</div>

@@ -6,10 +6,53 @@ import {fakeContacts} from "./testdata/fakechats.js";
 import axios from "axios";
 
 const contacts = ref({});
+const groups = ref({});
+const groupMetas = ref({});
 const friendRequests = ref([]);
 
 let socket;
 // const messages = ref({});
+
+groups.value = {
+    200: {
+        'id': 200,
+        'name': 'Group1',
+        'type': 'grp',
+        'messages': [
+            {
+                'sender': 1,
+                'm_type': 0,
+                'content': 'Hello',
+                'time': Date.now(),
+            },
+            {
+                'sender': 2,
+                'm_type': 0,
+                'content': 'Hi',
+                'time': Date.now(),
+            }
+        ]
+    }
+}
+
+groupMetas.value = {
+    200: {
+        'id': 200,
+        'name': 'Group1',
+        'members': {
+            1: {
+                'id': 1,
+                'name': 'Alice',
+                'avatar': '/public/download.jpeg',
+            },
+            2: {
+                'id': 2,
+                'name': 'Bob',
+                'avatar': '/public/baidu.webp',
+            }
+        }
+    },
+}
 
 const addFriend = (friendId) => {
     axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
@@ -47,6 +90,7 @@ const getContacts = async () => {
                 newContacts[contact.id] = contact;
                 console.log("contacts updated");
             }
+            newContacts[200] = groups.value[200]; //TMP
             contacts.value = newContacts;
         })
 }
@@ -73,6 +117,7 @@ const applyList = async () => {
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat/" + userId.value + "/";
     socket = new WebSocket(uri);
+    let first = true;
 
     socket.onopen = () => {
         if (DEBUG) {
@@ -83,7 +128,19 @@ const createSocket = () => {
     socket.onmessage = (e) => {
         const message = JSON.parse(e.data);
         console.log(message);
-        contacts.value[message.sender].messages.push(message);
+        if (first) {
+            // meta data
+            first = false;
+        }
+        if (message.m_type <= 5) {
+            if (message.t_type === 0) {
+                contacts.value[message.sender].messages.push(message);
+            } else if (message.t_type === 1) {
+                groups.value[message.receiver].messages.push(message);
+            }
+        } else {
+
+        }
     };
 
     socket.onclose = (e) => {
@@ -105,16 +162,18 @@ const createSocket = () => {
 }
 
 
-const sendMessage = (receiverId, inputMessage) => {
+const sendMessage = (receiverId, inputMessage, t_type) => {
     const message = {
         time: Date.now(),
-        m_type: "text",
+        m_type: 0,
+        t_type: t_type === undefined ? 0 : t_type,
         content: inputMessage,
         receiver: receiverId,
+        sender: userId.value,
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
     contacts.value[receiverId].messages.push(message);
 };
 
-export {sendMessage, contacts, createSocket, getContacts, applyList, friendRequests, addFriend, acceptFriend}
+export {sendMessage, contacts, createSocket, getContacts, applyList, friendRequests, addFriend, acceptFriend, groups, groupMetas}

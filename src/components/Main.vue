@@ -4,7 +4,7 @@ import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
 import ProfilePage from "./ProfilePage.vue";
-import {createSocket, getContacts} from "../chat.js";
+import {contacts, createSocket, getContacts, groups} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
@@ -34,7 +34,14 @@ const ActivateChat = (chat) => {
 
 onMounted(() => {
   console.log("page " + activePage.value);
-  getContacts().then(createSocket);
+  getContacts()
+      .then(() => {
+        for (let k in groups.value) {
+          contacts.value[k] = groups.value[k];
+        }
+        console.log('groups: ', contacts.value);
+      })
+      .then(createSocket);
   axios.get()
 })
 </script>
@@ -44,9 +51,9 @@ onMounted(() => {
     <NavBar>
       <List density="compact" nav v-model="activePage">
         <v-list-item class="text-left"
-                  prepend-avatar="/public/Shenium.png"
-                  :title="userName"
-                  @click="activePage = 'profile'"
+                     prepend-avatar="/public/Shenium.png"
+                     :title="userName"
+                     @click="activePage = 'profile'"
         >
         </v-list-item>
         <v-divider/>
