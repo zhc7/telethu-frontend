@@ -3,7 +3,7 @@
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, ref} from "vue";
-import {contacts, sendMessage} from "../chat.js";
+import {contacts, groupMetas, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId} from "../auth.js";
@@ -65,8 +65,9 @@ const handleTextareaKeydown = (e) => {
 
 onMounted(() => {
   if (DEBUG) {
-    console.log(contacts.value);
+    console.log('contacts value here', contacts.value);
   }
+  console.log('in chatpage', contacts.value)
 })
 
 </script>
@@ -90,7 +91,7 @@ onMounted(() => {
               </v-avatar>
             </template>
             <v-toolbar-title>
-              <span class="pr-3">{{ selectedChat.username }}</span>
+              <span class="pr-3">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</span>
               <span v-if="selectedChat.mute"><v-icon>mdi-account</v-icon></span>
             </v-toolbar-title>
             <v-menu>
@@ -108,34 +109,38 @@ onMounted(() => {
       </v-row>
       <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow">
-          <MessagePop v-for="(message, index) in selectedChat.messages" :message="message"
+          <MessagePop v-for="(message, index) in selectedChat.messages"
+                      :message="message"
                       :final="index === selectedChat.messages.length - 1"
-                      :avatar="selectedChat.avatar"
+                      :avatar="selectedChat.type !== 'grp' ?
+                      selectedChat.avatar :
+                      message.sender !== userId ?
+                      groupMetas[selectedChatId].members[message.sender].avatar : undefined"
                       @finished="ScrollToBottom"
                       @showProfile="DisplayFriendProfile"
           />
-          <MessagePop :avatar="selectedChat.avatar"
-                      :message="
-                      {
-                         'sender': selectedChat.id,
-                         'receiver': userId,
-                         'm_type': 'video',
-                         'content': '/public/se.mp4',
-                         'time': Date.now(),
-                      }"
-                      @showProfile="DisplayFriendProfile"
-          />
-          <MessagePop :avatar="selectedChat.avatar"
-                      :message="
-                      {
-                         'sender': selectedChat.id,
-                         'receiver': userId,
-                         'm_type': 'image',
-                         'content': '/public/baidu.webp',
-                         'time': Date.now(),
-                      }"
-                      @showProfile="DisplayFriendProfile"
-          />
+<!--          <MessagePop :avatar="selectedChat.avatar"-->
+<!--                      :message="-->
+<!--                      {-->
+<!--                         'sender': selectedChat.id,-->
+<!--                         'receiver': userId,-->
+<!--                         'm_type': 'video',-->
+<!--                         'content': '/public/se.mp4',-->
+<!--                         'time': Date.now(),-->
+<!--                      }"-->
+<!--                      @showProfile="DisplayFriendProfile"-->
+<!--          />-->
+<!--          <MessagePop :avatar="selectedChat.avatar"-->
+<!--                      :message="-->
+<!--                      {-->
+<!--                         'sender': selectedChat.id,-->
+<!--                         'receiver': userId,-->
+<!--                         'm_type': 'image',-->
+<!--                         'content': '/public/baidu.webp',-->
+<!--                         'time': Date.now(),-->
+<!--                      }"-->
+<!--                      @showProfile="DisplayFriendProfile"-->
+<!--          />-->
 
         </div>
       </v-row>

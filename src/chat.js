@@ -7,10 +7,52 @@ import axios from "axios";
 
 const contacts = ref({});
 const groups = ref({});
+const groupMetas = ref({});
 const friendRequests = ref([]);
 
 let socket;
 // const messages = ref({});
+
+groups.value = {
+    200: {
+        'id': 200,
+        'name': 'Group1',
+        'type': 'grp',
+        'messages': [
+            {
+                'sender': 1,
+                'm_type': 0,
+                'content': 'Hello',
+                'time': Date.now(),
+            },
+            {
+                'sender': 2,
+                'm_type': 0,
+                'content': 'Hi',
+                'time': Date.now(),
+            }
+        ]
+    }
+}
+
+groupMetas.value = {
+    200: {
+        'id': 200,
+        'name': 'Group1',
+        'members': {
+            1: {
+                'id': 1,
+                'name': 'Alice',
+                'avatar': '/public/download.jpeg',
+            },
+            2: {
+                'id': 2,
+                'name': 'Bob',
+                'avatar': '/public/baidu.webp',
+            }
+        }
+    },
+}
 
 const addFriend = (friendId) => {
     axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
@@ -48,6 +90,7 @@ const getContacts = async () => {
                 newContacts[contact.id] = contact;
                 console.log("contacts updated");
             }
+            newContacts[200] = groups.value[200]; //TMP
             contacts.value = newContacts;
         })
 }
@@ -96,7 +139,7 @@ const createSocket = () => {
                 groups.value[message.receiver].messages.push(message);
             }
         } else {
-            alert("not implemented");
+
         }
     };
 
@@ -133,4 +176,4 @@ const sendMessage = (receiverId, inputMessage, t_type) => {
     contacts.value[receiverId].messages.push(message);
 };
 
-export {sendMessage, contacts, createSocket, getContacts, applyList, friendRequests, addFriend, acceptFriend}
+export {sendMessage, contacts, createSocket, getContacts, applyList, friendRequests, addFriend, acceptFriend, groups, groupMetas}

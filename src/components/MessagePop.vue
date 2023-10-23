@@ -23,8 +23,8 @@ onMounted(() => {
     {{ FormatChatMessageTime(nowRef, message.time) }}
   </div>
   <div class="d-flex mt-2" style="max-width: 75%;"
-       :style="{alignSelf: message.receiver === userId ? 'flex-start' : 'flex-end'}">
-    <v-avatar v-if="userId === message.receiver" class="ml-2 mr-2" @click="$emit('showProfile')">
+       :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}">
+    <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
           alt="John"
@@ -32,7 +32,7 @@ onMounted(() => {
       />
     </v-avatar>
     <div
-        v-if="message.m_type === 'text'"
+        v-if="message.m_type === 0"
         ref="messagePop"
         class="pa-2 rounded-lg text-left"
         :class="message.receiver === userId ? 'bg-blue' : 'bg-green'"
@@ -50,7 +50,7 @@ onMounted(() => {
       :src="message.content"
       style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
     ></video>
-    <v-avatar v-if="userId !== message.receiver" class="ml-2 mr-2">
+    <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
       <v-img
           :src="userRef.avatar"
           :alt="userRef.title"
