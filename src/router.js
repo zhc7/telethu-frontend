@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import {token} from "./auth.js";
 
 const Login = () => import('./components/Login.vue');
-const MessageFlow = () => import('./components/MessageFlow.vue');
 const Main = () => import ('./components/Main.vue')
 
 
