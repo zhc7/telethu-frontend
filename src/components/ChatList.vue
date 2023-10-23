@@ -6,6 +6,7 @@ import {contacts} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import {DEBUG} from "../constants.js";
+import {createGroup} from "../chat.js";
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(["update:modelValue"])
@@ -17,7 +18,19 @@ const selected = computed({
   }
 });
 
-const createGroup = ref(false);
+const createGroupDialog = ref(false);
+const createGroupLoading = ref(false);
+const createGroupName = ref('New Group');
+const createGroupSelecting = ref([]);
+
+const handleCreateGroup = () => {
+  console.log("creating group", createGroupSelecting);
+  createGroupLoading.value = true;
+  createGroup(createGroupName.value, createGroupSelecting.value);
+  createGroupSelecting.value = [];
+  createGroupLoading.value = false;
+  createGroupDialog.value = false;
+}
 
 
 // values of contacts.value
@@ -40,7 +53,7 @@ const UpdateChatList = () => {
 }
 
 const handlePlus = () => {
-  createGroup.value = true;
+  createGroupDialog.value = true;
 }
 
 watch(contacts, UpdateChatList);
@@ -52,65 +65,60 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog v-model="createGroup">
-    <v-row mt="4">
-      <v-col cols="4" offset="4">
-        <v-card>
-          <v-card-title class="text-center">
-            Create Group
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field density="compact"
-                                label="Search"></v-text-field>
-                </v-col>
-              </v-row>
-              <v-list>
-                <v-list-item v-for="contact in {
-                  1: {
-                    'id': 1,
-                    'username': 'Alice',
-                    'avatar': '/public/Shenium.png',
-                  },
-                  2: {
-                    'id': 2,
-                    'username': 'Bob',
-                    'avatar': '/public/Shenium.png',
-                  },
-                  3: {
-                    'id': 3,
-                    'username': 'Alice',
-                    'avatar': '/public/Shenium.png',
-                  }
-                }"
-                >
-                  <template #prepend>
-                    <v-avatar>
-                      <v-img :src="contact.avatar" cover></v-img>
-                    </v-avatar>
-                  </template>
-                  <v-list-item-title>
-                    {{ contact.username }}
-                  </v-list-item-title>
-                  <template #append>
-                    Append
-<!--                    <v-avatar>-->
-<!--                      <v-img :src="contact.avatar" cover></v-img>-->
-<!--                    </v-avatar>-->
-                  </template>
-                </v-list-item>
-
-              </v-list>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn>Done</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+  <v-dialog v-model="createGroupDialog" max-width="50vw">
+    <v-card>
+      <v-card-title class="text-center">
+        Create Group
+      </v-card-title>
+      <v-card-text>
+        <v-text-field
+            density="compact"
+            label="group name"
+            v-model="createGroupName"
+            variant="outlined"
+        />
+        <v-text-field
+            density="compact"
+            label="Search"
+        />
+        <div class="d-flex overflow-x-auto" v-if="createGroupSelecting">
+          <div
+              v-for="id in createGroupSelecting"
+              :key="id"
+              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+              @click="createGroupSelecting = createGroupSelecting.filter((i) => i !== id)"
+              v-ripple
+          >
+            <v-avatar>
+              <v-img :src="contacts[id].avatar" cover></v-img>
+            </v-avatar>
+            <p>{{ contacts[id].username }}</p>
+          </div>
+        </div>
+        <v-list>
+          <v-list-item v-for="contact in contacts">
+            <template #prepend>
+              <v-avatar>
+                <v-img :src="contact.avatar" cover></v-img>
+              </v-avatar>
+            </template>
+            <v-list-item-title>
+              {{ contact.username }}
+            </v-list-item-title>
+            <template #append>
+              <v-btn @click="createGroupSelecting.push(contact.id)">
+                Append
+              </v-btn>
+            </template>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-actions class="mb-3 mr-4">
+        <v-spacer/>
+        <v-btn @click="createGroupDialog = false">Cancel</v-btn>
+        <v-btn @click="handleCreateGroup" :loading="createGroupLoading">Create</v-btn>
+      </v-card-actions>
+    </v-card>
 
   </v-dialog>
   <List class="fill-height" v-model="selected">

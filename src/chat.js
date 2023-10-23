@@ -117,7 +117,7 @@ const applyList = async () => {
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
-    let first = true;
+    let first = 2;
 
     socket.onopen = () => {
         if (DEBUG) {
@@ -128,11 +128,15 @@ const createSocket = () => {
     socket.onmessage = (e) => {
         const message = JSON.parse(e.data);
         console.log(message);
-        if (first) {
-            // meta data
-            first = false;
-        }
-        if (message.m_type <= 5) {
+        if (first === 2) {
+            // ignore friend meta, we'll manually get this by http for now
+            console.log("receiving first meta", message);
+            first--;
+        } else if (first === 1) {
+            console.log("receiving second meta", message);
+            first--;
+            groupMetas.value = message;
+        } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
                 contacts.value[message.sender].messages.push(message);
             } else if (message.t_type === 1) {
@@ -177,4 +181,30 @@ const sendMessage = (receiverId, inputMessage, t_type) => {
     contacts.value[receiverId].messages.push(message);
 };
 
-export {sendMessage, contacts, createSocket, getContacts, applyList, friendRequests, addFriend, acceptFriend, groups, groupMetas}
+const createGroup = (groupName, members) => {
+    const message = {
+        time: Date.now(),
+        m_type: 7,
+        t_type: 1,
+        content: members,
+        receiver: userId.value,
+        sender: userId.value,
+        info: groupName,
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
+export {
+    contacts,
+    groups,
+    groupMetas,
+    friendRequests,
+    sendMessage,
+    createSocket,
+    getContacts,
+    applyList,
+    addFriend,
+    acceptFriend,
+    createGroup,
+}
