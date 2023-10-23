@@ -36,7 +36,6 @@ onMounted(() => {
   console.log("page " + activePage.value);
   getContacts()
       .then(createSocket);
-  axios.get()
 })
 </script>
 
