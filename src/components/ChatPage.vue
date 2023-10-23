@@ -36,11 +36,10 @@ const ScrollToBottom = () => {
 const displayType = ref();
 const displayContact = ref();
 const DisplayFriendProfile = () => {
-  displayProfile.value = true;
+  displayProfile.value = displayProfile.value === false;
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
-  displayType.value = displayType.value === 'contactDetail' ? undefined : 'contactDetail';
   displayContact.value = contacts.value[selectedChatId.value];
 };
 
@@ -56,6 +55,13 @@ const handleHideProfile = (event) => {
     }, 300);
   }
 }
+
+const handleTextareaKeydown = (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSendMessage();
+  }
+};
 
 onMounted(() => {
   if (DEBUG) {
@@ -144,6 +150,8 @@ onMounted(() => {
             v-model="message"
             hide-details
             flat
+            clearable
+            @keydown="handleTextareaKeydown"
         ></v-textarea>
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
