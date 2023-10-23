@@ -35,12 +35,6 @@ const ActivateChat = (chat) => {
 onMounted(() => {
   console.log("page " + activePage.value);
   getContacts()
-      .then(() => {
-        for (let k in groups.value) {
-          contacts.value[k] = groups.value[k];
-        }
-        console.log('groups: ', contacts.value);
-      })
       .then(createSocket);
   axios.get()
 })
