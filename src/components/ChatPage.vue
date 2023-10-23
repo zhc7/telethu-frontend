@@ -72,8 +72,6 @@ onMounted(() => {
         <v-card class="chat-title ma-1" style="width: 100%" variant="flat" elevation="6">
           <v-toolbar color="#009688">
             <template #prepend>
-              <v-avatar size="30">
-                <v-img :src="selectedChat.avatar"/>
               <v-avatar size="30" @click="DisplayFriendProfile" v-ripple>
                 <v-img :src="selectedChat.avatar" id="friend-avatar"/>
               </v-avatar>
@@ -87,9 +85,6 @@ onMounted(() => {
                 <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
               </template>
               <v-list>
-                <v-list-item>
-                  <FriendProfile :displayContact="contacts[selectedChatId]"/>
-                </v-list-item>
                 <v-list-item align="center">
                   <v-btn style="width: 100%" variant="text" @click="">Mute</v-btn>
                 </v-list-item>
