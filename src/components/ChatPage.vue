@@ -73,7 +73,7 @@ onMounted(() => {
           <v-toolbar color="#009688">
             <template #prepend>
               <v-avatar size="30" @click="DisplayFriendProfile" v-ripple>
-                <v-img :src="selectedChat.avatar" id="friend-avatar"/>
+                <v-img :src="selectedChat.avatar" id="friend-avatar" cover/>
               </v-avatar>
             </template>
             <v-toolbar-title>
