@@ -2,7 +2,7 @@
 
 import {ref} from "vue";
 
-const gifs = ref([
+const stickers = ref([
   "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
   "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
   "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
@@ -20,16 +20,26 @@ const gifs = ref([
       elevation="2"
       class="pa-3"
       style="width: 100%"
+      no-gutters
   >
     <div style="max-height: 300px; overflow-y: auto;">
-      <!-- This is where your GIF picker interface would go. Below is a simple implementation: -->
-      <div v-for="gif in gifs" :key="gif">
-        <img :src="gif" alt="gif"/>
-      </div>
+      <v-row>
+        <v-col
+            v-for="n in stickers.length"
+            :key="n"
+            cols="3"
+        >
+          <img :src="stickers[n]" alt="sticker" class="sticker"/>
+        </v-col>
+      </v-row>
     </div>
+    <v-pagination :length="4"></v-pagination>
   </v-card>
 </template>
 
 <style scoped>
-
+.sticker {
+  width: 100px;
+  height: 100px;
+}
 </style>
