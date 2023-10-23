@@ -12,6 +12,7 @@ const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
 const message = ref("");
 const displayProfile = ref(false);
+const showProfileDetail = ref(false);
 
 const selectedChatId = computed({
   get: () => props.modelValue,
@@ -36,7 +37,9 @@ const displayType = ref();
 const displayContact = ref();
 const DisplayFriendProfile = () => {
   displayProfile.value = true;
-  console.log(displayProfile.value)
+  window.setTimeout(() => {
+    showProfileDetail.value = true;
+  }, 300);
   displayType.value = displayType.value === 'contactDetail' ? undefined : 'contactDetail';
   displayContact.value = contacts.value[selectedChatId.value];
 };
@@ -47,6 +50,10 @@ const handleHideProfile = (event) => {
     console.log('is child')
   } else {
     displayProfile.value = false;
+    showProfileDetail.value = false;
+    window.setTimeout(() => {
+      showProfileDetail.value = false;
+    }, 300);
   }
 }
 
@@ -99,7 +106,7 @@ onMounted(() => {
                       :final="index === selectedChat.messages.length - 1"
                       :avatar="selectedChat.avatar"
                       @finished="ScrollToBottom"
-                      @showProfile="displayProfile = true"
+                      @showProfile="DisplayFriendProfile"
           />
           <MessagePop :avatar="selectedChat.avatar"
                       :message="
@@ -109,7 +116,9 @@ onMounted(() => {
                          'm_type': 'video',
                          'content': '/public/se.mp4',
                          'time': Date.now(),
-                      }"/>
+                      }"
+                      @showProfile="DisplayFriendProfile"
+          />
           <MessagePop :avatar="selectedChat.avatar"
                       :message="
                       {
@@ -118,7 +127,9 @@ onMounted(() => {
                          'm_type': 'image',
                          'content': '/public/baidu.webp',
                          'time': Date.now(),
-                      }"/>
+                      }"
+                      @showProfile="DisplayFriendProfile"
+          />
 
         </div>
       </v-row>
@@ -137,12 +148,9 @@ onMounted(() => {
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
     </v-col>
-    <v-col cols="3" class="d-none">
-      <FriendProfile v-if="displayType === 'contactDetail'" :displayContact="displayContact"/>
-    </v-col>
   </v-row>
   <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="displayProfile"/>
+    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="showProfileDetail"/>
   </div>
 </template>
 
