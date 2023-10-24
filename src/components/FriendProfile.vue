@@ -50,9 +50,7 @@ const props = defineProps(['displayContact', 'display'])
       <v-divider class="ma-4"/>
       <v-card-actions class="justify-center">
         <v-btn-group color="info" variant="outlined" divided>
-          <v-btn>RECOMMEND</v-btn>
-          <v-btn>DELETE</v-btn>
-          <v-btn @click="">BLOCK</v-btn>
+          <slot name="btn"/>
         </v-btn-group>
       </v-card-actions>
     </v-card-item>

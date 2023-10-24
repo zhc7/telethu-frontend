@@ -39,7 +39,7 @@ const ScrollToBottom = () => {
 
 const displayContact = ref();
 const DisplayFriendProfile = () => {
-  displayProfile.value = displayProfile.value === false;
+  displayProfile.value = !displayProfile.value;
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
@@ -145,7 +145,13 @@ onMounted(() => {
     </v-col>
   </v-row>
   <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="showProfileDetail"/>
+    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="showProfileDetail">
+      <template #btn>
+        <v-btn>RECOMMEND</v-btn>
+        <v-btn>DELETE</v-btn>
+        <v-btn @click="">BLOCK</v-btn>
+      </template>
+    </FriendProfile>
   </div>
 </template>
 
