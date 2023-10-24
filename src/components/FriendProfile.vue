@@ -1,5 +1,4 @@
 <script setup>
-import {ref, watch} from "vue";
 
 const props = defineProps(['displayContact', 'display'])
 
@@ -13,7 +12,7 @@ const props = defineProps(['displayContact', 'display'])
     <v-card-item>
       <v-list>
         <v-list-item-title>
-          {{ displayContact.username }}
+          {{ displayContact.name }}
         </v-list-item-title>
         <v-list-item-subtitle>
           @{{ displayContact.id }}
@@ -37,12 +36,12 @@ const props = defineProps(['displayContact', 'display'])
                 1145141919810
               </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="displayContact.email">
               <v-col cols="4" class="text-right">
                 Email:
               </v-col>
               <v-col cols="8" class="text-left">
-                <a href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">Cindy@telethu.org</a>
+                <a href="#">{{ displayContact.email }}</a>
               </v-col>
             </v-row>
           </div>
