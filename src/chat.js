@@ -2,57 +2,13 @@ import {token, userId} from "./auth.js";
 import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
 import {ref} from "vue";
-import {fakeContacts} from "./testdata/fakechats.js";
 import axios from "axios";
 
 const contacts = ref({});
-const groups = ref({});
-const groupMetas = ref({});
 const friendRequests = ref([]);
 
 let socket;
 // const messages = ref({});
-
-groups.value = {
-    200: {
-        'id': 200,
-        'name': 'Group1',
-        'type': 'grp',
-        'messages': [
-            {
-                'sender': 1,
-                'm_type': 0,
-                'content': 'Hello',
-                'time': Date.now(),
-            },
-            {
-                'sender': 2,
-                'm_type': 0,
-                'content': 'Hi',
-                'time': Date.now(),
-            }
-        ]
-    }
-}
-
-groupMetas.value = {
-    200: {
-        'id': 200,
-        'name': 'Group1',
-        'members': {
-            1: {
-                'id': 1,
-                'name': 'Alice',
-                'avatar': '/public/download.jpeg',
-            },
-            2: {
-                'id': 2,
-                'name': 'Bob',
-                'avatar': '/public/baidu.webp',
-            }
-        }
-    },
-}
 
 const addFriend = (friendId) => {
     axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
@@ -75,6 +31,7 @@ const acceptFriend = (friendId) => {
 }
 
 const getContacts = async () => {
+    alert("calling deprecated get contact");
     console.log("getting contacts");
     await axios.get(BASE_API_URL + "users/friends/list", {
         headers: {
@@ -90,7 +47,6 @@ const getContacts = async () => {
                 newContacts[contact.id] = contact;
                 console.log("contacts updated");
             }
-            // newContacts[200] = groups.value[200]; //TMP
             contacts.value = newContacts;
         })
 }
@@ -117,7 +73,7 @@ const applyList = async () => {
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
-    let first = 2;
+    let first = true;
 
     socket.onopen = () => {
         if (DEBUG) {
@@ -128,19 +84,16 @@ const createSocket = () => {
     socket.onmessage = (e) => {
         const message = JSON.parse(e.data);
         console.log(message);
-        if (first === 2) {
+        if (first) {
             // ignore friend meta, we'll manually get this by http for now
-            console.log("receiving first meta", message);
-            first--;
-        } else if (first === 1) {
-            console.log("receiving second meta", message);
-            first--;
-            groupMetas.value = message;
+            console.log("receiving meta", message);
+            first = false;
+            contacts.value = message;
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
                 contacts.value[message.sender].messages.push(message);
             } else if (message.t_type === 1) {
-                groups.value[message.receiver].messages.push(message);
+                contacts.value[message.receiver].messages.push(message);
             }
         } else {
 
@@ -197,8 +150,6 @@ const createGroup = (groupName, members) => {
 
 export {
     contacts,
-    groups,
-    groupMetas,
     friendRequests,
     sendMessage,
     createSocket,

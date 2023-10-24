@@ -8,7 +8,7 @@ const props = defineProps(["modelValue"]);
 const emit = defineEmits((["update:modelValue"]))
 const personContacts = computed(() => {
   return Object.values(contacts.value)
-      .sort((a, b) => (a.username.localeCompare(b.username)));
+      .sort((a, b) => (a.name.localeCompare(b.name)));
 });
 
 const selected = computed({
@@ -33,7 +33,7 @@ const selected = computed({
         </v-avatar>
       </template>
       <v-list-item-title>
-        {{ contact.username }}
+        {{ contact.name }}
       </v-list-item-title>
     </ListItem>
     <v-list-item>

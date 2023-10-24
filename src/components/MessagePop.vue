@@ -35,7 +35,7 @@ onMounted(() => {
         v-if="message.m_type === 0"
         ref="messagePop"
         class="pa-2 rounded-lg text-left"
-        :class="message.receiver === userId ? 'bg-blue' : 'bg-green'"
+        :class="message.sender === userId ? 'bg-green' : 'bg-blue'"
     >
       <span>{{ message.content }}</span>
     </div>

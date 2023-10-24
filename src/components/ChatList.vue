@@ -92,7 +92,7 @@ onMounted(() => {
             <v-avatar>
               <v-img :src="contacts[id].avatar" cover></v-img>
             </v-avatar>
-            <p>{{ contacts[id].username }}</p>
+            <p>{{ contacts[id].name }}</p>
           </div>
         </div>
         <v-list>
@@ -103,7 +103,7 @@ onMounted(() => {
               </v-avatar>
             </template>
             <v-list-item-title>
-              {{ contact.username }}
+              {{ contact.name }}
             </v-list-item-title>
             <template #append>
               <v-btn @click="createGroupSelecting.push(contact.id)">
@@ -141,7 +141,7 @@ onMounted(() => {
         class="pa-3 pl-6 chat-list-item text-left"
         rounded="lg"
         v-for="chat in chatList"
-        :title="chat.type !== 'grp' ? chat.username : chat.name"
+        :title="chat.name"
         :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
     >
       <template #prepend>

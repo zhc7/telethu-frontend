@@ -3,7 +3,7 @@
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, ref} from "vue";
-import {contacts, groupMetas, sendMessage} from "../chat.js";
+import {contacts, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId} from "../auth.js";
@@ -27,7 +27,7 @@ const selectedChat = computed(() => contacts.value[selectedChatId.value]);
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    sendMessage(selectedChatId.value, message.value);
+    sendMessage(selectedChatId.value, message.value, contacts.value[selectedChatId.value].category === 'group' ? 1 : 0);
     message.value = "";
   }
 };
@@ -115,10 +115,7 @@ onMounted(() => {
           <MessagePop v-for="(message, index) in selectedChat.messages"
                       :message="message"
                       :final="index === selectedChat.messages.length - 1"
-                      :avatar="selectedChat.type !== 'grp' ?
-                      selectedChat.avatar :
-                      message.sender !== userId ?
-                      groupMetas[selectedChatId].members[message.sender].avatar : undefined"
+                      :avatar="selectedChat.avatar"
                       @finished="ScrollToBottom"
                       @showProfile="DisplayFriendProfile"
           />
