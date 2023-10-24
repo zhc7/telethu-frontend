@@ -121,43 +121,37 @@ onMounted(() => {
     </v-card>
 
   </v-dialog>
-  <List class="fill-height" v-model="selected">
-    <v-list-item
-        append-icon="mdi-plus"
-    >
-      <template #prepend>
-        <v-icon>mdi-magnify</v-icon>
-      </template>
-      <a href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
-      <template #append>
-        <v-icon
-            @click="handlePlus">mdi-plus
-        </v-icon>
-      </template>
-    </v-list-item>
-    <ListItem
-        :key="chat.id"
-        :k="chat.id"
-        class="pa-3 pl-6 chat-list-item text-left"
-        rounded="lg"
-        v-for="chat in chatList"
-        :title="chat.name"
-        :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
-    >
-      <template #prepend>
-        <v-avatar>
-          <v-img :src="chat.type !== 'grp' ? chat.avatar : '/public/baidu.webp'" cover/>
-        </v-avatar>
-      </template>
-      <div class="chat-time fill-height">{{
-          chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : ''
-        }}
-      </div>
-      <template #append>
-        <v-badge color="red" content="1" inline></v-badge>
-      </template>
-    </ListItem>
-  </List>
+  <div class="fill-height d-flex flex-column">
+    <div class="d-flex" style="justify-content: space-between">
+      <v-icon class="ma-3">mdi-magnify</v-icon>
+      <a class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
+      <v-icon class="ma-3" @click="handlePlus">mdi-plus</v-icon>
+    </div>
+    <List class="overflow-y-auto" v-model="selected">
+      <ListItem
+          :key="chat.id"
+          :k="chat.id"
+          class="pa-3 pl-6 chat-list-item text-left"
+          rounded="lg"
+          v-for="chat in chatList"
+          :title="chat.name"
+          :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
+      >
+        <template #prepend>
+          <v-avatar>
+            <v-img :src="chat.type !== 'grp' ? chat.avatar : '/public/baidu.webp'" cover/>
+          </v-avatar>
+        </template>
+        <div class="chat-time fill-height">{{
+            chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : ''
+          }}
+        </div>
+        <template #append>
+          <v-badge color="red" content="1" inline></v-badge>
+        </template>
+      </ListItem>
+    </List>
+  </div>
 </template>
 
 <style scoped>

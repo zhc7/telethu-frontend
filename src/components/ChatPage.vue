@@ -79,7 +79,7 @@ onMounted(() => {
   <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height"
          @click="handleHideProfile($event)"
   >
-    <v-col cols="12" sm="4" class="pa-0">
+    <v-col cols="12" sm="4" class="pa-0 fill-height">
       <ChatList v-model="selectedChatId"></ChatList>
     </v-col>
     <v-col v-if="selectedChat" cols="12" sm="8"
@@ -119,29 +119,6 @@ onMounted(() => {
                       @finished="ScrollToBottom"
                       @showProfile="DisplayFriendProfile"
           />
-<!--          <MessagePop :avatar="selectedChat.avatar"-->
-<!--                      :message="-->
-<!--                      {-->
-<!--                         'sender': selectedChat.id,-->
-<!--                         'receiver': userId,-->
-<!--                         'm_type': 'video',-->
-<!--                         'content': '/public/se.mp4',-->
-<!--                         'time': Date.now(),-->
-<!--                      }"-->
-<!--                      @showProfile="DisplayFriendProfile"-->
-<!--          />-->
-<!--          <MessagePop :avatar="selectedChat.avatar"-->
-<!--                      :message="-->
-<!--                      {-->
-<!--                         'sender': selectedChat.id,-->
-<!--                         'receiver': userId,-->
-<!--                         'm_type': 'image',-->
-<!--                         'content': '/public/baidu.webp',-->
-<!--                         'time': Date.now(),-->
-<!--                      }"-->
-<!--                      @showProfile="DisplayFriendProfile"-->
-<!--          />-->
-
         </div>
       </v-row>
       <v-row no-gutters class="d-flex" style="width: 100%">
