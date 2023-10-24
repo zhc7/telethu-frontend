@@ -131,7 +131,7 @@ onMounted(() => {
         <v-card-item>
           <v-list>
             <v-list-item-title>
-              {{ displayContact.username }}
+              {{ displayContact.name }}
             </v-list-item-title>
             <v-list-item-subtitle>
               @{{ displayContact.id }}
@@ -154,12 +154,12 @@ onMounted(() => {
                   1145141919810
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row v-if="displayContact.email">
                 <v-col cols="4" offset="1" class="text-right">
                   Email:
                 </v-col>
                 <v-col cols="6" class="text-left">
-                  <a href="#">Cindy@telethu.org</a>
+                  <a href="#">{{ displayContact.email }}</a>
                 </v-col>
               </v-row>
             </v-list-item>
