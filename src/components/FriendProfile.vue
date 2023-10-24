@@ -61,5 +61,7 @@ const props = defineProps(['displayContact', 'display'])
 </template>
 
 <style scoped>
-
+.v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
+  margin-inline-start: 0;
+}
 </style>
