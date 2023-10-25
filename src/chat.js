@@ -105,7 +105,21 @@ const createSocket = () => {
                 contacts.value[message.receiver].messages.push(message);
             }
         } else {
-
+            const functionMessageHandlers = {
+                6: () => {
+                    // FUNC_ADD_FRIEND
+                },
+                7: () => {
+                    // FUNC_CREATE_GROUP
+                    contacts.value[message.receiver] = message.content;
+                },
+                8: () => {
+                    // FUNC_ADD_GROUP_MEMBER
+                    contacts.value[message.receiver].members.push(message.content);
+                    contacts.value[message.receiver].id2member[message.content.id] = message.content;
+                }
+            }
+            functionMessageHandlers[message.m_type]();
         }
     };
 
