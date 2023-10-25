@@ -42,7 +42,7 @@ onMounted(() => {
     <NavBar>
       <List density="compact" nav v-model="activePage">
         <v-list-item class="text-left"
-                     prepend-avatar="/public/Shenium.png"
+                     prepend-avatar="/Shenium.png"
                      :title="userName"
                      @click="activePage = 'profile'"
         >

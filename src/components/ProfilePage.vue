@@ -29,7 +29,7 @@ const handleEdit = () => {
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
         <v-avatar size="80">
-          <v-img src="/public/download.jpeg"/>
+          <v-img src="/shenium.jpeg"/>
         </v-avatar>
         <v-card-item>
           <v-row no-gutters pa="4">
