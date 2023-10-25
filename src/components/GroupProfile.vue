@@ -39,7 +39,7 @@ const editGroupName = () => {
     <v-divider class="ma-4"/>
       <v-col>
         <v-row style="display: flex; align-items: center;" class="ma-3">
-          <p style="flex: 1" class="font-weight-bold">Rename</p>
+          <p style="flex: 1">Rename:</p>
           <v-text-field
               variant="solo"
               label="New group name"
@@ -51,8 +51,12 @@ const editGroupName = () => {
               @click:append-inner="editGroupName"
           />
         </v-row>
-        <v-row style="display: flex; align-items: center;" class="ma-3">
-          <p style="flex: 1" class="font-weight-bold">Mute</p>
+        <v-row style="display: flex; align-items: center;" class="ma-1">
+          <p style="flex: 1">Mute:</p>
+          <v-switch style="flex: 2" hide-details color="indigo"></v-switch>
+        </v-row>
+        <v-row style="display: flex; align-items: center;" class="ma-1">
+          <p style="flex: 1">Pin:</p>
           <v-switch style="flex: 2" hide-details color="indigo"></v-switch>
         </v-row>
       </v-col>
