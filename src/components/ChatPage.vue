@@ -8,6 +8,7 @@ import FriendProfile from "./FriendProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId} from "../auth.js";
 import Stickers from "./Stickers.vue";
+import GroupProfile from "./GroupProfile.vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -47,8 +48,8 @@ const DisplayFriendProfile = () => {
 };
 
 const handleHideProfile = (event) => {
-  const avatar = document.getElementById('friend-avatar');
-  if (event.target.parentNode.parentNode.classList.contains('v-avatar')) {
+  const target = event.target.parentNode.parentNode;
+  if (target.classList.contains('v-avatar') || target.classList.contains('v-btn')) {
     console.log('is child')
   } else {
     displayProfile.value = false;
@@ -97,16 +98,7 @@ onMounted(() => {
               <span class="pr-3">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</span>
               <span v-if="selectedChat.mute"><v-icon>mdi-account</v-icon></span>
             </v-toolbar-title>
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
-              </template>
-              <v-list>
-                <v-list-item align="center">
-                  <v-btn style="width: 100%" variant="text" @click="">Mute</v-btn>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
           </v-toolbar>
         </v-card>
       </v-row>
@@ -152,6 +144,7 @@ onMounted(() => {
         <v-btn @click="">BLOCK</v-btn>
       </template>
     </FriendProfile>
+    <GroupProfile v-if="displayProfile" />
   </div>
 </template>
 
