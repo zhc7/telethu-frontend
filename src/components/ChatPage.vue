@@ -4,11 +4,10 @@ import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, ref} from "vue";
 import {contacts, sendMessage} from "../chat.js";
-import FriendProfile from "./FriendProfile.vue";
+import FriendProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
 import Stickers from "./Stickers.vue";
-import GroupProfile from "./GroupProfile.vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -145,15 +144,15 @@ onMounted(() => {
       </v-row>
     </v-col>
   </v-row>
-  <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayProfile === 'user'" :displayContact="selectedChat" :display="showProfileDetail">
+  <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
+    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat" :display="showProfileDetail">
       <template #btn>
         <v-btn>RECOMMEND</v-btn>
         <v-btn>DELETE</v-btn>
         <v-btn @click="">BLOCK</v-btn>
       </template>
     </FriendProfile>
-    <GroupProfile v-if="displayProfile === 'group'" :displayContact="selectedChat" :display="showProfileDetail"/>
+    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat" :display="showProfileDetail"/>
   </div>
 </template>
 

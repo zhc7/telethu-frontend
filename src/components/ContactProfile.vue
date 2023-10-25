@@ -5,12 +5,12 @@ const props = defineProps(['displayContact', 'display'])
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6" v-show="display">
+  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="display">
     <v-avatar size="80">
       <v-img :src="displayContact.avatar" cover/>
     </v-avatar>
-    <v-card-item>
-      <v-list>
+    <v-card-item class="overflow-y-auto">
+      <v-list class="overflow-y-auto">
         <v-list-item-title>
           {{ displayContact.name }}
         </v-list-item-title>
@@ -46,6 +46,24 @@ const props = defineProps(['displayContact', 'display'])
             </v-row>
           </div>
         </v-list-item>
+        <div v-if="displayContact.category === 'group'" class="overflow-y-auto fill-height">
+          <v-divider class="ma-4"/>
+          <v-card-title class="ma-3">
+            Members
+          </v-card-title>
+          <div class="overflow-y-auto fill-height d-flex flex-wrap">
+            <div
+                v-for="member in displayContact.members"
+                :key="member"
+                class="d-flex flex-column align-center ma-3"
+            >
+              <v-avatar size="60">
+                <v-img :src="member.avatar" id="member-avatar" cover/>
+              </v-avatar>
+              <p>{{ member.name }}</p>
+            </div>
+          </div>
+        </div>
       </v-list>
       <v-divider class="ma-4"/>
       <v-card-actions class="justify-center">

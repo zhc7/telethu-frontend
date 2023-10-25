@@ -4,7 +4,7 @@ import ContactList from "./ContactList.vue";
 
 import {acceptFriend, addFriend, applyList, contacts, friendRequests} from "../chat.js";
 import RequestList from "./RequestList.vue";
-import FriendProfile from "./FriendProfile.vue";
+import FriendProfile from "./ContactProfile.vue";
 
 defineEmits((['chat']));
 const displayRightType = ref();
