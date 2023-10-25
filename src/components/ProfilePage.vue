@@ -28,7 +28,7 @@ const handleEdit = () => {
   <v-row no-gutters>
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
-        <v-avatar size="80">
+        <v-avatar size="80" class="mt-5">
           <v-img src="/Shenium.png"/>
         </v-avatar>
         <v-card-item>
