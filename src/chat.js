@@ -89,7 +89,7 @@ const createSocket = () => {
             // ignore friend meta, we'll manually get this by http for now
             console.log("receiving meta", message);
             first = false;
-            for (let contact of message) {
+            for (let contact of Object.values(message)) {
                 if (contacts.value[contact.id] !== undefined) {
                     contact.messages = contacts.value[contact.id].messages;
                 }
