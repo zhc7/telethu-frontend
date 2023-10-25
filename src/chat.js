@@ -89,6 +89,15 @@ const createSocket = () => {
             console.log("receiving meta", message);
             first = false;
             contacts.value = message;
+            for (let contact of Object.values(contacts.value)) {
+                contact.messages = [];
+                if (contact.category === "group") {
+                    contact.id2member = {}
+                    for (let member of contact.members) {
+                        contact.id2member[member.id] = member;
+                    }
+                }
+            }
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
                 contacts.value[message.sender].messages.push(message);
@@ -96,7 +105,21 @@ const createSocket = () => {
                 contacts.value[message.receiver].messages.push(message);
             }
         } else {
-
+            const functionMessageHandlers = {
+                6: () => {
+                    // FUNC_ADD_FRIEND
+                },
+                7: () => {
+                    // FUNC_CREATE_GROUP
+                    contacts.value[message.receiver] = message.content;
+                },
+                8: () => {
+                    // FUNC_ADD_GROUP_MEMBER
+                    contacts.value[message.receiver].members.push(message.content);
+                    contacts.value[message.receiver].id2member[message.content.id] = message.content;
+                }
+            }
+            functionMessageHandlers[message.m_type]();
         }
     };
 

@@ -32,35 +32,38 @@ const handleCreateGroup = () => {
   createGroupDialog.value = false;
 }
 
-
-// values of contacts.value
-const chatList = ref();
-
-const UpdateChatList = () => {
-  chatList.value = Object.values(contacts.value).sort((a, b) => (a.time - b.time));
-  if (DEBUG) {
-    console.log("updating chat list", chatList.value);
+const chatList = computed(() => {
+  let list = [];
+  for (let id in contacts.value) {
+    const contact = contacts.value[id];
+    list.push({
+      id: id,
+      name: contact.name,
+      avatar: contact.avatar,
+      category: contact.category,
+      hotMessage: contact.messages[contact.messages.length - 1],
+    })
   }
-  chatList.value.map((chat) => {
-    if (chat.messages === undefined) chat.messages = [];
-    if (chat.messages.length === 0) {
-      chat.hotMessage = undefined;
+  list = list.sort((a, b) => {
+    if (a.hotMessage && b.hotMessage) {
+      return b.hotMessage.time - a.hotMessage.time;
+    } else if (a.hotMessage) {
+      return -1;
+    } else if (b.hotMessage) {
+      return 1;
     } else {
-      chat.hotMessage = chat.messages[chat.messages.length - 1];
+      return 0;
     }
-    return chat;
   });
-}
+  return list;
+});
 
 const handlePlus = () => {
   createGroupDialog.value = true;
 }
 
-watch(contacts, UpdateChatList);
-
 onMounted(() => {
   console.log("chat list mounted");
-  UpdateChatList();
 })
 </script>
 

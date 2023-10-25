@@ -21,7 +21,7 @@ const selected = computed({
 </script>
 
 <template>
-  <List class="fill-height" v-model="selected">
+  <List class="fill-height overflow-y-auto" v-model="selected">
     <ListItem :key="contact.id"
               :k="contact.id"
               class="pa-3 pl-6 chat-list-item text-left"
