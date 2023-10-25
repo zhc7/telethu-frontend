@@ -67,6 +67,7 @@ const submit = () => {
             :type="passwordVisible ? 'text' : 'password'"
             :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
             @click:append-inner="passwordVisible = !passwordVisible"
+            @keydown="(e) => {if (e.key === 'Enter') submit()}"
             variant="outlined"
             class="mb-7"
             :error-messages="hint"
