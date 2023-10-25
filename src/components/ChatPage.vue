@@ -95,7 +95,7 @@ onMounted(() => {
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
     >
       <v-row no-gutters class="align-center flex-0-0">
-        <v-card class="chat-title ma-1" style="width: 100%" variant="flat" elevation="6">
+        <v-card class="chat-title ma-1" style="width: 100%" variant="flat">
           <v-toolbar color="#009688">
             <template #prepend>
               <v-avatar size="30" @click="DisplayFriendProfile" v-ripple>
