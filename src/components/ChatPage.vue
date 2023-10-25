@@ -13,7 +13,7 @@ import GroupProfile from "./GroupProfile.vue";
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
 const message = ref("");
-const displayProfile = ref(false);
+const displayProfile = ref(undefined);
 const showProfileDetail = ref(false);
 const showStickers = ref(false);
 
@@ -40,7 +40,7 @@ const ScrollToBottom = () => {
 
 const displayContact = ref();
 const DisplayFriendProfile = () => {
-  displayProfile.value = !displayProfile.value;
+  displayProfile.value = contacts.value[selectedChatId.value].category;
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
@@ -52,7 +52,7 @@ const handleHideProfile = (event) => {
   if (target.classList.contains('v-avatar') || target.classList.contains('v-btn')) {
     console.log('is child')
   } else {
-    displayProfile.value = false;
+    displayProfile.value = undefined;
     showProfileDetail.value = false;
     window.setTimeout(() => {
       showProfileDetail.value = false;
@@ -146,14 +146,14 @@ onMounted(() => {
     </v-col>
   </v-row>
   <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayProfile" :displayContact="selectedChat" :display="showProfileDetail">
+    <FriendProfile v-if="displayProfile === 'user'" :displayContact="selectedChat" :display="showProfileDetail">
       <template #btn>
         <v-btn>RECOMMEND</v-btn>
         <v-btn>DELETE</v-btn>
         <v-btn @click="">BLOCK</v-btn>
       </template>
     </FriendProfile>
-    <GroupProfile v-if="displayProfile" />
+    <GroupProfile v-if="displayProfile === 'group'" :displayContact="selectedChat" :display="showProfileDetail"/>
   </div>
 </template>
 
