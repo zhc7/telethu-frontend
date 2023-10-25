@@ -89,6 +89,9 @@ const createSocket = () => {
             console.log("receiving meta", message);
             first = false;
             contacts.value = message;
+            for (let contact of Object.values(contacts.value)) {
+                contact.messages = [];
+            }
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
                 contacts.value[message.sender].messages.push(message);
