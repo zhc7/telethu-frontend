@@ -42,7 +42,7 @@ onMounted(() => {
       <div
           v-if="message.m_type === 0"
           ref="messagePop"
-          class="pa-2 rounded-lg text-left"
+          class="pa-2 rounded-lg text-left mr-auto"
           :class="message.sender === userId ? 'bg-green' : 'bg-blue'"
       >
         <span>{{ message.content }}</span>
