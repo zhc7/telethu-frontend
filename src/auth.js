@@ -2,6 +2,7 @@ import {ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "./constants.js"
 import {useLocalStorage} from "@vueuse/core"
+import {contacts} from "./chat.js";
 
 const userId = useLocalStorage("userId", -1);
 const userName = useLocalStorage("userName", "");
@@ -41,6 +42,7 @@ const logout = () => {
     token.value = "";
     userName.value = "";
     userEmail.value = "";
+    contacts.value = {};
     userId.value = -1;
 }
 
