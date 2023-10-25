@@ -7,10 +7,10 @@ ENV FRONTEND=/opt/frontend
 
 WORKDIR $FRONTEND
 
-COPY package.json yarn.lock $FRONTEND
+COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
 
-COPY . $FRONTEND
+COPY . .
 RUN yarn build
 
 # Second stage
