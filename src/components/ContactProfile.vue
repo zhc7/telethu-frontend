@@ -1,6 +1,27 @@
 <script setup>
 
+import {contacts, groupAddMember} from "../chat.js";
+import {ref, defineProps} from "vue";
+
 const props = defineProps(['displayContact', 'display'])
+
+const groupAddMemberDialog = ref(false);
+const groupAddMemberLoading = ref(false);
+const groupAddMemberSelecting = ref([]);
+
+const handleCreateGroup = () => {
+  console.log("creating group", groupAddMemberSelecting);
+  groupAddMemberLoading.value = true;
+  groupAddMember(props.displayContact.id, groupAddMemberSelecting.value);
+  groupAddMemberSelecting.value = [];
+  groupAddMemberLoading.value = false;
+  groupAddMemberDialog.value = false;
+}
+
+const handlePlus = () => {
+
+  groupAddMemberDialog.value = true;
+}
 
 </script>
 
@@ -52,16 +73,25 @@ const props = defineProps(['displayContact', 'display'])
             Members
           </v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
-            <div
-                v-for="member in displayContact.members"
-                :key="member"
-                class="d-flex flex-column align-center ma-3"
-            >
-              <v-avatar size="60">
-                <v-img :src="member.avatar" id="member-avatar" cover/>
-              </v-avatar>
-              <p>{{ member.name }}</p>
-            </div>
+            <v-row class="mt-5 align-center ma-5" no-gutters justify="center">
+              <v-col
+                  v-for="member in displayContact.members"
+                  :key="member"
+                  cols="3"
+                  class="d-flex flex-column align-center ma-auto mb-5"
+              >
+                <v-avatar size="60">
+                  <v-img :src="member.avatar" id="member-avatar" cover/>
+                </v-avatar>
+                <p>{{ member.name }}</p>
+              </v-col>
+              <v-col cols="3" class="d-flex flex-column align-center ma-auto mb-5">
+                <v-avatar size="60" color="indigo" @click="handlePlus">
+                  <v-icon style="font-size: 35px;">mdi-account-multiple-plus</v-icon>
+                </v-avatar>
+                <p class="text-indigo">...</p>
+              </v-col>
+            </v-row>
           </div>
         </div>
       </v-list>
@@ -73,6 +103,53 @@ const props = defineProps(['displayContact', 'display'])
       </v-card-actions>
     </v-card-item>
   </v-card>
+
+  <v-dialog v-model="groupAddMemberDialog" max-width="50vw">
+    <v-card>
+      <v-card-title class="text-center">
+        Add members
+      </v-card-title>
+      <v-card-text>
+        <div class="d-flex overflow-x-auto" v-if="groupAddMemberSelecting">
+          <div
+              v-for="id in groupAddMemberSelecting"
+              :key="id"
+              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+              @click="groupAddMemberSelecting = groupAddMemberSelecting.filter((i) => i !== id)"
+              v-ripple
+          >
+            <v-avatar>
+              <v-img :src="contacts[id].avatar" cover></v-img>
+            </v-avatar>
+            <p>{{ contacts[id].name }}</p>
+          </div>
+        </div>
+        <v-list>
+          <v-list-item v-for="contact in contacts">
+            <template #prepend>
+              <v-avatar>
+                <v-img :src="contact.avatar" cover></v-img>
+              </v-avatar>
+            </template>
+            <v-list-item-title>
+              {{ contact.name }}
+            </v-list-item-title>
+            <template #append>
+              <v-btn @click="groupAddMemberSelecting.push(contact.id)">
+                Append
+              </v-btn>
+            </template>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-actions class="mb-3 mr-4">
+        <v-spacer/>
+        <v-btn @click="groupAddMemberDialog = false">Cancel</v-btn>
+        <v-btn @click="handleCreateGroup" :loading="groupAddMemberLoading">Create</v-btn>
+      </v-card-actions>
+    </v-card>
+
+  </v-dialog>
 </template>
 
 <style scoped>
