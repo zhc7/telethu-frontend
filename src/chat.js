@@ -3,8 +3,9 @@ import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
 import {ref} from "vue";
 import axios from "axios";
+import {useLocalStorage} from "@vueuse/core";
 
-const contacts = ref({});
+const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
 
 let socket;
@@ -88,9 +89,11 @@ const createSocket = () => {
             // ignore friend meta, we'll manually get this by http for now
             console.log("receiving meta", message);
             first = false;
-            contacts.value = message;
-            for (let contact of Object.values(contacts.value)) {
-                contact.messages = [];
+            for (let contact of message) {
+                if (contacts.value[contact.id] !== undefined) {
+                    contact.messages = contacts.value[contact.id].messages;
+                }
+                if (contact.messages === undefined) contact.messages = [];
                 if (contact.category === "group") {
                     contact.id2member = {}
                     for (let member of contact.members) {
@@ -98,6 +101,7 @@ const createSocket = () => {
                     }
                 }
             }
+            contacts.value = message;
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
                 contacts.value[message.sender].messages.push(message);
