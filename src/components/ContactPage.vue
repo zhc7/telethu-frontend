@@ -76,7 +76,7 @@ onMounted(() => {
 
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
-    <v-col cols="12" sm="4" class="d-flex flex-column">
+    <v-col cols="12" sm="4" class="d-flex flex-column fill-height overflow-y-auto">
       <v-list class="flex-0-0">
         <v-list-item class="bg-purple">
           <template #prepend>
@@ -116,6 +116,7 @@ onMounted(() => {
       <ContactList
           v-model="selectedContactId"
           v-show="displayType === 'contactList'"
+          class="fill-height overflow-y-auto"
       />
       <RequestList
           v-model="selectedRequestId"
