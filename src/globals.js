@@ -3,7 +3,7 @@ import {ref} from 'vue';
 export const userRef = {
     'id': 'Shenium',
     'name': 'Shenium',
-    'avatar': '/public/Shenium.png',
+    'avatar': '/Shenium.png',
 }
 export const nowRef = ref(Date.now());
 
