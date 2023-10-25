@@ -6,7 +6,7 @@ import {computed, onMounted, ref} from "vue";
 import {contacts, sendMessage} from "../chat.js";
 import FriendProfile from "./FriendProfile.vue";
 import {DEBUG} from "../constants.js";
-import {userId} from "../auth.js";
+import {userId, userName} from "../auth.js";
 import Stickers from "./Stickers.vue";
 
 const props = defineProps(["modelValue"])
@@ -66,6 +66,14 @@ const handleTextareaKeydown = (e) => {
   }
 };
 
+const getNameById = (id) => {
+  if (id === userId.value) {
+    return userName.value;
+  } else {
+    return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : contacts.value)[id].name;
+  }
+}
+
 onMounted(() => {
   if (DEBUG) {
     console.log('contacts value here', contacts.value);
@@ -116,6 +124,7 @@ onMounted(() => {
                       :message="message"
                       :final="index === selectedChat.messages.length - 1"
                       :avatar="selectedChat.avatar"
+                      :name="getNameById(message.sender)"
                       @finished="ScrollToBottom"
                       @showProfile="DisplayFriendProfile"
           />

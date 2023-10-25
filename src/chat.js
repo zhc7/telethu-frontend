@@ -91,6 +91,12 @@ const createSocket = () => {
             contacts.value = message;
             for (let contact of Object.values(contacts.value)) {
                 contact.messages = [];
+                if (contact.category === "group") {
+                    contact.id2member = {}
+                    for (let member of contact.members) {
+                        contact.id2member[member.id] = member;
+                    }
+                }
             }
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
