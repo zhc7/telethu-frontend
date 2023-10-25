@@ -34,7 +34,7 @@ const selected = computed({
     >
       <template #prepend>
         <v-avatar>
-          <v-img src="/public/download.jpeg" contain/>
+          <v-img :src="request.avatar" cover/>
         </v-avatar>
       </template>
       <template #append>
