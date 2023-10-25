@@ -1,5 +1,5 @@
 <script setup>
-import {computed, defineProps} from 'vue';
+import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../chat.js";

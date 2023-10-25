@@ -5,7 +5,6 @@ import {nowRef} from "../globals.js";
 import {contacts} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import {DEBUG} from "../constants.js";
 import {createGroup} from "../chat.js";
 
 const props = defineProps(['modelValue'])
