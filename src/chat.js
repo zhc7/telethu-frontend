@@ -175,6 +175,20 @@ const createGroup = (groupName, members) => {
     socket.send(JSON.stringify(message));
 }
 
+const groupAddMember = (groupId, memberId) => {
+    const message = {
+        time: Date.now(),
+        m_type: 8,
+        t_type: 1,
+        content: groupId,
+        sender: userId.value,
+        receiver: memberId,
+        info: "",
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
 export {
     contacts,
     friendRequests,
@@ -185,4 +199,5 @@ export {
     addFriend,
     acceptFriend,
     createGroup,
+    groupAddMember,
 }
