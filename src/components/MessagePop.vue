@@ -27,7 +27,7 @@ onMounted(() => {
     <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
-          alt="John"
+          :alt="name"
           cover
       />
     </v-avatar>
@@ -63,6 +63,7 @@ onMounted(() => {
       <v-img
           :src="user.avatar"
           :alt="user.name"
+          cover
       />
     </v-avatar>
   </div>
