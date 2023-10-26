@@ -1,7 +1,7 @@
 <script setup>
 
 import {contacts, groupAddMember} from "../chat.js";
-import {ref, defineProps, computed} from "vue";
+import {ref, computed} from "vue";
 
 const props = defineProps(['displayContact', 'display'])
 
