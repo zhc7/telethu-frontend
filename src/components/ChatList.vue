@@ -62,6 +62,11 @@ const handlePlus = () => {
   createGroupDialog.value = true;
 }
 
+const handleCancel = () => {
+  createGroupDialog.value = false;
+  createGroupSelecting.value = [];
+}
+
 const filterContacts = computed(() => {
   return Object.keys(contacts.value).filter((id) => {
     return contacts.value[id].category === 'user' && (createGroupSelecting.value.indexOf(id) === -1);
@@ -121,8 +126,11 @@ onMounted(() => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="createGroupSelecting.push(contact.id)">
+              <v-btn @click="createGroupSelecting.push(contact.id)" color="indigo">
                 Append
+                <template #append>
+                  <v-icon>mdi-account-circle</v-icon>
+                </template>
               </v-btn>
             </template>
           </v-list-item>
@@ -130,7 +138,7 @@ onMounted(() => {
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
-        <v-btn @click="createGroupDialog = false">Cancel</v-btn>
+        <v-btn @click="handleCancel">Cancel</v-btn>
         <v-btn @click="handleCreateGroup" :loading="createGroupLoading">Create</v-btn>
       </v-card-actions>
     </v-card>

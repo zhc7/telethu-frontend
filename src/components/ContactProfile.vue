@@ -9,6 +9,18 @@ const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
 const groupAddMemberSelecting = ref([]);
 
+const friendCircle = ref(['THU', 'PKU', 'CMU', 'MIT'])
+const friendCircleSelect = ref([])
+const newName = ref('')
+
+const ifGroup = computed(() => {
+  return props.displayContact.category === 'group';
+});
+
+const editName = () => {
+  console.log('editName')
+}
+
 const handleSelect = (contact) => {
   console.log(contact);
   groupAddMemberSelecting.value.push(contact.id);
@@ -36,6 +48,11 @@ const handlePlusMember = () => {
 
 const handlePlus = () => {
   groupAddMemberDialog.value = true;
+  groupAddMemberSelecting.value = [];
+}
+
+const handleCancel = () => {
+  groupAddMemberDialog.value = false;
   groupAddMemberSelecting.value = [];
 }
 
@@ -97,7 +114,7 @@ const filterContacts = computed(() => {
         </v-list-item>
         <div v-if="displayContact.category === 'group'" class="overflow-y-auto fill-height">
           <v-divider class="ma-4"/>
-          <v-card-title class="ma-3">
+          <v-card-title class="ma-7">
             Members
           </v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
@@ -121,10 +138,59 @@ const filterContacts = computed(() => {
         </div>
       </v-list>
       <v-divider class="ma-4"/>
-      <v-card-actions class="justify-center">
-        <v-btn-group color="info" variant="outlined" divided>
-          <slot name="btn"/>
-        </v-btn-group>
+      <v-col>
+        <v-row style="display: flex; align-items: center;" class="ma-3">
+          <p style="flex: 1">Rename:</p>
+          <v-text-field
+              variant="solo"
+              label="New name"
+              density="compact"
+              style="flex: 2"
+              hide-details
+              append-inner-icon="mdi-pencil"
+              v-model="newName"
+              @click:append-inner="editName"
+          />
+        </v-row>
+        <v-row style="display: flex; align-items: center;" class="ma-3">
+          <p style="flex: 1">Label:</p>
+          <v-combobox
+              v-model="friendCircleSelect"
+              chips
+              :items="friendCircle"
+              multiple
+              variant="solo"
+              density="compact"
+              hide-details
+              style="flex: 2"
+          ></v-combobox>
+        </v-row>
+        <v-row style="display: flex; align-items: center;" class="ma-1">
+          <p style="flex: 1">Mute:</p>
+          <v-switch style="flex: 2" hide-details color="indigo"></v-switch>
+        </v-row>
+        <v-row style="display: flex; align-items: center;" class="ma-1">
+          <p style="flex: 1">Pin:</p>
+          <v-switch style="flex: 2" hide-details color="indigo"></v-switch>
+        </v-row>
+        <v-row style="display: flex; align-items: center;" class="ma-1">
+          <p style="flex: 1">Block:</p>
+          <v-switch style="flex: 2" hide-details color="error"></v-switch>
+        </v-row>
+      </v-col>
+      <v-divider class="ma-4"/>
+      <v-card-actions>
+        <v-col >
+          <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
+            <v-btn color="indigo" style="font-size: 15px; font-weight: bold">Recommend</v-btn>
+          </v-row>
+          <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
+            <v-btn color="error" style="font-size: 15px; font-weight: bold">Delete Friend</v-btn>
+          </v-row>
+          <v-row v-else style="display: flex; justify-content: center">
+            <v-btn color="error" style="font-size: 15px; font-weight: bold">Delete Group</v-btn>
+          </v-row>
+        </v-col>
       </v-card-actions>
     </v-card-item>
   </v-card>
@@ -175,7 +241,7 @@ const filterContacts = computed(() => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="handleSelect(contact)">
+              <v-btn @click="handleSelect(contact)" color="indigo">
                 Append
               </v-btn>
             </template>
@@ -184,7 +250,7 @@ const filterContacts = computed(() => {
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
-        <v-btn @click="groupAddMemberDialog = false">Cancel</v-btn>
+        <v-btn @click="handleCancel">Cancel</v-btn>
         <v-btn @click="handlePlusMember" :loading="groupAddMemberLoading">Add</v-btn>
       </v-card-actions>
     </v-card>
