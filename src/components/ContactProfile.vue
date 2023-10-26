@@ -9,17 +9,24 @@ const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
 const groupAddMemberSelecting = ref([]);
 
+const handleSelect = (contactId) => {
+  console.log(contactId);
+  groupAddMemberSelecting.value.push(contactId);
+};
+
 const handleCreateGroup = () => {
-  console.log("creating group", groupAddMemberSelecting);
+  console.log('log', groupAddMemberSelecting.value + '', 'disContId', props.displayContact.id);
   groupAddMemberLoading.value = true;
-  groupAddMember(props.displayContact.id, groupAddMemberSelecting.value);
+  for (const id of groupAddMemberSelecting.value) {
+    console.log('Adding group member', props.displayContact.id, id);
+    groupAddMember(props.displayContact.id, id);
+  }
   groupAddMemberSelecting.value = [];
   groupAddMemberLoading.value = false;
   groupAddMemberDialog.value = false;
-}
+};
 
 const handlePlus = () => {
-
   groupAddMemberDialog.value = true;
 }
 
@@ -39,7 +46,7 @@ const handlePlus = () => {
           @{{ displayContact.id }}
         </v-list-item-subtitle>
         <v-divider class="ma-4"/>
-        <v-list-item class="text-grey-darken-3">
+        <v-list-item v-if="displayContact.catagory === 'user'" class="text-grey-darken-3">
           <div>
             <v-row>
               <v-col cols="4" offset="" class="text-right">
@@ -135,7 +142,7 @@ const handlePlus = () => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="groupAddMemberSelecting.push(contact.id)">
+              <v-btn @click="handleSelect(contact.id)">
                 Append
               </v-btn>
             </template>
