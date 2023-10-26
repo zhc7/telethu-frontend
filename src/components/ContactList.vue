@@ -25,7 +25,7 @@ const selected = computed({
     <ListItem :key="contact.id"
               :k="contact.id"
               class="pa-3 pl-6 chat-list-item text-left"
-              v-for="contact in personContacts"
+              v-for="contact in personContacts.filter((c) => (c.category === 'user'))"
     >
       <template #prepend>
         <v-avatar>
@@ -38,8 +38,9 @@ const selected = computed({
     </ListItem>
     <v-list-item>
       <span class="text-blue-grey-lighten-2">
-        {{ personContacts.length === 0 ? 'No friends yet' : personContacts.length === 1 ? '1 friend in total' :
-         personContacts.length + ' friends in total'
+        {{
+          personContacts.filter((c) => (c.category === 'user')).length === 0 ? 'No friends yet' : personContacts.length === 1 ? '1 friend in total' :
+              personContacts.length + ' friends in total'
         }}
       </span>
     </v-list-item>

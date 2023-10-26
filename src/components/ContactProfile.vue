@@ -9,22 +9,24 @@ const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
 const groupAddMemberSelecting = ref([]);
 
-const handleSelect = (contactId) => {
-  console.log(contactId);
-  groupAddMemberSelecting.value.push(contactId);
+const handleSelect = (contact) => {
+  console.log(contact);
+  groupAddMemberSelecting.value.push(contact.id);
 };
 
-const handleCreateGroup = () => {
+const handlePlusMember = () => {
   console.log('log', groupAddMemberSelecting.value + '', 'disContId', props.displayContact.id);
   groupAddMemberLoading.value = true;
-  for (const contact of groupAddMemberSelecting.value) {
-    console.log('Adding group member', props.displayContact.id, contact.id);
-    groupAddMember(props.displayContact.id, contact.id);
+  for (const id of groupAddMemberSelecting.value) {
+    console.log('Adding group member', props.displayContact.id, id);
+    const contact = contacts.value[id];
+    console.log(contact);
+    groupAddMember(props.displayContact.id, id);
     const memberInfo = {
       'id': contact.id,
       'name': contact.name,
       'avatar': contact.avatar,
-    }
+    };
     contacts.value[props.displayContact.id].id2member[contact.id] = memberInfo;
     contacts.value[props.displayContact.id].members.push(memberInfo);
   }
@@ -35,6 +37,7 @@ const handleCreateGroup = () => {
 
 const handlePlus = () => {
   groupAddMemberDialog.value = true;
+  groupAddMemberSelecting.value = [];
 }
 
 const filterContacts = computed(() => {
@@ -156,7 +159,7 @@ const filterContacts = computed(() => {
               v-for="id in groupAddMemberSelecting"
               :key="id"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="groupAddMemberSelecting = groupAddMemberSelecting.filter((i) => i !== id)"
+              @click="groupAddMemberSelecting = groupAddMemberSelecting.filter((i) => i.id !== id)"
               v-ripple
           >
             <v-avatar>
@@ -176,7 +179,7 @@ const filterContacts = computed(() => {
                 {{ contact.name }}
               </v-list-item-title>
               <template #append>
-                <v-btn @click="groupAddMemberSelecting.push(contact.id)">
+                <v-btn @click="handleSelect(contact)">
                   Append
                 </v-btn>
               </template>
@@ -186,7 +189,7 @@ const filterContacts = computed(() => {
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
         <v-btn @click="groupAddMemberDialog = false">Cancel</v-btn>
-        <v-btn @click="handleCreateGroup" :loading="groupAddMemberLoading">Add</v-btn>
+        <v-btn @click="handlePlusMember" :loading="groupAddMemberLoading">Add</v-btn>
       </v-card-actions>
     </v-card>
 
