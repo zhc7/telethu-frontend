@@ -153,7 +153,8 @@ onMounted(() => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img :src="chat.avatar" cover/>
+            <v-img v-if="chat.category === 'user'" :src="chat.avatar" cover/>
+            <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">{{
