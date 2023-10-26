@@ -72,8 +72,8 @@ const applyList = async () => {
 }
 
 function sendNotification() {
-    new Notification("通知标题：", {
-        body: '通知内容',
+    new Notification("新消息：", {
+        body: "您有新的消息，请及时查看！",
     })
 }
 
@@ -110,14 +110,13 @@ const createSocket = () => {
             contacts.value = message;
         } else if (message.m_type <= 5) {
 
-            console.log("receiving message");
-            if (window.Notification.permission === "granted") { // 判断是否有权限
+            if (window.Notification.permission === "granted") {
                 sendNotification();
-                console.log("send notification");
             } else if (window.Notification.permission !== "denied") {
-                console.log("request permission")
-                window.Notification.requestPermission(function (permission) { // 没有权限发起请求
-                    sendNotification();
+                window.Notification.requestPermission(function (permission) {
+                    if (permission === "granted") {
+                        sendNotification();
+                    }
                 });
             }
 
