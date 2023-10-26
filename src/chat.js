@@ -194,10 +194,24 @@ const groupAddMember = (groupId, memberId) => {
 const getHistoryMessage = (id, from, t_type, num) => {
     axios.get(BASE_API_URL + "chat/history", {
         params: {
-            id, from, t_type, num
+            id, from: 0, t_type, num: 10000,
+        },
+        headers: {
+            Authorization: token.value,
         }
     }).then((response) => {
-        contacts.value[id].messages = response + contacts.value[id].messages;
+        response.data.push(...contacts.value[id].messages);
+        response.data.sort((a, b) => (a.time - b.time));
+        let last_time = 0;
+        let new_msg = [];
+        for (let msg of response.data) {
+            if (last_time !== msg.time) {
+                new_msg.push(msg);
+                last_time = msg.time;
+            }
+        }
+        console.log(new_msg);
+        contacts.value[id].messages = new_msg;
     })
 }
 
