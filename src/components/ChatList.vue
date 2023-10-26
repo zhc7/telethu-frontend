@@ -41,6 +41,7 @@ const chatList = computed(() => {
       avatar: contact.avatar,
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
+      alert: contact.alert,
     })
   }
   list = list.sort((a, b) => {
@@ -162,7 +163,7 @@ onMounted(() => {
           }}
         </div>
         <template #append>
-          <v-badge color="red" content="1" inline></v-badge>
+          <v-badge v-if="chat.alert" color="red" content="1" inline></v-badge>
         </template>
       </ListItem>
     </List>

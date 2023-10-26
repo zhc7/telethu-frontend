@@ -104,8 +104,10 @@ const createSocket = () => {
             contacts.value = message;
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
+                contacts.value[message.sender].alert = true;
                 contacts.value[message.sender].messages.push(message);
             } else if (message.t_type === 1) {
+                contacts.value[message.sender].alert = true;
                 contacts.value[message.receiver].messages.push(message);
             }
         } else {

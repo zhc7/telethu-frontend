@@ -19,6 +19,7 @@ const showStickers = ref(false);
 const selectedChatId = computed({
   get: () => props.modelValue,
   set: (value) => {
+    contacts.value[value].alert = false;
     emit('update:modelValue', value);
   }
 });
