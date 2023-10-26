@@ -153,7 +153,8 @@ onMounted(() => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img :src="chat.category !== 'group' ? chat.avatar : '/baidu.webp'" cover/>
+            <v-img v-if="chat.category === 'user'" :src="chat.avatar" cover/>
+            <v-icon v-if="chat.category === 'group'">mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">{{
