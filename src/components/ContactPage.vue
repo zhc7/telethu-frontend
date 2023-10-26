@@ -55,14 +55,19 @@ const handleRequestList = () => {
 }
 
 const handleRequestPass = (id) => {
-  console.log('requestPassHandling');
   acceptFriend(id);
   displayType.value = 'requestList'
   const friendInfo = friendRequests.value[id];
-  delete friendRequests.value[id];
-  contacts.value[id] = friendInfo[id];
+  if (!friendInfo.name) {
+    friendInfo.name = friendInfo.username;
+  }
+  delete friendInfo.username;
+  // console.log(friendInfo);
+  contacts.value[id] = friendInfo;
   contacts.value[id]['messages'] = [];
+  // console.log('contact.values', contacts.value);
   displayContact.value = friendInfo;
+  delete friendRequests.value[id];
   displayRightType.value = 'contactDetail';
 }
 
