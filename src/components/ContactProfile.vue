@@ -17,9 +17,16 @@ const handleSelect = (contactId) => {
 const handleCreateGroup = () => {
   console.log('log', groupAddMemberSelecting.value + '', 'disContId', props.displayContact.id);
   groupAddMemberLoading.value = true;
-  for (const id of groupAddMemberSelecting.value) {
-    console.log('Adding group member', props.displayContact.id, id);
-    groupAddMember(props.displayContact.id, id);
+  for (const contact of groupAddMemberSelecting.value) {
+    console.log('Adding group member', props.displayContact.id, contact.id);
+    groupAddMember(props.displayContact.id, contact.id);
+    const memberInfo = {
+      'id': contact.id,
+      'name': contact.name,
+      'avatar': contact.avatar,
+    }
+    contacts.value[props.displayContact.id].id2member[contact.id] = memberInfo;
+    contacts.value[props.displayContact.id].members.push(memberInfo);
   }
   groupAddMemberSelecting.value = [];
   groupAddMemberLoading.value = false;
@@ -142,7 +149,7 @@ const handlePlus = () => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="handleSelect(contact.id)">
+              <v-btn @click="handleSelect(contact)">
                 Append
               </v-btn>
             </template>
