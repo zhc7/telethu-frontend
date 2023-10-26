@@ -55,6 +55,7 @@ const handleRequestList = () => {
 }
 
 const handleRequestPass = (id) => {
+  console.log('requestPassHandling');
   acceptFriend(id);
   displayType.value = 'requestList'
   const friendInfo = friendRequests.value[id];
