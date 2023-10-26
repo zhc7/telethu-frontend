@@ -71,6 +71,12 @@ const applyList = async () => {
         });
 }
 
+function sendNotification() {
+    new Notification("通知标题：", {
+        body: '通知内容',
+    })
+}
+
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
@@ -103,6 +109,18 @@ const createSocket = () => {
             }
             contacts.value = message;
         } else if (message.m_type <= 5) {
+
+            console.log("receiving message");
+            if (window.Notification.permission === "granted") { // 判断是否有权限
+                sendNotification();
+                console.log("send notification");
+            } else if (window.Notification.permission !== "denied") {
+                console.log("request permission")
+                window.Notification.requestPermission(function (permission) { // 没有权限发起请求
+                    sendNotification();
+                });
+            }
+
             if (message.t_type === 0) {
                 contacts.value[message.sender].alert = true;
                 contacts.value[message.sender].messages.push(message);
