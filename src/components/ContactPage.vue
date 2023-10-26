@@ -58,10 +58,14 @@ const handleRequestPass = (id) => {
   acceptFriend(id);
   displayType.value = 'requestList'
   const friendInfo = friendRequests.value[id];
-  delete friendRequests.value[id];
-  contacts.value[id] = friendInfo[id];
+  if (!friendInfo.name) {
+    friendInfo.name = friendInfo.username;
+    delete friendInfo.username;
+  }
+  contacts.value[id] = friendInfo;
   contacts.value[id]['messages'] = [];
   displayContact.value = friendInfo;
+  delete friendRequests.value[id];
   displayRightType.value = 'contactDetail';
 }
 

@@ -10,13 +10,16 @@ const groupAddMemberLoading = ref(false);
 const groupAddMemberSelecting = ref([]);
 
 const handleCreateGroup = () => {
-  console.log("creating group", groupAddMemberSelecting);
+  console.log('log', groupAddMemberSelecting.value + '', 'disContId', props.displayContact.id);
   groupAddMemberLoading.value = true;
-  groupAddMember(props.displayContact.id, groupAddMemberSelecting.value);
+  for (const id of groupAddMemberSelecting.value) {
+    console.log('Adding group member', props.displayContact.id, id);
+    groupAddMember(props.displayContact.id, id);
+  }
   groupAddMemberSelecting.value = [];
   groupAddMemberLoading.value = false;
   groupAddMemberDialog.value = false;
-}
+};
 
 const handlePlus = () => {
   groupAddMemberDialog.value = true;
