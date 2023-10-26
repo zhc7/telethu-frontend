@@ -191,6 +191,16 @@ const groupAddMember = (groupId, memberId) => {
     socket.send(JSON.stringify(message));
 }
 
+const getHistoryMessage = (id, from, t_type, num) => {
+    axios.get(BASE_API_URL + "chat/history", {
+        params: {
+            id, from, t_type, num
+        }
+    }).then((response) => {
+        contacts.value[id].messages = response + contacts.value[id].messages;
+    })
+}
+
 export {
     contacts,
     friendRequests,
@@ -202,4 +212,5 @@ export {
     acceptFriend,
     createGroup,
     groupAddMember,
+    getHistoryMessage,
 }
