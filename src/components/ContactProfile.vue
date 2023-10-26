@@ -1,7 +1,7 @@
 <script setup>
 
 import {contacts, groupAddMember} from "../chat.js";
-import {ref, defineProps} from "vue";
+import {ref, defineProps, computed} from "vue";
 
 const props = defineProps(['displayContact', 'display'])
 
@@ -19,9 +19,20 @@ const handleCreateGroup = () => {
 }
 
 const handlePlus = () => {
-
   groupAddMemberDialog.value = true;
 }
+
+const filterContacts = computed(() => {
+  return Object.keys(contacts.value).filter((id) => {
+    return contacts.value[id].category === 'user' && (groupAddMemberSelecting.value.indexOf(id) === -1) && (Object.keys(props.displayContact.id2member).indexOf(id) === -1);
+  }).map((id) => {
+    return {
+      id: id,
+      name: contacts.value[id].name,
+      avatar: contacts.value[id].avatar,
+    }
+  });
+});
 
 </script>
 
@@ -110,7 +121,22 @@ const handlePlus = () => {
         Add members
       </v-card-title>
       <v-card-text>
+        <v-text-field
+            density="compact"
+            label="Search"
+        />
         <div class="d-flex overflow-x-auto" v-if="groupAddMemberSelecting">
+          <div
+              v-for="member in displayContact.members"
+              :key="member"
+              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+              v-ripple
+          >
+            <v-avatar>
+              <v-img :src="member.avatar" cover></v-img>
+            </v-avatar>
+            <p>{{ member.name }}</p>
+          </div>
           <div
               v-for="id in groupAddMemberSelecting"
               :key="id"
@@ -125,27 +151,27 @@ const handlePlus = () => {
           </div>
         </div>
         <v-list>
-          <v-list-item v-for="contact in contacts">
-            <template #prepend>
-              <v-avatar>
-                <v-img :src="contact.avatar" cover></v-img>
-              </v-avatar>
-            </template>
-            <v-list-item-title>
-              {{ contact.name }}
-            </v-list-item-title>
-            <template #append>
-              <v-btn @click="groupAddMemberSelecting.push(contact.id)">
-                Append
-              </v-btn>
-            </template>
+          <v-list-item v-for="contact in filterContacts">
+              <template #prepend>
+                <v-avatar>
+                  <v-img :src="contact.avatar" cover></v-img>
+                </v-avatar>
+              </template>
+              <v-list-item-title>
+                {{ contact.name }}
+              </v-list-item-title>
+              <template #append>
+                <v-btn @click="groupAddMemberSelecting.push(contact.id)">
+                  Append
+                </v-btn>
+              </template>
           </v-list-item>
         </v-list>
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
         <v-btn @click="groupAddMemberDialog = false">Cancel</v-btn>
-        <v-btn @click="handleCreateGroup" :loading="groupAddMemberLoading">Create</v-btn>
+        <v-btn @click="handleCreateGroup" :loading="groupAddMemberLoading">Add</v-btn>
       </v-card-actions>
     </v-card>
 

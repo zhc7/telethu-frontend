@@ -61,6 +61,18 @@ const handlePlus = () => {
   createGroupDialog.value = true;
 }
 
+const filterContacts = computed(() => {
+  return Object.keys(contacts.value).filter((id) => {
+    return contacts.value[id].category === 'user' && (createGroupSelecting.value.indexOf(id) === -1);
+  }).map((id) => {
+    return {
+      id: id,
+      name: contacts.value[id].name,
+      avatar: contacts.value[id].avatar,
+    }
+  });
+});
+
 onMounted(() => {
   console.log("chat list mounted");
 })
@@ -98,7 +110,7 @@ onMounted(() => {
           </div>
         </div>
         <v-list>
-          <v-list-item v-for="contact in contacts">
+          <v-list-item v-for="contact in filterContacts">
             <template #prepend>
               <v-avatar>
                 <v-img :src="contact.avatar" cover></v-img>
