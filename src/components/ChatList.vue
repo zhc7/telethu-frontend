@@ -153,7 +153,7 @@ onMounted(() => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img :src="chat.category !== 'group' ? chat.avatar : '/baidu.webp'" cover/>
+            <v-img :src="chat.avatar" cover/>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">{{
