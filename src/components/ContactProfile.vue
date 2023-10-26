@@ -1,7 +1,7 @@
 <script setup>
 
 import {contacts, groupAddMember} from "../chat.js";
-import {ref, defineProps, computed} from "vue";
+import {ref, computed} from "vue";
 
 const props = defineProps(['displayContact', 'display'])
 
@@ -67,8 +67,8 @@ const filterContacts = computed(() => {
         <v-list-item-subtitle>
           @{{ displayContact.id }}
         </v-list-item-subtitle>
-        <v-divider class="ma-4"/>
         <v-list-item v-if="displayContact.catagory === 'user'" class="text-grey-darken-3">
+          <v-divider class="ma-4"/>
           <div>
             <v-row>
               <v-col cols="4" offset="" class="text-right">
@@ -102,25 +102,22 @@ const filterContacts = computed(() => {
             Members
           </v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
-            <v-row class="mt-5 align-center ma-5" no-gutters justify="center">
-              <v-col
-                  v-for="member in displayContact.members"
-                  :key="member"
-                  cols="3"
-                  class="d-flex flex-column align-center ma-auto mb-5"
-              >
-                <v-avatar size="60">
-                  <v-img :src="member.avatar" id="member-avatar" cover/>
-                </v-avatar>
-                <p>{{ member.name }}</p>
-              </v-col>
-              <v-col cols="3" class="d-flex flex-column align-center ma-auto mb-5">
-                <v-avatar size="60" color="indigo" @click="handlePlus">
-                  <v-icon style="font-size: 35px;">mdi-account-multiple-plus</v-icon>
-                </v-avatar>
-                <p class="text-indigo">...</p>
-              </v-col>
-            </v-row>
+            <div
+                v-for="member in displayContact.members"
+                :key="member"
+                class="d-flex flex-column align-center ma-auto mb-5"
+            >
+              <v-avatar size="60">
+                <v-img :src="member.avatar" id="member-avatar" cover/>
+              </v-avatar>
+              <p>{{ member.name }}</p>
+            </div>
+            <div class="d-flex flex-column align-center ma-auto mb-5">
+              <v-avatar size="60" color="indigo" @click="handlePlus">
+                <v-icon style="font-size: 35px;">mdi-account-multiple-plus</v-icon>
+              </v-avatar>
+              <p class="text-indigo">...</p>
+            </div>
           </div>
         </div>
       </v-list>
@@ -170,19 +167,19 @@ const filterContacts = computed(() => {
         </div>
         <v-list>
           <v-list-item v-for="contact in filterContacts">
-              <template #prepend>
-                <v-avatar>
-                  <v-img :src="contact.avatar" cover></v-img>
-                </v-avatar>
-              </template>
-              <v-list-item-title>
-                {{ contact.name }}
-              </v-list-item-title>
-              <template #append>
-                <v-btn @click="handleSelect(contact)">
-                  Append
-                </v-btn>
-              </template>
+            <template #prepend>
+              <v-avatar>
+                <v-img :src="contact.avatar" cover></v-img>
+              </v-avatar>
+            </template>
+            <v-list-item-title>
+              {{ contact.name }}
+            </v-list-item-title>
+            <template #append>
+              <v-btn @click="handleSelect(contact)">
+                Append
+              </v-btn>
+            </template>
           </v-list-item>
         </v-list>
       </v-card-text>

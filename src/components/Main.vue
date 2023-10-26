@@ -8,7 +8,7 @@ import {contacts, createSocket} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {userName} from "../auth.js";
+import {user, userName} from "../auth.js";
 
 const router = useRouter();
 const curTab = ref(1);
@@ -42,7 +42,7 @@ onMounted(() => {
     <NavBar>
       <List density="compact" nav v-model="activePage">
         <v-list-item class="text-left"
-                     prepend-avatar="/Shenium.png"
+                     :prepend-avatar="user.avatar"
                      :title="userName"
                      @click="activePage = 'profile'"
         >
