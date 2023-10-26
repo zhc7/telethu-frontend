@@ -3,8 +3,9 @@ import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
 import {ref} from "vue";
 import axios from "axios";
+import {useLocalStorage} from "@vueuse/core";
 
-const contacts = ref({});
+const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
 
 let socket;
@@ -88,9 +89,11 @@ const createSocket = () => {
             // ignore friend meta, we'll manually get this by http for now
             console.log("receiving meta", message);
             first = false;
-            contacts.value = message;
-            for (let contact of Object.values(contacts.value)) {
-                contact.messages = [];
+            for (let contact of Object.values(message)) {
+                if (contacts.value[contact.id] !== undefined) {
+                    contact.messages = contacts.value[contact.id].messages;
+                }
+                if (contact.messages === undefined) contact.messages = [];
                 if (contact.category === "group") {
                     contact.id2member = {}
                     for (let member of contact.members) {
@@ -98,10 +101,13 @@ const createSocket = () => {
                     }
                 }
             }
+            contacts.value = message;
         } else if (message.m_type <= 5) {
             if (message.t_type === 0) {
+                contacts.value[message.sender].alert = true;
                 contacts.value[message.sender].messages.push(message);
             } else if (message.t_type === 1) {
+                contacts.value[message.sender].alert = true;
                 contacts.value[message.receiver].messages.push(message);
             }
         } else {
@@ -171,6 +177,44 @@ const createGroup = (groupName, members) => {
     socket.send(JSON.stringify(message));
 }
 
+const groupAddMember = (groupId, memberId) => {
+    const message = {
+        time: Date.now(),
+        m_type: 8,
+        t_type: 1,
+        content: groupId,
+        sender: userId.value,
+        receiver: memberId,
+        info: "",
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
+const getHistoryMessage = (id, from, t_type, num) => {
+    axios.get(BASE_API_URL + "chat/history", {
+        params: {
+            id, from: 0, t_type, num: 10000,
+        },
+        headers: {
+            Authorization: token.value,
+        }
+    }).then((response) => {
+        response.data.push(...contacts.value[id].messages);
+        response.data.sort((a, b) => (a.time - b.time));
+        let last_time = 0;
+        let new_msg = [];
+        for (let msg of response.data) {
+            if (last_time !== msg.time) {
+                new_msg.push(msg);
+                last_time = msg.time;
+            }
+        }
+        console.log(new_msg);
+        contacts.value[id].messages = new_msg;
+    })
+}
+
 export {
     contacts,
     friendRequests,
@@ -181,4 +225,6 @@ export {
     addFriend,
     acceptFriend,
     createGroup,
+    groupAddMember,
+    getHistoryMessage,
 }

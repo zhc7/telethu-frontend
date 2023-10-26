@@ -5,7 +5,6 @@ import {nowRef} from "../globals.js";
 import {contacts} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import {DEBUG} from "../constants.js";
 import {createGroup} from "../chat.js";
 
 const props = defineProps(['modelValue'])
@@ -42,6 +41,7 @@ const chatList = computed(() => {
       avatar: contact.avatar,
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
+      alert: contact.alert,
     })
   }
   list = list.sort((a, b) => {
@@ -61,6 +61,18 @@ const chatList = computed(() => {
 const handlePlus = () => {
   createGroupDialog.value = true;
 }
+
+const filterContacts = computed(() => {
+  return Object.keys(contacts.value).filter((id) => {
+    return contacts.value[id].category === 'user' && (createGroupSelecting.value.indexOf(id) === -1);
+  }).map((id) => {
+    return {
+      id: id,
+      name: contacts.value[id].name,
+      avatar: contacts.value[id].avatar,
+    }
+  });
+});
 
 onMounted(() => {
   console.log("chat list mounted");
@@ -99,7 +111,7 @@ onMounted(() => {
           </div>
         </div>
         <v-list>
-          <v-list-item v-for="contact in contacts">
+          <v-list-item v-for="contact in filterContacts">
             <template #prepend>
               <v-avatar>
                 <v-img :src="contact.avatar" cover></v-img>
@@ -134,7 +146,7 @@ onMounted(() => {
       <ListItem
           :key="chat.id"
           :k="chat.id"
-          class="pa-3 pl-6 chat-list-item text-left"
+          class="pa-3 pl-6 chat-list-item text-left hot-message"
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
@@ -142,7 +154,8 @@ onMounted(() => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img :src="chat.type !== 'grp' ? chat.avatar : '/public/baidu.webp'" cover/>
+            <v-img v-if="chat.category === 'user'" :src="chat.avatar" cover/>
+            <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">{{
@@ -150,7 +163,7 @@ onMounted(() => {
           }}
         </div>
         <template #append>
-          <v-badge color="red" content="1" inline></v-badge>
+          <v-badge v-if="chat.alert" color="red" content="1" inline></v-badge>
         </template>
       </ListItem>
     </List>
@@ -158,6 +171,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+
 .chat-list-item {
   position: relative;
 }

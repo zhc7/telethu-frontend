@@ -1,8 +1,8 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef, userRef} from "../globals.js";
-import {userId} from "../auth.js";
+import {nowRef} from "../globals.js";
+import {user, userId} from "../auth.js";
 
 const props = defineProps(['message', 'final', 'avatar', 'name']);
 const emits = defineEmits((['finished', 'showProfile']));
@@ -27,7 +27,7 @@ onMounted(() => {
     <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
-          alt="John"
+          :alt="name"
           cover
       />
     </v-avatar>
@@ -43,7 +43,7 @@ onMounted(() => {
           v-if="message.m_type === 0"
           ref="messagePop"
           class="pa-2 rounded-lg text-left"
-          :class="message.sender === userId ? 'bg-green' : 'bg-blue'"
+          :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
       >
         <span>{{ message.content }}</span>
       </div>
@@ -61,8 +61,9 @@ onMounted(() => {
     ></video>
     <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
       <v-img
-          :src="userRef.avatar"
-          :alt="userRef.title"
+          :src="user.avatar"
+          :alt="user.name"
+          cover
       />
     </v-avatar>
   </div>

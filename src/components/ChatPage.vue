@@ -3,12 +3,11 @@
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, ref} from "vue";
-import {contacts, sendMessage} from "../chat.js";
-import FriendProfile from "./FriendProfile.vue";
+import {contacts, getHistoryMessage, sendMessage} from "../chat.js";
+import FriendProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
 import Stickers from "./Stickers.vue";
-import GroupProfile from "./GroupProfile.vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -20,6 +19,7 @@ const showStickers = ref(false);
 const selectedChatId = computed({
   get: () => props.modelValue,
   set: (value) => {
+    contacts.value[value].alert = false;
     emit('update:modelValue', value);
   }
 });
@@ -71,8 +71,18 @@ const getNameById = (id) => {
   if (id === userId.value) {
     return userName.value;
   } else {
+    console.log("getting name by id", id, contacts.value, selectedChat.value)
     return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : contacts.value)[id].name;
   }
+}
+
+const handleGetMoreMessage = () => {
+  getHistoryMessage(
+      selectedChatId.value,
+      selectedChat.value.messages[0] === undefined ? Date.now() : selectedChat.value.messages[0].time,
+      selectedChat.value.category === "group" ? 1 : 0,
+      20,
+  )
 }
 
 onMounted(() => {
@@ -112,6 +122,9 @@ onMounted(() => {
       </v-row>
       <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow">
+          <div>
+            <span @click="handleGetMoreMessage" class="text-blue">Get more message...</span>
+          </div>
           <MessagePop v-for="(message, index) in selectedChat.messages"
                       :message="message"
                       :final="index === selectedChat.messages.length - 1"
@@ -145,15 +158,17 @@ onMounted(() => {
       </v-row>
     </v-col>
   </v-row>
-  <div class="profile-area" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile v-if="displayProfile === 'user'" :displayContact="selectedChat" :display="showProfileDetail">
+  <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
+    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
+                   :display="showProfileDetail">
       <template #btn>
         <v-btn>RECOMMEND</v-btn>
         <v-btn>DELETE</v-btn>
         <v-btn @click="">BLOCK</v-btn>
       </template>
     </FriendProfile>
-    <GroupProfile v-if="displayProfile === 'group'" :displayContact="selectedChat" :display="showProfileDetail"/>
+    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
+                   :display="showProfileDetail"/>
   </div>
 </template>
 

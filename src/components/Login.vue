@@ -40,7 +40,7 @@ const submit = () => {
           cols="6"
           class="d-none d-sm-inline-block text-center align-self-center"
       >
-        <img src="/public/DALL·E.png" alt="Logo" style="max-width: 100%"/>
+        <img src="/DALL·E.png" alt="Logo" style="max-width: 100%"/>
       </v-col>
       <v-col
           offset="1"
@@ -67,6 +67,7 @@ const submit = () => {
             :type="passwordVisible ? 'text' : 'password'"
             :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
             @click:append-inner="passwordVisible = !passwordVisible"
+            @keydown="(e) => {if (e.key === 'Enter') submit()}"
             variant="outlined"
             class="mb-7"
             :error-messages="hint"
