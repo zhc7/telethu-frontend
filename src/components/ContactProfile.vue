@@ -20,7 +20,6 @@ const handlePlusMember = () => {
   for (const id of groupAddMemberSelecting.value) {
     console.log('Adding group member', props.displayContact.id, id);
     const contact = contacts.value[id];
-    console.log(contact);
     groupAddMember(props.displayContact.id, id);
     const memberInfo = {
       'id': contact.id,
@@ -67,7 +66,7 @@ const filterContacts = computed(() => {
         <v-list-item-subtitle>
           @{{ displayContact.id }}
         </v-list-item-subtitle>
-        <v-list-item v-if="displayContact.catagory === 'user'" class="text-grey-darken-3">
+        <v-list-item v-if="displayContact.category === 'user'" class="text-grey-darken-3">
           <v-divider class="ma-4"/>
           <div>
             <v-row>
