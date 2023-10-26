@@ -1,12 +1,35 @@
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "./constants.js"
 import {useLocalStorage} from "@vueuse/core"
 import {contacts} from "./chat.js";
 
-const userId = useLocalStorage("userId", -1);
-const userName = useLocalStorage("userName", "");
-export const userEmail = useLocalStorage("userEmail", "");
+export const user = useLocalStorage("user", {})
+
+export const userId = computed({
+    get() {
+        return user.value.id;
+    },
+    set(newValue) {
+        user.value.id = newValue;
+    },
+})
+export const userName = computed({
+    get() {
+        return user.value.name;
+    },
+    set(newValue) {
+        user.value.name = newValue;
+    }
+})
+export const userEmail = computed({
+    get() {
+        return user.value.email;
+    },
+    set(newValue) {
+        user.value.email = newValue;
+    }
+})
 const token = useLocalStorage("token", "");
 
 axios.interceptors.response.use(res => res, err => {
@@ -21,12 +44,10 @@ const login = (email, password) => {
         console.log("login " + email);
     }
     return axios.post(BASE_API_URL + "users/login", {userEmail: email, password}).then((res) => {
-        userEmail.value = email;
         console.log(res.data);
         token.value = res.data.token;
-        userId.value = parseInt(res.data["user_id"]);
-        userName.value = res.data["UserName"];
-        console.log(token.value, userId.value, userName.value);
+        user.value = res.data.user;
+        console.log(token.value, user.value);
         return "";
     }).catch((err) => {
         console.log("error caught");
@@ -40,10 +61,8 @@ const login = (email, password) => {
 
 const logout = () => {
     token.value = "";
-    userName.value = "";
-    userEmail.value = "";
     contacts.value = {};
-    userId.value = -1;
+    user.value = {};
 }
 
 const register = async (name, email, password) => {
@@ -55,4 +74,4 @@ const register = async (name, email, password) => {
     })
 }
 
-export {userId, userName, token, login, register, logout}
+export {token, login, register, logout}

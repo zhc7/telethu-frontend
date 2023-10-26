@@ -1,5 +1,5 @@
 <script setup>
-import {logout, userEmail, userId, userName} from "../auth.js";
+import {logout, user, userEmail, userId, userName} from "../auth.js";
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 
@@ -29,7 +29,7 @@ const handleEdit = () => {
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
         <v-avatar size="80" class="mt-5">
-          <v-img src="/Shenium.png"/>
+          <v-img :src="user.avatar"/>
         </v-avatar>
         <v-card-item>
           <v-row no-gutters pa="4">
