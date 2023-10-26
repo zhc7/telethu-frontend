@@ -145,7 +145,7 @@ onMounted(() => {
       <ListItem
           :key="chat.id"
           :k="chat.id"
-          class="pa-3 pl-6 chat-list-item text-left"
+          class="pa-3 pl-6 chat-list-item text-left hot-message"
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
@@ -153,7 +153,7 @@ onMounted(() => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img :src="chat.type !== 'grp' ? chat.avatar : '/public/baidu.webp'" cover/>
+            <v-img :src="chat.category !== 'group' ? chat.avatar : '/baidu.webp'" cover/>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">{{
@@ -169,6 +169,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+
 .chat-list-item {
   position: relative;
 }

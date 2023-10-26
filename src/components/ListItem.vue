@@ -22,9 +22,11 @@ const activated = inject("activated", undefined)
     <div class="mr-2">
       <slot name="prepend"/>
     </div>
-    <div :class="{'d-none': activated===false, 'd-flex': activated!==false}" class="flex-column">
+    <div :class="{'d-none': activated===false, 'd-flex': activated!==false}" class="flex-column title-area">
       <p class="text-left" v-text="props.title"/>
-      <p class="text-left text-grey" v-text="props.subtitle" style="font-size: small"/>
+      <span class="subtitle-wrap mr-2">
+        <p class="text-left text-grey" v-text="props.subtitle" style="font-size: small"/>
+      </span>
     </div>
     <slot/>
     <div class="ml-auto">
@@ -38,4 +40,15 @@ const activated = inject("activated", undefined)
   background-color: #248aff !important;
   color: white !important;
 }
+
+.title-area {
+  max-width: 40%;
+}
+
+.subtitle-wrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 </style>
