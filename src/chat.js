@@ -4,12 +4,27 @@ import {DEBUG} from "./constants.js";
 import {ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
+import CryptoJS from 'crypto-js';
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
 
 let socket;
 // const messages = ref({});
+
+
+const generateMessageId = (content, sender, time) => {
+    const data = `${content}${sender}${time}`;
+    const hash = CryptoJS.SHA256(data);
+    return hash.toString(CryptoJS.enc.Hex);
+}
+
+const Status = Object.freeze({
+    sending: 'sending',
+    sent: 'sent',
+    read: 'read',
+    failed: 'failed',
+})
 
 const addFriend = (friendId) => {
     axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
@@ -108,8 +123,18 @@ const createSocket = () => {
                 }
             }
             contacts.value = message;
+        } else if (message.m_type === undefined) {
+            // acknowledgement from RabbitMQ
+            if (message.t_type === 0) {
+                for (let msg of contacts.value[message.receiver].messages) {
+                    if (msg.message_id === message.message_id) {
+                        msg.status = Status.sent;
+                        msg.message_id = message.reference;
+                    }
+                }
+            }
         } else if (message.m_type <= 5) {
-
+            // notification
             if (window.Notification.permission === "granted") {
                 sendNotification();
             } else if (window.Notification.permission !== "denied") {
@@ -174,6 +199,8 @@ const sendMessage = (receiverId, inputMessage, t_type) => {
         receiver: receiverId,
         sender: userId.value,
         info: "",
+        massage_id: generateMessageId(inputMessage, userId.value, Date.now()),
+        status: Status.sending,
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
@@ -189,6 +216,8 @@ const createGroup = (groupName, members) => {
         receiver: userId.value,
         sender: userId.value,
         info: groupName,
+        message_id: generateMessageId(members.toString(), userId.value, Date.now()),
+        status: Status.sending,
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
@@ -203,6 +232,8 @@ const groupAddMember = (groupId, memberId) => {
         sender: userId.value,
         receiver: memberId,
         info: "",
+        message_id: generateMessageId(groupId, userId.value, Date.now()),
+        status: Status.sending,
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));

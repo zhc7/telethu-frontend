@@ -39,13 +39,21 @@ onMounted(() => {
       </span>
         <v-spacer v-if="message.sender !== userId"/>
       </div>
-      <div
-          v-if="message.m_type === 0"
-          ref="messagePop"
-          class="pa-2 rounded-lg text-left"
-          :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
-      >
-        <span>{{ message.content }}</span>
+      <div class="d-flex align-center">
+        <v-icon
+            v-if="message.status === 'sending'"
+            class="mr-3 spin"
+        >
+          mdi-sync
+        </v-icon>
+        <div
+            v-if="message.m_type === 0"
+            ref="messagePop"
+            class="pa-2 rounded-lg text-left"
+            :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
+        >
+          <span class="ml-1 mr-1">{{ message.content }}</span>
+        </div>
       </div>
     </div>
     <img
@@ -70,4 +78,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+.spin {
+  animation: spin 1s linear infinite;
+}
+
 </style>
