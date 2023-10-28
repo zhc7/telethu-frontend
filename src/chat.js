@@ -10,7 +10,74 @@ const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
 
 let socket;
-// const messages = ref({});
+let chatManager;
+
+class ChatManager {
+    constructor(socket, contacts) {
+        this.contacts = contacts;
+        this.retryLimit = 3;
+        this.socket = socket;
+        this.timeout = 3;
+    }
+
+    sendMessage(message) {
+        console.log("sending message from manager", message);
+        message.status = 'sending';
+        console.log("message receiver", message.receiver);
+        this.contacts[message.receiver].messages.push(message);
+        this.socket.send(JSON.stringify(message));
+
+
+        // 设置一个超时时间，在这个时间内如果没有收到ack，则重新发送消息
+        setTimeout(() => {
+            if (message.status === 'sending') {
+                this._retrySendMessage(message);
+            }
+        }, this.timeout * 1000);
+    }
+
+    _retrySendMessage(message, attempts = 0) {
+        if (attempts >= this.retryLimit) {
+            message.status = 'failed';
+            return;
+        }
+
+        this.socket.send(JSON.stringify(message));
+
+        setTimeout(() => {
+            if (message.status === 'sending') {
+                this._retrySendMessage(message, attempts + 1);
+            }
+        }, 5000);
+    }
+
+    receiveAck(ack) {
+        this.updateMessage(ack);
+    }
+
+    receiveMessage(message) {
+        const receiver = message.t_type === 0 ? message.sender : message.receiver;
+        // check if the message is already in the list
+        const existingMessage = receiver.messages.find(msg => msg.message_id === message.message_id);
+        if (!existingMessage && message.sender !== userId.value) {
+            message.status = 'sent';
+            receiver.messages.push(message);
+            if (message.sender !== userId.value) {
+                receiver.alert = true;
+                sendNotification();
+            }
+        }
+    }
+
+    updateMessage(ack) {
+        const receiver = ack.t_type === 0 ? ack.sender : ack.receiver;
+        const message = receiver.messages.find(msg => msg.message_id === ack.message_id);
+        if (message) {
+            message.status = 'sent';
+            message.message_id = ack.reference;
+        }
+    }
+}
 
 
 const generateMessageId = (content, sender, time) => {
@@ -18,13 +85,6 @@ const generateMessageId = (content, sender, time) => {
     const hash = CryptoJS.SHA256(data);
     return hash.toString(CryptoJS.enc.Hex);
 }
-
-const Status = Object.freeze({
-    sending: 'sending',
-    sent: 'sent',
-    read: 'read',
-    failed: 'failed',
-})
 
 const addFriend = (friendId) => {
     axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
@@ -86,15 +146,27 @@ const applyList = async () => {
         });
 }
 
-function sendNotification() {
-    new Notification("新消息：", {
-        body: "您有新的消息，请及时查看！",
-    })
+const sendNotification = () => {
+    if (window.Notification.permission === "granted") {
+        new Notification("新消息：", {
+            body: "您有新的消息，请及时查看！",
+        })
+    } else if (window.Notification.permission !== "denied") {
+        window.Notification.requestPermission(function (permission) {
+            if (permission === "granted") {
+                new Notification("新消息：", {
+                    body: "您有新的消息，请及时查看！",
+                })
+            }
+        });
+    }
 }
 
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
+    chatManager = new ChatManager(socket, contacts.value);
+
     let first = true;
 
     socket.onopen = () => {
@@ -125,33 +197,10 @@ const createSocket = () => {
             contacts.value = message;
         } else if (message.m_type === undefined) {
             // acknowledgement from RabbitMQ
-            if (message.t_type === 0) {
-                for (let msg of contacts.value[message.receiver].messages) {
-                    if (msg.message_id === message.message_id) {
-                        msg.status = Status.sent;
-                        msg.message_id = message.reference;
-                    }
-                }
-            }
+            chatManager.receiveAck(message);
         } else if (message.m_type <= 5) {
-            // notification
-            if (window.Notification.permission === "granted") {
-                sendNotification();
-            } else if (window.Notification.permission !== "denied") {
-                window.Notification.requestPermission(function (permission) {
-                    if (permission === "granted") {
-                        sendNotification();
-                    }
-                });
-            }
-
-            if (message.t_type === 0) {
-                contacts.value[message.sender].alert = true;
-                contacts.value[message.sender].messages.push(message);
-            } else if (message.t_type === 1) {
-                contacts.value[message.sender].alert = true;
-                contacts.value[message.receiver].messages.push(message);
-            }
+            // normal message or confirm message
+            chatManager.receiveMessage(message);
         } else {
             const functionMessageHandlers = {
                 6: () => {
@@ -200,11 +249,9 @@ const sendMessage = (receiverId, inputMessage, t_type) => {
         sender: userId.value,
         info: "",
         massage_id: generateMessageId(inputMessage, userId.value, Date.now()),
-        status: Status.sending,
+        status: 'sending',
     };
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-    contacts.value[receiverId].messages.push(message);
+    chatManager.sendMessage(message);
 };
 
 const createGroup = (groupName, members) => {
@@ -217,7 +264,7 @@ const createGroup = (groupName, members) => {
         sender: userId.value,
         info: groupName,
         message_id: generateMessageId(members.toString(), userId.value, Date.now()),
-        status: Status.sending,
+        status: 'sending',
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
@@ -233,7 +280,7 @@ const groupAddMember = (groupId, memberId) => {
         receiver: memberId,
         info: "",
         message_id: generateMessageId(groupId, userId.value, Date.now()),
-        status: Status.sending,
+        status: 'sending',
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));

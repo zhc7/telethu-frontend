@@ -41,7 +41,7 @@ onMounted(() => {
       </div>
       <div class="d-flex align-center">
         <v-icon
-            v-if="message.status === 'sending'"
+            v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"
         >
           mdi-sync

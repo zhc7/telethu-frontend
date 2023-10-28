@@ -28,7 +28,7 @@ const selectedChat = computed(() => contacts.value[selectedChatId.value]);
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    sendMessage(selectedChatId.value, message.value, contacts.value[selectedChatId.value].category === 'group' ? 1 : 0);
+    sendMessage(+selectedChatId.value, message.value, contacts.value[selectedChatId.value].category === 'group' ? 1 : 0);
     message.value = "";
   }
 };
