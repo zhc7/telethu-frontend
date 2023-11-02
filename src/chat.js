@@ -66,15 +66,15 @@ const chatManager = {
             message.status = 'sent';
             contacts.value[receiver].messages.push(message);
             if (message.sender !== userId.value) {
-                receiver.alert = true;
+                contacts.value[receiver].alert = true;
                 sendNotification();
             }
         }
         const ack = {
             message_id: message.message_id,
-            reference: message.message_id,
         }
-        socket.send(JSON.stringify(ack))
+        console.log("sending ack", ack);
+        socket.send(JSON.stringify(ack));
     },
 
     updateMessage(ack) {
