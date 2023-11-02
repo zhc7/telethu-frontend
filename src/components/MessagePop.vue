@@ -57,9 +57,14 @@ onMounted(() => {
             ref="messagePop"
             class="pa-2 rounded-lg text-left"
             :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
+            style="max-width: 450px; word-wrap: break-word;"
         >
           <span class="ml-1 mr-1">{{ message.content }}</span>
         </div>
+      </div>
+      <div class="d-flex justify-end">
+        <v-icon v-show="message.status === 'sent'" size="12px">mdi-check</v-icon>
+        <v-icon v-show="message.status === 'read'" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
     <img
