@@ -150,7 +150,7 @@ onMounted(() => {
       <a class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
       <v-icon class="ma-3" @click="handlePlus">mdi-plus</v-icon>
     </div>
-    <List class="overflow-y-auto" v-model="selected">
+    <List class="overflow-y-auto fill-height" v-model="selected">
       <ListItem
           :key="chat.id"
           :k="chat.id"
