@@ -10,22 +10,19 @@ const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
 
 let socket;
-let chatManager;
 
-class ChatManager {
-    constructor(socket, contacts) {
-        this.contacts = contacts;
-        this.retryLimit = 3;
-        this.socket = socket;
-        this.timeout = 3;
-    }
+const chatManager = {
+    retryLimit: 3,
+    timeout: 1,
+
+    sentMessages: {},
 
     sendMessage(message) {
         console.log("sending message from manager", message);
         message.status = 'sending';
         console.log("message receiver", message.receiver);
-        this.contacts[message.receiver].messages.push(message);
-        this.socket.send(JSON.stringify(message));
+        contacts.value[message.receiver].messages.push(message);
+        socket.send(JSON.stringify(message));
 
 
         // 设置一个超时时间，在这个时间内如果没有收到ack，则重新发送消息
@@ -34,49 +31,59 @@ class ChatManager {
                 this._retrySendMessage(message);
             }
         }, this.timeout * 1000);
-    }
+
+        this.sentMessages[message.message_id] = message;
+    },
 
     _retrySendMessage(message, attempts = 0) {
+        if (message.status === 'sent') {
+            return;
+        }
         if (attempts >= this.retryLimit) {
             message.status = 'failed';
             return;
         }
 
-        this.socket.send(JSON.stringify(message));
+        socket.send(JSON.stringify(message));
 
         setTimeout(() => {
             if (message.status === 'sending') {
                 this._retrySendMessage(message, attempts + 1);
             }
-        }, 5000);
-    }
+        }, this.timeout * 1000);
+    },
 
     receiveAck(ack) {
+        console.log("received ack", ack);
         this.updateMessage(ack);
-    }
+    },
 
     receiveMessage(message) {
         const receiver = message.t_type === 0 ? message.sender : message.receiver;
         // check if the message is already in the list
-        const existingMessage = receiver.messages.find(msg => msg.message_id === message.message_id);
+        const existingMessage = contacts.value[receiver].messages.find(msg => msg.message_id === message.message_id);
         if (!existingMessage && message.sender !== userId.value) {
             message.status = 'sent';
-            receiver.messages.push(message);
+            contacts.value[receiver].messages.push(message);
             if (message.sender !== userId.value) {
                 receiver.alert = true;
                 sendNotification();
             }
         }
-    }
+        const ack = {
+            message_id: message.message_id,
+            reference: message.message_id,
+        }
+        socket.send(JSON.stringify(ack))
+    },
 
     updateMessage(ack) {
-        const receiver = ack.t_type === 0 ? ack.sender : ack.receiver;
-        const message = receiver.messages.find(msg => msg.message_id === ack.message_id);
+        const message = this.sentMessages[ack.reference];
         if (message) {
             message.status = 'sent';
-            message.message_id = ack.reference;
+            message.message_id = ack.message_id;
         }
-    }
+    },
 }
 
 
@@ -165,7 +172,6 @@ const sendNotification = () => {
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
-    chatManager = new ChatManager(socket, contacts.value);
 
     let first = true;
 
@@ -248,7 +254,7 @@ const sendMessage = (receiverId, inputMessage, t_type) => {
         receiver: receiverId,
         sender: userId.value,
         info: "",
-        massage_id: generateMessageId(inputMessage, userId.value, Date.now()),
+        message_id: generateMessageId(inputMessage, userId.value, Date.now()),
         status: 'sending',
     };
     chatManager.sendMessage(message);

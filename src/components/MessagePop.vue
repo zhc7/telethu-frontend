@@ -46,6 +46,12 @@ onMounted(() => {
         >
           mdi-sync
         </v-icon>
+        <v-icon
+            v-if="message.status === 'failed' && message.sender === userId"
+            class="mr-3 text-red"
+        >
+          mdi-close-circle-outline
+        </v-icon>
         <div
             v-if="message.m_type === 0"
             ref="messagePop"
