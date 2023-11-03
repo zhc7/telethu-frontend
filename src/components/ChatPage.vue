@@ -2,33 +2,12 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {contacts, getHistoryMessage, sendMessage} from "../chat.js";
 import FriendProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
 import Stickers from "./Stickers.vue";
-
-const showProfile = ref(false);
-const profile = ref(null);
-
-const onProfileClick = (event) => {
-  event.stopPropagation();
-};
-
-const onClickOutside = (event) => {
-  if (showProfile.value && !profile.value.contains(event.target)) {
-    showProfile.value = false;
-  }
-};
-
-onMounted(() => {
-  document.addEventListener('click', onClickOutside);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', onClickOutside);
-});
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -119,10 +98,10 @@ onMounted(() => {
   <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height"
          @click="handleHideProfile($event)"
   >
-    <v-col cols="12" sm="3" class="pa-0 fill-height">
+    <v-col cols="12" sm="4" class="pa-0 fill-height">
       <ChatList v-model="selectedChatId"></ChatList>
     </v-col>
-    <v-col v-if="selectedChat" cols="12" :sm="showProfileDetail ? 6 : 9"
+    <v-col v-if="selectedChat" cols="12" sm="8"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
     >
       <v-row no-gutters class="align-center flex-0-0">
@@ -142,7 +121,7 @@ onMounted(() => {
         </v-card>
       </v-row>
       <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
-        <div class="overflow-y-auto flex-1-1 d-flex flex-column overflow-hidden" id="message-flow">
+        <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow">
           <div>
             <span @click="handleGetMoreMessage" class="text-blue">Get more message...</span>
           </div>
@@ -178,20 +157,19 @@ onMounted(() => {
         <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
       </v-row>
     </v-col>
-    <v-col cols="12" sm="3" ref="profile" @click.stop="onProfileClick">
-      <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
-                     :display="showProfileDetail">
-        <template #btn>
-          <v-btn>RECOMMEND</v-btn>
-          <v-btn>DELETE</v-btn>
-          <v-btn @click="">BLOCK</v-btn>
-        </template>
-      </FriendProfile>
-      <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
-                     :display="showProfileDetail"/>
-    </v-col>
   </v-row>
-
+  <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
+    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
+                   :display="showProfileDetail">
+      <template #btn>
+        <v-btn>RECOMMEND</v-btn>
+        <v-btn>DELETE</v-btn>
+        <v-btn @click="">BLOCK</v-btn>
+      </template>
+    </FriendProfile>
+    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
+                   :display="showProfileDetail"/>
+  </div>
 </template>
 
 <style scoped>
