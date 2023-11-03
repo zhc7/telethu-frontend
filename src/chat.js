@@ -60,7 +60,7 @@ const chatManager = {
     },
 
     receiveMessage(message) {
-        const receiver = message.t_type === 0 ? message.sender : message.receiver;
+        const receiver = message.receiver;
         // check if the message is already in the list
         const existingMessage = contacts.value[receiver].messages.find(msg => msg.message_id === message.message_id);
         if (!existingMessage && message.sender !== userId.value) {
