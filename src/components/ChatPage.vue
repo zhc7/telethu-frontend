@@ -101,6 +101,7 @@ onMounted(() => {
     <v-col cols="12" sm="4" class="pa-0 fill-height">
       <ChatList v-model="selectedChatId"></ChatList>
     </v-col>
+    <v-divider vertical v-if="selectedChat"/>
     <v-col v-if="selectedChat" cols="12" sm="8"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
     >
@@ -158,6 +159,7 @@ onMounted(() => {
       </v-row>
     </v-col>
   </v-row>
+  <v-divider vertical v-if="selectedChat"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
     <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
                    :display="showProfileDetail">
@@ -182,7 +184,7 @@ onMounted(() => {
 }
 
 .profile-area--active {
-  width: 25vw;
+  width: 23vw;
 }
 
 </style>

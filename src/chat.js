@@ -326,7 +326,8 @@ const deleteFriend = (friendId) => {
         info: "",
         status: 'sending',
     }
-    chatManager.sendMessage(message);
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
 }
 
 export {
