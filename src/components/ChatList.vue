@@ -175,9 +175,10 @@ onMounted(() => {
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
-        <div class="chat-time fill-height">{{
-            chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : ''
-          }}
+        <div class="chat-time fill-height">
+          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</p>
+          <v-icon v-show="chat.pin">mdi-pin</v-icon>
+          <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
         </div>
         <template #append>
           <v-badge v-if="chat.alert && !chat.mute" color="red" content="1" inline></v-badge>
