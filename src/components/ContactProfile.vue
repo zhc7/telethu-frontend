@@ -12,9 +12,15 @@ const groupAddMemberSelecting = ref([]);
 
 const deleteConfirmDialog = ref(false)
 
-const switchValue = ref(false);
-const onSwitchChange = () => {
-  props.displayContact.mute = !!switchValue.value;
+const switchValueMute = ref(props.displayContact.mute);
+const onSwitchChangeMute = () => {
+  props.displayContact.mute = switchValueMute.value;
+  console.log('mute:', props.displayContact.mute);
+};
+const switchValuePin = ref(props.displayContact.pin);
+const onSwitchChangePin = () => {
+  props.displayContact.pin = switchValuePin.value;
+  console.log('pin:', props.displayContact.pin);
 };
 
 const friendCircle = ref(['THU', 'PKU', 'CMU', 'MIT'])
@@ -181,11 +187,11 @@ const filterContacts = computed(() => {
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Mute:</p>
-          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValue" @change="onSwitchChange"></v-switch>
+          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValueMute" @change="onSwitchChangeMute"></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Pin:</p>
-          <v-switch style="flex: 2" hide-details color="indigo"></v-switch>
+          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValuePin" @change="onSwitchChangePin"></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Block:</p>

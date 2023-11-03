@@ -115,7 +115,7 @@ onMounted(() => {
             </template>
             <v-toolbar-title>
               <span class="pr-3">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</span>
-              <span v-if="selectedChat.mute"><v-icon>mdi-account</v-icon></span>
+              <span v-if="selectedChat.mute"><v-icon size="x-small">mdi-bell-off</v-icon></span>
             </v-toolbar-title>
             <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
           </v-toolbar>

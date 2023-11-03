@@ -42,6 +42,8 @@ const chatList = computed(() => {
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
       alert: contact.alert,
+      pin: contact.pin,
+      mute: contact.mute,
     })
   }
   list = list.sort((a, b) => {
@@ -57,6 +59,12 @@ const chatList = computed(() => {
   });
   return list;
 });
+
+const sortedChatList = computed(() => {
+  return chatList.value.slice().sort((a, b) => {
+    return (b.pin === true) - (a.pin === true)
+  })
+})
 
 const handlePlus = () => {
   createGroupDialog.value = true;
@@ -142,8 +150,9 @@ onMounted(() => {
         <v-btn @click="handleCreateGroup" :loading="createGroupLoading">Create</v-btn>
       </v-card-actions>
     </v-card>
-
   </v-dialog>
+
+
   <div class="fill-height d-flex flex-column">
     <div class="d-flex" style="justify-content: space-between">
       <v-icon class="ma-3">mdi-magnify</v-icon>
@@ -156,7 +165,7 @@ onMounted(() => {
           :k="chat.id"
           class="pa-3 pl-6 chat-list-item text-left hot-message"
           rounded="lg"
-          v-for="chat in chatList"
+          v-for="chat in sortedChatList"
           :title="chat.name"
           :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
       >
