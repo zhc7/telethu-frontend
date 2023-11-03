@@ -2,6 +2,7 @@
 
 import {contacts, groupAddMember} from "../chat.js";
 import {ref, computed} from "vue";
+import {deleteFriend} from "../chat.js";
 
 const props = defineProps(['displayContact', 'display'])
 
@@ -185,10 +186,10 @@ const filterContacts = computed(() => {
             <v-btn color="indigo" style="font-size: 15px; font-weight: bold">Recommend</v-btn>
           </v-row>
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
-            <v-btn color="error" style="font-size: 15px; font-weight: bold">Delete Friend</v-btn>
+            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteFriend(displayContact.id)">Delete Friend</v-btn>
           </v-row>
           <v-row v-else style="display: flex; justify-content: center">
-            <v-btn color="error" style="font-size: 15px; font-weight: bold">Delete Group</v-btn>
+            <v-btn color="error" style="font-size: 15px; font-weight: bold">Quit Group</v-btn>
           </v-row>
         </v-col>
       </v-card-actions>

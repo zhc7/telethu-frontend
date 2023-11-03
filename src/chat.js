@@ -4,7 +4,7 @@ import {DEBUG} from "./constants.js";
 import {ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
-import CryptoJS from 'crypto-js';
+import generateMessageId from "./utils/hash.js";
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
@@ -21,9 +21,10 @@ const chatManager = {
         console.log("sending message from manager", message);
         message.status = 'sending';
         console.log("message receiver", message.receiver);
-        contacts.value[message.receiver].messages.push(message);
+        if (message.m_type <= 5) {
+            contacts.value[message.receiver].messages.push(message);
+        }
         socket.send(JSON.stringify(message));
-
 
         // 设置一个超时时间，在这个时间内如果没有收到ack，则重新发送消息
         setTimeout(() => {
@@ -55,7 +56,7 @@ const chatManager = {
 
     receiveAck(ack) {
         console.log("received ack", ack);
-        this.updateMessage(ack);
+        this._updateMessage(ack);
     },
 
     receiveMessage(message) {
@@ -77,20 +78,13 @@ const chatManager = {
         socket.send(JSON.stringify(ack));
     },
 
-    updateMessage(ack) {
+    _updateMessage(ack) {
         const message = this.sentMessages[ack.reference];
         if (message) {
             message.status = 'sent';
             message.message_id = ack.message_id;
         }
     },
-}
-
-
-const generateMessageId = (content, sender, time) => {
-    const data = `${content}${sender}${time}`;
-    const hash = CryptoJS.SHA256(data);
-    return hash.toString(CryptoJS.enc.Hex);
 }
 
 const addFriend = (friendId) => {
@@ -220,6 +214,10 @@ const createSocket = () => {
                     // FUNC_ADD_GROUP_MEMBER
                     contacts.value[message.receiver].members.push(message.content);
                     contacts.value[message.receiver].id2member[message.content.id] = message.content;
+                },
+                14: () => {
+                    // FUNC_DELETE_FRIEND
+                    delete contacts.value[message.receiver];
                 }
             }
             functionMessageHandlers[message.m_type]();
@@ -316,6 +314,21 @@ const getHistoryMessage = (id, from, t_type, num) => {
     })
 }
 
+const deleteFriend = (friendId) => {
+    const message = {
+        m_type: 14,
+        t_type: 0,
+        time: Date.now(),
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+        content: "",
+        receiver: friendId,
+        sender: userId.value,
+        info: "",
+        status: 'sending',
+    }
+    chatManager.sendMessage(message);
+}
+
 export {
     contacts,
     friendRequests,
@@ -328,4 +341,5 @@ export {
     createGroup,
     groupAddMember,
     getHistoryMessage,
+    deleteFriend,
 }
