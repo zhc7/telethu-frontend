@@ -171,7 +171,7 @@ onMounted(() => {
           }}
         </div>
         <template #append>
-          <v-badge v-if="chat.alert" color="red" content="1" inline></v-badge>
+          <v-badge v-if="chat.alert && !chat.mute" color="red" content="1" inline></v-badge>
         </template>
       </ListItem>
     </List>

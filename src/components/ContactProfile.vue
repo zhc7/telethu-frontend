@@ -10,7 +10,12 @@ const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
 const groupAddMemberSelecting = ref([]);
 
-const deleteConfirmDialog = ref(false);
+const deleteConfirmDialog = ref(false)
+
+const switchValue = ref(false);
+const onSwitchChange = () => {
+  props.displayContact.mute = !!switchValue.value;
+};
 
 const friendCircle = ref(['THU', 'PKU', 'CMU', 'MIT'])
 const friendCircleSelect = ref([])
@@ -176,7 +181,7 @@ const filterContacts = computed(() => {
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Mute:</p>
-          <v-switch style="flex: 2" hide-details color="indigo"></v-switch>
+          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValue" @change="onSwitchChange"></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Pin:</p>
