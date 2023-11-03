@@ -10,6 +10,8 @@ const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
 const groupAddMemberSelecting = ref([]);
 
+const deleteConfirmDialog = ref(false);
+
 const friendCircle = ref(['THU', 'PKU', 'CMU', 'MIT'])
 const friendCircleSelect = ref([])
 const newName = ref('')
@@ -17,6 +19,11 @@ const newName = ref('')
 const ifGroup = computed(() => {
   return props.displayContact.category === 'group';
 });
+
+const handleDelete = () => {
+  deleteConfirmDialog.value = false;
+  deleteFriend(props.displayContact.id);
+}
 
 const editName = () => {
   console.log('editName')
@@ -54,6 +61,7 @@ const handlePlus = () => {
 
 const handleCancel = () => {
   groupAddMemberDialog.value = false;
+  deleteConfirmDialog.value = false;
   groupAddMemberSelecting.value = [];
 }
 
@@ -181,12 +189,12 @@ const filterContacts = computed(() => {
       </v-col>
       <v-divider class="ma-4"/>
       <v-card-actions>
-        <v-col >
+        <v-col>
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
             <v-btn color="indigo" style="font-size: 15px; font-weight: bold">Recommend</v-btn>
           </v-row>
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
-            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteFriend(displayContact.id)">Delete Friend</v-btn>
+            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Delete Friend</v-btn>
           </v-row>
           <v-row v-else style="display: flex; justify-content: center">
             <v-btn color="error" style="font-size: 15px; font-weight: bold">Quit Group</v-btn>
@@ -195,6 +203,16 @@ const filterContacts = computed(() => {
       </v-card-actions>
     </v-card-item>
   </v-card>
+
+  <v-dialog v-model="deleteConfirmDialog" max-width="30vw">
+    <v-card>
+      <v-alert type="warning" title="Are you sure?" text="This operation cannot be undone."></v-alert>
+      <v-card-actions class="justify-end">
+        <v-btn @click="handleCancel">cancel</v-btn>
+        <v-btn @click="handleDelete">delete</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
   <v-dialog v-model="groupAddMemberDialog" max-width="50vw">
     <v-card>
