@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, ref, watch, defineProps} from "vue";
 import Stickers from "./Stickers.vue";
-import {contacts, sendMessage} from "../chat.js";
+import {contacts, sendMessage, sendFiles} from "../chat.js";
 
 const props = defineProps(['chat'])
 
@@ -32,7 +32,9 @@ const handleSendMessage = () => {
 };
 
 const handleSendFiles = () => {
-
+  const m_type = undefined; // TODO: get m_type from file type
+  const t_type = props.chat.category === 'group' ? 1 : 0;
+  sendFiles(+props.chat.id, uploadFiles.value, t_type, m_type);
 };
 
 const handleTextareaKeydown = (e) => {

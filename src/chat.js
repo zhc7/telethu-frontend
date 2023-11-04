@@ -4,7 +4,7 @@ import {DEBUG} from "./constants.js";
 import {ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
-import generateMessageId from "./utils/hash.js";
+import {generateMessageId, calculateMD5, generateMD5} from "./utils/hash.js";
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
@@ -361,13 +361,19 @@ const unblockFriend = (friendId) => {
     socket.send(JSON.stringify(message));
 }
 
-const sendFiles = (receiverId, files, t_type) => {
+const sendFiles = (receiverId, files, t_type, m_type) => {
     for (let file of files) {
+        const md5 = calculateMD5(file).then(md5 => {
+            return md5;
+        }).catch(err => {
+            console.error(err);
+            return err;
+        });
         const message = {
             time: Date.now(),
-            m_type: 1,
-            t_type: t_type === undefined ? 0 : t_type,
-            content: file,
+            m_type: m_type,
+            t_type: t_type,
+            content: md5,
             receiver: receiverId,
             sender: userId.value,
             info: "",
@@ -375,6 +381,7 @@ const sendFiles = (receiverId, files, t_type) => {
             status: 'sending',
         };
         chatManager.sendMessage(message);
+        // TODO: send file by http
     }
 }
 
@@ -393,4 +400,5 @@ export {
     deleteFriend,
     blockFriend,
     unblockFriend,
+    sendFiles,
 }
