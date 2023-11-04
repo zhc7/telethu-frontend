@@ -16,6 +16,7 @@ const displayContact = ref();
 const displayRequest = ref();
 const searchInput = ref('');
 const searchFriendMode = ref('id');
+const displayGroup = ref(false);
 
 const switchMode = () => {
   searchFriendMode.value = searchFriendMode.value === 'email' ? 'id' : 'email';
@@ -111,6 +112,10 @@ onMounted(() => {
               density="compact"
               class="mt-3"
           >
+            <template #prepend>
+              <v-icon v-if="!displayGroup" @click="displayGroup = !displayGroup">mdi-account</v-icon>
+              <v-icon v-else @click="displayGroup = !displayGroup">mdi-account-group</v-icon>
+            </template>
             <template #append>
               <v-icon @click="search">mdi-magnify</v-icon>
             </template>
@@ -121,6 +126,8 @@ onMounted(() => {
           v-model="selectedContactId"
           v-show="displayType === 'contactList'"
           class="fill-height overflow-y-auto"
+          :displayType="displayGroup ? 'group' : 'user'"
+          :searchInput="searchInput"
       />
       <RequestList
           v-model="selectedRequestId"

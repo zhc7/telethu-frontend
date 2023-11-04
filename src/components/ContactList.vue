@@ -4,7 +4,7 @@ import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../chat.js";
 
-const props = defineProps(["modelValue"]);
+const props = defineProps(["modelValue", "displayType", "searchInput"]);
 const emit = defineEmits((["update:modelValue"]))
 const personContacts = computed(() => {
   return Object.values(contacts.value)
@@ -18,6 +18,14 @@ const selected = computed({
   }
 });
 
+const displayContacts = computed(() => {
+  let returnContacts = personContacts.value.filter((c) => (c.category === props.displayType));
+  if (props.searchInput) {
+    returnContacts = returnContacts.filter((c) => c.name.toLowerCase().includes(props.searchInput.toLowerCase()));
+  }
+  return returnContacts;
+});
+
 </script>
 
 <template>
@@ -25,7 +33,7 @@ const selected = computed({
     <ListItem :key="contact.id"
               :k="contact.id"
               class="pa-3 pl-6 chat-list-item text-left"
-              v-for="contact in personContacts.filter((c) => (c.category === 'user'))"
+              v-for="contact in displayContacts"
     >
       <template #prepend>
         <v-avatar>
