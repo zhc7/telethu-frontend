@@ -62,10 +62,27 @@ const chatList = computed(() => {
 });
 
 const sortedChatList = computed(() => {
-  return chatList.value.slice().sort((a, b) => {
-    return (b.pin === true) - (a.pin === true)
-  })
+  let list = chatList.value.slice();
+  list.sort((a, b) => {
+    if (a.pin && b.pin) {
+      return 0;
+    } else if (a.pin) {
+      return -1;
+    } else if (b.pin) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  list = list.filter((chat) => {
+    return chat.name.toLowerCase().indexOf(friendName.value.toLowerCase()) !== -1;
+  });
+  return list;
 })
+
+const searchFriendInput = ref(false);
+const friendName = ref('');
+
 
 const handlePlus = () => {
   createGroupDialog.value = true;
@@ -155,10 +172,12 @@ onMounted(() => {
 
 
   <div class="fill-height d-flex flex-column">
-    <div class="d-flex" style="justify-content: space-between">
-      <v-icon class="ma-3">mdi-magnify</v-icon>
-      <a class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
-      <v-icon class="ma-3" @click="handlePlus">mdi-plus</v-icon>
+    <div class="d-flex mt-3" style="justify-content: space-between">
+      <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
+      <a v-if="!searchFriendInput" class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
+      <v-icon v-if="!searchFriendInput" class="ma-3" @click="handlePlus">mdi-plus</v-icon>
+      <v-text-field v-if="searchFriendInput" hide-details v-model="friendName"
+                    density="compact" variant="solo" class="mr-4"/>
     </div>
     <List class="overflow-y-auto fill-height" v-model="selected">
       <ListItem
