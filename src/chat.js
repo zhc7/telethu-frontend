@@ -361,6 +361,23 @@ const unblockFriend = (friendId) => {
     socket.send(JSON.stringify(message));
 }
 
+const sendFiles = (receiverId, files, t_type) => {
+    for (let file of files) {
+        const message = {
+            time: Date.now(),
+            m_type: 1,
+            t_type: t_type === undefined ? 0 : t_type,
+            content: file,
+            receiver: receiverId,
+            sender: userId.value,
+            info: "",
+            message_id: generateMessageId(file.name, userId.value, Date.now()),
+            status: 'sending',
+        };
+        chatManager.sendMessage(message);
+    }
+}
+
 export {
     contacts,
     friendRequests,

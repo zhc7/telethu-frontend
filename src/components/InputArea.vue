@@ -7,6 +7,21 @@ const props = defineProps(['chat'])
 
 const message = ref("");
 const showStickers = ref(false);
+const previewFilesDialog = ref(false);
+
+const fileInput = ref(null);
+const uploadFiles = ref([]);
+
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+const handlePreviewFiles = (event) => {
+  uploadFiles.value = event.target.files;
+  if (!uploadFiles.value.length) return;
+  console.log(uploadFiles.value);
+  previewFilesDialog.value = true;
+};
 
 const handleSendMessage = () => {
   if (message.value !== "") {
@@ -14,6 +29,10 @@ const handleSendMessage = () => {
     sendMessage(+props.chat.id, message.value, props.chat.category === 'group' ? 1 : 0);
     message.value = "";
   }
+};
+
+const handleSendFiles = () => {
+
 };
 
 const handleTextareaKeydown = (e) => {
@@ -45,11 +64,34 @@ const handleTextareaKeydown = (e) => {
         @click:append-inner="showStickers = !showStickers"
     >
       <template #prepend-inner>
-        <v-icon @click="">mdi-paperclip</v-icon>
+        <v-icon @click="triggerFileInput">mdi-paperclip</v-icon>
       </template>
     </v-textarea>
+    <input
+        type="file"
+        ref="fileInput"
+        @change="handlePreviewFiles"
+        style="display: none;"
+        multiple="multiple"
+    />
     <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
   </v-row>
+
+  <v-dialog v-model="previewFilesDialog" max-width="30vw">
+    <v-card>
+      <v-card-title class="text-center">Files Preview</v-card-title>
+      <v-card-text class="overflow-y-auto" style="max-height: 30vw;">
+        <div v-for="(file, index) in uploadFiles" :key="index">
+          <p>{{ file.name }}</p>
+          <v-divider v-if="uploadFiles.length > 1 && index !== uploadFiles.length - 1" class="ma-3"/>
+        </div>
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn color="primary" @click="previewFilesDialog = false">cancel</v-btn>
+        <v-btn color="primary" @click="handleSendFiles">send</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
