@@ -111,7 +111,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog v-model="createGroupDialog" max-width="50vw">
+  <v-dialog v-model="createGroupDialog" max-width="30vw">
     <v-card>
       <v-card-title class="text-center">
         Create Group

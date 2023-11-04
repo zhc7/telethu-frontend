@@ -4,6 +4,8 @@ import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
 
+// TODO: display menu when right click on message
+
 const props = defineProps(['message', 'final', 'avatar', 'name']);
 const emits = defineEmits((['finished', 'showProfile']));
 

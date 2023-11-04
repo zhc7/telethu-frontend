@@ -172,6 +172,7 @@ const filterContacts = computed(() => {
       <v-divider class="ma-4"/>
       <v-col>
         <v-row style="display: flex; align-items: center;" class="ma-3">
+          <!-- TODO: add rename function -->
           <p style="flex: 1">Rename:</p>
           <v-text-field
               variant="solo"
@@ -185,6 +186,7 @@ const filterContacts = computed(() => {
           />
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-3">
+          <!-- TODO: add friend circle function -->
           <p style="flex: 1">Label:</p>
           <v-combobox
               v-model="friendCircleSelect"
@@ -214,13 +216,15 @@ const filterContacts = computed(() => {
       <v-card-actions>
         <v-col>
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
+            <!-- TODO: add recommend function -->
             <v-btn color="indigo" style="font-size: 15px; font-weight: bold">Recommend</v-btn>
           </v-row>
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
+            <!-- TODO: test delete friend function -->
             <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Delete Friend</v-btn>
           </v-row>
           <v-row v-else style="display: flex; justify-content: center">
-            <v-btn color="error" style="font-size: 15px; font-weight: bold">Quit Group</v-btn>
+            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Quit Group</v-btn>
           </v-row>
         </v-col>
       </v-card-actions>
@@ -237,7 +241,7 @@ const filterContacts = computed(() => {
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="groupAddMemberDialog" max-width="50vw">
+  <v-dialog v-model="groupAddMemberDialog" max-width="30vw">
     <v-card>
       <v-card-title class="text-center">
         Add members
@@ -248,6 +252,7 @@ const filterContacts = computed(() => {
             label="Search"
         />
         <div class="d-flex overflow-x-auto" v-if="groupAddMemberSelecting">
+          <!-- TODO: format cells -->
           <div
               v-for="member in displayContact.members"
               :key="member"

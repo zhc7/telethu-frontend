@@ -1,6 +1,7 @@
 <script setup>
 
 import {ref} from "vue";
+// TODO: complete stickers
 
 const emit = defineEmits(['sticker-click'])
 const emitStickerClick = (stickerData) => {
