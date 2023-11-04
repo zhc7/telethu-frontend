@@ -4,17 +4,15 @@ import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, ref} from "vue";
 import {contacts, getHistoryMessage, sendMessage} from "../chat.js";
-import FriendProfile from "./ContactProfile.vue";
+import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
-import Stickers from "./Stickers.vue";
+import InputArea from "./InputArea.vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
-const message = ref("");
 const displayProfile = ref(undefined);
 const showProfileDetail = ref(false);
-const showStickers = ref(false);
 
 const selectedChatId = computed({
   get: () => props.modelValue,
@@ -25,13 +23,6 @@ const selectedChatId = computed({
 });
 
 const selectedChat = computed(() => contacts.value[selectedChatId.value]);
-
-const handleSendMessage = () => {
-  if (message.value !== "") {
-    sendMessage(+selectedChatId.value, message.value, contacts.value[selectedChatId.value].category === 'group' ? 1 : 0);
-    message.value = "";
-  }
-};
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow');
@@ -60,12 +51,6 @@ const handleHideProfile = (event) => {
   }
 }
 
-const handleTextareaKeydown = (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    handleSendMessage();
-  }
-};
 
 const getNameById = (id) => {
   if (id === userId.value) {
@@ -137,40 +122,14 @@ onMounted(() => {
           />
         </div>
       </v-row>
-      <v-row no-gutters class="d-flex" style="width: 100%">
-        <Stickers v-if="showStickers" class="ml-4" @sticker-click="handleSendMessage"/>
-      </v-row>
-      <v-row no-gutters class="d-flex" style="align-items: center">
-        <v-textarea
-            rows="1"
-            auto-grow
-            max-rows="4"
-            variant="outlined"
-            label="Message here..."
-            class="ma-2 ml-4 message-input"
-            v-model="message"
-            hide-details
-            flat
-            clearable
-            @keydown="handleTextareaKeydown"
-            :append-inner-icon="'mdi-emoticon-kiss-outline'"
-            @click:append-inner="showStickers = !showStickers"
-        ></v-textarea>
-        <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
-      </v-row>
+      <InputArea :chat="selectedChat"/>
     </v-col>
   </v-row>
   <v-divider vertical v-if="selectedChat"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
-    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
-                   :display="showProfileDetail">
-      <template #btn>
-        <v-btn>RECOMMEND</v-btn>
-        <v-btn>DELETE</v-btn>
-        <v-btn @click="">BLOCK</v-btn>
-      </template>
-    </FriendProfile>
-    <FriendProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
+    <ContactProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
+                   :display="showProfileDetail"/>
+    <ContactProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
                    :display="showProfileDetail"/>
   </div>
 </template>
