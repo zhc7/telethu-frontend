@@ -44,6 +44,7 @@ const chatList = computed(() => {
       alert: contact.alert,
       pin: contact.pin,
       mute: contact.mute,
+      block: contact.block,
     })
   }
   list = list.sort((a, b) => {

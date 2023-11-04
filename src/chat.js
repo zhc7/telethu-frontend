@@ -330,6 +330,37 @@ const deleteFriend = (friendId) => {
     socket.send(JSON.stringify(message));
 }
 
+const blockFriend = (friendId) => {
+    const message = {
+        time: Date.now(),
+        m_type: 13,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: friendId,
+        info: "",
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+        status: 'sending',
+    }
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+const unblockFriend = (friendId) => {
+    const message = {
+        time: Date.now(),
+        m_type: 17,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: friendId,
+        info: "",
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+        status: 'sending',
+    }
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
 export {
     contacts,
     friendRequests,
@@ -343,4 +374,6 @@ export {
     groupAddMember,
     getHistoryMessage,
     deleteFriend,
+    blockFriend,
+    unblockFriend,
 }

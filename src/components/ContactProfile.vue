@@ -1,6 +1,6 @@
 <script setup>
 
-import {contacts, groupAddMember} from "../chat.js";
+import {contacts, groupAddMember, blockFriend, unblockFriend} from "../chat.js";
 import {ref, computed} from "vue";
 import {deleteFriend} from "../chat.js";
 
@@ -21,6 +21,18 @@ const switchValuePin = ref(props.displayContact.pin);
 const onSwitchChangePin = () => {
   props.displayContact.pin = switchValuePin.value;
   console.log('pin:', props.displayContact.pin);
+};
+const switchValueBlock = ref(false);
+const onSwitchChangeBlock = () => {
+  console.log('block:', switchValueBlock.value);
+  if (switchValueBlock.value) {
+    props.displayContact.block = true;
+    blockFriend(props.displayContact.id, switchValueBlock.value);
+  } else {
+    props.displayContact.block = false;
+    unblockFriend(props.displayContact.id);
+  }
+
 };
 
 const friendCircle = ref(['THU', 'PKU', 'CMU', 'MIT'])
@@ -195,7 +207,7 @@ const filterContacts = computed(() => {
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Block:</p>
-          <v-switch style="flex: 2" hide-details color="error"></v-switch>
+          <v-switch style="flex: 2" hide-details color="error" v-model="switchValueBlock" @change="onSwitchChangeBlock"></v-switch>
         </v-row>
       </v-col>
       <v-divider class="ma-4"/>
