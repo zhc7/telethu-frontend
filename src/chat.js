@@ -1,4 +1,4 @@
-import {token, userId} from "./auth.js";
+import {token, user, userId} from "./auth.js";
 import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
 import {reactive, ref} from "vue";
@@ -61,16 +61,19 @@ const chatManager = {
     },
 
     receiveMessage(message) {
-        const receiver = message.receiver;
-        // check if the message is already in the list
-        const existingMessage = contacts.value[receiver].messages.find(msg => msg.message_id === message.message_id);
-        if (!existingMessage && message.sender !== userId.value) {
+        const target = message.t_type === 1 ? message.receiver :
+            message.sender === user.value.id ? message.receiver : message.sender;
+        let existing = contacts.value[target].messages.find((m) => m.message_id === message.message_id);
+        if (existing === undefined) {
             message.status = 'sent';
-            contacts.value[receiver].messages.push(message);
-            if (message.sender !== userId.value) {
-                contacts.value[receiver].alert = true;
-                sendNotification();
-            }
+            contacts.value[target].messages.push(message);
+        } else {
+            existing.status = 'sent';
+        }
+        if (message.sender !== user.value.id) {
+            // TODO: handle muted
+            // TODO: display detailed message data
+            sendNotification();
         }
         const ack = {
             message_id: message.message_id,
@@ -81,7 +84,14 @@ const chatManager = {
 
     _updateMessage(ack) {
         const message = this.sentMessages[ack.reference];
-        if (message) {
+        if (message === undefined) {
+            return;
+        }
+        let messages = contacts.value[message.receiver].messages;
+        const existing = messages.findIndex((m) => m.message_id === ack.reference);
+        if (existing !== -1) {
+            messages.splice(existing, 1);
+        } else {
             message.status = 'sent';
             message.message_id = ack.message_id;
         }
