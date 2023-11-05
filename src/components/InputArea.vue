@@ -1,7 +1,7 @@
 <script setup>
-import {computed, onMounted, ref, watch, defineProps} from "vue";
+import {ref} from "vue";
 import Stickers from "./Stickers.vue";
-import {contacts, sendMessage, sendFiles} from "../chat.js";
+import {contacts, sendFiles, sendMessage} from "../chat.js";
 
 const props = defineProps(['chat'])
 

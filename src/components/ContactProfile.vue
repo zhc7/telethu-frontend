@@ -1,8 +1,7 @@
 <script setup>
 
-import {contacts, groupAddMember, blockFriend, unblockFriend} from "../chat.js";
-import {ref, computed, defineProps} from "vue";
-import {deleteFriend} from "../chat.js";
+import {blockFriend, contacts, deleteFriend, groupAddMember, unblockFriend} from "../chat.js";
+import {computed, ref} from "vue";
 
 const props = defineProps(['displayContact', 'display'])
 
