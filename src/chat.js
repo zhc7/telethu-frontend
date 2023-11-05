@@ -1,7 +1,7 @@
 import {token, userId} from "./auth.js";
 import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
 import {generateMessageId, calculateMD5, generateMD5} from "./utils/hash.js";
@@ -20,6 +20,7 @@ const chatManager = {
     sendMessage(message) {
         console.log("sending message from manager", message);
         message.status = 'sending';
+        message = reactive(message);
         console.log("message receiver", message.receiver);
         if (message.m_type <= 5) {
             contacts.value[message.receiver].messages.push(message);
