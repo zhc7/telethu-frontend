@@ -59,7 +59,7 @@ onMounted(() => {
             ref="messagePop"
             class="pa-2 rounded-lg text-left"
             :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
-            style="max-width: 450px; word-wrap: break-word;"
+            style="max-width: 450px; word-wrap: break-word; white-space: pre-wrap;"
         >
           <span class="ml-1 mr-1">{{ message.content }}</span>
         </div>
