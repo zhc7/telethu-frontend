@@ -10,8 +10,6 @@ const props = defineProps(['message', 'final', 'avatar', 'name']);
 const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
-const messageImg = ref();
-const contentHeight = ref('40px');
 
 onMounted(() => {
   if (props.final) {
@@ -33,15 +31,15 @@ onMounted(() => {
           cover
       />
     </v-avatar>
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column flex-1-1 overflow-x-auto">
       <div class="d-flex">
         <v-spacer v-if="message.sender === userId"/>
         <span class="text-grey mr-1 ml-1" style="font-size: small">
-        {{ name }}
-      </span>
+          {{ name }}
+        </span>
         <v-spacer v-if="message.sender !== userId"/>
       </div>
-      <div class="d-flex align-center">
+      <div class="d-flex align-center" style="max-width: 100%">
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"
@@ -59,7 +57,7 @@ onMounted(() => {
             ref="messagePop"
             class="pa-2 rounded-lg text-left"
             :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
-            style="max-width: 450px; word-wrap: break-word; white-space: pre-wrap;"
+            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
         >
           <span class="ml-1 mr-1">{{ message.content }}</span>
         </div>
