@@ -106,6 +106,26 @@ const filterContacts = computed(() => {
   });
 });
 
+const displayHotMessage = (message) => {
+  if (message === undefined) {
+    return '';
+  } else if (message.m_type === 0) {
+    return message.content;
+  } else if (message.m_type === 1) {
+    return '[image]';
+  } else if (message.m_type === 2) {
+    return '[audio]';
+  } else if (message.m_type === 3) {
+    return '[video]';
+  } else if (message.m_type === 4) {
+    return '[file]';
+  } else if (message.m_type === 5) {
+    return '[stickers]';
+  } else {
+    return '[unknown]';
+  }
+}
+
 onMounted(() => {
   console.log("chat list mounted");
 })
@@ -188,7 +208,7 @@ onMounted(() => {
           rounded="lg"
           v-for="chat in sortedChatList"
           :title="chat.name"
-          :subtitle="chat.hotMessage ? chat.hotMessage.content : ''"
+          :subtitle="displayHotMessage(chat.hotMessage)"
       >
         <template #prepend>
           <v-avatar>
