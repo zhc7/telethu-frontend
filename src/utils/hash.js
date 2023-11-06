@@ -7,7 +7,7 @@ const generateMessageId = (content, sender, time) => {
     return hash.toString(CryptoJS.enc.Hex);
 }
 
-const calculateMD5 = (file) => {
+const calculateMD5 = async (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
@@ -25,14 +25,15 @@ const calculateMD5 = (file) => {
     });
 };
 
-const generateMD5 = (file) => {
-    calculateMD5(file).then(md5 => {
+const generateMD5 = async (file) => {
+    try {
+        const md5 = await calculateMD5(file);
         return md5;
-    }).catch(err => {
-        console.log(err);
+    } catch (err) {
+        console.error(err);
         return err;
-    });
-}
+    }
+};
 
 
 export {

@@ -373,13 +373,9 @@ const unblockFriend = (friendId) => {
     socket.send(JSON.stringify(message));
 }
 
-const sendFiles = (receiverId, file, t_type, m_type) => {
-    const md5 = calculateMD5(file).then(md5 => {
-        return md5;
-    }).catch(err => {
-        console.error(err);
-        return err;
-    });
+const sendFiles = async (receiverId, file, t_type, m_type) => {
+    const md5 = await generateMD5(file);
+    console.log("md5 -> ", md5);
     const message = {
         time: Date.now(),
         m_type: m_type,
