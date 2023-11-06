@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
+import {BASE_API_URL} from "../constants.js";
 
 // TODO: display menu when right click on message
 
@@ -69,14 +70,14 @@ onMounted(() => {
     </div>
     <!--TODO:change src to url-->
     <img
-        v-if="message.m_type === 'image'"
-        :src="message.content"
+        v-if="message.m_type === 1"
+        :src="BASE_API_URL + 'files/' + message.content + '/'"
         style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
     />
     <video
-        v-if="message.m_type === 'video'"
+        v-if="message.m_type === 3"
         controls
-        :src="message.content"
+        :src="BASE_API_URL + 'files/' + message.content + '/'"
         style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
     ></video>
     <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
