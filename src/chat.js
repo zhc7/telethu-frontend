@@ -373,28 +373,26 @@ const unblockFriend = (friendId) => {
     socket.send(JSON.stringify(message));
 }
 
-const sendFiles = (receiverId, files, t_type, m_type) => {
-    for (let file of files) {
-        const md5 = calculateMD5(file).then(md5 => {
-            return md5;
-        }).catch(err => {
-            console.error(err);
-            return err;
-        });
-        const message = {
-            time: Date.now(),
-            m_type: m_type,
-            t_type: t_type,
-            content: md5,
-            receiver: receiverId,
-            sender: userId.value,
-            info: "",
-            message_id: generateMessageId(file.name, userId.value, Date.now()),
-            status: 'sending',
-        };
-        chatManager.sendMessage(message);
-        uploadfiles(file, md5, receiverId);
-    }
+const sendFiles = (receiverId, file, t_type, m_type) => {
+    const md5 = calculateMD5(file).then(md5 => {
+        return md5;
+    }).catch(err => {
+        console.error(err);
+        return err;
+    });
+    const message = {
+        time: Date.now(),
+        m_type: m_type,
+        t_type: t_type,
+        content: md5,
+        receiver: receiverId,
+        sender: userId.value,
+        info: "",
+        message_id: generateMessageId(file.name, userId.value, Date.now()),
+        status: 'sending',
+    };
+    chatManager.sendMessage(message);
+    uploadfiles(file, md5, receiverId);
 }
 
 export {

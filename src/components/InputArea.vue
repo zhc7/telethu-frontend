@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {contacts, sendFiles, sendMessage} from "../chat.js";
+import {getFileType} from "../utils/uploadfiles.js";
 
 const props = defineProps(['chat'])
 
@@ -32,9 +33,11 @@ const handleSendMessage = () => {
 };
 
 const handleSendFiles = () => {
-  const m_type = undefined; // TODO: get m_type from file type
   const t_type = props.chat.category === 'group' ? 1 : 0;
-  sendFiles(+props.chat.id, uploadFiles.value, t_type, m_type);
+  for (let i = 0; i < uploadFiles.value.length; i++) {
+    const m_type = getFileType(uploadFiles.value[i].name)
+    sendFiles(+props.chat.id, uploadFiles.value, t_type, m_type);
+  }
   previewFilesDialog.value = false;
 };
 
