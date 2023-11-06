@@ -63,8 +63,8 @@ onMounted(() => {
         </div>
       </div>
       <div class="d-flex justify-end">
-        <v-icon v-show="message.status === 'sent'" size="12px">mdi-check</v-icon>
-        <v-icon v-show="message.status === 'read'" size="12px">mdi-check-all</v-icon>
+        <v-icon v-show="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
+        <v-icon v-show="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
     <!--TODO:change src to url-->
