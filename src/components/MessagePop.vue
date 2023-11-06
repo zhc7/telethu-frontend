@@ -68,9 +68,13 @@ onMounted(() => {
         <v-icon v-show="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
-    <!--TODO:change src to url-->
     <img
         v-if="message.m_type === 1"
+        :src="BASE_API_URL + 'files/' + message.content + '/'"
+        style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+    />
+    <audio
+        v-if="message.m_type === 2"
         :src="BASE_API_URL + 'files/' + message.content + '/'"
         style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
     />
@@ -93,8 +97,11 @@ onMounted(() => {
 <style scoped>
 
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
+
 .spin {
   animation: spin 1s linear infinite;
 }
