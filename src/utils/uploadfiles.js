@@ -39,13 +39,12 @@ const getFileType = (filename) => {
     }
 }
 
-const uploadfiles = (file, md5, friendId) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    axios.post(BASE_API_URL + "/files/" + md5, formData, {
+const upLoadFiles = (file, md5, friendId) => {
+    console.log("sending this file -> ",file);
+    const fileType = file.type;
+    axios.post(BASE_API_URL + "/files/" + md5, file, {
         headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": fileType,
             Authorization: token.value,
         }
     }).then(res => {
@@ -53,10 +52,11 @@ const uploadfiles = (file, md5, friendId) => {
     }).catch(err => {
         console.log(err);
     });
-}
+};
+
 
 export {
-    uploadfiles,
+    upLoadFiles,
     getFileExtension,
     getFileType
 }

@@ -34,14 +34,14 @@ const handleSendMessage = () => {
 };
 
 const handleSendFiles = () => {
-  loading.value = true;
+  //loading.value = true;
   const t_type = props.chat.category === 'group' ? 1 : 0;
   for (let i = 0; i < uploadFiles.value.length; i++) {
     const m_type = getFileType(uploadFiles.value[i].name)
-    sendFiles(+props.chat.id, uploadFiles.value, t_type, m_type);
+    sendFiles(+props.chat.id, uploadFiles.value[0], t_type, m_type);
   }
   //TODO: handle the logic of loading
-  //previewFilesDialog.value = false;
+  previewFilesDialog.value = false;
 };
 
 const handleTextareaKeydown = (e) => {

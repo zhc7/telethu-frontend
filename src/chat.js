@@ -5,7 +5,7 @@ import {reactive, ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
 import {generateMessageId, calculateMD5, generateMD5} from "./utils/hash.js";
-import {uploadfiles} from "./utils/uploadfiles.js";
+import {upLoadFiles} from "./utils/uploadfiles.js";
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
@@ -392,7 +392,7 @@ const sendFiles = (receiverId, file, t_type, m_type) => {
         status: 'sending',
     };
     chatManager.sendMessage(message);
-    uploadfiles(file, md5, receiverId);
+    upLoadFiles(file, md5, receiverId);
 }
 
 export {
