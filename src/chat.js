@@ -305,7 +305,7 @@ const groupAddMember = (groupId, memberId) => {
 const getHistoryMessage = (id, from, t_type, num) => {
     axios.get(BASE_API_URL + "chat/history", {
         params: {
-            id, from: 0, t_type, num: 10000,
+            id, from, t_type, num,
         },
         headers: {
             Authorization: token.value,
