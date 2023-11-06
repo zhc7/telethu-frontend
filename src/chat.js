@@ -393,7 +393,6 @@ const sendFiles = (receiverId, files, t_type, m_type) => {
             status: 'sending',
         };
         chatManager.sendMessage(message);
-        // TODO: send file by http
         uploadfiles(file, md5, receiverId);
     }
 }

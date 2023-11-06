@@ -35,6 +35,7 @@ const handleSendFiles = () => {
   const m_type = undefined; // TODO: get m_type from file type
   const t_type = props.chat.category === 'group' ? 1 : 0;
   sendFiles(+props.chat.id, uploadFiles.value, t_type, m_type);
+  previewFilesDialog.value = false;
 };
 
 const handleTextareaKeydown = (e) => {
