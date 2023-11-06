@@ -62,28 +62,28 @@ onMounted(() => {
         >
           {{ message.content }}
         </div>
+        <img
+            v-if="message.m_type === 1"
+            :src="BASE_API_URL + 'files/' + message.content + '/'"
+            style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+        />
+        <audio
+            v-if="message.m_type === 2"
+            :src="BASE_API_URL + 'files/' + message.content + '/'"
+            style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+        />
+        <video
+            v-if="message.m_type === 3"
+            controls
+            :src="BASE_API_URL + 'files/' + message.content + '/'"
+            style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+        ></video>
       </div>
       <div class="d-flex justify-end">
         <v-icon v-show="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-show="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
-    <img
-        v-if="message.m_type === 1"
-        :src="BASE_API_URL + 'files/' + message.content + '/'"
-        style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
-    />
-    <audio
-        v-if="message.m_type === 2"
-        :src="BASE_API_URL + 'files/' + message.content + '/'"
-        style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
-    />
-    <video
-        v-if="message.m_type === 3"
-        controls
-        :src="BASE_API_URL + 'files/' + message.content + '/'"
-        style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
-    ></video>
     <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
       <v-img
           :src="user.avatar"

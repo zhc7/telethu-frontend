@@ -47,15 +47,6 @@ const upLoadFiles = (file, md5) => {
     }).catch(err => {
         console.log("Error when http uploading file -> ", err);
     });
-    axios.get(BASE_API_URL + "files/" + md5 + "/", {
-        headers: {
-            Authorization: token.value,
-        }
-    }).then(res => {
-        console.log(res);
-    }).catch(err => {
-        console.log("Error when http getting file -> ", err);
-    });
 };
 
 
