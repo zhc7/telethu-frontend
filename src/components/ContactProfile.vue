@@ -200,15 +200,18 @@ const filterContacts = computed(() => {
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Mute:</p>
-          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValueMute" @change="onSwitchChangeMute"></v-switch>
+          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValueMute"
+                    @change="onSwitchChangeMute"></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Pin:</p>
-          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValuePin" @change="onSwitchChangePin"></v-switch>
+          <v-switch style="flex: 2" hide-details color="indigo" v-model="switchValuePin"
+                    @change="onSwitchChangePin"></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center;" class="ma-1">
           <p style="flex: 1">Block:</p>
-          <v-switch style="flex: 2" hide-details color="error" v-model="switchValueBlock" @change="onSwitchChangeBlock"></v-switch>
+          <v-switch style="flex: 2" hide-details color="error" v-model="switchValueBlock"
+                    @change="onSwitchChangeBlock"></v-switch>
         </v-row>
       </v-col>
       <v-divider class="ma-4"/>
@@ -220,88 +223,92 @@ const filterContacts = computed(() => {
           </v-row>
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
             <!-- TODO: test delete friend function -->
-            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Delete Friend</v-btn>
+            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Delete
+              Friend
+            </v-btn>
           </v-row>
           <v-row v-else style="display: flex; justify-content: center">
-            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Quit Group</v-btn>
+            <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="deleteConfirmDialog = true">Quit
+              Group
+            </v-btn>
           </v-row>
         </v-col>
       </v-card-actions>
     </v-card-item>
-  </v-card>
 
-  <v-dialog v-model="deleteConfirmDialog" max-width="30vw">
-    <v-card>
-      <v-alert type="warning" title="Are you sure?" text="This operation cannot be undone."></v-alert>
-      <v-card-actions class="justify-end">
-        <v-btn @click="handleCancel">cancel</v-btn>
-        <v-btn @click="handleDelete">delete</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <v-dialog v-model="deleteConfirmDialog" max-width="30vw">
+      <v-card>
+        <v-alert type="warning" title="Are you sure?" text="This operation cannot be undone."></v-alert>
+        <v-card-actions class="justify-end">
+          <v-btn @click="handleCancel">cancel</v-btn>
+          <v-btn @click="handleDelete">delete</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-  <v-dialog v-model="groupAddMemberDialog" max-width="30vw">
-    <v-card>
-      <v-card-title class="text-center">
-        Add members
-      </v-card-title>
-      <v-card-text>
-        <v-text-field
-            density="compact"
-            label="Search"
-        />
-        <div class="d-flex overflow-x-auto" v-if="groupAddMemberSelecting">
-          <!-- TODO: format cells -->
-          <div
-              v-for="member in displayContact.members"
-              :key="member"
-              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              v-ripple
-          >
-            <v-avatar>
-              <v-img :src="member.avatar" cover></v-img>
-            </v-avatar>
-            <p>{{ member.name }}</p>
-          </div>
-          <div
-              v-for="id in groupAddMemberSelecting"
-              :key="id"
-              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="groupAddMemberSelecting = groupAddMemberSelecting.filter((i) => i.id !== id)"
-              v-ripple
-          >
-            <v-avatar>
-              <v-img :src="contacts[id].avatar" cover></v-img>
-            </v-avatar>
-            <p>{{ contacts[id].name }}</p>
-          </div>
-        </div>
-        <v-list>
-          <v-list-item v-for="contact in filterContacts">
-            <template #prepend>
+    <v-dialog v-model="groupAddMemberDialog" max-width="30vw">
+      <v-card>
+        <v-card-title class="text-center">
+          Add members
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+              density="compact"
+              label="Search"
+          />
+          <div class="d-flex overflow-x-auto" v-if="groupAddMemberSelecting">
+            <!-- TODO: format cells -->
+            <div
+                v-for="member in displayContact.members"
+                :key="member"
+                class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+                v-ripple
+            >
               <v-avatar>
-                <v-img :src="contact.avatar" cover></v-img>
+                <v-img :src="member.avatar" cover></v-img>
               </v-avatar>
-            </template>
-            <v-list-item-title>
-              {{ contact.name }}
-            </v-list-item-title>
-            <template #append>
-              <v-btn @click="handleSelect(contact)" color="indigo">
-                Append
-              </v-btn>
-            </template>
-          </v-list-item>
-        </v-list>
-      </v-card-text>
-      <v-card-actions class="mb-3 mr-4">
-        <v-spacer/>
-        <v-btn @click="handleCancel">Cancel</v-btn>
-        <v-btn @click="handlePlusMember" :loading="groupAddMemberLoading">Add</v-btn>
-      </v-card-actions>
-    </v-card>
+              <p>{{ member.name }}</p>
+            </div>
+            <div
+                v-for="id in groupAddMemberSelecting"
+                :key="id"
+                class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+                @click="groupAddMemberSelecting = groupAddMemberSelecting.filter((i) => i.id !== id)"
+                v-ripple
+            >
+              <v-avatar>
+                <v-img :src="contacts[id].avatar" cover></v-img>
+              </v-avatar>
+              <p>{{ contacts[id].name }}</p>
+            </div>
+          </div>
+          <v-list>
+            <v-list-item v-for="contact in filterContacts">
+              <template #prepend>
+                <v-avatar>
+                  <v-img :src="contact.avatar" cover></v-img>
+                </v-avatar>
+              </template>
+              <v-list-item-title>
+                {{ contact.name }}
+              </v-list-item-title>
+              <template #append>
+                <v-btn @click="handleSelect(contact)" color="indigo">
+                  Append
+                </v-btn>
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions class="mb-3 mr-4">
+          <v-spacer/>
+          <v-btn @click="handleCancel">Cancel</v-btn>
+          <v-btn @click="handlePlusMember" :loading="groupAddMemberLoading">Add</v-btn>
+        </v-card-actions>
+      </v-card>
 
-  </v-dialog>
+    </v-dialog>
+  </v-card>
 </template>
 
 <style scoped>
