@@ -40,7 +40,7 @@ onMounted(() => {
 <template>
   <v-container class="d-flex pa-0 ma-0" style="max-height: 100vh">
     <NavBar>
-      <List density="compact" nav v-model="activePage">
+      <List density="compact" nav v-model="activePage" class="overflow-x-hidden">
         <v-list-item class="text-left"
                      :prepend-avatar="user.avatar"
                      :title="userName"
