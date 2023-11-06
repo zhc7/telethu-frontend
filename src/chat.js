@@ -387,7 +387,7 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
         status: 'sending',
     };
     chatManager.sendMessage(message);
-    upLoadFiles(file, md5);
+    return md5;
 }
 
 export {

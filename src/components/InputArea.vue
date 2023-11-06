@@ -2,7 +2,7 @@
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {contacts, sendFiles, sendMessage} from "../chat.js";
-import {getFileType} from "../utils/uploadfiles.js";
+import {getFileType, upLoadFiles} from "../utils/uploadfiles.js";
 
 const props = defineProps(['chat'])
 
@@ -12,7 +12,6 @@ const previewFilesDialog = ref(false);
 
 const fileInput = ref(null);
 const uploadFiles = ref([]);
-const loading = ref(false);
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -32,15 +31,30 @@ const handleSendMessage = () => {
   }
 };
 
-const handleSendFiles = () => {
-  //loading.value = true;
+const loading = ref(false);
+const uploadProgress = ref(0);
+const handleSendFiles = async () => {
+  loading.value = true;
   const t_type = props.chat.category === 'group' ? 1 : 0;
-  for (let i = 0; i < uploadFiles.value.length; i++) {
-    const m_type = getFileType(uploadFiles.value[i].name)
-    sendFiles(+props.chat.id, uploadFiles.value[0], t_type, m_type);
+  const uploadPromises = [];
+
+  for (let file of uploadFiles.value) {
+    const m_type = getFileType(file.name);
+    const md5Promise = sendFiles(+props.chat.id, file, t_type, m_type).then(md5 => {
+      return upLoadFiles(file, md5, (progress) => {
+        uploadProgress.value = progress;
+      });
+    });
+    uploadPromises.push(md5Promise);
   }
-  //TODO: handle the logic of loading
-  previewFilesDialog.value = false;
+
+  try {
+    await Promise.all(uploadPromises);
+    previewFilesDialog.value = false;
+  } catch (error) {
+    console.error('An error occurred during the upload:', error);
+  }
+  loading.value = false;
 };
 
 const handleTextareaKeydown = (e) => {
@@ -88,8 +102,8 @@ const handleTextareaKeydown = (e) => {
   <v-dialog v-model="previewFilesDialog" max-width="30vw">
     <v-card>
       <v-progress-linear
-          :active="loading"
-          :indeterminate="loading"
+          v-if="loading"
+          v-model="uploadProgress"
           bottom
           color="deep-purple-accent-4"
       ></v-progress-linear>

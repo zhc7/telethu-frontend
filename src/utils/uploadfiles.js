@@ -33,21 +33,27 @@ const getFileType = (filename) => {
     }
 }
 
-const upLoadFiles = (file, md5) => {
-    console.log("sending this file -> ", file);
-    console.log("send to this url -> ", BASE_API_URL + "files/" + md5);
+const upLoadFiles = (file, md5, updateLoading) => {
     const fileType = file.type;
-    axios.post(BASE_API_URL + "files/" + md5 + "/", file, {
+    return axios.post(BASE_API_URL + "files/" + md5 + "/", file, {
         headers: {
             "Content-Type": fileType,
             Authorization: token.value,
+        },
+        onUploadProgress: progressEvent => {
+            let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            updateLoading(percentCompleted);
+            console.log("Percent completed -> ", percentCompleted);
         }
     }).then(res => {
-        console.log(res);
+        console.log("HTTP upload successful -> ", res);
+        return res;
     }).catch(err => {
-        console.log("Error when http uploading file -> ", err);
+        console.error("Error when http uploading file -> ", err);
+        throw err;
     });
 };
+
 
 
 export {
