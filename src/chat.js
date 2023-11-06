@@ -70,11 +70,9 @@ const chatManager = {
             contacts.value[target].messages.push(message);
         } else {
             existing.status = 'sent';
-        }
-        if (message.sender !== user.value.id) {
-            // TODO: handle muted
-            // TODO: display detailed message data
-            sendNotification();
+            if (message.sender !== user.value.id && !contacts.value[target].muted) {
+                sendNotification(message);
+            }
         }
         const ack = {
             message_id: message.message_id,
@@ -159,16 +157,17 @@ const applyList = async () => {
         });
 }
 
-const sendNotification = () => {
+const sendNotification = (message) => {
+    console.log("sending notification", message);
     if (window.Notification.permission === "granted") {
-        new Notification("新消息：", {
-            body: "您有新的消息，请及时查看！",
+        new Notification("New Message!", {
+            body: message.content,
         })
     } else if (window.Notification.permission !== "denied") {
         window.Notification.requestPermission(function (permission) {
             if (permission === "granted") {
-                new Notification("新消息：", {
-                    body: "您有新的消息，请及时查看！",
+                new Notification("Congratulations!", {
+                    body: "Start chatting with your friends!",
                 })
             }
         });
