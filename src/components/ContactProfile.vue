@@ -174,7 +174,7 @@ const filterContacts = computed(() => {
           <!-- TODO: add rename function -->
           <p style="flex: 1">Rename:</p>
           <v-text-field
-              variant="solo"
+              variant="outlined"
               label="New name"
               density="compact"
               style="flex: 2"
@@ -192,7 +192,7 @@ const filterContacts = computed(() => {
               chips
               :items="friendCircle"
               multiple
-              variant="solo"
+              variant="outlined"
               density="compact"
               hide-details
               style="flex: 2"
