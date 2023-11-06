@@ -42,6 +42,7 @@ const chatList = computed(() => {
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
       alert: contact.alert,
+      // TODO: persist pin, mute, block
       pin: contact.pin,
       mute: contact.mute,
       block: contact.block,
