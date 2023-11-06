@@ -67,6 +67,7 @@ onMounted(() => {
         <v-icon v-show="message.status === 'read'" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
+    <!--TODO:change src to url-->
     <img
         v-if="message.m_type === 'image'"
         :src="message.content"

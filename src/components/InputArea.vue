@@ -12,6 +12,7 @@ const previewFilesDialog = ref(false);
 
 const fileInput = ref(null);
 const uploadFiles = ref([]);
+const loading = ref(false);
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -33,12 +34,14 @@ const handleSendMessage = () => {
 };
 
 const handleSendFiles = () => {
+  loading.value = true;
   const t_type = props.chat.category === 'group' ? 1 : 0;
   for (let i = 0; i < uploadFiles.value.length; i++) {
     const m_type = getFileType(uploadFiles.value[i].name)
     sendFiles(+props.chat.id, uploadFiles.value, t_type, m_type);
   }
-  previewFilesDialog.value = false;
+  //TODO: handle the logic of loading
+  //previewFilesDialog.value = false;
 };
 
 const handleTextareaKeydown = (e) => {
@@ -85,6 +88,12 @@ const handleTextareaKeydown = (e) => {
 
   <v-dialog v-model="previewFilesDialog" max-width="30vw">
     <v-card>
+      <v-progress-linear
+          :active="loading"
+          :indeterminate="loading"
+          bottom
+          color="deep-purple-accent-4"
+      ></v-progress-linear>
       <v-card-title class="text-center">Files Preview</v-card-title>
       <v-card-text class="overflow-y-auto" style="max-height: 30vw;">
         <div v-for="(file, index) in uploadFiles" :key="index">
