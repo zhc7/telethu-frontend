@@ -162,6 +162,7 @@ const sendNotification = (message) => {
     if (window.Notification.permission === "granted") {
         new Notification("New Message!", {
             body: message.content,
+            icon: "./public/DALL·E.png",
         })
     } else if (window.Notification.permission !== "denied") {
         window.Notification.requestPermission(function (permission) {
