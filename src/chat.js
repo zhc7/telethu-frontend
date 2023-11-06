@@ -22,7 +22,6 @@ const chatManager = {
         console.log("sending message from manager", message);
         message.status = 'sending';
         message = reactive(message);
-        console.log("message receiver", message.receiver);
         if (message.m_type <= 5) {
             contacts.value[message.receiver].messages.push(message);
         }
@@ -388,7 +387,7 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
         status: 'sending',
     };
     chatManager.sendMessage(message);
-    upLoadFiles(file, md5, receiverId);
+    upLoadFiles(file, md5);
 }
 
 export {

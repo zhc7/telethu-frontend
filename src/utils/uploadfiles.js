@@ -18,31 +18,26 @@ const getFileType = (filename) => {
         case 'jpg':
         case 'jpeg':
         case 'gif':
-            return 'image';
+            return 1;
+        case 'mp3':
+        case 'wav':
+        case 'flac':
+            return 2;
         case 'mp4':
         case 'avi':
         case 'mov':
         case 'wmv':
-            return 'video';
-        case 'mp3':
-        case 'wav':
-        case 'flac':
-            return 'audio';
-        case 'pdf':
-            return 'pdf';
-        case 'doc':
-        case 'docx':
-            return 'word';
-
+            return 3;
         default:
-            return 'file';
+            return 4;
     }
 }
 
-const upLoadFiles = (file, md5, friendId) => {
-    console.log("sending this file -> ",file);
+const upLoadFiles = (file, md5) => {
+    console.log("sending this file -> ", file);
+    console.log("send to this url -> ", BASE_API_URL + "files/" + md5);
     const fileType = file.type;
-    axios.post(BASE_API_URL + "/files/" + md5, file, {
+    axios.post(BASE_API_URL + "files/" + md5 + "/", file, {
         headers: {
             "Content-Type": fileType,
             Authorization: token.value,
@@ -50,7 +45,16 @@ const upLoadFiles = (file, md5, friendId) => {
     }).then(res => {
         console.log(res);
     }).catch(err => {
-        console.log(err);
+        console.log("Error when http uploading file -> ", err);
+    });
+    axios.get(BASE_API_URL + "files/" + md5 + "/", {
+        headers: {
+            Authorization: token.value,
+        }
+    }).then(res => {
+        console.log(res);
+    }).catch(err => {
+        console.log("Error when http getting file -> ", err);
     });
 };
 

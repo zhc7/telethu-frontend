@@ -27,7 +27,6 @@ const handlePreviewFiles = (event) => {
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    console.log("selected chat", contacts.value[props.chat.id]);
     sendMessage(+props.chat.id, message.value, props.chat.category === 'group' ? 1 : 0);
     message.value = "";
   }
