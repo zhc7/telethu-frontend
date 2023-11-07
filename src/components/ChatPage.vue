@@ -91,8 +91,8 @@ onMounted(() => {
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
       <v-toolbar image="public/pink_background.jpg" style="width: 100%">
-        <v-toolbar-title align="left" class="ml-6">
-          <p style="font-size: 20px">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
+        <v-toolbar-title align="left" class="ml-8">
+          <p style="font-size: 20px; font-weight: 450">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
           <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
         </v-toolbar-title>
