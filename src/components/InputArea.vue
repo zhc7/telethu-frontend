@@ -130,14 +130,13 @@ const handleTextareaKeydown = (e) => {
 .flex-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 */
+  align-items: center;
 }
 
 .flex-item {
-  /* 项目居中设置 */
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 */
+  align-items: center;
 }
 
 

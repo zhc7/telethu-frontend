@@ -50,26 +50,18 @@ const chatList = computed(() => {
   }
   list = list.sort((a, b) => {
     if (a.hotMessage && b.hotMessage) {
-      return b.hotMessage.time - a.hotMessage.time;
+      if (a.pin && b.pin) {
+        return b.hotMessage.time - a.hotMessage.time;
+      } else if (a.pin) {
+        return -1;
+      } else if (b.pin) {
+        return 1;
+      } else {
+        return b.hotMessage.time - a.hotMessage.time;
+      }
     } else if (a.hotMessage) {
       return -1;
     } else if (b.hotMessage) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-  return list;
-});
-
-const sortedChatList = computed(() => {
-  let list = chatList.value.slice();
-  list.sort((a, b) => {
-    if (a.pin && b.pin) {
-      return 0;
-    } else if (a.pin) {
-      return -1;
-    } else if (b.pin) {
       return 1;
     } else {
       return 0;
@@ -79,7 +71,7 @@ const sortedChatList = computed(() => {
     return chat.name.toLowerCase().indexOf(friendName.value.toLowerCase()) !== -1;
   });
   return list;
-})
+});
 
 const searchFriendInput = ref(false);
 const friendName = ref('');
@@ -206,7 +198,7 @@ onMounted(() => {
           :k="chat.id"
           class="pa-3 pl-6 chat-list-item text-left hot-message"
           rounded="lg"
-          v-for="chat in sortedChatList"
+          v-for="chat in chatList"
           :title="chat.name"
           :subtitle="displayHotMessage(chat.hotMessage)"
       >
