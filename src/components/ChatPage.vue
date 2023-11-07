@@ -83,30 +83,21 @@ onMounted(() => {
   <v-row class="mt-auto mb-2 mr-2 d-flex flex-1-1 overflow-y-auto fill-height"
          @click="handleHideProfile($event)"
   >
-    <v-col cols="12" sm="4" class="pa-0 fill-height">
+    <v-col cols="12" sm="3" class="pa-0 fill-height">
       <ChatList v-model="selectedChatId"></ChatList>
     </v-col>
     <v-divider vertical v-if="selectedChat"/>
-    <v-col v-if="selectedChat" cols="12" sm="8"
+    <v-col v-if="selectedChat" cols="12" sm="9"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
     >
-      <v-row no-gutters class="align-center flex-0-0">
-        <v-card class="chat-title ma-1" style="width: 100%" variant="flat">
-          <v-toolbar color="#009688">
-            <template #prepend>
-              <v-avatar size="30" @click="DisplayFriendProfile" v-ripple>
-                <v-img :src="selectedChat.avatar" id="friend-avatar" cover/>
-              </v-avatar>
-            </template>
-            <v-toolbar-title>
-              <span class="pr-3">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</span>
-              <span v-if="selectedChat.mute"><v-icon size="x-small">mdi-bell-off</v-icon></span>
-              <span v-if="selectedChat.block"><v-icon size="x-small">mdi-account-off-outline</v-icon></span>
-            </v-toolbar-title>
-            <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
-          </v-toolbar>
-        </v-card>
-      </v-row>
+      <v-toolbar image="public/pink_background.jpg">
+        <v-toolbar-title align="left" class="ml-6">
+          <p style="font-size: 20px">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
+          <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
+          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
+        </v-toolbar-title>
+        <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
+      </v-toolbar>
       <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
@@ -128,9 +119,9 @@ onMounted(() => {
   <v-divider vertical v-if="selectedChat"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
     <ContactProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
-                   :display="showProfileDetail"/>
+                    :display="showProfileDetail"/>
     <ContactProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
-                   :display="showProfileDetail"/>
+                    :display="showProfileDetail"/>
   </div>
 </template>
 
@@ -145,6 +136,11 @@ onMounted(() => {
 
 .profile-area--active {
   width: 23vw;
+}
+
+.title {
+  font-size: 22px;
+  justify-content: flex-start;
 }
 
 </style>
