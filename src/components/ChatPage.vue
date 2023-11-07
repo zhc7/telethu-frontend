@@ -88,9 +88,9 @@ onMounted(() => {
     </v-col>
     <v-divider vertical v-if="selectedChat"/>
     <v-col v-if="selectedChat" cols="12" sm="9"
-           class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col"
+           class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
-      <v-toolbar image="public/pink_background.jpg">
+      <v-toolbar image="public/pink_background.jpg" style="width: 100%">
         <v-toolbar-title align="left" class="ml-6">
           <p style="font-size: 20px">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
@@ -98,7 +98,7 @@ onMounted(() => {
         </v-toolbar-title>
         <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
       </v-toolbar>
-      <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height">
+      <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height ml-5 mr-5">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
             <span @click="handleGetMoreMessage" class="text-blue">Get more message...</span>
