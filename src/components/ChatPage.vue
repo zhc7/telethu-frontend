@@ -98,7 +98,7 @@ onMounted(() => {
         </v-toolbar-title>
         <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
       </v-toolbar>
-      <v-row no-gutters class="d-flex flex-column pt-3 flex-1-1 overflow-y-auto fill-height ml-5 mr-5">
+      <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
             <span @click="handleGetMoreMessage" class="text-blue">Get more message...</span>

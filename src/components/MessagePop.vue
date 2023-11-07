@@ -24,7 +24,8 @@ onMounted(() => {
     {{ FormatChatMessageTime(nowRef, message.time) }}
   </div>
   <div class="d-flex mt-2 mb-5" style="max-width: 75%;"
-       :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}">
+       :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}"
+       :class="message.sender === userId ? 'mr-6':'ml-6'">
     <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
