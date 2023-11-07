@@ -44,14 +44,35 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-const handlePreviewFiles = (event) => {
-  uploadFiles.value = event.target.files;
-  for (let file of uploadFiles.value) {
+const processFilesForPreview = (files) => {
+  for (let file of files) {
     file.url = URL.createObjectURL(file);
+    uploadFiles.value.push(file);
   }
   if (!uploadFiles.value.length) return;
-  console.log(uploadFiles.value);
   previewFilesDialog.value = true;
+};
+
+const handlePreviewFiles = (event) => {
+  const files = event.target.files;
+  processFilesForPreview(files);
+  console.log(uploadFiles.value);
+};
+
+const handlePaste = (event) => {
+  console.log("pasting")
+  event.preventDefault();
+  const items = (event.clipboardData).items;
+  const filesToPreview = [];
+  for (const item of items) {
+    if (item.kind === 'file') {
+      const file = item.getAsFile();
+      filesToPreview.push(file);
+    }
+  }
+  if (filesToPreview.length > 0) {
+    processFilesForPreview(filesToPreview);
+  }
 };
 
 const handleSendMessage = () => {
@@ -114,6 +135,7 @@ const handleTextareaKeydown = (e) => {
         @keydown="handleTextareaKeydown"
         :append-inner-icon="'mdi-emoticon-kiss-outline'"
         @click:append-inner="showStickers = !showStickers"
+        @paste="handlePaste"
     >
       <template #prepend-inner>
         <v-icon @click="triggerFileInput">mdi-paperclip</v-icon>
@@ -162,7 +184,7 @@ const handleTextareaKeydown = (e) => {
         </v-list>
       </v-card-text>
       <v-card-actions class="justify-end">
-        <v-btn color="primary" @click="previewFilesDialog = false">cancel</v-btn>
+        <v-btn color="primary" @click="() => {previewFilesDialog = false; uploadFiles = []}">cancel</v-btn>
         <v-btn color="primary" @click="handleSendFiles">send</v-btn>
       </v-card-actions>
     </v-card>
