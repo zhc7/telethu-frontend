@@ -80,9 +80,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height"
+  <v-row class="mt-auto d-flex flex-1-1 overflow-y-auto fill-height"
          @click="handleHideProfile($event)"
-         style="margin-right: 0"
+         style="margin-right: 0; margin-bottom: 0"
   >
     <v-col cols="12" sm="3" class="pa-0 fill-height">
       <ChatList v-model="selectedChatId"></ChatList>
