@@ -20,10 +20,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="ma-3s justify-center">
+  <div class="justify-center">
     {{ FormatChatMessageTime(nowRef, message.time) }}
   </div>
-  <div class="d-flex mt-2" style="max-width: 75%;"
+  <div class="d-flex mt-2 mb-5" style="max-width: 75%;"
        :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}">
     <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
