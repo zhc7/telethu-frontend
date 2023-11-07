@@ -12,7 +12,7 @@ const activated = inject("activated", undefined)
       v-ripple
       v-bind="$attrs"
       @click="selected = props.k"
-      class="pa-3 d-flex flex-row justify-start align-center rounded-lg"
+      class="pa-3 d-flex flex-row justify-start align-center rounded"
       :class="{'v-list-item--active': selected === props.k}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">

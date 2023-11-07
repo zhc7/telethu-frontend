@@ -201,30 +201,32 @@ onMounted(() => {
                     density="compact" variant="solo" class="mr-4"/>
     </div>
     <List class="overflow-y-auto fill-height" v-model="selected">
-      <ListItem
-          :key="chat.id"
-          :k="chat.id"
-          class="pa-3 pl-6 chat-list-item text-left hot-message"
-          rounded="lg"
-          v-for="chat in sortedChatList"
-          :title="chat.name"
-          :subtitle="displayHotMessage(chat.hotMessage)"
-      >
-        <template #prepend>
-          <v-avatar>
-            <v-img v-if="chat.category === 'user'" :src="chat.avatar" cover/>
-            <v-icon v-else>mdi-account-multiple</v-icon>
-          </v-avatar>
-        </template>
-        <div class="chat-time fill-height">
-          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</p>
-          <v-icon v-show="chat.pin">mdi-pin</v-icon>
-          <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
-        </div>
-        <template #append>
-          <v-badge v-if="chat.alert && !chat.mute" color="red" content="1" inline></v-badge>
-        </template>
-      </ListItem>
+      <div v-for="chat in sortedChatList">
+        <ListItem
+            :key="chat.id"
+            :k="chat.id"
+            class="pa-3 pl-6 chat-list-item text-left hot-message"
+            rounded="lg"
+            :title="chat.name"
+            :subtitle="displayHotMessage(chat.hotMessage)"
+        >
+          <template #prepend>
+            <v-avatar>
+              <v-img v-if="chat.category === 'user'" :src="chat.avatar" cover/>
+              <v-icon v-else>mdi-account-multiple</v-icon>
+            </v-avatar>
+          </template>
+          <div class="chat-time fill-height">
+            <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</p>
+            <v-icon v-show="chat.pin">mdi-pin</v-icon>
+            <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
+          </div>
+          <template #append>
+            <v-badge v-if="chat.alert && !chat.mute" color="red" content="1" inline></v-badge>
+          </template>
+        </ListItem>
+        <v-divider v-if="chat !== sortedChatList[sortedChatList.length - 1]"/>
+      </div>
     </List>
   </div>
 </template>
