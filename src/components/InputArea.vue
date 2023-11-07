@@ -54,13 +54,14 @@ const processFilesForPreview = (files) => {
 };
 
 const handlePreviewFiles = (event) => {
+  uploadFiles.value = [];
   const files = event.target.files;
   processFilesForPreview(files);
   console.log(uploadFiles.value);
 };
 
 const handlePaste = (event) => {
-  console.log("pasting")
+  uploadFiles.value = [];
   event.preventDefault();
   const items = (event.clipboardData).items;
   const filesToPreview = [];

@@ -64,21 +64,36 @@ onMounted(() => {
           {{ message.content }}
         </div>
         <img
-            v-if="message.m_type === 1"
+            v-else-if="message.m_type === 1"
             :src="BASE_API_URL + 'files/' + message.content + '/'"
             style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
         />
         <audio
-            v-if="message.m_type === 2"
+            v-else-if="message.m_type === 2"
             :src="BASE_API_URL + 'files/' + message.content + '/'"
             style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
         />
         <video
-            v-if="message.m_type === 3"
+            v-else-if="message.m_type === 3"
             controls
             :src="BASE_API_URL + 'files/' + message.content + '/'"
             style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
         ></video>
+        <v-list-item
+            v-else
+            ref="messagePop"
+            class="pa-2 rounded-lg border"
+            :class="message.sender === userId ? ['bg-white', 'ml-auto'] : ['bg-blue', 'mr-auto']"
+            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
+        >
+          <template #prepend>
+            <v-img width="40" :aspect-ratio="1" src="public/icons/file_icon.png" cover class="rounded ma-1 mr-2"/>
+          </template>
+          <v-list-item-title style="font-weight: 600; font-size: 16px;">
+            {{ "file name" }}
+          </v-list-item-title>
+          <v-list-item-subtitle style="color: #888888">{{ "file size" }}</v-list-item-subtitle>
+        </v-list-item>
       </div>
       <div class="d-flex justify-end">
         <v-icon v-show="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
