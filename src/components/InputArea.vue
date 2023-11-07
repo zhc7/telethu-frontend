@@ -3,6 +3,7 @@ import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {contacts, sendFiles, sendMessage} from "../chat.js";
 import {getFileType, upLoadFiles} from "../utils/uploadfiles.js";
+import ListItem from "./ListItem.vue";
 
 const props = defineProps(['chat'])
 
@@ -12,6 +13,32 @@ const previewFilesDialog = ref(false);
 
 const fileInput = ref(null);
 const uploadFiles = ref([]);
+
+const formatFileSize = (bytes) => {
+  if (bytes < 1024) {
+    return bytes + ' Bytes';
+  } else if (bytes < 1024 * 1024) {
+    return (bytes / 1024).toFixed(2) + ' KB';
+  } else if (bytes < 1024 * 1024 * 1024) {
+    return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+  } else {
+    return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+  }
+};
+
+const previewIcon = (file) => {
+  if (file.type.startsWith('image')) {
+    return file.url;
+  } else if (file.type.startsWith('video')) {
+    return 'public/icons/video_icon.png';
+  } else if (file.type.startsWith('audio')) {
+    return 'public/icons/audio_icon.png';
+  } else if (file.type === 'application/pdf') {
+    return 'public/icons/pdf_icon.png';
+  } else {
+    return 'public/icons/file_icon.png';
+  }
+}
 
 const triggerFileInput = () => {
   fileInput.value.click();
@@ -102,7 +129,7 @@ const handleTextareaKeydown = (e) => {
     <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
   </v-row>
 
-  <v-dialog v-model="previewFilesDialog" max-width="30vw">
+  <v-dialog v-model="previewFilesDialog" max-width="400px">
     <v-card>
       <v-progress-linear
           v-if="loading"
@@ -111,12 +138,28 @@ const handleTextareaKeydown = (e) => {
           color="deep-purple-accent-4"
       ></v-progress-linear>
       <v-card-title class="text-center">Files Preview</v-card-title>
-      <v-card-text class="flex-container" style="max-height: 30vw; overflow-y: auto;">
-        <div v-for="(file, index) in uploadFiles" :key="index">
-          <img v-if="file.type.startsWith('image')" :src="file.url" class="ma-3 flex-item" style="max-width: 20vw;"/>
-          <p class="flex-item">{{ file.name }}</p>
-          <v-divider v-if="uploadFiles.length > 1 && index !== uploadFiles.length - 1" class="ma-3"/>
-        </div>
+      <v-card-text style="max-height: 300px; overflow-y: auto;">
+        <v-list>
+          <v-list-item v-for="(file, index) in uploadFiles" :key="index">
+            <template #prepend>
+              <v-img width="60" :aspect-ratio="1" :src="previewIcon(file)" cover class="rounded ma-1 mr-2">
+                <template v-slot:placeholder>
+                  <div class="d-flex align-center justify-center fill-height">
+                    <v-progress-circular
+                        color="grey-lighten-4"
+                        indeterminate
+                    ></v-progress-circular>
+                  </div>
+                </template>
+              </v-img>
+            </template>
+            <v-list-item-title style="font-weight: 600; font-size: 16px; margin-bottom: 3px">{{
+                file.name
+              }}
+            </v-list-item-title>
+            <v-list-item-subtitle style="color: #888888">{{ formatFileSize(file.size) }}</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
       </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn color="primary" @click="previewFilesDialog = false">cancel</v-btn>
@@ -127,17 +170,5 @@ const handleTextareaKeydown = (e) => {
 </template>
 
 <style scoped>
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.flex-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 
 </style>
