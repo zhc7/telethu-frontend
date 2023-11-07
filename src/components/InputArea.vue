@@ -19,6 +19,9 @@ const triggerFileInput = () => {
 
 const handlePreviewFiles = (event) => {
   uploadFiles.value = event.target.files;
+  for (let file of uploadFiles.value) {
+    file.url = URL.createObjectURL(file);
+  }
   if (!uploadFiles.value.length) return;
   console.log(uploadFiles.value);
   previewFilesDialog.value = true;
@@ -108,9 +111,10 @@ const handleTextareaKeydown = (e) => {
           color="deep-purple-accent-4"
       ></v-progress-linear>
       <v-card-title class="text-center">Files Preview</v-card-title>
-      <v-card-text class="overflow-y-auto" style="max-height: 30vw;">
+      <v-card-text class="flex-container" style="max-height: 30vw; overflow-y: auto;">
         <div v-for="(file, index) in uploadFiles" :key="index">
-          <p>{{ file.name }}</p>
+          <img v-if="file.type.startsWith('image')" :src="file.url" class="ma-3 flex-item" style="max-width: 20vw;"/>
+          <p class="flex-item">{{ file.name }}</p>
           <v-divider v-if="uploadFiles.length > 1 && index !== uploadFiles.length - 1" class="ma-3"/>
         </div>
       </v-card-text>
@@ -123,5 +127,18 @@ const handleTextareaKeydown = (e) => {
 </template>
 
 <style scoped>
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 水平居中 */
+}
+
+.flex-item {
+  /* 项目居中设置 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 水平居中 */
+}
+
 
 </style>
