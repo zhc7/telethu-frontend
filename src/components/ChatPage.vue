@@ -91,7 +91,7 @@ onMounted(() => {
     <v-col v-if="selectedChat" cols="12" sm="9"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
-      <v-toolbar image="public/pink_background.jpg" style="width: 100%">
+      <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
           <p style="font-size: 20px; font-weight: 450">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
@@ -139,4 +139,21 @@ onMounted(() => {
   width: 23vw;
 }
 
+.JShine {
+  background: #12c2e9; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.dark-ocean {
+  background: #373B44;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #4286f4, #373B44);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #4286f4, #373B44); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.megatron {
+  background: #C6FFDD;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f7797d, #FBD786, #C6FFDD);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f7797d, #FBD786, #C6FFDD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
 </style>
