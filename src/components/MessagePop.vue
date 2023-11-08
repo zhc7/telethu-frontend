@@ -4,26 +4,35 @@ import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
 import {BASE_API_URL} from "../constants.js";
-import {formatFileSize} from "../utils/uploadfiles.js";
+import {getFileExtension} from "../utils/uploadfiles.js";
 
 // TODO: display menu when right click on message
 
 const props = defineProps(['message', 'final', 'avatar', 'name']);
 const emits = defineEmits((['finished', 'showProfile']));
 
-const previewIcon = (type) => {
-  if  (type.startsWith('video')) {
-    return 'public/icons/video_icon.png';
-  } else if (type.startsWith('audio')) {
-    return 'public/icons/audio_icon.png';
-  } else if (type === 'application/pdf') {
+const messagePop = ref();
+
+const previewIconUrl = (extension) => {
+  if (extension === "pdf") {
     return 'public/icons/pdf_icon.png';
   } else {
     return 'public/icons/file_icon.png';
   }
 }
 
-const messagePop = ref();
+const getFileInformation = (message) => {
+  let parts = message.info.split('|');
+  const url = BASE_API_URL + 'files/' + message.content + '/';
+  const icon = previewIconUrl(getFileExtension(parts[0]));
+  return {
+    file_name: parts[0],
+    file_size: parts[1],
+    file_type: parts[2],
+    url: url,
+    icon: icon,
+  }
+}
 
 onMounted(() => {
   if (props.final) {
@@ -92,6 +101,7 @@ onMounted(() => {
             :src="BASE_API_URL + 'files/' + message.content + '/'"
             style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
         ></video>
+        <!--TODO: get file through url when clicked-->
         <v-list-item
             v-else
             ref="messagePop"
@@ -100,12 +110,12 @@ onMounted(() => {
             style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
         >
           <template #prepend>
-            <v-img width="40" :aspect-ratio="1" :src="previewIcon(message.file_type)" cover class="rounded ma-1 mr-2"/>
+            <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover class="rounded ma-1 mr-2"/>
           </template>
           <v-list-item-title style="font-weight: 600; font-size: 16px;">
-            {{ message.file_name }}
+            {{ getFileInformation(message).file_name }}
           </v-list-item-title>
-          <v-list-item-subtitle style="color: #888888">{{ formatFileSize(message.file_size) }}</v-list-item-subtitle>
+          <v-list-item-subtitle style="color: #888888">{{ getFileInformation(message).file_size }}</v-list-item-subtitle>
         </v-list-item>
       </div>
       <div class="d-flex justify-end">
