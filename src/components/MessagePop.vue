@@ -77,8 +77,8 @@ onMounted(() => {
             v-if="message.m_type === 0"
             ref="messagePop"
             class="pa-2 rounded-lg text-left"
-            :class="message.sender === userId ? ['bg-green'] : ['bg-blue']"
-            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
+            :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
+            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
         >
           {{ message.content }}
         </div>
@@ -109,9 +109,8 @@ onMounted(() => {
         <v-list-item
             v-else
             ref="messagePop"
-            class="pa-2 rounded-lg border"
-            :class="message.sender === userId ? ['bg-white'] : ['bg-blue']"
-            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
+            class="pa-3 rounded-lg border"
+            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%; background-color: rgba(243,243,243,0.5)"
         >
           <template #prepend>
             <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover class="rounded ma-1 mr-2"/>
@@ -122,7 +121,7 @@ onMounted(() => {
           <v-list-item-subtitle style="color: #888888">{{ getFileInformation(message).file_size }}</v-list-item-subtitle>
         </v-list-item>
       </div>
-      <div class="d-flex" :class="message.sender === userId ? 'justify-end' : ''">
+      <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'">
         <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-else-if="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
         <v-icon v-else-if="message.sender !== userId" size="12px">mdi-check-all</v-icon>
@@ -149,5 +148,56 @@ onMounted(() => {
 .spin {
   animation: spin 1s linear infinite;
 }
+
+
+.bubble-left {
+  position: relative;
+  background: linear-gradient(130deg, #6b72ff 0%, #9c9bf6 100%);
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: white;
+  max-width: 300px;
+  line-height: 1.4;
+  text-align: left;
+  margin: 10px;
+}
+
+.bubble-left::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  /* 大小和颜色 */
+  border-width: 5px 10px 6px 0;
+  border-color: transparent #6b72ff transparent transparent;
+  /* 位置 - 箭头将出现在气泡的左侧 */
+  left: -8px;
+  top: 10px;
+}
+
+.bubble-right {
+  position: relative;
+  background: linear-gradient(130deg, rgba(106, 201, 116, 0.99) 0%, #1db434 100%);
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: white;
+  max-width: 300px;
+  line-height: 1.4;
+  text-align: left;
+  margin: 10px;
+}
+
+/* 创建向右的箭头 */
+.bubble-right::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  /* 大小和颜色 */
+  border-width: 5px 0 5px 10px; /* 调整边框宽度来改变箭头大小 */
+  border-color: transparent transparent transparent #29bb3b; /* 右边框颜色为气泡的颜色 */
+  /* 位置 - 箭头将出现在气泡的右侧 */
+  right: -8px; /* 通过增加或减少数值，调整箭头的确切位置 */
+  top: 10px;
+}
+
 
 </style>

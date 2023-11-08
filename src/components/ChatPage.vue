@@ -32,7 +32,7 @@ const groupedMessages = computed(() => {
     const messageTimestamp = new Date(message.time).getTime();
 
     // 检查时间差是否小于一分钟
-    if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 60000) {
+    if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
       grouped.push({
         time: message.time,
         messages: [message]
