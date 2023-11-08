@@ -11,6 +11,18 @@ function getFileExtension(filename) {
     }
 }
 
+const formatFileSize = (bytes) => {
+    if (bytes < 1024) {
+        return bytes + ' Bytes';
+    } else if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(2) + ' KB';
+    } else if (bytes < 1024 * 1024 * 1024) {
+        return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+    } else {
+        return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+    }
+};
+
 const getFileType = (filename) => {
     const extension = getFileExtension(filename);
     switch (extension.toLowerCase()) {
@@ -59,5 +71,6 @@ const upLoadFiles = (file, md5, updateLoading) => {
 export {
     upLoadFiles,
     getFileExtension,
-    getFileType
+    getFileType,
+    formatFileSize,
 }

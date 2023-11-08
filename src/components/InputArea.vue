@@ -2,7 +2,7 @@
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {contacts, sendFiles, sendMessage} from "../chat.js";
-import {getFileType, upLoadFiles} from "../utils/uploadfiles.js";
+import {getFileType, upLoadFiles, formatFileSize} from "../utils/uploadfiles.js";
 import ListItem from "./ListItem.vue";
 
 const props = defineProps(['chat'])
@@ -13,18 +13,6 @@ const previewFilesDialog = ref(false);
 
 const fileInput = ref(null);
 const uploadFiles = ref([]);
-
-const formatFileSize = (bytes) => {
-  if (bytes < 1024) {
-    return bytes + ' Bytes';
-  } else if (bytes < 1024 * 1024) {
-    return (bytes / 1024).toFixed(2) + ' KB';
-  } else if (bytes < 1024 * 1024 * 1024) {
-    return (bytes / 1024 / 1024).toFixed(2) + ' MB';
-  } else {
-    return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
-  }
-};
 
 const previewIcon = (file) => {
   if (file.type.startsWith('image')) {

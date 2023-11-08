@@ -4,11 +4,24 @@ import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
 import {BASE_API_URL} from "../constants.js";
+import {formatFileSize} from "../utils/uploadfiles.js";
 
 // TODO: display menu when right click on message
 
 const props = defineProps(['message', 'final', 'avatar', 'name']);
 const emits = defineEmits((['finished', 'showProfile']));
+
+const previewIcon = (type) => {
+  if  (type.startsWith('video')) {
+    return 'public/icons/video_icon.png';
+  } else if (type.startsWith('audio')) {
+    return 'public/icons/audio_icon.png';
+  } else if (type === 'application/pdf') {
+    return 'public/icons/pdf_icon.png';
+  } else {
+    return 'public/icons/file_icon.png';
+  }
+}
 
 const messagePop = ref();
 
@@ -87,12 +100,12 @@ onMounted(() => {
             style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
         >
           <template #prepend>
-            <v-img width="40" :aspect-ratio="1" src="public/icons/file_icon.png" cover class="rounded ma-1 mr-2"/>
+            <v-img width="40" :aspect-ratio="1" :src="previewIcon(message.file_type)" cover class="rounded ma-1 mr-2"/>
           </template>
           <v-list-item-title style="font-weight: 600; font-size: 16px;">
-            {{ "file name" }}
+            {{ message.file_name }}
           </v-list-item-title>
-          <v-list-item-subtitle style="color: #888888">{{ "file size" }}</v-list-item-subtitle>
+          <v-list-item-subtitle style="color: #888888">{{ formatFileSize(message.file_size) }}</v-list-item-subtitle>
         </v-list-item>
       </div>
       <div class="d-flex justify-end">

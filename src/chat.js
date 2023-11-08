@@ -385,6 +385,9 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
         info: "",
         message_id: generateMessageId(file.name, userId.value, Date.now()),
         status: 'sending',
+        file_name: file.name,
+        file_type: file.type,
+        file_size: file.size,
     };
     chatManager.sendMessage(message);
     return md5;
