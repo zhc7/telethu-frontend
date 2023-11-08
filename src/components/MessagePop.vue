@@ -82,11 +82,18 @@ onMounted(() => {
         >
           {{ message.content }}
         </div>
-        <img
+        <v-img
             v-else-if="message.m_type === 1"
             :src="BASE_API_URL + 'files/' + message.content + '/'"
-            style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
-        />
+            style="max-width: 18vw; max-height: 20vh; min-height: 12vw"
+            class="border rounded-lg"
+        >
+          <template v-slot:error>
+            <div class="d-flex justify-center align-center" style="height: 100%; width: 100%;">
+              <v-icon size="70px" color="grey">mdi-image-off-outline</v-icon>
+            </div>
+          </template>
+        </v-img>
         <audio
             v-else-if="message.m_type === 2"
             :src="BASE_API_URL + 'files/' + message.content + '/'"
@@ -96,7 +103,7 @@ onMounted(() => {
             v-else-if="message.m_type === 3"
             controls
             :src="BASE_API_URL + 'files/' + message.content + '/'"
-            style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+            style="max-width: 20vw; max-height: 20vh; border: 1px solid darkgrey; border-radius: 7px"
         ></video>
         <!--TODO: get file through url when clicked-->
         <v-list-item

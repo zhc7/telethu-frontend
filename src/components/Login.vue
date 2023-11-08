@@ -40,7 +40,7 @@ const submit = () => {
           cols="6"
           class="d-none d-sm-inline-block text-center align-self-center"
       >
-        <img src="/DALL·E.png" alt="Logo" style="max-width: 100%"/>
+        <img src="/Logo.png" alt="Logo" style="max-width: 100%"/>
       </v-col>
       <v-col
           offset="1"
