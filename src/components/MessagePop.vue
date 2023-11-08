@@ -42,10 +42,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="justify-center">
-    {{ FormatChatMessageTime(nowRef, message.time) }}
-  </div>
-  <div class="d-flex mt-2 mb-5" style="max-width: 75%;"
+  <div class="d-flex mt-1"
        :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}"
        :class="message.sender === userId ? 'mr-6':'ml-6'">
     <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
@@ -63,7 +60,7 @@ onMounted(() => {
         </span>
         <v-spacer v-if="message.sender !== userId"/>
       </div>
-      <div class="d-flex align-center" style="max-width: 100%">
+      <div class="d-flex align-center" style="max-width: 100%" :class="message.sender !== userId ? 'justify-start' : 'justify-end'">
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"
@@ -80,7 +77,7 @@ onMounted(() => {
             v-if="message.m_type === 0"
             ref="messagePop"
             class="pa-2 rounded-lg text-left"
-            :class="message.sender === userId ? ['bg-green', 'ml-auto'] : ['bg-blue', 'mr-auto']"
+            :class="message.sender === userId ? ['bg-green'] : ['bg-blue']"
             style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
         >
           {{ message.content }}
@@ -106,7 +103,7 @@ onMounted(() => {
             v-else
             ref="messagePop"
             class="pa-2 rounded-lg border"
-            :class="message.sender === userId ? ['bg-white', 'ml-auto'] : ['bg-blue', 'mr-auto']"
+            :class="message.sender === userId ? ['bg-white'] : ['bg-blue']"
             style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%"
         >
           <template #prepend>
@@ -118,9 +115,10 @@ onMounted(() => {
           <v-list-item-subtitle style="color: #888888">{{ getFileInformation(message).file_size }}</v-list-item-subtitle>
         </v-list-item>
       </div>
-      <div class="d-flex justify-end">
-        <v-icon v-show="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
-        <v-icon v-show="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
+      <div class="d-flex" :class="message.sender === userId ? 'justify-end' : ''">
+        <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
+        <v-icon v-else-if="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
+        <v-icon v-else-if="message.sender !== userId" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
     <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">

@@ -8,6 +8,8 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
 import InputArea from "./InputArea.vue";
+import {FormatChatMessageTime} from "../utils/datetime.js";
+import {nowRef} from "../globals.js";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(['update:modelValue']);
@@ -20,6 +22,29 @@ const selectedChatId = computed({
     contacts.value[value].alert = false;
     emit('update:modelValue', value);
   }
+});
+
+const groupedMessages = computed(() => {
+  const grouped = [];
+  let lastTimestamp = null;
+
+  selectedChat.value.messages.forEach((message, index) => {
+    const messageTimestamp = new Date(message.time).getTime();
+
+    // 检查时间差是否小于一分钟
+    if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 60000) {
+      grouped.push({
+        time: message.time,
+        messages: [message]
+      });
+    } else {
+      grouped[grouped.length - 1].messages.push(message);
+    }
+
+    lastTimestamp = messageTimestamp;
+  });
+
+  return grouped;
 });
 
 const selectedChat = computed(() => contacts.value[selectedChatId.value]);
@@ -93,7 +118,8 @@ onMounted(() => {
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
-          <p style="font-size: 20px; font-weight: 450">{{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
+          <p style="font-size: 20px; font-weight: 450">
+            {{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
           <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
         </v-toolbar-title>
@@ -104,14 +130,20 @@ onMounted(() => {
           <div>
             <span @click="handleGetMoreMessage" class="text-blue">Get more message...</span>
           </div>
-          <MessagePop v-for="(message, index) in selectedChat.messages"
-                      :message="message"
-                      :final="index === selectedChat.messages.length - 1"
-                      :avatar="selectedChat.avatar"
-                      :name="getNameById(message.sender)"
-                      @finished="ScrollToBottom"
-                      @showProfile="DisplayFriendProfile"
-          />
+          <div v-for="(group, index) in groupedMessages" :key="index">
+            <div class="justify-center ma-1">
+              {{ FormatChatMessageTime(nowRef, group.time) }}
+            </div>
+            <MessagePop v-for="(message, mIndex) in group.messages"
+                        :key="mIndex"
+                        :message="message"
+                        :final="mIndex === group.messages.length - 1"
+                        :avatar="selectedChat.avatar"
+                        :name="getNameById(message.sender)"
+                        @finished="ScrollToBottom"
+                        @showProfile="DisplayFriendProfile"
+            />
+          </div>
         </div>
       </v-row>
       <InputArea :chat="selectedChat"/>
@@ -146,14 +178,14 @@ onMounted(() => {
 }
 
 .dark-ocean {
-  background: #373B44;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #4286f4, #373B44);  /* Chrome 10-25, Safari 5.1-6 */
+  background: #373B44; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #4286f4, #373B44); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #4286f4, #373B44); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .megatron {
-  background: #C6FFDD;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #f7797d, #FBD786, #C6FFDD);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #f7797d, #FBD786, #C6FFDD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #C6FFDD; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f8b8b8, #b8c6ea); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f8b8b8, rgba(184, 198, 234, 0.99)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 </style>

@@ -37,8 +37,9 @@ const activated = inject("activated", undefined)
 
 <style scoped>
 .v-list-item--active {
-  background-color: #248aff !important;
-  color: white !important;
+  background: #C6FFDD;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f8b8b8, #b8c6ea);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f8b8b8, #b8c6ea); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .title-area {
