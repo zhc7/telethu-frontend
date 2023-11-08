@@ -67,16 +67,16 @@ const chatManager = {
         if (existing === undefined) {
             message.status = 'sent';
             contacts.value[target].messages.push(message);
-        } else {
-            existing.status = 'sent';
             if (message.sender !== user.value.id && !contacts.value[target].muted) {
                 sendNotification(message);
             }
+        } else if (existing.status === 'sending') {
+            existing.status = 'sent';
         }
         const ack = {
             message_id: message.message_id,
         }
-        console.log("sending ack", ack);
+        console.log("receive message and send ack", ack);
         socket.send(JSON.stringify(ack));
     },
 
