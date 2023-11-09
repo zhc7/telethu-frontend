@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import {onMounted, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
 import {
@@ -10,19 +10,19 @@ import {
   contacts,
   friendRequests,
   searchForFriend,
+  searchResult,
+    displayRightType,
 } from "../chat.js";
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
 
 const emit = defineEmits(["chat"]);
-const displayRightType = ref();
 const displayType = ref();
 const selectedContactId = ref();
 const selectedRequestId = ref();
 const displayApplyList = ref();
 const displayContact = ref();
 const displayRequest = ref();
-const searchResult = ref();
 const searchInput = ref("");
 const searchFriendMode = ref("id");
 const displayGroup = ref(false);
@@ -41,12 +41,12 @@ const selectRequest = (newRequestId) => {
   }
 };
 
-const search = async () => {
-  displayRightType.value = "searchResult";
-  alert(await searchForFriend(searchInput.value));
-  addFriend(searchInput.value);
-  alert("喜报：你搜索成功了！");
+const search = () => {
+  searchForFriend(searchInput.value);
+  // addFriend(searchInput.value);
+  // alert("喜报：你搜索成功了！");
 };
+
 
 const handleContactList = () => {
   displayType.value = undefined;
@@ -101,9 +101,9 @@ onMounted(() => {
 <template>
   <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
     <v-col
-      cols="12"
-      sm="4"
-      class="d-flex flex-column fill-height overflow-y-auto"
+        cols="12"
+        sm="4"
+        class="d-flex flex-column fill-height overflow-y-auto"
     >
       <v-list class="flex-0-0">
         <v-list-item class="bg-purple">
@@ -115,14 +115,14 @@ onMounted(() => {
           </v-list-item-title>
           <template #append>
             <v-icon
-              v-show="displayType === 'contactList'"
-              @click="handleRequestList"
+                v-show="displayType === 'contactList'"
+                @click="handleRequestList"
             >
               mdi-plus
             </v-icon>
             <v-icon
-              v-show="displayType === 'requestList'"
-              @click="handleContactList"
+                v-show="displayType === 'requestList'"
+                @click="handleContactList"
             >
               mdi-account-multiple
             </v-icon>
@@ -130,23 +130,25 @@ onMounted(() => {
         </v-list-item>
         <v-list-item>
           <v-text-field
-            :label="
+              :label="
               displayType === 'contactList'
                 ? 'Search in contacts...'
                 : 'Search for new friends...'
             "
-            v-model="searchInput"
-            variant="outlined"
-            hide-details
-            density="compact"
-            class="mt-3"
+              v-model="searchInput"
+              variant="outlined"
+              hide-details
+              density="compact"
+              class="mt-3"
           >
             <template #prepend>
               <v-icon v-if="!displayGroup" @click="displayGroup = !displayGroup"
-                >mdi-account</v-icon
+              >mdi-account
+              </v-icon
               >
               <v-icon v-else @click="displayGroup = !displayGroup"
-                >mdi-account-group</v-icon
+              >mdi-account-group
+              </v-icon
               >
             </template>
             <template #append>
@@ -156,29 +158,29 @@ onMounted(() => {
         </v-list-item>
       </v-list>
       <ContactList
-        v-model="selectedContactId"
-        v-show="displayType === 'contactList'"
-        class="fill-height overflow-y-auto"
-        :displayType="displayGroup ? 'group' : 'user'"
-        :searchInput="searchInput"
+          v-model="selectedContactId"
+          v-show="displayType === 'contactList'"
+          class="fill-height overflow-y-auto"
+          :displayType="displayGroup ? 'group' : 'user'"
+          :searchInput="searchInput"
       />
       <RequestList
-        v-model="selectedRequestId"
-        v-show="displayType === 'requestList'"
-        :active="displayType === 'requestList'"
-        @accept="(acceptId) => handleRequestPass(acceptId)"
-        @reject="(rejectId) => handleRequestReject(rejectId)"
+          v-model="selectedRequestId"
+          v-show="displayType === 'requestList'"
+          :active="displayType === 'requestList'"
+          @accept="(acceptId) => handleRequestPass(acceptId)"
+          @reject="(rejectId) => handleRequestReject(rejectId)"
       />
     </v-col>
     <v-col
-      cols="12"
-      sm="6"
-      class="d-flex flex-column flex-1-1 justify-center offset-sm-1"
+        cols="12"
+        sm="6"
+        class="d-flex flex-column flex-1-1 justify-center offset-sm-1"
     >
       <FriendProfile
-        v-if="displayRightType === 'contactDetail'"
-        :display="displayRightType === 'contactDetail'"
-        :displayContact="displayContact"
+          v-if="displayRightType === 'contactDetail'"
+          :display="displayRightType === 'contactDetail'"
+          :displayContact="displayContact"
       >
         <template #btn>
           <v-btn @click="$emit('chat', displayContact.id)">CHAT</v-btn>
@@ -187,51 +189,55 @@ onMounted(() => {
           <v-btn @click="">BLOCK</v-btn>
         </template>
       </FriendProfile>
+<!--      <div v-if="displayRightType === 'contactDetail'">-->
+<!--        {{ displayContact }}-->
+<!--      </div>-->
       <FriendProfile
-        v-if="displayRightType === 'requestDetail'"
-        :display="displayRightType === 'requestDetail'"
-        :displayContact="displayRequest"
-        class="overflow-y-auto"
-        @accept="(acceptId) => handleRequestPass(acceptId)"
-        @reject="(rejectId) => handleRequestReject(rejectId)"
+          v-if="displayRightType === 'requestDetail'"
+          :display="displayRightType === 'requestDetail'"
+          :displayContact="displayRequest"
+          class="overflow-y-auto"
+          @accept="(acceptId) => handleRequestPass(acceptId)"
+          @reject="(rejectId) => handleRequestReject(rejectId)"
       >
         <template #btn>
           <v-btn
-            @click="handleRequestPass(selectedRequestId)"
-            color="white"
-            class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
+              @click="handleRequestPass(selectedRequestId)"
+              color="white"
+              class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
           >
             PASS
           </v-btn>
           <v-btn
-            @click="handleRequestReject(selectedRequestId)"
-            color="white"
-            class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
+              @click="handleRequestReject(selectedRequestId)"
+              color="white"
+              class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
           >
             REJECT
           </v-btn>
         </template>
       </FriendProfile>
+
       <FriendProfile
-        v-if="displayRightType === 'searchResult'"
-        :display="displayRightType === 'searchResult'"
-        :displayContact="searchResult"
-        class="overflow-y-auto"
+          v-if="displayRightType === 'searchResult'"
+          :display="displayRightType === 'searchResult'"
+          :displayContact="searchResult"
+          class="overflow-y-auto"
       >
         <template #btn>
           <v-btn
-            @click="handleRequestPass(selectedRequestId)"
-            color="white"
-            class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
+              @click="handleRequestPass(selectedRequestId)"
+              color="white"
+              class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
           >
-            PASS
+            APPLY
           </v-btn>
           <v-btn
-            @click="handleRequestReject(selectedRequestId)"
-            color="white"
-            class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
+              @click="handleRequestReject(selectedRequestId)"
+              color="white"
+              class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
           >
-            REJECT
+            BLOCK
           </v-btn>
         </template>
       </FriendProfile>

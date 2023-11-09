@@ -7,11 +7,16 @@ import {useLocalStorage} from "@vueuse/core";
 import {generateMessageId, generateMD5} from "./utils/hash.js";
 import {formatFileSize, getFileType} from "./utils/files.js";
 
+
 const contacts = useLocalStorage("contacts", {});
+const searchResult = ref();
+const displayRightType = ref(undefined);
+
 const friendRequests = ref([]);
 
 const waitingAcceptFriend = ref(false);
 const waitingRejectFriend = ref(false);
+
 
 let socket;
 
@@ -226,20 +231,28 @@ const handleDeleteFriend = (message) => {
     //     info: "",
     //     message_id: generateMessageId(friendId, userId.value, Date.now()),
     // };
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    // console.log(JSON.stringify(message));
+    // socket.send(JSON.stringify(message));
     delete contacts.value[message.receiver];
 };
-const handle10 = (message) => {
+const handleReceiveRequest = (message) => {
     console.log("code 10 received: ", message);
+}
+
+const handleSearchResult = (message) => {
+    // message.content.mute = false;
+    console.log(message.content);
+    searchResult.value = message.content;
+    displayRightType.value = "searchResult";
 }
 
 const dispatcher = {
     6: handleAddFriend,
     7: handleCreateGroup,
     8: handleAddGroupMember,
-    10: handle10,
+    10: handleReceiveRequest,
     14: handleDeleteFriend,
+    18: handleSearchResult,
 }
 
 const createSocket = () => {
@@ -361,13 +374,13 @@ const groupAddMember = (groupId, memberId) => {
 
 const searchForFriend = (friendId) => {
     const message = {
-        m_type: 10,
+        m_type: 18,
         t_type: 1,
         time: Date.now(),
         message_id: generateMessageId(friendId, userId.value, Date.now()),
         content: "",
-        receiver: friendId,
         sender: userId.value,
+        receiver: friendId,
         info: "",
     }
     console.log(JSON.stringify(message));
@@ -467,6 +480,8 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
 export {
     contacts,
     friendRequests,
+    searchResult,
+    displayRightType,
     sendMessage,
     createSocket,
     getContacts,
