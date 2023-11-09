@@ -216,16 +216,16 @@ const handleAddGroupMember = (message) => {
 };
 const handleDeleteFriend = (message) => {
     // FUNC_DELETE_FRIEND
-    const message = {
-        time: Date.now(),
-        m_type: 14,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-    };
+    // const message = {
+    //     time: Date.now(),
+    //     m_type: 14,
+    //     t_type: 1,
+    //     content: "",
+    //     sender: userId.value,
+    //     receiver: friendId,
+    //     info: "",
+    //     message_id: generateMessageId(friendId, userId.value, Date.now()),
+    // };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
     delete contacts.value[message.receiver];
