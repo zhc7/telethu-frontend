@@ -23,7 +23,7 @@ const previewIconUrl = (extension) => {
 }
 
 const getFileInformation = (message) => {
-  let parts = message.info.split('|');
+  let parts = message.info.split('/');
   const url = BASE_API_URL + 'files/' + message.content + '/';
   const icon = previewIconUrl(getFileExtension(parts[0]));
   return {

@@ -382,7 +382,7 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
         content: md5,
         receiver: receiverId,
         sender: userId.value,
-        info: file.name + "|" + formatFileSize(file.size) + "|" + getFileType(file.name),
+        info: file.name + "/" + formatFileSize(file.size) + "/" + getFileType(file.name),
         message_id: generateMessageId(file.name, userId.value, Date.now()),
         status: 'sending',
     };
