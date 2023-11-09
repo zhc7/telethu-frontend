@@ -6,3 +6,4 @@ const TimeUpdater = setInterval(() => {
 }, 1000);
 
 export const displayRightType = ref(undefined);
+export const activeChat = ref(undefined);

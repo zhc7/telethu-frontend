@@ -42,6 +42,7 @@ const chatList = computed(() => {
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
       alert: contact.alert,
+      unread_counter: contact.unread_counter,
       // TODO: persist pin, mute, block
       pin: contact.pin,
       mute: contact.mute,
@@ -221,7 +222,7 @@ onMounted(() => {
           <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
         </div>
         <template #append>
-          <v-badge v-if="chat.alert && !chat.mute" color="red" content="1" inline></v-badge>
+          <v-badge v-if="!chat.mute && chat.unread_counter" color="red" :content="chat.unread_counter" inline></v-badge>
         </template>
       </ListItem>
     </List>

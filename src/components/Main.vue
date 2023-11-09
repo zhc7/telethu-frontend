@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
@@ -9,6 +9,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {user, userName} from "../auth.js";
+import {activeChat} from "../globals.js"
 
 const router = useRouter();
 const curTab = ref(1);
@@ -25,11 +26,14 @@ const activePage = computed({
   }
 });
 
-const activeChat = ref(undefined);
 const ActivateChat = (chat) => {
   activeChat.value = chat;
   activePage.value = 'chat';
 };
+
+watch(activeChat, (id) => {
+  contacts.value[id].unread_counter = 0;
+})
 
 onMounted(() => {
   console.log("page " + activePage.value);
