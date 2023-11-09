@@ -183,15 +183,9 @@ const ifFriend = () => {
           </div>
         </div>
       </v-list>
-<<<<<<< HEAD
-      <v-divider class="ma-4" />
-      <v-col>
-        <v-row style="display: flex; align-items: center" class="ma-3">
-=======
       <v-divider class="ma-4"/>
       <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
         <v-row style="display: flex; align-items: center;" class="ma-3">
->>>>>>> 071415aa5253c3689a79d1878de3998ed6d5ea29
           <!-- TODO: add rename function -->
           <p style="flex: 1" class="text-right pr-4">Rename:</p>
           <v-text-field

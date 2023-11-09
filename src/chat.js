@@ -1,11 +1,11 @@
-import {token, user, userId} from "./auth.js";
-import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
-import {DEBUG} from "./constants.js";
-import {reactive, ref} from "vue";
+import { token, user, userId } from "./auth.js";
+import { BASE_WS_URL, BASE_API_URL } from "./constants.js";
+import { DEBUG } from "./constants.js";
+import { reactive, ref } from "vue";
 import axios from "axios";
-import {useLocalStorage} from "@vueuse/core";
-import {generateMessageId, generateMD5} from "./utils/hash.js";
-import {formatFileSize, getFileType} from "./utils/files.js";
+import { useLocalStorage } from "@vueuse/core";
+import { generateMessageId, generateMD5 } from "./utils/hash.js";
+import { formatFileSize, getFileType } from "./utils/files.js";
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
@@ -27,7 +27,7 @@ const chatManager = {
         }
         socket.send(JSON.stringify(message));
 
-        // 设置一个超时时间，在这个时间内如果没有收到ack，则重新发送消息
+        // set a timeout. If ack not received in given time, then resend.
         setTimeout(() => {
             if (message.status === 'sending') {
                 this._retrySendMessage(message);
@@ -56,7 +56,9 @@ const chatManager = {
     },
 
     receiveAck(ack) {
-        console.log("received ack", ack);
+        if (DEBUG) {
+            console.log("received ack", ack);
+        }
         this._updateMessage(ack);
     },
 
@@ -97,7 +99,7 @@ const chatManager = {
 }
 
 const addFriend = (friendId) => {
-    axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
+    axios.post(BASE_API_URL + "users/friends/apply", { friendId }, {
         headers: {
             Authorization: token.value,
         }
@@ -107,7 +109,7 @@ const addFriend = (friendId) => {
 }
 
 const acceptFriend = (friendId) => {
-    axios.post(BASE_API_URL + "users/friends/accept", {friendId}, {
+    axios.post(BASE_API_URL + "users/friends/accept", { friendId }, {
         headers: {
             Authorization: token.value,
         }
