@@ -19,14 +19,13 @@ const selected = computed({
 const createGroupDialog = ref(false);
 const createGroupLoading = ref(false);
 const createGroupName = ref('New Group');
-const createGroupSelecting = ref({});
+const createGroupSelecting = ref([]);
 
 const handleCreateGroup = () => {
-  console.log("creating group");
-  console.log(Object.keys(createGroupSelecting.value).map((i) => (+i)))
+  console.log("creating group", createGroupSelecting);
   createGroupLoading.value = true;
-  createGroup(createGroupName.value, Object.keys(createGroupSelecting.value).map((i) => (+i)));
-  createGroupSelecting.value = {};
+  createGroup(createGroupName.value, createGroupSelecting.value);
+  createGroupSelecting.value = [];
   createGroupLoading.value = false;
   createGroupDialog.value = false;
 }
@@ -84,9 +83,8 @@ const handlePlus = () => {
 
 const handleCancel = () => {
   createGroupDialog.value = false;
-  createGroupSelecting.value = {};
+  createGroupSelecting.value = [];
 }
-
 
 const filterContacts = computed(() => {
   return Object.keys(contacts.value).filter((id) => {
@@ -135,10 +133,10 @@ onMounted(() => {
         />
         <div class="d-flex overflow-x-auto" v-if="createGroupSelecting">
           <div
-              v-for="id in Object.keys(createGroupSelecting)"
+              v-for="id in createGroupSelecting"
               :key="id"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="delete createGroupSelecting[id]"
+              @click="createGroupSelecting = createGroupSelecting.filter((i) => i !== id)"
               v-ripple
           >
             <v-avatar>
