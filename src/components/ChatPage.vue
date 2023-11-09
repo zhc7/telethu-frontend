@@ -128,7 +128,7 @@ onMounted(() => {
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
-            <span @click="handleGetMoreMessage" class="text-blue">Get more message...</span>
+            <v-btn @click="handleGetMoreMessage" class="text-blue mt-2" variant="text">Get more message...</v-btn>
           </div>
           <div v-for="(group, index) in groupedMessages" :key="index">
             <div class="justify-center ma-1">

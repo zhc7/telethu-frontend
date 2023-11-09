@@ -44,7 +44,7 @@ onMounted(() => {
 <template>
   <div class="d-flex mt-1"
        :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}"
-       :class="message.sender === userId ? 'mr-6':'ml-6'">
+       :class="([message.sender === userId ? 'mr-6':'ml-6', message.t_type === 0 ? 'ma-4': ''])">
     <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
       <v-img
           :src="avatar"
@@ -53,7 +53,7 @@ onMounted(() => {
       />
     </v-avatar>
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
-      <div class="d-flex">
+      <div class="d-flex" v-if="message.t_type === 1">
         <v-spacer v-if="message.sender === userId"/>
         <span class="text-grey mr-1 ml-1" style="font-size: small">
           {{ name }}
@@ -156,7 +156,7 @@ onMounted(() => {
   border-radius: 20px;
   padding: 10px 20px;
   color: white;
-  max-width: 300px;
+  max-width: 40vw !important;
   line-height: 1.4;
   text-align: left;
   margin: 10px;
@@ -180,7 +180,7 @@ onMounted(() => {
   border-radius: 20px;
   padding: 10px 20px;
   color: white;
-  max-width: 300px;
+  max-width: 40vw !important;
   line-height: 1.4;
   text-align: left;
   margin: 10px;
