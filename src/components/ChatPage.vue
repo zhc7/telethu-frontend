@@ -81,7 +81,6 @@ const getNameById = (id) => {
   if (id === userId.value) {
     return userName.value;
   } else {
-    console.log("getting name by id", id, contacts.value, selectedChat.value)
     return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : contacts.value)[id].name;
   }
 }
