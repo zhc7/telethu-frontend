@@ -4,7 +4,7 @@ import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
 import {BASE_API_URL} from "../constants.js";
-import {getFileExtension} from "../utils/uploadfiles.js";
+import {downloadFile, getFileExtension} from "../utils/files.js";
 
 // TODO: display menu when right click on message
 
@@ -12,6 +12,7 @@ const props = defineProps(['message', 'final', 'avatar', 'name']);
 const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
+const blobSrc = ref("");
 
 const previewIconUrl = (extension) => {
   if (extension === "pdf") {
@@ -38,6 +39,7 @@ onMounted(() => {
   if (props.final) {
     emits('finished');
   }
+  downloadFile(props.message.content).then((url) => {blobSrc.value = url;});
 });
 </script>
 
@@ -84,7 +86,7 @@ onMounted(() => {
         </div>
         <v-img
             v-else-if="message.m_type === 1"
-            :src="BASE_API_URL + 'files/' + message.content + '/'"
+            :src="blobSrc"
             style="max-width: 18vw; max-height: 20vh; min-height: 12vw"
             class="border rounded-lg"
         >

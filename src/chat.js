@@ -5,7 +5,7 @@ import {reactive, ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
 import {generateMessageId, generateMD5} from "./utils/hash.js";
-import {formatFileSize, getFileType} from "./utils/uploadfiles.js";
+import {formatFileSize, getFileType} from "./utils/files.js";
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
