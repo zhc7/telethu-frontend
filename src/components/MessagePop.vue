@@ -49,7 +49,7 @@ onMounted(() => {
   if (props.final) {
     emits('finished');
   }
-  download(0);
+  if(props.message.m_type > 0) download(0);
 });
 </script>
 
