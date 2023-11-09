@@ -99,6 +99,10 @@ const filterContacts = computed(() => {
   });
 });
 
+const ifFriend = () => {
+
+}
+
 </script>
 
 <template>
@@ -169,7 +173,7 @@ const filterContacts = computed(() => {
         </div>
       </v-list>
       <v-divider class="ma-4"/>
-      <v-col>
+      <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
         <v-row style="display: flex; align-items: center;" class="ma-3">
           <!-- TODO: add rename function -->
           <p style="flex: 1">Rename:</p>
@@ -213,10 +217,10 @@ const filterContacts = computed(() => {
           <v-switch style="flex: 2" hide-details color="error" v-model="switchValueBlock"
                     @change="onSwitchChangeBlock"></v-switch>
         </v-row>
+        <v-divider class="ma-4"/>
       </v-col>
-      <v-divider class="ma-4"/>
       <v-card-actions>
-        <v-col>
+        <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
             <!-- TODO: add recommend function -->
             <v-btn color="indigo" style="font-size: 15px; font-weight: bold">Recommend</v-btn>
@@ -232,6 +236,10 @@ const filterContacts = computed(() => {
               Group
             </v-btn>
           </v-row>
+        </v-col>
+        <v-col v-else>
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold">Pass</v-btn>
+          <v-btn color="error" style="font-size: 15px; font-weight: bold">Reject</v-btn>
         </v-col>
       </v-card-actions>
     </v-card-item>
