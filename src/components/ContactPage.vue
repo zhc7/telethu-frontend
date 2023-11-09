@@ -11,10 +11,13 @@ import {
   friendRequests,
   searchForFriend,
   searchResult,
-    displayRightType,
 } from "../chat.js";
+
+import {displayRightType} from "../globals.js"
+
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
+
 
 const emit = defineEmits(["chat"]);
 const displayType = ref();

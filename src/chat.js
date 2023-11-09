@@ -1,6 +1,7 @@
 import {token, user, userId} from "./auth.js";
 import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
+import {displayRightType} from "./globals.js"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
@@ -10,7 +11,6 @@ import {formatFileSize, getFileType} from "./utils/files.js";
 
 const contacts = useLocalStorage("contacts", {});
 const searchResult = ref();
-const displayRightType = ref(undefined);
 
 const friendRequests = ref([]);
 

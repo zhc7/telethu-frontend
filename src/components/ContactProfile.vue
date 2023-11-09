@@ -18,14 +18,12 @@ const groupAddMemberSelecting = ref([]);
 
 const deleteConfirmDialog = ref(false);
 
-// const switchValueMute = ref(props.displayContact.mute);
-const switchValueMute = ref(false);
+const switchValueMute = ref(props.displayContact.mute);
 const onSwitchChangeMute = () => {
   props.displayContact.mute = switchValueMute.value;
   console.log("mute:", props.displayContact.mute);
 };
-// const switchValuePin = ref(props.displayContact.pin);
-const switchValuePin = ref(false);
+const switchValuePin = ref(props.displayContact.pin);
 const onSwitchChangePin = () => {
   props.displayContact.pin = switchValuePin.value;
   console.log("pin:", props.displayContact.pin);
