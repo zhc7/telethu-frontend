@@ -88,10 +88,10 @@ const handleCancel = () => {
 
 const filterContacts = computed(() => {
   return Object.keys(contacts.value).filter((id) => {
-    return contacts.value[id].category === 'user' && (createGroupSelecting.value.indexOf(id) === -1);
+    return contacts.value[id].category === 'user' && (createGroupSelecting.value.indexOf(+id) === -1);
   }).map((id) => {
     return {
-      id: id,
+      id: contacts.value[id].id,  // id should be int
       name: contacts.value[id].name,
       avatar: contacts.value[id].avatar,
     }
