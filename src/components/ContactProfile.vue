@@ -114,14 +114,11 @@ const filterContacts = computed(() => {
       };
     });
 });
-<<<<<<< HEAD
-=======
 
 const ifFriend = () => {
 
 }
 
->>>>>>> 071415aa5253c3689a79d1878de3998ed6d5ea29
 </script>
 
 <template>
@@ -251,10 +248,6 @@ const ifFriend = () => {
         </v-row>
         <v-divider class="ma-4"/>
       </v-col>
-<<<<<<< HEAD
-      <v-divider class="ma-4" />
-=======
->>>>>>> 071415aa5253c3689a79d1878de3998ed6d5ea29
       <v-card-actions>
         <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">

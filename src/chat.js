@@ -176,6 +176,36 @@ const sendNotification = (message) => {
     }
 }
 
+const functionMessageHandlers = (code, message) => {
+    if (code === 6)
+        handleAddFriend(message);
+    if (code === 7)
+        handleCreateGroup(message);
+    if (code === 8)
+        handleAddGroupMember(message);
+    if (code === 14)
+        handleDeleteFriend(message);
+}
+
+const handleAddFriend = (message) => {
+    console.log('received add friend request');
+    console.log(message);
+    // FUNC_ADD_FRIEND
+};
+const handleCreateGroup = (message) => {
+    // FUNC_CREATE_GROUP
+    contacts.value[message.receiver] = message.content;
+};
+const handleAddGroupMember = (message) => {
+    // FUNC_ADD_GROUP_MEMBER
+    contacts.value[message.receiver].members.push(message.content);
+    contacts.value[message.receiver].id2member[message.content.id] = message.content;
+};
+const handleDeleteFriend = (message) => {
+    // FUNC_DELETE_FRIEND
+    delete contacts.value[message.receiver];
+};
+
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
@@ -192,49 +222,21 @@ const createSocket = () => {
         const message = JSON.parse(e.data);
         console.log(message);
         if (first) {
-            // ignore friend meta, we'll manually get this by http for now
-            console.log("receiving meta", message);
+            handleLoad(message);
             first = false;
-            for (let contact of Object.values(message)) {
-                if (contacts.value[contact.id] !== undefined) {
-                    contact.messages = contacts.value[contact.id].messages;
-                }
-                if (contact.messages === undefined) contact.messages = [];
-                if (contact.category === "group") {
-                    contact.id2member = {}
-                    for (let member of contact.members) {
-                        contact.id2member[member.id] = member;
-                    }
-                }
-            }
-            contacts.value = message;
-        } else if (message.m_type === undefined) {
+            return;
+        }
+        if (message.m_type === undefined) {
             // acknowledgement from RabbitMQ
             chatManager.receiveAck(message);
-        } else if (message.m_type <= 5) {
+            return;
+        }
+        if (message.m_type <= 5) {
             // normal message or confirm message
             chatManager.receiveMessage(message);
-        } else {
-            const functionMessageHandlers = {
-                6: () => {
-                    // FUNC_ADD_FRIEND
-                },
-                7: () => {
-                    // FUNC_CREATE_GROUP
-                    contacts.value[message.receiver] = message.content;
-                },
-                8: () => {
-                    // FUNC_ADD_GROUP_MEMBER
-                    contacts.value[message.receiver].members.push(message.content);
-                    contacts.value[message.receiver].id2member[message.content.id] = message.content;
-                },
-                14: () => {
-                    // FUNC_DELETE_FRIEND
-                    delete contacts.value[message.receiver];
-                }
-            }
-            functionMessageHandlers[message.m_type]();
-        }
+            return;
+        } 
+        functionMessageHandlers(message.m_type, message);
     };
 
     socket.onclose = (e) => {
@@ -253,6 +255,24 @@ const createSocket = () => {
         console.error("Socket encountered error: ", err.message, "Closing socket");
         socket.close();
     };
+}
+
+const handleLoad = (message) => {
+    // ignore friend meta, we'll manually get this by http for now
+    console.log("receiving meta", message);
+    for (const contact of Object.values(message)) {
+        if (contacts.value[contact.id] !== undefined) {
+            contact.messages = contacts.value[contact.id].messages;
+        }
+        if (contact.messages === undefined) contact.messages = [];
+        if (contact.category === "group") {
+            contact.id2member = {}
+            for (const member of contact.members) {
+                contact.id2member[member.id] = member;
+            }
+        }
+    }
+    contacts.value = message;
 }
 
 
@@ -276,12 +296,7 @@ const createGroup = (groupName, members) => {
         time: Date.now(),
         m_type: 7,
         t_type: 1,
-        content: {
-            members,
-            category: "group",
-            name: groupName,
-            avatar: "",
-        },
+        content: members,
         receiver: userId.value,
         sender: userId.value,
         info: groupName,
