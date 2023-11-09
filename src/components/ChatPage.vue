@@ -78,10 +78,11 @@ const handleHideProfile = (event) => {
 
 
 const getNameById = (id) => {
-  if (id === userId.value) {
+  console.log(id);
+  if (+id === userId.value) {
     return userName.value;
   } else {
-    return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : contacts.value)[id].name;
+    return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : contacts.value)[+id].name;
   }
 }
 
@@ -138,7 +139,7 @@ onMounted(() => {
                         :message="message"
                         :final="mIndex === group.messages.length - 1"
                         :avatar="selectedChat.avatar"
-                        :name="getNameById(message.sender)"
+                        :name="abcdef"
                         @finished="ScrollToBottom"
                         @showProfile="DisplayFriendProfile"
             />

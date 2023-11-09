@@ -36,7 +36,8 @@ const getFileInformation = (message) => {
 }
 
 const download = (retry) => {
-  if (retry === 5) return;
+  if (retry === 2) return;
+  console.log('filename: ', props.message.content);
   downloadFile(props.message.content).then((url) => {blobSrc.value = url;}).catch((e) => {
     console.log("an error occurred when fetching data", e);
     setTimeout(() => {

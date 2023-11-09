@@ -24,8 +24,9 @@ const createGroupSelecting = ref({});
 
 const handleCreateGroup = () => {
   console.log("creating group");
+  console.log(Object.keys(createGroupSelecting.value).map((i) => (+i)))
   createGroupLoading.value = true;
-  createGroup(createGroupName.value, Object.keys(createGroupSelecting.value));
+  createGroup(createGroupName.value, Object.keys(createGroupSelecting.value).map((i) => (+i)));
   createGroupSelecting.value = {};
   createGroupLoading.value = false;
   createGroupDialog.value = false;
