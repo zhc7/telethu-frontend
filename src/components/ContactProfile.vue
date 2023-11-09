@@ -9,8 +9,8 @@ import {
 import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
 
-const props = defineProps(["displayContact", "display"]);
-const emit = defineEmits(["accept", "reject"]);
+const props = defineProps(["displayContact", "display", "source"]);
+const emit = defineEmits(["accept", "reject", "apply"]);
 
 const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
@@ -250,34 +250,37 @@ const ifFriend = () => {
         <v-divider class="ma-4"/>
       </v-col>
       <v-card-actions>
-        <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
-          <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
-            <!-- TODO: add recommend function -->
-            <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
+        <v-col v-if="source === 'contactDetail'">
+            <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
+              <!-- TODO: add recommend function -->
+              <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
               >Recommend</v-btn
-            >
-          </v-row>
-          <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
-            <!-- TODO: test delete friend function -->
-            <v-btn
-              color="error"
-              style="font-size: 15px; font-weight: bold"
-              @click="deleteConfirmDialog = true"
+              >
+            </v-row>
+            <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
+              <!-- TODO: test delete friend function -->
+              <v-btn
+                  color="error"
+                  style="font-size: 15px; font-weight: bold"
+                  @click="deleteConfirmDialog = true"
               >Delete Friend
-            </v-btn>
-          </v-row>
-          <v-row v-else style="display: flex; justify-content: center">
-            <v-btn
-              color="error"
-              style="font-size: 15px; font-weight: bold"
-              @click="deleteConfirmDialog = true"
+              </v-btn>
+            </v-row>
+            <v-row v-else style="display: flex; justify-content: center">
+              <v-btn
+                  color="error"
+                  style="font-size: 15px; font-weight: bold"
+                  @click="deleteConfirmDialog = true"
               >Quit Group
-            </v-btn>
-          </v-row>
+              </v-btn>
+            </v-row>
         </v-col>
-        <v-col v-else>
+        <v-col v-if="source === 'requestDetail'">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('accept', displayContact.id)">Pass</v-btn>
           <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="$emit('reject', displayContact.id)">Reject</v-btn>
+        </v-col>
+        <v-col v-if="source === 'searchResult'">
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('apply', displayContact.id)">Apply</v-btn>
         </v-col>
       </v-card-actions>
     </v-card-item>

@@ -46,10 +46,12 @@ const selectRequest = (newRequestId) => {
 
 const search = () => {
   searchForFriend(searchInput.value);
-  // addFriend(searchInput.value);
-  // alert("喜报：你搜索成功了！");
 };
 
+const handleApplyFriend = (friendId) => {
+  addFriend(friendId);
+  alert("喜报：你发送了申请！");
+}
 
 const handleContactList = () => {
   displayType.value = undefined;
@@ -183,66 +185,29 @@ onMounted(() => {
       <FriendProfile
           v-if="displayRightType === 'contactDetail'"
           :display="displayRightType === 'contactDetail'"
+          :source="'contactDetail'"
           :displayContact="displayContact"
       >
-        <template #btn>
-          <v-btn @click="$emit('chat', displayContact.id)">CHAT</v-btn>
-          <v-btn>RECOMMEND</v-btn>
-          <v-btn>DELETE</v-btn>
-          <v-btn @click="">BLOCK</v-btn>
-        </template>
       </FriendProfile>
-<!--      <div v-if="displayRightType === 'contactDetail'">-->
-<!--        {{ displayContact }}-->
-<!--      </div>-->
       <FriendProfile
           v-if="displayRightType === 'requestDetail'"
           :display="displayRightType === 'requestDetail'"
           :displayContact="displayRequest"
+          :source="'requestDetail'"
           class="overflow-y-auto"
           @accept="(acceptId) => handleRequestPass(acceptId)"
           @reject="(rejectId) => handleRequestReject(rejectId)"
       >
-        <template #btn>
-          <v-btn
-              @click="handleRequestPass(selectedRequestId)"
-              color="white"
-              class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
-          >
-            PASS
-          </v-btn>
-          <v-btn
-              @click="handleRequestReject(selectedRequestId)"
-              color="white"
-              class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
-          >
-            REJECT
-          </v-btn>
-        </template>
       </FriendProfile>
 
       <FriendProfile
           v-if="displayRightType === 'searchResult'"
           :display="displayRightType === 'searchResult'"
           :displayContact="searchResult"
+          :source="'searchResult'"
           class="overflow-y-auto"
+          @apply="(applyId) => handleApplyFriend(applyId)"
       >
-        <template #btn>
-          <v-btn
-              @click="handleRequestPass(selectedRequestId)"
-              color="white"
-              class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
-          >
-            APPLY
-          </v-btn>
-          <v-btn
-              @click="handleRequestReject(selectedRequestId)"
-              color="white"
-              class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
-          >
-            BLOCK
-          </v-btn>
-        </template>
       </FriendProfile>
     </v-col>
   </v-row>
