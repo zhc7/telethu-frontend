@@ -20,13 +20,13 @@ const selected = computed({
 const createGroupDialog = ref(false);
 const createGroupLoading = ref(false);
 const createGroupName = ref('New Group');
-const createGroupSelecting = ref([]);
+const createGroupSelecting = ref({});
 
 const handleCreateGroup = () => {
-  console.log("creating group", createGroupSelecting);
+  console.log("creating group");
   createGroupLoading.value = true;
-  createGroup(createGroupName.value, createGroupSelecting.value);
-  createGroupSelecting.value = [];
+  createGroup(createGroupName.value, Object.keys(createGroupSelecting.value));
+  createGroupSelecting.value = {};
   createGroupLoading.value = false;
   createGroupDialog.value = false;
 }
@@ -83,12 +83,13 @@ const handlePlus = () => {
 
 const handleCancel = () => {
   createGroupDialog.value = false;
-  createGroupSelecting.value = [];
+  createGroupSelecting.value = {};
 }
+
 
 const filterContacts = computed(() => {
   return Object.keys(contacts.value).filter((id) => {
-    return contacts.value[id].category === 'user' && (createGroupSelecting.value.indexOf(+id) === -1);
+    return contacts.value[id].category === 'user';
   }).map((id) => {
     return {
       id: contacts.value[id].id,  // id should be int
@@ -142,10 +143,10 @@ onMounted(() => {
         />
         <div class="d-flex overflow-x-auto" v-if="createGroupSelecting">
           <div
-              v-for="id in createGroupSelecting"
+              v-for="id in Object.keys(createGroupSelecting)"
               :key="id"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="createGroupSelecting = createGroupSelecting.filter((i) => i !== id)"
+              @click="delete createGroupSelecting[id]"
               v-ripple
           >
             <v-avatar>
@@ -154,7 +155,7 @@ onMounted(() => {
             <p>{{ contacts[id].name }}</p>
           </div>
         </div>
-        <v-list>
+        <v-list class="overflow-y-scroll" max-height="50vh">
           <v-list-item v-for="contact in filterContacts">
             <template #prepend>
               <v-avatar>
@@ -165,8 +166,14 @@ onMounted(() => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="createGroupSelecting.push(contact.id)" color="indigo">
+              <v-btn @click="createGroupSelecting[contact.id] = true" color="indigo" v-if="!createGroupSelecting[contact.id]">
                 Append
+                <template #append>
+                  <v-icon>mdi-account-circle</v-icon>
+                </template>
+              </v-btn>
+              <v-btn @click="delete createGroupSelecting[contact.id]" color="red-darken-4" v-else="createGroupSelecting[contact.id]">
+                Remove
                 <template #append>
                   <v-icon>mdi-account-circle</v-icon>
                 </template>
