@@ -2,7 +2,7 @@
 import {onMounted, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
-import {acceptFriend, addFriend, applyList, contacts, friendRequests} from "../chat.js";
+import {acceptFriend, addFriend, applyList, contacts, friendRequests, searchForFriend} from "../chat.js";
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
 
@@ -14,13 +14,11 @@ const selectedRequestId = ref();
 const displayApplyList = ref();
 const displayContact = ref();
 const displayRequest = ref();
+const searchResult = ref();
 const searchInput = ref('');
 const searchFriendMode = ref('id');
 const displayGroup = ref(false);
 
-const switchMode = () => {
-  searchFriendMode.value = searchFriendMode.value === 'email' ? 'id' : 'email';
-};
 
 const selectContact = (newContactId) => {
   displayRightType.value = 'contactDetail';
@@ -36,10 +34,11 @@ const selectRequest = (newRequestId) => {
   }
 }
 
-const search = () => {
+const search = async () => {
   displayRightType.value = 'searchResult';
-  addFriend(searchInput.value)
-  alert('喜报：你搜索成功了！');
+  alert(await searchForFriend(searchInput.value));
+  // addFriend(searchInput.value)
+  // alert('喜报：你搜索成功了！');
 }
 
 const handleContactList = () => {
@@ -153,6 +152,29 @@ onMounted(() => {
           v-if="displayRightType === 'requestDetail'"
           :display="displayRightType === 'requestDetail'"
           :displayContact="displayRequest"
+          class="overflow-y-auto"
+      >
+        <template #btn>
+          <v-btn
+              @click="handleRequestPass(selectedRequestId)"
+              color="white"
+              class="bg-green mr-1 pl-2 pr-2 v-btn--density-comfortable"
+          >
+            PASS
+          </v-btn>
+          <v-btn
+              @click="handleRequestReject(selectedRequestId)"
+              color="white"
+              class="bg-red text-white ml-1 mr-1 pl-2 pr-2 v-btn--density-comfortable"
+          >
+            REJECT
+          </v-btn>
+        </template>
+      </FriendProfile>
+            <FriendProfile
+          v-if="displayRightType === 'searchResult'"
+          :display="displayRightType === 'searchResult'"
+          :displayContact="searchResult"
           class="overflow-y-auto"
       >
         <template #btn>

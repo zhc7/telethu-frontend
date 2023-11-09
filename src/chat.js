@@ -220,7 +220,8 @@ const createSocket = () => {
 
     socket.onmessage = (e) => {
         const message = JSON.parse(e.data);
-        console.log(message);
+        if (DEBUG)
+            console.log('received message: ', message);
         if (first) {
             handleLoad(message);
             first = false;
@@ -235,7 +236,7 @@ const createSocket = () => {
             // normal message or confirm message
             chatManager.receiveMessage(message);
             return;
-        } 
+        }
         functionMessageHandlers(message.m_type, message);
     };
 
@@ -259,7 +260,6 @@ const createSocket = () => {
 
 const handleLoad = (message) => {
     // ignore friend meta, we'll manually get this by http for now
-    console.log("receiving meta", message);
     for (const contact of Object.values(message)) {
         if (contacts.value[contact.id] !== undefined) {
             contact.messages = contacts.value[contact.id].messages;
@@ -322,6 +322,23 @@ const groupAddMember = (groupId, memberId) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
+
+const searchForFriend = (friendId) => {
+    const message = {
+        m_type: 10,
+        t_type: 1,
+        time: Date.now(),
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+        content: "",
+        receiver: friendId,
+        sender: userId.value,
+        info: "",
+    }
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
+
 
 const getHistoryMessage = (id, from, t_type, num) => {
     axios.get(BASE_API_URL + "chat/history", {
@@ -427,5 +444,6 @@ export {
     deleteFriend,
     blockFriend,
     unblockFriend,
+    searchForFriend,
     sendFiles,
 }
