@@ -10,6 +10,7 @@ import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
 
 const props = defineProps(["displayContact", "display"]);
+const emit = defineEmits(["accept", "reject"]);
 
 const groupAddMemberDialog = ref(false);
 const groupAddMemberLoading = ref(false);
@@ -275,8 +276,8 @@ const ifFriend = () => {
           </v-row>
         </v-col>
         <v-col v-else>
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold">Pass</v-btn>
-          <v-btn color="error" style="font-size: 15px; font-weight: bold">Reject</v-btn>
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('accept', displayContact.id)">Pass</v-btn>
+          <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="$emit('reject', displayContact.id)">Reject</v-btn>
         </v-col>
       </v-card-actions>
     </v-card-item>

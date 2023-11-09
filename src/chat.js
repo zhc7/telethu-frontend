@@ -118,6 +118,18 @@ const acceptFriend = (friendId) => {
     })
 }
 
+const rejectFriend = (friendId) => {
+    console.log('rejecting');
+    axios.post((BASE_API_URL) + "users/friends/reject", { friendId }, {
+        headers: {
+            Authentication: token.value,
+        }
+    }).then((response) => {
+        console.log(response.data);
+        console.log("friend rejected");
+    })
+}
+
 const getContacts = async () => {
     alert("calling deprecated get contact");
     console.log("getting contacts");
@@ -436,6 +448,7 @@ export {
     applyList,
     addFriend,
     acceptFriend,
+    rejectFriend,
     createGroup,
     groupAddMember,
     getHistoryMessage,
