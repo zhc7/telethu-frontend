@@ -1,14 +1,17 @@
-import { token, user, userId } from "./auth.js";
-import { BASE_WS_URL, BASE_API_URL } from "./constants.js";
-import { DEBUG } from "./constants.js";
-import { reactive, ref } from "vue";
+import {token, user, userId} from "./auth.js";
+import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
+import {DEBUG} from "./constants.js";
+import {reactive, ref} from "vue";
 import axios from "axios";
-import { useLocalStorage } from "@vueuse/core";
-import { generateMessageId, generateMD5 } from "./utils/hash.js";
-import { formatFileSize, getFileType } from "./utils/files.js";
+import {useLocalStorage} from "@vueuse/core";
+import {generateMessageId, generateMD5} from "./utils/hash.js";
+import {formatFileSize, getFileType} from "./utils/files.js";
 
 const contacts = useLocalStorage("contacts", {});
 const friendRequests = ref([]);
+
+const waitingAcceptFriend = ref(false);
+const waitingRejectFriend = ref(false);
 
 let socket;
 
@@ -99,36 +102,44 @@ const chatManager = {
 }
 
 const addFriend = (friendId) => {
-    axios.post(BASE_API_URL + "users/friends/apply", { friendId }, {
+    axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
         headers: {
             Authorization: token.value,
         }
     }).then((response) => {
         console.log("friend request sent");
     })
-}
+};
 
 const acceptFriend = (friendId) => {
-    axios.post(BASE_API_URL + "users/friends/accept", { friendId }, {
-        headers: {
-            Authorization: token.value,
-        }
-    }).then((response) => {
-        console.log("friend accepted");
-    })
-}
+    const message = {
+        time: Date.now(),
+        m_type: 11,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: friendId,
+        info: "",
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+};
 
 const rejectFriend = (friendId) => {
-    console.log('rejecting');
-    axios.post((BASE_API_URL) + "users/friends/reject", { friendId }, {
-        headers: {
-            Authentication: token.value,
-        }
-    }).then((response) => {
-        console.log(response.data);
-        console.log("friend rejected");
-    })
-}
+    const message = {
+        time: Date.now(),
+        m_type: 12,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: friendId,
+        info: "",
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+};
 
 const getContacts = async () => {
     alert("calling deprecated get contact");
@@ -189,7 +200,6 @@ const sendNotification = (message) => {
 }
 
 
-
 const handleAddFriend = (message) => {
     console.log('received add friend request');
     console.log(message);
@@ -206,13 +216,29 @@ const handleAddGroupMember = (message) => {
 };
 const handleDeleteFriend = (message) => {
     // FUNC_DELETE_FRIEND
+    const message = {
+        time: Date.now(),
+        m_type: 14,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: friendId,
+        info: "",
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
     delete contacts.value[message.receiver];
 };
+const handle10 = (message) => {
+    console.log("code 10 received: ", message);
+}
 
 const dispatcher = {
     6: handleAddFriend,
     7: handleCreateGroup,
     8: handleAddGroupMember,
+    10: handle10,
     14: handleDeleteFriend,
 }
 
@@ -347,7 +373,6 @@ const searchForFriend = (friendId) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-
 
 
 const getHistoryMessage = (id, from, t_type, num) => {

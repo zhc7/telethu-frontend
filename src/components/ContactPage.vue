@@ -74,6 +74,9 @@ const handleRequestPass = (id) => {
   if (!contacts.value[id]["messages"]) {
     contacts.value[id]["messages"] = [];
   }
+  if (contacts.value[id]["mute"] === undefined) {
+    contacts.value[id]["mute"] = false;
+  }
   displayContact.value = friendInfo;
   delete friendRequests.value[id];
   displayRightType.value = "contactDetail";
