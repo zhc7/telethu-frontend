@@ -122,7 +122,7 @@ onMounted(() => {
             ref="messagePop"
             class="pa-3 rounded-lg border"
             style="white-space: pre-wrap; overflow-wrap: break-word; width: 200px; background-color: rgba(243,243,243,0.5)"
-            @click="triggerDownload(message.content)"
+            @click="triggerDownload(message.content, message.info.split('/')[0])"
         >
           <template #prepend>
             <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover class="rounded ma-1 mr-2"/>
