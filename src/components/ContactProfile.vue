@@ -114,6 +114,14 @@ const filterContacts = computed(() => {
       };
     });
 });
+<<<<<<< HEAD
+=======
+
+const ifFriend = () => {
+
+}
+
+>>>>>>> 071415aa5253c3689a79d1878de3998ed6d5ea29
 </script>
 
 <template>
@@ -175,9 +183,15 @@ const filterContacts = computed(() => {
           </div>
         </div>
       </v-list>
+<<<<<<< HEAD
       <v-divider class="ma-4" />
       <v-col>
         <v-row style="display: flex; align-items: center" class="ma-3">
+=======
+      <v-divider class="ma-4"/>
+      <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
+        <v-row style="display: flex; align-items: center;" class="ma-3">
+>>>>>>> 071415aa5253c3689a79d1878de3998ed6d5ea29
           <!-- TODO: add rename function -->
           <p style="flex: 1" class="text-right pr-4">Rename:</p>
           <v-text-field
@@ -241,10 +255,14 @@ const filterContacts = computed(() => {
             @change="onSwitchChangeBlock"
           ></v-switch>
         </v-row>
+        <v-divider class="ma-4"/>
       </v-col>
+<<<<<<< HEAD
       <v-divider class="ma-4" />
+=======
+>>>>>>> 071415aa5253c3689a79d1878de3998ed6d5ea29
       <v-card-actions>
-        <v-col>
+        <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
           <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
             <!-- TODO: add recommend function -->
             <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
@@ -268,6 +286,10 @@ const filterContacts = computed(() => {
               >Quit Group
             </v-btn>
           </v-row>
+        </v-col>
+        <v-col v-else>
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold">Pass</v-btn>
+          <v-btn color="error" style="font-size: 15px; font-weight: bold">Reject</v-btn>
         </v-col>
       </v-card-actions>
     </v-card-item>
