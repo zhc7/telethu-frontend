@@ -126,7 +126,6 @@ onMounted(() => {
       <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'">
         <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-else-if="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
-        <v-icon v-else-if="message.sender !== userId" size="12px">mdi-check-all</v-icon>
       </div>
     </div>
     <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
