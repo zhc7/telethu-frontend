@@ -276,7 +276,12 @@ const createGroup = (groupName, members) => {
         time: Date.now(),
         m_type: 7,
         t_type: 1,
-        content: members,
+        content: {
+            members,
+            category: "group",
+            name: groupName,
+            avatar: "",
+        },
         receiver: userId.value,
         sender: userId.value,
         info: groupName,
