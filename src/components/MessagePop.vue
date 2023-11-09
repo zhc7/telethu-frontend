@@ -35,11 +35,21 @@ const getFileInformation = (message) => {
   }
 }
 
+const download = (retry) => {
+  if (retry === 5) return;
+  downloadFile(props.message.content).then((url) => {blobSrc.value = url;}).catch((e) => {
+    console.log("an error occurred when fetching data", e);
+    setTimeout(() => {
+      download(retry + 1);
+    }, 200 + retry * 500);
+  })
+}
+
 onMounted(() => {
   if (props.final) {
     emits('finished');
   }
-  downloadFile(props.message.content).then((url) => {blobSrc.value = url;});
+  download(0);
 });
 </script>
 
