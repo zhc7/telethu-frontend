@@ -13,7 +13,7 @@ const activated = inject("activated", undefined)
       v-bind="$attrs"
       @click="selected = props.k"
       class="pa-3 d-flex flex-row justify-start align-center rounded-lg"
-      :class="{'v-list-item--active': selected === props.k}"
+      :class="{'v-list-item--active': selected === props.k, 'dark-ocean': selected === props.k}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" cover/>
@@ -37,9 +37,7 @@ const activated = inject("activated", undefined)
 
 <style scoped>
 .v-list-item--active {
-  background: #C6FFDD;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #f8b8b8, #b8c6ea);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #f8b8b8, #b8c6ea); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: white !important;
 }
 
 .title-area {

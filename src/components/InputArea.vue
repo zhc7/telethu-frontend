@@ -2,7 +2,7 @@
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {contacts, sendFiles, sendMessage} from "../chat.js";
-import {getFileType, upLoadFiles, formatFileSize} from "../utils/uploadfiles.js";
+import {getFileType, uploadFiles, formatFileSize} from "../utils/files.js";
 import ListItem from "./ListItem.vue";
 
 const props = defineProps(['chat'])
@@ -12,7 +12,7 @@ const showStickers = ref(false);
 const previewFilesDialog = ref(false);
 
 const fileInput = ref(null);
-const uploadFiles = ref([]);
+const uploadingFiles = ref([]);
 
 const previewIcon = (file) => {
   if (file.type.startsWith('image')) {
@@ -35,21 +35,21 @@ const triggerFileInput = () => {
 const processFilesForPreview = (files) => {
   for (let file of files) {
     file.url = URL.createObjectURL(file);
-    uploadFiles.value.push(file);
+    uploadingFiles.value.push(file);
   }
-  if (!uploadFiles.value.length) return;
+  if (!uploadingFiles.value.length) return;
   previewFilesDialog.value = true;
 };
 
 const handlePreviewFiles = (event) => {
-  uploadFiles.value = [];
+  uploadingFiles.value = [];
   const files = event.target.files;
   processFilesForPreview(files);
-  console.log(uploadFiles.value);
+  console.log(uploadingFiles.value);
 };
 
 const handlePaste = (event) => {
-  uploadFiles.value = [];
+  uploadingFiles.value = [];
   event.preventDefault();
   const items = (event.clipboardData).items;
   const filesToPreview = [];
@@ -78,10 +78,10 @@ const handleSendFiles = async () => {
   const t_type = props.chat.category === 'group' ? 1 : 0;
   const uploadPromises = [];
 
-  for (let file of uploadFiles.value) {
+  for (let file of uploadingFiles.value) {
     const m_type = getFileType(file.name);
     const md5Promise = sendFiles(+props.chat.id, file, t_type, m_type).then(md5 => {
-      return upLoadFiles(file, md5, (progress) => {
+      return uploadFiles(file, md5, (progress) => {
         uploadProgress.value = progress;
       });
     });
@@ -151,7 +151,7 @@ const handleTextareaKeydown = (e) => {
       <v-card-title class="text-center">Files Preview</v-card-title>
       <v-card-text style="max-height: 300px; overflow-y: auto;">
         <v-list>
-          <v-list-item v-for="(file, index) in uploadFiles" :key="index">
+          <v-list-item v-for="(file, index) in uploadingFiles" :key="index">
             <template #prepend>
               <v-img width="60" :aspect-ratio="1" :src="previewIcon(file)" cover class="rounded ma-1 mr-2">
                 <template v-slot:placeholder>
@@ -173,7 +173,7 @@ const handleTextareaKeydown = (e) => {
         </v-list>
       </v-card-text>
       <v-card-actions class="justify-end">
-        <v-btn color="primary" @click="() => {previewFilesDialog = false; uploadFiles = []}">cancel</v-btn>
+        <v-btn color="primary" @click="() => {previewFilesDialog = false; uploadingFiles = []}">cancel</v-btn>
         <v-btn color="primary" @click="handleSendFiles">send</v-btn>
       </v-card-actions>
     </v-card>

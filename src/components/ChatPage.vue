@@ -170,22 +170,4 @@ onMounted(() => {
 .profile-area--active {
   width: 23vw;
 }
-
-.JShine {
-  background: #12c2e9; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-.dark-ocean {
-  background: #373B44; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #4286f4, #373B44); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #4286f4, #373B44); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-.megatron {
-  background: #C6FFDD; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #f8b8b8, #b8c6ea); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #f8b8b8, rgba(184, 198, 234, 0.99)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
 </style>

@@ -45,7 +45,7 @@ const getFileType = (filename) => {
     }
 }
 
-const upLoadFiles = (file, md5, updateLoading) => {
+const uploadFiles = (file, md5, updateLoading) => {
     const fileType = file.type;
     return axios.post(BASE_API_URL + "files/" + md5 + "/", file, {
         headers: {
@@ -67,9 +67,21 @@ const upLoadFiles = (file, md5, updateLoading) => {
 };
 
 
+const downloadFile = async (src) => {
+    let response = await axios.get(BASE_API_URL + 'files/' + src + '/', {
+        responseType: 'blob',
+        headers: {
+            Authorization: token.value,
+        }
+    })
+    const urlCreator = window.URL || window.webkitURL;
+    return urlCreator.createObjectURL(response.data);
+}
+
 
 export {
-    upLoadFiles,
+    uploadFiles,
+    downloadFile,
     getFileExtension,
     getFileType,
     formatFileSize,
