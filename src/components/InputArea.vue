@@ -101,6 +101,7 @@ const handleTextareaKeydown = (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     handleSendMessage();
+    message.value = "";
   }
 };
 </script>

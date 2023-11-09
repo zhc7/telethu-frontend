@@ -176,16 +176,7 @@ const sendNotification = (message) => {
     }
 }
 
-const functionMessageHandlers = (code, message) => {
-    if (code === 6)
-        handleAddFriend(message);
-    if (code === 7)
-        handleCreateGroup(message);
-    if (code === 8)
-        handleAddGroupMember(message);
-    if (code === 14)
-        handleDeleteFriend(message);
-}
+
 
 const handleAddFriend = (message) => {
     console.log('received add friend request');
@@ -205,6 +196,13 @@ const handleDeleteFriend = (message) => {
     // FUNC_DELETE_FRIEND
     delete contacts.value[message.receiver];
 };
+
+const dispatcher = {
+    6: handleAddFriend,
+    7: handleCreateGroup,
+    8: handleAddGroupMember,
+    14: handleDeleteFriend,
+}
 
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
@@ -237,7 +235,7 @@ const createSocket = () => {
             chatManager.receiveMessage(message);
             return;
         }
-        functionMessageHandlers(message.m_type, message);
+        dispatcher[message.m_type](message);
     };
 
     socket.onclose = (e) => {
