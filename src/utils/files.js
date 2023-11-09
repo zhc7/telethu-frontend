@@ -78,6 +78,18 @@ const downloadFile = async (src) => {
     return urlCreator.createObjectURL(response.data);
 }
 
+const triggerDownload = async (src) => {
+    const blobUrl = await downloadFile(src);
+
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    document.body.appendChild(a); // 将元素添加到页面中
+    a.click(); // 模拟点击
+    document.body.removeChild(a); // 移除元素
+
+    window.URL.revokeObjectURL(blobUrl);
+};
+
 
 export {
     uploadFiles,
@@ -85,4 +97,5 @@ export {
     getFileExtension,
     getFileType,
     formatFileSize,
+    triggerDownload
 }

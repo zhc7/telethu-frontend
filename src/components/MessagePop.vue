@@ -4,7 +4,7 @@ import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
 import {BASE_API_URL} from "../constants.js";
-import {downloadFile, getFileExtension} from "../utils/files.js";
+import {downloadFile, getFileExtension, triggerDownload} from "../utils/files.js";
 
 // TODO: display menu when right click on message
 
@@ -98,21 +98,21 @@ onMounted(() => {
         </v-img>
         <audio
             v-else-if="message.m_type === 2"
-            :src="BASE_API_URL + 'files/' + message.content + '/'"
+            :src="blobSrc"
             style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
         />
         <video
             v-else-if="message.m_type === 3"
             controls
-            :src="BASE_API_URL + 'files/' + message.content + '/'"
+            :src="blobSrc"
             style="max-width: 20vw; max-height: 20vh; border: 1px solid darkgrey; border-radius: 7px"
         ></video>
-        <!--TODO: get file through url when clicked-->
         <v-list-item
             v-else
             ref="messagePop"
             class="pa-3 rounded-lg border"
-            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%; background-color: rgba(243,243,243,0.5)"
+            style="white-space: pre-wrap; overflow-wrap: break-word; width: 200px; background-color: rgba(243,243,243,0.5)"
+            @click="triggerDownload(message.content)"
         >
           <template #prepend>
             <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover class="rounded ma-1 mr-2"/>
