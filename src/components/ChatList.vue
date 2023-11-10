@@ -115,12 +115,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog v-model="createGroupDialog" max-width="30vw">
-    <v-card>
+  <v-dialog v-model="createGroupDialog" max-width="30vw" max-height="80vh">
+    <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-center">
         Create Group
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="overflow-y-auto d-flex flex-column">
         <v-text-field
             density="compact"
             label="group name"
@@ -131,7 +131,7 @@ onMounted(() => {
             density="compact"
             label="Search"
         />
-        <div class="d-flex overflow-x-auto" v-if="createGroupSelecting">
+        <div class="d-flex overflow-x-auto flex-shrink-0" v-if="createGroupSelecting">
           <div
               v-for="id in createGroupSelecting"
               :key="id"
@@ -145,7 +145,7 @@ onMounted(() => {
             <p>{{ contacts[id].name }}</p>
           </div>
         </div>
-        <v-list class="overflow-y-scroll" max-height="50vh">
+        <v-list class="overflow-y-auto flex-1-1">
           <v-list-item v-for="contact in filterContacts">
             <template #prepend>
               <v-avatar>
