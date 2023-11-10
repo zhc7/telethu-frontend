@@ -5,6 +5,7 @@ import {nowRef} from "../globals.js";
 import {contacts, createGroup} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
+import {user} from "../auth.js";
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(["update:modelValue"])
@@ -156,20 +157,11 @@ onMounted(() => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="createGroupSelecting[contact.id] = true" color="indigo"
-                     v-if="!createGroupSelecting[contact.id]">
-                Append
-                <template #append>
-                  <v-icon>mdi-account-circle</v-icon>
-                </template>
-              </v-btn>
-              <v-btn @click="delete createGroupSelecting[contact.id]" color="red-darken-4"
-                     v-else="createGroupSelecting[contact.id]">
-                Remove
-                <template #append>
-                  <v-icon>mdi-account-circle</v-icon>
-                </template>
-              </v-btn>
+              <v-checkbox
+                v-model="createGroupSelecting"
+                :value="contact.id"
+                color="blue"
+              />
             </template>
           </v-list-item>
         </v-list>
