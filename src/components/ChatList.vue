@@ -6,6 +6,7 @@ import {contacts, createGroup} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import {user} from "../auth.js";
+import SelectMember from "./SelectMember.vue";
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(["update:modelValue"])
@@ -18,18 +19,6 @@ const selected = computed({
 });
 
 const createGroupDialog = ref(false);
-const createGroupLoading = ref(false);
-const createGroupName = ref('New Group');
-const createGroupSelecting = ref([]);
-
-const handleCreateGroup = () => {
-  console.log("creating group", createGroupSelecting);
-  createGroupLoading.value = true;
-  createGroup(createGroupName.value, createGroupSelecting.value);
-  createGroupSelecting.value = [];
-  createGroupLoading.value = false;
-  createGroupDialog.value = false;
-}
 
 const chatList = computed(() => {
   let list = [];
@@ -77,28 +66,6 @@ const chatList = computed(() => {
 const searchFriendInput = ref(false);
 const friendName = ref('');
 
-
-const handlePlus = () => {
-  createGroupDialog.value = true;
-}
-
-const handleCancel = () => {
-  createGroupDialog.value = false;
-  createGroupSelecting.value = [];
-}
-
-const filterContacts = computed(() => {
-  return Object.keys(contacts.value).filter((id) => {
-    return contacts.value[id].category === 'user';
-  }).map((id) => {
-    return {
-      id: contacts.value[id].id,  // id should be int
-      name: contacts.value[id].name,
-      avatar: contacts.value[id].avatar,
-    }
-  });
-});
-
 const displayHotMessage = (message) => {
   const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
   if (message === undefined) {
@@ -116,70 +83,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog v-model="createGroupDialog" max-width="30vw" max-height="80vh">
-    <v-card class="fill-height overflow-y-auto">
-      <v-card-title class="text-center">
-        Create Group
-      </v-card-title>
-      <v-card-text class="overflow-y-auto d-flex flex-column">
-        <v-text-field
-            density="compact"
-            label="group name"
-            v-model="createGroupName"
-            variant="outlined"
-        />
-        <v-text-field
-            density="compact"
-            label="Search"
-        />
-        <div class="d-flex overflow-x-auto flex-shrink-0" v-if="createGroupSelecting">
-          <div
-              v-for="id in createGroupSelecting"
-              :key="id"
-              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="createGroupSelecting = createGroupSelecting.filter((i) => i !== id)"
-              v-ripple
-          >
-            <v-avatar>
-              <v-img :src="contacts[id].avatar" cover></v-img>
-            </v-avatar>
-            <p>{{ contacts[id].name }}</p>
-          </div>
-        </div>
-        <v-list class="overflow-y-auto flex-1-1">
-          <v-list-item v-for="contact in filterContacts">
-            <template #prepend>
-              <v-avatar>
-                <v-img :src="contact.avatar" cover></v-img>
-              </v-avatar>
-            </template>
-            <v-list-item-title>
-              {{ contact.name }}
-            </v-list-item-title>
-            <template #append>
-              <v-checkbox
-                v-model="createGroupSelecting"
-                :value="contact.id"
-                color="blue"
-              />
-            </template>
-          </v-list-item>
-        </v-list>
-      </v-card-text>
-      <v-card-actions class="mb-3 mr-4">
-        <v-spacer/>
-        <v-btn @click="handleCancel">Cancel</v-btn>
-        <v-btn @click="handleCreateGroup" :loading="createGroupLoading">Create</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <SelectMember
+      :showDialog="createGroupDialog" @update:showDialog="createGroupDialog = $event"
+      :type="'create_group'"
+      :title="'Create Group'"
+  />
 
 
   <div class="fill-height d-flex flex-column">
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
       <a v-if="!searchFriendInput" class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
-      <v-icon v-if="!searchFriendInput" class="ma-3" @click="handlePlus">mdi-plus</v-icon>
+      <v-icon v-if="!searchFriendInput" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
       <v-text-field v-if="searchFriendInput" hide-details v-model="friendName"
                     density="compact" variant="solo" class="mr-4"/>
     </div>
