@@ -1,11 +1,10 @@
 <script setup>
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
 import {nowRef} from "../globals.js";
-import {contacts} from "../chat.js";
+import {contacts, createGroup} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import {createGroup} from "../chat.js";
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(["update:modelValue"])
@@ -102,22 +101,13 @@ const filterContacts = computed(() => {
 });
 
 const displayHotMessage = (message) => {
+  const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
   if (message === undefined) {
     return '';
   } else if (message.m_type === 0) {
     return message.content;
-  } else if (message.m_type === 1) {
-    return '[image]';
-  } else if (message.m_type === 2) {
-    return '[audio]';
-  } else if (message.m_type === 3) {
-    return '[video]';
-  } else if (message.m_type === 4) {
-    return '[file]';
-  } else if (message.m_type === 5) {
-    return '[stickers]';
   } else {
-    return '[unknown]';
+    return '[' + types[message.m_type] + ']';
   }
 }
 
@@ -168,13 +158,15 @@ onMounted(() => {
               {{ contact.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="createGroupSelecting[contact.id] = true" color="indigo" v-if="!createGroupSelecting[contact.id]">
+              <v-btn @click="createGroupSelecting[contact.id] = true" color="indigo"
+                     v-if="!createGroupSelecting[contact.id]">
                 Append
                 <template #append>
                   <v-icon>mdi-account-circle</v-icon>
                 </template>
               </v-btn>
-              <v-btn @click="delete createGroupSelecting[contact.id]" color="red-darken-4" v-else="createGroupSelecting[contact.id]">
+              <v-btn @click="delete createGroupSelecting[contact.id]" color="red-darken-4"
+                     v-else="createGroupSelecting[contact.id]">
                 Remove
                 <template #append>
                   <v-icon>mdi-account-circle</v-icon>
