@@ -1,16 +1,22 @@
 <script setup>
 
 import {computed, ref, defineProps, onMounted} from "vue";
-import {contacts, createGroup} from "../chat.js";
+import {contacts, createGroup, groupAddMember} from "../chat.js";
 
-const props = defineProps(['showDialog', 'type', 'title'])
+const props = defineProps(['showDialog', 'type', 'title', 'displayContact'])
 const emit = defineEmits(['update:showDialog']);
 const createGroupName = ref('')
 const selected = ref([])
 
 const filterContacts = computed(() => {
   return Object.keys(contacts.value).filter((id) => {
-    return contacts.value[id].category === 'user';
+    if (props.type === 'create_group') {
+      return contacts.value[id].category === 'user';
+    } else if (props.type === 'add_group_member') {
+      return contacts.value[id].category === 'user' && Object.keys(props.displayContact.id2member).indexOf(id) === -1;
+    } else if (props.type === 'create_group_from_contact') {
+      return contacts.value[id].category === 'user' && id !== props.displayContact.id;
+    }
   }).map((id) => {
     return {
       id: contacts.value[id].id,  // id should be int
@@ -31,6 +37,29 @@ const dispatchFunction = () => {
     createGroup(createGroupName.value, selected.value);
     selected.value = [];
     dialog.value = false;
+  } else if (props.type === 'add_group_member') {
+    console.log(
+        "log",
+        selected.value + "",
+        "disContId",
+        props.displayContact.id
+    );
+    for (const id of selected.value) {
+      console.log("Adding group member", props.displayContact.id, id);
+      const contact = contacts.value[id];
+      groupAddMember(props.displayContact.id, id);
+      const memberInfo = {
+        id: contact.id,
+        name: contact.name,
+        avatar: contact.avatar,
+      };
+      contacts.value[props.displayContact.id].id2member[contact.id] = memberInfo;
+      contacts.value[props.displayContact.id].members.push(memberInfo);
+    }
+    selected.value = [];
+    dialog.value = false;
+  } else if (props.type === 'create_group_from_contact') {
+    // TODO: create group from contact
   }
 
 }
@@ -60,6 +89,17 @@ onMounted(() => {
             label="Search"
         />
         <div class="d-flex overflow-x-auto flex-shrink-0" v-if="selected">
+          <div
+              v-for="member in displayContact.members"
+              :key="member"
+              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+              v-ripple
+          >
+            <v-avatar>
+              <v-img :src="member.avatar" cover></v-img>
+            </v-avatar>
+            <p>{{ member.name }}</p>
+          </div>
           <div
               v-for="id in selected"
               :key="id"

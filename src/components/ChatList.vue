@@ -84,7 +84,8 @@ onMounted(() => {
 
 <template>
   <SelectMember
-      :showDialog="createGroupDialog" @update:showDialog="createGroupDialog = $event"
+      :showDialog="createGroupDialog"
+      @update:showDialog="createGroupDialog = $event"
       :type="'create_group'"
       :title="'Create Group'"
   />

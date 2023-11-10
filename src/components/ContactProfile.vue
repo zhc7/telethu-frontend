@@ -3,18 +3,16 @@ import {
   blockFriend,
   contacts,
   deleteFriend,
-  groupAddMember,
   unblockFriend,
 } from "../chat.js";
 import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
+import SelectMember from "./SelectMember.vue";
 
 const props = defineProps(["displayContact", "display", "source"]);
 const emit = defineEmits(["accept", "reject", "apply"]);
 
 const groupAddMemberDialog = ref(false);
-const groupAddMemberLoading = ref(false);
-const groupAddMemberSelecting = ref([]);
 
 const deleteConfirmDialog = ref(false);
 
@@ -56,69 +54,6 @@ const handleDelete = () => {
 const editName = () => {
   console.log("editName");
 };
-
-const handleSelect = (contact) => {
-  console.log(contact);
-  groupAddMemberSelecting.value.push(contact.id);
-};
-
-const handlePlusMember = () => {
-  console.log(
-    "log",
-    groupAddMemberSelecting.value + "",
-    "disContId",
-    props.displayContact.id
-  );
-  groupAddMemberLoading.value = true;
-  for (const id of groupAddMemberSelecting.value) {
-    console.log("Adding group member", props.displayContact.id, id);
-    const contact = contacts.value[id];
-    groupAddMember(props.displayContact.id, id);
-    const memberInfo = {
-      id: contact.id,
-      name: contact.name,
-      avatar: contact.avatar,
-    };
-    contacts.value[props.displayContact.id].id2member[contact.id] = memberInfo;
-    contacts.value[props.displayContact.id].members.push(memberInfo);
-  }
-  groupAddMemberSelecting.value = [];
-  groupAddMemberLoading.value = false;
-  groupAddMemberDialog.value = false;
-};
-
-const handlePlus = () => {
-  groupAddMemberDialog.value = true;
-  groupAddMemberSelecting.value = [];
-};
-
-const handleCancel = () => {
-  groupAddMemberDialog.value = false;
-  deleteConfirmDialog.value = false;
-  groupAddMemberSelecting.value = [];
-};
-
-const filterContacts = computed(() => {
-  return Object.keys(contacts.value)
-    .filter((id) => {
-      return (
-        contacts.value[id].category === "user" &&
-        groupAddMemberSelecting.value.indexOf(id) === -1 &&
-        Object.keys(props.displayContact.id2member).indexOf(id) === -1
-      );
-    })
-    .map((id) => {
-      return {
-        id: id,
-        name: contacts.value[id].name,
-        avatar: contacts.value[id].avatar,
-      };
-    });
-});
-
-const ifFriend = () => {
-
-}
 
 </script>
 
@@ -171,7 +106,7 @@ const ifFriend = () => {
               <p>{{ member.name }}</p>
             </div>
             <div class="d-flex flex-column align-center ma-auto mb-5">
-              <v-avatar size="60" color="indigo" @click="handlePlus">
+              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
                 <v-icon style="font-size: 35px"
                   >mdi-account-multiple-plus</v-icon
                 >
@@ -293,74 +228,19 @@ const ifFriend = () => {
           text="This operation cannot be undone."
         ></v-alert>
         <v-card-actions class="justify-end">
-          <v-btn @click="handleCancel">cancel</v-btn>
+          <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
           <v-btn @click="handleDelete">delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="groupAddMemberDialog" max-width="30vw">
-      <v-card>
-        <v-card-title class="text-center"> Add members </v-card-title>
-        <v-card-text>
-          <v-text-field density="compact" label="Search" />
-          <div class="d-flex overflow-x-auto" v-if="groupAddMemberSelecting">
-            <!-- TODO: format cells -->
-            <div
-              v-for="member in displayContact.members"
-              :key="member"
-              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              v-ripple
-            >
-              <v-avatar>
-                <v-img :src="member.avatar" cover></v-img>
-              </v-avatar>
-              <p>{{ member.name }}</p>
-            </div>
-            <div
-              v-for="id in groupAddMemberSelecting"
-              :key="id"
-              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="
-                groupAddMemberSelecting = groupAddMemberSelecting.filter(
-                  (i) => i.id !== id
-                )
-              "
-              v-ripple
-            >
-              <v-avatar>
-                <v-img :src="contacts[id].avatar" cover></v-img>
-              </v-avatar>
-              <p>{{ contacts[id].name }}</p>
-            </div>
-          </div>
-          <v-list>
-            <v-list-item v-for="contact in filterContacts">
-              <template #prepend>
-                <v-avatar>
-                  <v-img :src="contact.avatar" cover></v-img>
-                </v-avatar>
-              </template>
-              <v-list-item-title>
-                {{ contact.name }}
-              </v-list-item-title>
-              <template #append>
-                <v-btn @click="handleSelect(contact)" color="indigo">
-                  Append
-                </v-btn>
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions class="mb-3 mr-4">
-          <v-spacer />
-          <v-btn @click="handleCancel">Cancel</v-btn>
-          <v-btn @click="handlePlusMember" :loading="groupAddMemberLoading"
-            >Add</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <SelectMember
+      :showDialog="groupAddMemberDialog"
+      @update:showDialog="groupAddMemberDialog = $event"
+      :type="'add_group_member'"
+      :title="'Add Member'"
+      :displayContact="displayContact"
+    />
   </v-card>
 </template>
 
