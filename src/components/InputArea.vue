@@ -50,7 +50,6 @@ const handlePreviewFiles = (event) => {
 
 const handlePaste = (event) => {
   uploadingFiles.value = [];
-  event.preventDefault();
   const items = (event.clipboardData).items;
   const filesToPreview = [];
   for (const item of items) {
@@ -103,6 +102,7 @@ const handleTextareaKeydown = (e) => {
     handleSendMessage();
     message.value = "";
   }
+  console.log(e);
 };
 </script>
 
