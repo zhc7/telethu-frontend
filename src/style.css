@@ -140,3 +140,7 @@ pre code {
   border: 1px solid #ddd;
   padding: 5px;
 }
+
+.marked-emoji-img {
+  max-height: 1.2em;
+}

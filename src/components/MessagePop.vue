@@ -6,7 +6,8 @@ import {downloadFile, getFileExtension, triggerDownload} from "../utils/files.js
 import {Marked} from "marked";
 import {markedHighlight} from "marked-highlight";
 import hljs from "highlight.js";
-
+import {markedEmoji} from "marked-emoji";
+import {Octokit} from "@octokit/rest";
 
 // TODO: display menu when right click on message
 
@@ -15,6 +16,22 @@ const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
 const blobSrc = ref("");
+
+const octokit = new Octokit();
+const emojisLoaded = ref(false);
+
+// Get all the emojis available to use on GitHub.
+octokit.rest.emojis.get().then((res) => {
+  const emojis = res.data;
+  const options = {
+    emojis,
+    unicode: false,
+  };
+  marked.use(markedEmoji(options));
+  console.log("emojis loaded");
+  // rerender the message
+  emojisLoaded.value = true;
+})
 
 const marked = new Marked(markedHighlight({
   langPrefix: 'hljs language-',
@@ -110,7 +127,7 @@ onMounted(() => {
             :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
             style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
         >
-          <div v-html="markdown2Html(message.content)"></div>
+          <div :key="emojisLoaded" v-html="markdown2Html(message.content)"></div>
         </div>
         <v-img
             v-else-if="message.m_type === 1"
