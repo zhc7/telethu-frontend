@@ -1,6 +1,6 @@
 <script setup>
 
-import {computed, ref, defineProps, onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {contacts, createGroup, groupAddMember} from "../chat.js";
 
 const props = defineProps(['showDialog', 'type', 'title', 'displayContact'])
