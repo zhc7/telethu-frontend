@@ -102,7 +102,6 @@ const handleTextareaKeydown = (e) => {
     handleSendMessage();
     message.value = "";
   }
-  console.log(e);
 };
 </script>
 
