@@ -131,3 +131,7 @@ pre code {
   /*multiline code*/
   padding: 0.5em !important;
 }
+
+.message-pop img {
+  max-width: 100%;
+}

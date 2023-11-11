@@ -106,7 +106,7 @@ onMounted(() => {
         <div
             v-if="message.m_type === 0"
             ref="messagePop"
-            class="pa-2 rounded-lg text-left"
+            class="pa-2 rounded-lg text-left message-pop"
             :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
             style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
         >
