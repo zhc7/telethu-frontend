@@ -1,10 +1,12 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef} from "../globals.js";
 import {user, userId} from "../auth.js";
 import {BASE_API_URL} from "../constants.js";
 import {downloadFile, getFileExtension, triggerDownload} from "../utils/files.js";
+import {Marked} from "marked";
+import {markedHighlight} from "marked-highlight";
+import hljs from "highlight.js";
+
 
 // TODO: display menu when right click on message
 
@@ -13,6 +15,18 @@ const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
 const blobSrc = ref("");
+
+const marked = new Marked(markedHighlight({
+  langPrefix: 'hljs language-',
+  highlight(code, lang) {
+    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+    return hljs.highlight(code, {language}).value;
+  }
+}))
+
+const markdown2Html = (markdown) => {
+  return marked.parse(markdown);
+}
 
 const previewIconUrl = (extension) => {
   if (extension === "pdf") {
@@ -38,7 +52,9 @@ const getFileInformation = (message) => {
 const download = (retry) => {
   if (retry === 2) return;
   console.log('filename: ', props.message.content);
-  downloadFile(props.message.content).then((url) => {blobSrc.value = url;}).catch((e) => {
+  downloadFile(props.message.content).then((url) => {
+    blobSrc.value = url;
+  }).catch((e) => {
     console.log("an error occurred when fetching data", e);
     setTimeout(() => {
       download(retry + 1);
@@ -50,7 +66,7 @@ onMounted(() => {
   if (props.final) {
     emits('finished');
   }
-  if(props.message.m_type > 0) download(0);
+  if (props.message.m_type > 0) download(0);
 });
 </script>
 
@@ -73,7 +89,8 @@ onMounted(() => {
         </span>
         <v-spacer v-if="message.sender !== userId"/>
       </div>
-      <div class="d-flex align-center" style="max-width: 100%" :class="message.sender !== userId ? 'justify-start' : 'justify-end'">
+      <div class="d-flex align-center" style="max-width: 100%"
+           :class="message.sender !== userId ? 'justify-start' : 'justify-end'">
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"
@@ -91,9 +108,9 @@ onMounted(() => {
             ref="messagePop"
             class="pa-2 rounded-lg text-left"
             :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
-            style="white-space: pre-wrap; overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
+            style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
         >
-          {{ message.content }}
+          <div v-html="markdown2Html(message.content)"></div>
         </div>
         <v-img
             v-else-if="message.m_type === 1"
@@ -126,12 +143,16 @@ onMounted(() => {
             @click="triggerDownload(message.content, message.info.split('/')[0])"
         >
           <template #prepend>
-            <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover class="rounded ma-1 mr-2"/>
+            <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover
+                   class="rounded ma-1 mr-2"/>
           </template>
           <v-list-item-title style="font-weight: 600; font-size: 16px;">
             {{ getFileInformation(message).file_name }}
           </v-list-item-title>
-          <v-list-item-subtitle style="color: #888888">{{ getFileInformation(message).file_size }}</v-list-item-subtitle>
+          <v-list-item-subtitle style="color: #888888">{{
+              getFileInformation(message).file_size
+            }}
+          </v-list-item-subtitle>
         </v-list-item>
       </div>
       <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'">
@@ -210,6 +231,5 @@ onMounted(() => {
   right: -8px; /* 通过增加或减少数值，调整箭头的确切位置 */
   top: 10px;
 }
-
 
 </style>
