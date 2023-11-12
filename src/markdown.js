@@ -5,11 +5,12 @@ import hljs from "highlight.js";
 import {markedEmoji} from "marked-emoji";
 import {Octokit} from "@octokit/rest";
 import {ref} from "vue";
+import axios from "axios";
 
 const octokit = new Octokit();
 const emojisLoaded = ref(false);
 // Get all the emojis available to use on GitHub.
-octokit.rest.emojis.get().then((res) => {
+axios.get("/github_emoji.json").then((res) => {
   const emojis = res.data;
   const options = {
     emojis,
