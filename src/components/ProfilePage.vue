@@ -1,13 +1,38 @@
 <script setup>
-import {logout, user, userEmail, userId, userName} from "../auth.js";
+import {logout, token, user, userEmail, userId, userName} from "../auth.js";
 import {useRouter} from "vue-router";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {getFileType, uploadFiles} from "../utils/files.js";
+import {sendFiles} from "../chat.js";
+import axios from "axios";
+import {BASE_API_URL} from "../constants.js";
 
 const router = useRouter();
 
 const editingMode = ref(false);
 const phoneNumberInput = ref('');
 const emailInput = ref('');
+
+const fileInput = ref(null);
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+const handleUploadAvatar = (event) => {
+  console.log(event);
+  const avatar = event.target.files[0];
+  avatar.url = URL.createObjectURL(avatar);
+  axios.post(BASE_API_URL + 'users/avatar/', avatar, {
+    headers: {
+      "Content-Type": avatar.type,
+      Authorization: token.value,
+    }
+  }).then((response) => {
+    console.log("HTTP upload avatar successful -> ", response);
+  }).catch((error) => {
+    console.log(error);
+  })
+};
 
 const handleLogout = () => {
   if (confirm('Are you sure?')) {
@@ -22,6 +47,21 @@ const handleEdit = () => {
   emailInput.value = 'donkey@bohan.cn';
 }
 
+const avatarUrl = ref('');
+onMounted(async () => {
+  try {
+    const response = await axios.get(`${BASE_API_URL}users/avatar/`, {
+      headers: {
+        Authorization: token.value,
+      },
+      responseType: 'blob',
+    });
+    avatarUrl.value = URL.createObjectURL(response.data);
+    user.avatar = avatarUrl.value;
+  } catch (error) {
+    console.error('Http get avatar failed -> ', error);
+  }
+});
 </script>
 
 <template>
@@ -29,7 +69,7 @@ const handleEdit = () => {
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
         <v-avatar size="80" class="mt-5">
-          <v-img :src="user.avatar" cover/>
+          <v-img :src="avatarUrl" cover/>
         </v-avatar>
         <v-card-item>
           <v-row no-gutters pa="4">
@@ -81,7 +121,14 @@ const handleEdit = () => {
               <v-btn v-if="!editingMode" @click="handleEdit">EDIT</v-btn>
               <v-btn v-if="!editingMode" @click="handleLogout">LOGOUT</v-btn>
               <v-btn v-if="editingMode" @click="handleLogout">DONE</v-btn>
+              <v-btn v-if="!editingMode" @click="triggerFileInput">UPLOAD AVATAR</v-btn>
             </v-btn-group>
+            <input
+                type="file"
+                ref="fileInput"
+                @change="handleUploadAvatar"
+                style="display: none;"
+            />
           </v-card-actions>
         </v-card-item>
       </v-card>
