@@ -10,9 +10,6 @@ const requests = computed(() => {
   return Object.values(friendRequests.value);
 });
 
-const showButton = ref(false);
-
-
 const selected = computed({
   get: () => props.modelValue,
   set: (value) => {

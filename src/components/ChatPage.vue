@@ -66,7 +66,6 @@ const DisplayFriendProfile = () => {
 const handleHideProfile = (event) => {
   const target = event.target.parentNode.parentNode;
   if (target.classList.contains('v-avatar') || target.classList.contains('v-btn')) {
-    console.log('is child')
   } else {
     displayProfile.value = undefined;
     showProfileDetail.value = false;
@@ -78,7 +77,6 @@ const handleHideProfile = (event) => {
 
 
 const getNameById = (id) => {
-  console.log(id);
   if (+id === userId.value) {
     return userName.value;
   } else {
