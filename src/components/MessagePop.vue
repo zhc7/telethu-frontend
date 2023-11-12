@@ -15,9 +15,9 @@ const blobSrc = ref("");
 
 const previewIconUrl = (extension) => {
   if (extension === "pdf") {
-    return 'public/icons/pdf_icon.png';
+    return 'icons/pdf_icon.png';
   } else {
-    return 'public/icons/file_icon.png';
+    return 'icons/file_icon.png';
   }
 }
 

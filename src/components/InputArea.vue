@@ -18,13 +18,13 @@ const previewIcon = (file) => {
   if (file.type.startsWith('image')) {
     return file.url;
   } else if (file.type.startsWith('video')) {
-    return 'public/icons/video_icon.png';
+    return 'icons/video_icon.png';
   } else if (file.type.startsWith('audio')) {
-    return 'public/icons/audio_icon.png';
+    return 'icons/audio_icon.png';
   } else if (file.type === 'application/pdf') {
-    return 'public/icons/pdf_icon.png';
+    return 'icons/pdf_icon.png';
   } else {
-    return 'public/icons/file_icon.png';
+    return 'icons/file_icon.png';
   }
 }
 
