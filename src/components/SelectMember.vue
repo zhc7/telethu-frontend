@@ -37,7 +37,9 @@ const dispatchFunction = () => {
     createGroup(createGroupName.value, selected.value);
     selected.value = [];
     dialog.value = false;
-  } else if (props.type === 'add_group_member') {
+  }
+
+  else if (props.type === 'add_group_member') {
     console.log(
         "log",
         selected.value + "",
@@ -94,6 +96,7 @@ onMounted(() => {
               :key="member"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               v-ripple
+              v-if="type === 'add_group_member'"
           >
             <v-avatar>
               <v-img :src="member.avatar" cover></v-img>

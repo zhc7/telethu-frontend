@@ -60,7 +60,7 @@ const editName = () => {
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-show="display">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="displayContact.avatar" cover />
+      <v-img :src="displayContact.avatar !== null ? 'public/Logo.png' : displayContact.avatar" cover />
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">

@@ -215,7 +215,9 @@ const handleAddFriend = (message) => {
 };
 const handleCreateGroup = (message) => {
     // FUNC_CREATE_GROUP
-    contacts.value[message.receiver] = message.content;
+    let group = message.content;
+    group.messages = [];
+    contacts.value[message.receiver] = group;
 };
 const handleAddGroupMember = (message) => {
     // FUNC_ADD_GROUP_MEMBER
