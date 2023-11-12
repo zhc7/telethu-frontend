@@ -3,11 +3,7 @@ import {onMounted, ref} from "vue";
 import {user, userId} from "../auth.js";
 import {BASE_API_URL} from "../constants.js";
 import {downloadFile, getFileExtension, triggerDownload} from "../utils/files.js";
-import {Marked} from "marked";
-import {markedHighlight} from "marked-highlight";
-import hljs from "highlight.js";
-import {markedEmoji} from "marked-emoji";
-import {Octokit} from "@octokit/rest";
+import {markdown2Html, emojisLoaded} from "../markdown.js"
 
 // TODO: display menu when right click on message
 
@@ -16,34 +12,6 @@ const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
 const blobSrc = ref("");
-
-const octokit = new Octokit();
-const emojisLoaded = ref(false);
-
-// Get all the emojis available to use on GitHub.
-octokit.rest.emojis.get().then((res) => {
-  const emojis = res.data;
-  const options = {
-    emojis,
-    unicode: false,
-  };
-  marked.use(markedEmoji(options));
-  console.log("emojis loaded");
-  // rerender the message
-  emojisLoaded.value = true;
-})
-
-const marked = new Marked(markedHighlight({
-  langPrefix: 'hljs language-',
-  highlight(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-    return hljs.highlight(code, {language}).value;
-  }
-}))
-
-const markdown2Html = (markdown) => {
-  return marked.parse(markdown);
-}
 
 const previewIconUrl = (extension) => {
   if (extension === "pdf") {
