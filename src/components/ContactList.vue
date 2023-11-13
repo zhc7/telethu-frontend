@@ -3,6 +3,7 @@ import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../chat.js";
+import {activeChatId} from "../globals.js";
 
 const props = defineProps(["modelValue", "displayType", "searchInput"]);
 const emit = defineEmits((["update:modelValue"]))

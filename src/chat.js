@@ -1,7 +1,7 @@
 import {token, user, userId} from "./auth.js";
 import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
 import {DEBUG} from "./constants.js";
-import {displayRightType, activeChat} from "./globals.js"
+import {displayRightType, activeChatId} from "./globals.js"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
@@ -82,7 +82,7 @@ const chatManager = {
             if (message.sender !== user.value.id && !contacts.value[target].muted) {
                 sendNotification(message);
             }
-            if (activeChat.value !== message.sender && user.value.id === message.receiver) {
+            if (activeChatId.value !== message.sender && user.value.id === message.receiver) {
                 contacts.value[target].unread_counter += 1;
             }
         } else if (existing.status === 'sending') {

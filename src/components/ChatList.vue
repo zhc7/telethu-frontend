@@ -1,22 +1,17 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef} from "../globals.js";
+import {nowRef, activeChatId} from "../globals.js";
 import {contacts, createGroup} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import {user} from "../auth.js";
 import SelectMember from "./SelectMember.vue";
 
-const props = defineProps(['modelValue'])
-const emit = defineEmits(["update:modelValue"])
-const selected = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value);
-    console.log("list", value);
-  }
-});
+const props = defineProps(['modelValue']);
+const emit = defineEmits(['update:modelValue']);
+
+const selectedChat = computed(() => contacts.value[activeChatId.value]);
 
 const createGroupDialog = ref(false);
 
@@ -94,12 +89,12 @@ onMounted(() => {
   <div class="fill-height d-flex flex-column">
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
-      <a v-if="!searchFriendInput" class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
+      <a v-if="!searchFriendInput" class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">{{ activeChatId }}</a>
       <v-icon v-if="!searchFriendInput" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
       <v-text-field v-if="searchFriendInput" hide-details v-model="friendName"
                     density="compact" variant="solo" class="mr-4"/>
     </div>
-    <List class="overflow-y-auto fill-height" v-model="selected">
+    <List class="overflow-y-auto fill-height" v-model="activeChatId">
       <ListItem
           :key="chat.id"
           :k="chat.id"

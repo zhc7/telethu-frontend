@@ -9,7 +9,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {user, userName} from "../auth.js";
-import {activeChat} from "../globals.js"
+import {activeChatId} from "../globals.js"
 
 const router = useRouter();
 const curTab = ref(1);
@@ -27,11 +27,11 @@ const activePage = computed({
 });
 
 const ActivateChat = (chat) => {
-  activeChat.value = chat;
+  activeChatId.value = chat;
   activePage.value = 'chat';
 };
 
-watch(activeChat, (id) => {
+watch(activeChatId, (id) => {
   contacts.value[id].unread_counter = 0;
 })
 
@@ -62,7 +62,7 @@ onMounted(() => {
         <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isWSConnected">mdi-loading</v-icon>
       </div>
     </NavBar>
-    <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
+    <ChatPage v-if="activePage === 'chat'" v-model="activeChatId" />
     <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
     <ProfilePage v-if="activePage === 'profile'"/>
   </v-container>

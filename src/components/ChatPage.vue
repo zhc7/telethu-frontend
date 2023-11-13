@@ -9,20 +9,14 @@ import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
 import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef} from "../globals.js";
+import {nowRef, activeChatId} from "../globals.js";
 
-const props = defineProps(["modelValue"])
+const props = defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue']);
+
+
 const displayProfile = ref(undefined);
 const showProfileDetail = ref(false);
-
-const selectedChatId = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    contacts.value[value].alert = false;
-    emit('update:modelValue', value);
-  }
-});
 
 const groupedMessages = computed(() => {
   const grouped = [];
@@ -47,7 +41,7 @@ const groupedMessages = computed(() => {
   return grouped;
 });
 
-const selectedChat = computed(() => contacts.value[selectedChatId.value]);
+const selectedChat = computed(() => contacts.value[activeChatId.value]);
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow');
@@ -56,11 +50,11 @@ const ScrollToBottom = () => {
 
 const displayContact = ref();
 const DisplayFriendProfile = () => {
-  displayProfile.value = contacts.value[selectedChatId.value].category;
+  displayProfile.value = contacts.value[activeChatId.value].category;
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
-  displayContact.value = contacts.value[selectedChatId.value];
+  displayContact.value = contacts.value[activeChatId.value];
 };
 
 const handleHideProfile = (event) => {
@@ -86,7 +80,7 @@ const getNameById = (id) => {
 
 const handleGetMoreMessage = () => {
   getHistoryMessage(
-      selectedChatId.value,
+      activeChatId.value,
       selectedChat.value.messages[0] === undefined ? Date.now() : selectedChat.value.messages[0].time,
       selectedChat.value.category === "group" ? 1 : 0,
       20,
@@ -108,7 +102,7 @@ onMounted(() => {
          style="margin-right: 0; margin-bottom: 0"
   >
     <v-col cols="12" sm="4" md="3" class="pa-0 fill-height">
-      <ChatList v-model="selectedChatId"></ChatList>
+      <ChatList v-model="activeChatId"></ChatList>
     </v-col>
     <v-divider vertical v-if="selectedChat"/>
     <v-col v-if="selectedChat" cols="12" sm="8" md="9"
