@@ -2,8 +2,8 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, onMounted, ref, watch} from "vue";
-import {contacts, getHistoryMessage, sendMessage} from "../chat.js";
+import {computed, onMounted, ref} from "vue";
+import {contacts, getHistoryMessage} from "../chat.js";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.js";
 import {userId, userName} from "../auth.js";
