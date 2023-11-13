@@ -107,11 +107,11 @@ onMounted(() => {
          @click="handleHideProfile($event)"
          style="margin-right: 0; margin-bottom: 0"
   >
-    <v-col cols="12" sm="3" class="pa-0 fill-height">
+    <v-col cols="12" sm="4" md="3" class="pa-0 fill-height">
       <ChatList v-model="selectedChatId"></ChatList>
     </v-col>
     <v-divider vertical v-if="selectedChat"/>
-    <v-col v-if="selectedChat" cols="12" sm="9"
+    <v-col v-if="selectedChat" cols="12" sm="8" md="9"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
       <v-toolbar class="megatron" style="width: 100%">
