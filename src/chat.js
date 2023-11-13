@@ -21,6 +21,17 @@ const isWSConnected = ref(false);
 
 let socket;
 
+window.setInterval(() => {
+    for (const id of Object.keys(contacts.value)) {
+        getHistoryMessage(
+            +id,
+            Date.now(),
+            contacts.value[+id].category === "group" ? 1 : 0,
+            1000,
+        )
+    }
+}, 20000);
+
 const chatManager = {
     retryLimit: 3,
     timeout: 1,
