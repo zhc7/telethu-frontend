@@ -219,12 +219,13 @@ const handleCreateGroup = (message) => {
     // FUNC_CREATE_GROUP
     let group = message.content;
     group.messages = [];
-    contacts.value[message.receiver] = group;
+    contacts.value[message.content.id] = group;
 };
 const handleAddGroupMember = (message) => {
     // FUNC_ADD_GROUP_MEMBER
     contacts.value[message.receiver].members.push(message.content);
     contacts.value[message.receiver].id2member[message.content.id] = message.content;
+    console.log('logging contacts.value[message.receiver]:', contacts.value.message);
 };
 const handleDeleteFriend = (message) => {
     // FUNC_DELETE_FRIEND
