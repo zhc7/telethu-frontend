@@ -17,6 +17,8 @@ const friendRequests = ref([]);
 const waitingAcceptFriend = ref(false);
 const waitingRejectFriend = ref(false);
 
+const isWSConnected = ref(false);
+
 
 let socket;
 
@@ -269,6 +271,7 @@ const createSocket = () => {
     socket.onopen = () => {
         if (DEBUG) {
             console.log("WebSocket Client Connected");
+            isWSConnected.value = true;
         }
     };
 
@@ -301,6 +304,7 @@ const createSocket = () => {
                 e.reason
             );
         }
+        isWSConnected.value = false;
         setTimeout(() => {
             createSocket();
         }, 1000);
@@ -308,6 +312,7 @@ const createSocket = () => {
 
     socket.onerror = (err) => {
         console.error("Socket encountered error: ", err.message, "Closing socket");
+        isWSConnected.value = false;
         socket.close();
     };
 }
@@ -489,6 +494,7 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
 }
 
 export {
+    isWSConnected,
     contacts,
     friendRequests,
     searchResult,

@@ -4,7 +4,7 @@ import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
 import ProfilePage from "./ProfilePage.vue";
-import {contacts, createSocket} from "../chat.js";
+import {isWSConnected, contacts, createSocket} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
@@ -57,6 +57,10 @@ onMounted(() => {
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
+      <div class="fix-left-bottom">
+        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isWSConnected">mdi-check-decagram</v-icon>
+        <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isWSConnected">mdi-loading</v-icon>
+      </div>
     </NavBar>
     <ChatPage v-if="activePage === 'chat'" v-model="activeChat"/>
     <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
@@ -75,4 +79,9 @@ onMounted(() => {
   outline: none !important;
 }
 
+.fix-left-bottom {
+  position: absolute;
+  bottom: 1em;
+  left: 1em;
+}
 </style>
