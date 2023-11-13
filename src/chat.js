@@ -302,8 +302,8 @@ const createSocket = () => {
             );
         }
         setTimeout(() => {
-            socket = new WebSocket(uri);
-        }, 3000);
+            createSocket();
+        }, 1000);
     };
 
     socket.onerror = (err) => {
