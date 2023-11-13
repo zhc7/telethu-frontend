@@ -1,11 +1,10 @@
 import {token, user, userId} from "./auth.js";
-import {BASE_WS_URL, BASE_API_URL} from "./constants.js";
-import {DEBUG} from "./constants.js";
-import {displayRightType, activeChatId} from "./globals.js"
+import {BASE_API_URL, BASE_WS_URL, DEBUG} from "./constants.js";
+import {activeChatId, displayRightType} from "./globals.js"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {useLocalStorage} from "@vueuse/core";
-import {generateMessageId, generateMD5} from "./utils/hash.js";
+import {generateMD5, generateMessageId} from "./utils/hash.js";
 import {formatFileSize, getFileType} from "./utils/files.js";
 
 
@@ -218,14 +217,28 @@ const handleAddFriend = (message) => {
 const handleCreateGroup = (message) => {
     // FUNC_CREATE_GROUP
     let group = message.content;
+    const members = [];
     group.messages = [];
+    console.log('group members', message.content);
+    for (const id in message.content.members) {
+        let memberInfo = {
+            id,
+            name: 'Me',
+            avatar: '/download.jpeg',
+        }
+        if (contacts.value[id] !== undefined) {
+            memberInfo = contacts.value[id];
+        }
+        members.push(memberInfo);
+    }
+    group.members = members;
     contacts.value[message.content.id] = group;
+    console.log('group info', contacts.value[message.content.id]);
 };
 const handleAddGroupMember = (message) => {
     // FUNC_ADD_GROUP_MEMBER
     contacts.value[message.receiver].members.push(message.content);
     contacts.value[message.receiver].id2member[message.content.id] = message.content;
-    console.log('logging contacts.value[message.receiver]:', contacts.value.message);
 };
 const handleDeleteFriend = (message) => {
     // FUNC_DELETE_FRIEND
