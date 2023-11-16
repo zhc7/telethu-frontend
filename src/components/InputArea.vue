@@ -1,9 +1,10 @@
 <script setup>
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
-import {contacts, sendFiles, sendMessage} from "../chat.js";
+import {contacts, sendFiles, sendMessage, sendReadMessage} from "../chat.js";
 import {getFileType, uploadFiles, formatFileSize} from "../utils/files.js";
 import ListItem from "./ListItem.vue";
+import {activeChatId} from "../globals.js";
 
 const props = defineProps(['chat'])
 
@@ -103,6 +104,13 @@ const handleTextareaKeydown = (e) => {
     message.value = "";
   }
 };
+
+const handleFocus = (e) => {
+  // read message
+  for (let m of contacts.value[activeChatId.value]) {
+    sendReadMessage(m.message_id);
+  }
+}
 </script>
 
 <template>
@@ -122,6 +130,7 @@ const handleTextareaKeydown = (e) => {
         flat
         clearable
         @keydown="handleTextareaKeydown"
+        @focusin="handleFocus"
         :append-inner-icon="'mdi-emoticon-kiss-outline'"
         @click:append-inner="showStickers = !showStickers"
         @paste="handlePaste"

@@ -278,6 +278,16 @@ const handleSearchResult = (message) => {
     displayRightType.value = "searchResult";
 }
 
+const receiveReadMessage = (message) => {
+    let target = [message.sender, message.receiver][message.t_type];
+    let m = contacts.value[target].messages.find(m => m.message_id === message.content);
+    if (m.sender !== user.value.id) {
+        console.log("error receive read:", target, m, "not send by this user");
+        return;
+    }
+    m.status = "read";
+}
+
 const dispatcher = {
     6: handleAddFriend,
     7: handleCreateGroup,
@@ -285,6 +295,7 @@ const dispatcher = {
     10: handleReceiveRequest,
     14: handleDeleteFriend,
     18: handleSearchResult,
+    19: receiveReadMessage,
 }
 
 const createSocket = () => {
@@ -518,6 +529,15 @@ const sendFiles = async (receiverId, file, t_type, m_type) => {
     return md5;
 }
 
+const sendReadMessage = (id) => {
+    const message = {
+        time: Date.now(),
+        m_type: 19,
+        content: id,
+    }
+    chatManager.sendMessage(message);
+}
+
 export {
     isWSConnected,
     contacts,
@@ -539,4 +559,5 @@ export {
     unblockFriend,
     searchForFriend,
     sendFiles,
+    sendReadMessage,
 }
