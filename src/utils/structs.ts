@@ -1,0 +1,102 @@
+enum MessageType {
+    TEXT = 0,
+    IMAGE = 1,
+    AUDIO = 2,
+    VIDEO = 3,
+    FILE = 4,
+    STICKER = 5,
+    FUNCTION = 6,
+    FUNC_CREATE_GROUP = 7,
+    FUNC_ADD_GROUP_MEMBER = 8,
+    FUNC_EXIT_GROUP = 9,
+    FUNC_APPLY_FRIEND = 10,
+    FUNC_ACCEPT_FRIEND = 11,
+    FUNC_REJECT_FRIEND = 12,
+    FUNC_BlOCK_FRIEND = 13,
+    FUNC_DEL_FRIEND = 14,
+    FUNC_READ_MSG = 15,
+    FUNC_UPDATE_SETTINGS = 16,
+    FUNC_UNBLOCK_FRIEND = 17,
+    FUN_SEND_META = 18,
+    READ_MESSAGE = 19,
+}
+
+enum TargetType {
+    FRIEND = 0,
+    GROUP = 1,
+    OTHER = 2,
+}
+
+interface ContactsData {
+    id?: number,
+    name: string,
+    avatar: string,
+    category: string,
+}
+
+interface UserData extends ContactsData {
+    email: string,
+    category: "user",
+}
+
+interface GroupData extends ContactsData {
+    members: Array<UserData | number>,
+    category: "group",
+}
+
+interface Message {
+    message_id: number | string,
+    m_type: MessageType,
+    t_type: TargetType,
+    time: number,
+    content: string | Array<any> | number | GroupData | UserData,
+    sender?: number,
+    receiver?: number,
+    info?: string | Array<any>,
+    status?: string; // pure frontend
+}
+
+interface Ack {
+    message_id: number,
+    reference?: string,
+}
+
+interface Contact {
+    id: number,
+    name: string,
+    email: string,
+    avatar: string,
+    messages: Array<Message>,
+    unread_counter: number,
+    category: string,
+    muted: boolean,
+}
+
+interface GroupContact extends Contact {
+    members: Array<UserData>,
+    id2member: { [id: number]: UserData },
+}
+
+interface Contacts {
+    [id: number]: Contact,
+}
+
+interface User {
+    id: number,
+    name: string,
+    email: string,
+}
+
+export {
+    MessageType,
+    TargetType,
+    ContactsData,
+    UserData,
+    GroupData,
+    Message,
+    Ack,
+    Contact,
+    GroupContact,
+    Contacts,
+    User,
+}

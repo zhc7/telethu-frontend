@@ -1,11 +1,12 @@
 <script setup>
-import {logout, token, user, userEmail, userId, userName} from "../auth.js";
+import {logout, token} from "../auth.ts";
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
-import {getFileType, uploadFiles} from "../utils/files.js";
-import {sendFiles} from "../chat.js";
+import {getFileType, uploadFiles} from "../core/files.ts";
+import {sendFiles} from "../core/chat.ts";
 import axios from "axios";
-import {BASE_API_URL} from "../constants.js";
+import {BASE_API_URL} from "../constants.ts";
+import {user, userEmail, userId, userName} from "../globals.ts";
 
 const router = useRouter();
 

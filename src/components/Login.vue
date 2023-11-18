@@ -2,9 +2,10 @@
 import SignUp from "./SignUp.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {login, userId} from "../auth.js";
+import {login} from "../auth.ts";
 import {email} from "@vuelidate/validators";
-import {DEBUG} from "../constants.js";
+import {DEBUG} from "../constants.ts";
+import {userId} from "../globals.ts";
 
 const account = ref("");
 const password = ref("");

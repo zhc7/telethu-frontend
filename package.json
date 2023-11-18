@@ -5,14 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
-    "@vueuse/core": "^10.5.0",
+    "@vueuse/core": "^10.6.1",
     "axios": "^1.5.1",
     "crypto-js": "^4.2.0",
     "highlight.js": "^11.9.0",
@@ -28,6 +28,8 @@
   "devDependencies": {
     "@mdi/font": "^7.3.67",
     "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^4.4.5"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.5",
+    "vue-tsc": "^1.8.22"
   }
 }

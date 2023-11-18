@@ -1,18 +1,19 @@
 import CryptoJS from "crypto-js";
 import SparkMD5 from "spark-md5";
 
-const generateMessageId = (content, sender, time) => {
+const generateMessageId = (content: any, sender: number, time: number) => {
     const data = `${content}${sender}${time}`;
     const hash = CryptoJS.SHA256(data);
     return hash.toString(CryptoJS.enc.Hex);
 }
 
-const calculateMD5 = async (file) => {
+const calculateMD5 = async (file: any) => {
+    // TODO: what's the type of `file`?
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
         reader.onload = function(event) {
-            const data = event.target.result;
+            const data = event.target.result as ArrayBuffer;
             const md5 = SparkMD5.ArrayBuffer.hash(data);
             resolve(md5);
         };
@@ -25,10 +26,10 @@ const calculateMD5 = async (file) => {
     });
 };
 
-const generateMD5 = async (file) => {
+const generateMD5 = async (file: any) => {
+    // TODO: what's the type of `file`?
     try {
-        const md5 = await calculateMD5(file);
-        return md5;
+        return await calculateMD5(file);
     } catch (err) {
         console.error(err);
         return err;

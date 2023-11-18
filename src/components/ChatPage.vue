@@ -3,13 +3,12 @@
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, ref} from "vue";
-import {contacts, getHistoryMessage} from "../chat.js";
+import {getHistoryMessage} from "../core/chat.ts";
 import ContactProfile from "./ContactProfile.vue";
-import {DEBUG} from "../constants.js";
-import {userId, userName} from "../auth.js";
+import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
-import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef, activeChatId} from "../globals.js";
+import {FormatChatMessageTime} from "../utils/datetime.ts";
+import {nowRef, activeChatId, contacts, userId, userName} from "../globals.ts";
 
 const props = defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue']);

@@ -1,35 +1,8 @@
-import {computed, ref} from "vue";
 import axios from "axios";
-import {BASE_API_URL, DEBUG} from "./constants.js"
+import {BASE_API_URL, DEBUG} from "./constants"
 import {useLocalStorage} from "@vueuse/core"
-import {contacts} from "./chat.js";
+import {contacts, user} from "./globals";
 
-export const user = useLocalStorage("user", {})
-
-export const userId = computed({
-    get() {
-        return user.value.id;
-    },
-    set(newValue) {
-        user.value.id = newValue;
-    },
-})
-export const userName = computed({
-    get() {
-        return user.value.name;
-    },
-    set(newValue) {
-        user.value.name = newValue;
-    }
-})
-export const userEmail = computed({
-    get() {
-        return user.value.email;
-    },
-    set(newValue) {
-        user.value.email = newValue;
-    }
-})
 const token = useLocalStorage("token", "");
 
 axios.interceptors.response.use(res => res, err => {
@@ -39,7 +12,7 @@ axios.interceptors.response.use(res => res, err => {
     return Promise.reject(err);
 });
 
-const login = (email, password) => {
+const login = (email: string, password: string) => {
     if (DEBUG) {
         console.log("login " + email);
     }
@@ -62,14 +35,15 @@ const login = (email, password) => {
 const logout = () => {
     token.value = "";
     contacts.value = {};
-    user.value = {};
+    user.value = {email: "", id: -1, name: ""};
 }
 
-const register = async (name, email, password) => {
+const register = async (name: string, email: string, password: string) => {
     if (DEBUG) {
         console.log("register " + email);
     }
     await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
+        // TODO: get actual response
         console.log("register succeeded");
     })
 }

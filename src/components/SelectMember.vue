@@ -1,7 +1,8 @@
 <script setup>
 
 import {computed, onMounted, ref} from "vue";
-import {contacts, createGroup, groupAddMember} from "../chat.js";
+import {createGroup, groupAddMember} from "../core/chat.ts";
+import {contacts} from "../globals.ts";
 
 const props = defineProps(['showDialog', 'type', 'title', 'displayContact'])
 const emit = defineEmits(['update:showDialog']);

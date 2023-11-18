@@ -2,7 +2,7 @@
 import {computed, ref} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {friendRequests} from "../chat.js";
+import {friendRequests} from "../core/chat.ts";
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits((["update:modelValue", 'accept', 'reject']))

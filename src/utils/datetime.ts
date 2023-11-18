@@ -1,7 +1,9 @@
-import {ref} from 'vue';
+import {nowRef} from '../globals'
+
 const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-import {nowRef} from '../globals.js'
+// TODO: complete typing of this whole file
+
 export const FormatTimeDifference = (now, timestamp) => {
     timestamp = parseFloat(timestamp);
     const diff = nowRef.value - timestamp;

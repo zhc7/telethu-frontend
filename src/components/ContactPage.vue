@@ -7,13 +7,12 @@ import {
   rejectFriend,
   addFriend,
   applyList,
-  contacts,
   friendRequests,
   searchForFriend,
   searchResult,
-} from "../chat.js";
+} from "../core/chat.ts";
 
-import {displayRightType} from "../globals.js"
+import {contacts, displayRightType} from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";

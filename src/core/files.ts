@@ -1,8 +1,8 @@
 import axios from "axios";
-import {BASE_API_URL} from "../constants.js";
-import {token} from "../auth.js";
+import {BASE_API_URL} from "../constants";
+import {token} from "../auth";
 
-function getFileExtension(filename) {
+function getFileExtension(filename: string) {
     let parts = filename.split('.');
     if (parts.length > 1) {
         return parts.pop();
@@ -11,7 +11,7 @@ function getFileExtension(filename) {
     }
 }
 
-const formatFileSize = (bytes) => {
+const formatFileSize = (bytes: number) => {
     if (bytes < 1024) {
         return bytes + ' Bytes';
     } else if (bytes < 1024 * 1024) {
@@ -23,7 +23,7 @@ const formatFileSize = (bytes) => {
     }
 };
 
-const getFileType = (filename) => {
+const getFileType = (filename: string) => {
     const extension = getFileExtension(filename);
     switch (extension.toLowerCase()) {
         case 'png':
@@ -45,7 +45,8 @@ const getFileType = (filename) => {
     }
 }
 
-const uploadFiles = (file, md5, updateLoading) => {
+const uploadFiles = (file, md5: string, updateLoading) => {
+    // TODO: complete typing
     const fileType = file.type;
     return axios.post(BASE_API_URL + "files/" + md5 + "/", file, {
         headers: {
@@ -67,7 +68,7 @@ const uploadFiles = (file, md5, updateLoading) => {
 };
 
 
-const downloadFile = async (src) => {
+const downloadFile = async (src: string) => {
     let response = await axios.get(BASE_API_URL + 'files/' + src + '/', {
         responseType: 'blob',
         headers: {
@@ -78,7 +79,7 @@ const downloadFile = async (src) => {
     return urlCreator.createObjectURL(response.data);
 }
 
-const triggerDownload = async (src, filename) => {
+const triggerDownload = async (src: string, filename: string) => {
     const blobUrl = await downloadFile(src);
 
     const a = document.createElement('a');

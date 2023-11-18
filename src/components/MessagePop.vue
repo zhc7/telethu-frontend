@@ -1,9 +1,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {user, userId} from "../auth.js";
-import {BASE_API_URL} from "../constants.js";
-import {downloadFile, getFileExtension, triggerDownload} from "../utils/files.js";
-import {markdown2Html, emojisLoaded} from "../markdown.js"
+import {BASE_API_URL} from "../constants.ts";
+import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
+import {markdown2Html, emojisLoaded} from "../markdown.ts"
+import {user, userId} from "../globals.ts";
 
 // TODO: display menu when right click on message
 

@@ -4,12 +4,11 @@ import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
 import ProfilePage from "./ProfilePage.vue";
-import {isWSConnected, contacts, createSocket} from "../chat.js";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {user, userName} from "../auth.js";
-import {activeChatId} from "../globals.js"
+import {activeChatId, contacts, isSocketConnected, user, userName} from "../globals.ts"
+import {createSocket} from "../core/socket.ts";
 
 const router = useRouter();
 const curTab = ref(1);
@@ -58,8 +57,8 @@ onMounted(() => {
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
       <div class="fix-left-bottom">
-        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isWSConnected">mdi-check-decagram</v-icon>
-        <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isWSConnected">mdi-loading</v-icon>
+        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram</v-icon>
+        <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isSocketConnected">mdi-loading</v-icon>
       </div>
     </NavBar>
     <ChatPage v-if="activePage === 'chat'" v-model="activeChatId" />

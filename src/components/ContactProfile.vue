@@ -1,13 +1,13 @@
 <script setup>
 import {
   blockFriend,
-  contacts,
   deleteFriend,
   unblockFriend,
-} from "../chat.js";
+} from "../core/chat.ts";
 import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
+import {contacts} from "../globals.ts";
 
 const props = defineProps(["displayContact", "display", "source"]);
 const emit = defineEmits(["accept", "reject", "apply"]);

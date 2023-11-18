@@ -1,11 +1,10 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import {FormatChatMessageTime} from "../utils/datetime.js";
-import {nowRef, activeChatId} from "../globals.js";
-import {contacts, createGroup} from "../chat.js";
+import {FormatChatMessageTime} from "../utils/datetime.ts";
+import {nowRef, activeChatId, contacts, user} from "../globals.ts";
+import {createGroup} from "../core/chat.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import {user} from "../auth.js";
 import SelectMember from "./SelectMember.vue";
 
 const props = defineProps(['modelValue']);

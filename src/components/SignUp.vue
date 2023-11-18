@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {login, register} from "../auth.js";
+import {login, register} from "../auth.ts";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
 

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import {token} from "./auth.js";
+import {token} from "./auth";
 
 const Login = () => import('./components/Login.vue');
 const Main = () => import ('./components/Main.vue')
