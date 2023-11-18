@@ -5,6 +5,7 @@ import {sendFiles, sendMessage, sendReadMessage} from "../core/chat.ts";
 import {getFileType, uploadFiles, formatFileSize} from "../core/files.ts";
 import ListItem from "./ListItem.vue";
 import {activeChatId, contacts} from "../globals.ts";
+import {user} from "../auth.js";
 
 const props = defineProps(['chat'])
 
@@ -107,8 +108,10 @@ const handleTextareaKeydown = (e) => {
 
 const handleFocus = (e) => {
   // read message
-  for (let m of contacts.value[activeChatId.value]) {
-    sendReadMessage(m.message_id);
+  for (let m of contacts.value[activeChatId.value].messages) {
+    if (m.sender !== user.value.id) {
+      sendReadMessage(m.message_id);
+    }
   }
 }
 </script>

@@ -53,6 +53,8 @@ onMounted(() => {
   }
   if (props.message.m_type > 0) download(0);
 });
+
+console.log("message", props.message);
 </script>
 
 <template>

@@ -15,16 +15,16 @@ const searchResult = ref();
 const friendRequests = ref({});
 
 
-window.setInterval(() => {
-    for (const id of Object.keys(contacts.value)) {
-        getHistoryMessage(
-            +id,
-            Date.now(),
-            contacts.value[+id].category === "group" ? 1 : 0,
-            1000,
-        )
-    }
-}, 20000);
+// window.setInterval(() => {
+//     for (const id of Object.keys(contacts.value)) {
+//         getHistoryMessage(
+//             +id,
+//             Date.now(),
+//             contacts.value[+id].category === "group" ? 1 : 0,
+//             1000,
+//         )
+//     }
+// }, 20000);
 
 const chatManager = {
     retryLimit: 3,
@@ -71,7 +71,7 @@ const chatManager = {
 
     receiveAck(ack: Ack) {
         if (DEBUG) {
-            console.log("received ack", ack);
+            // console.log("received ack", ack);
         }
         this._updateMessage(ack);
     },
@@ -239,6 +239,7 @@ const handleSearchResult = (message: Message) => {
 }
 
 const receiveReadMessage = (message: Message) => {
+    console.log("read message", message);
     let target = [message.sender, message.receiver][message.t_type];
     let m = contacts.value[target].messages.find(m => m.message_id === message.content);
     if (m.sender !== user.value.id) {
