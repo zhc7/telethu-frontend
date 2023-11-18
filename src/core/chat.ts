@@ -79,7 +79,7 @@ const chatManager = {
     receiveMessage(message: Message) {
         const target = message.t_type === 1 ? message.receiver :
             message.sender === user.value.id ? message.receiver : message.sender;
-        let existing = contacts.value[target].messages.find((m) => m.message_id === message.message_id);
+        let existing = contacts.value[target].messages.find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
             message.status = 'sent';
             contacts.value[target].messages.push(message);
@@ -432,6 +432,8 @@ export {
     friendRequests,
     searchResult,
     displayRightType,
+    chatManager,
+    dispatcher,
     sendMessage,
     applyList,
     addFriend,

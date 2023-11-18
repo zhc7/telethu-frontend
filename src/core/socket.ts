@@ -1,8 +1,10 @@
-import {BASE_WS_URL, DEBUG} from "../constants.ts";
-import {token} from "../auth.ts";
-import {contacts, isSocketConnected} from "../globals.ts";
+import {BASE_WS_URL, DEBUG} from "../constants";
+import {token} from "../auth";
+import {contacts, isSocketConnected} from "../globals";
+import {chatManager, dispatcher} from "./chat";
+import {Contacts} from "../utils/structs";
 
-export let socket;
+export let socket: WebSocket;
 const createSocket = () => {
     let uri = BASE_WS_URL + "ws/chat?token=" + token.value;
     socket = new WebSocket(uri);
@@ -52,13 +54,13 @@ const createSocket = () => {
     };
 
     socket.onerror = (err) => {
-        console.error("Socket encountered error: ", err.message, "Closing socket");
+        console.error("Socket encountered error: ", err, "Closing socket");
         isSocketConnected.value = false;
         socket.close();
     };
 }
 export {createSocket};
-const handleLoad = (message) => {
+const handleLoad = (message: Contacts) => {
     // ignore friend meta, we'll manually get this by http for now
     for (const contact of Object.values(message)) {
         if (contacts.value[contact.id] !== undefined) {
