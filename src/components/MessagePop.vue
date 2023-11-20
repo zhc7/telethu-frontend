@@ -1,9 +1,11 @@
-<script setup>
-import {onMounted, ref} from "vue";
+<script setup lang="ts">
+import {onMounted, onUnmounted, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {markdown2Html, emojisLoaded} from "../markdown.ts"
 import {user, userId} from "../globals.ts";
+import {Message} from "../utils/structs.ts";
+import MessageContextMenu from "./MessageContextMenu.vue";
 
 // TODO: display menu when right click on message
 
@@ -13,7 +15,7 @@ const emits = defineEmits((['finished', 'showProfile']));
 const messagePop = ref();
 const blobSrc = ref("");
 
-const previewIconUrl = (extension) => {
+const previewIconUrl = (extension: string) => {
   if (extension === "pdf") {
     return 'icons/pdf_icon.png';
   } else {
@@ -21,8 +23,8 @@ const previewIconUrl = (extension) => {
   }
 }
 
-const getFileInformation = (message) => {
-  let parts = message.info.split('/');
+const getFileInformation = (message: Message) => {
+  let parts = (message.info as string).split('/');
   const url = BASE_API_URL + 'files/' + message.content + '/';
   const icon = previewIconUrl(getFileExtension(parts[0]));
   return {
@@ -34,7 +36,7 @@ const getFileInformation = (message) => {
   }
 }
 
-const download = (retry) => {
+const download = (retry: number) => {
   if (retry === 2) return;
   console.log('filename: ', props.message.content);
   downloadFile(props.message.content).then((url) => {
@@ -47,11 +49,32 @@ const download = (retry) => {
   })
 }
 
+
+const showContextMenu = ref(false);
+const contextMenuX = ref(0);
+const contextMenuY = ref(0);
+
+const openContextMenu = (event: MouseEvent) => {
+  event.preventDefault();
+  contextMenuX.value = event.clientX;
+  contextMenuY.value = event.clientY;
+  showContextMenu.value = true;
+}
+
+const closeContextMenu = () => {
+  showContextMenu.value = false;
+}
+
 onMounted(() => {
   if (props.final) {
     emits('finished');
   }
   if (props.message.m_type > 0) download(0);
+  document.addEventListener("click", closeContextMenu);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", closeContextMenu);
 });
 
 console.log("message", props.message);
@@ -69,6 +92,9 @@ console.log("message", props.message);
       />
     </v-avatar>
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
+      <!-- begin message column -->
+
+      <!-- name row -->
       <div class="d-flex" v-if="message.t_type === 1">
         <v-spacer v-if="message.sender === userId"/>
         <span class="text-grey mr-1 ml-1" style="font-size: small">
@@ -76,8 +102,19 @@ console.log("message", props.message);
         </span>
         <v-spacer v-if="message.sender !== userId"/>
       </div>
+
+      <!-- body row -->
       <div class="d-flex align-center" style="max-width: 100%"
-           :class="message.sender !== userId ? 'justify-start' : 'justify-end'">
+           :class="message.sender !== userId ? 'justify-start' : 'justify-end'"
+           @contextmenu="openContextMenu"
+      >
+        <MessageContextMenu
+            v-if="showContextMenu"
+            :x="contextMenuX"
+            :y="contextMenuY"
+            :message="message"
+        />
+
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"
@@ -142,11 +179,16 @@ console.log("message", props.message);
           </v-list-item-subtitle>
         </v-list-item>
       </div>
+
+      <!-- bottom icon row -->
       <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'">
         <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-else-if="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
       </div>
+
+      <!-- end message column -->
     </div>
+
     <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
       <v-img
           :src="user.avatar"
