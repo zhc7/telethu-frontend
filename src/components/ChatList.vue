@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, user} from "../globals.ts";
+import {nowRef, activeChatId, contacts, user, settings} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
@@ -9,13 +9,14 @@ import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {token} from "../auth.ts";
 
-const props = defineProps(['modelValue']);
+defineProps(['modelValue']);
 
 const createGroupDialog = ref(false);
 
 const chatList = computed(() => {
   let list = [];
-  for (let id in contacts.value) {
+  for (let _id in contacts.value) {
+    const id = + _id;
     const contact = contacts.value[id];
     list.push({
       id: id,
@@ -23,12 +24,11 @@ const chatList = computed(() => {
       avatar: contact.avatar,
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
-      alert: contact.alert,
       unread_counter: contact.unread_counter,
       // TODO: persist pin, mute, block
-      pin: contact.pin,
-      mute: contact.mute,
-      block: contact.block,
+      pin: settings.value.pinned.includes(id),
+      mute: settings.value.muted.includes(id),
+      block: settings.value.blocked.includes(id),
     })
   }
   list = list.sort((a, b) => {

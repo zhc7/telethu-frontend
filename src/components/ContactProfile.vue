@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {
   blockFriend,
   deleteFriend,
@@ -7,36 +7,66 @@ import {
 import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {contacts} from "../globals.ts";
+import {contacts, settings} from "../globals.ts";
+import {Contact, GroupContact} from "../utils/structs.ts";
 
-const props = defineProps(["displayContact", "display", "source"]);
-const emit = defineEmits(["accept", "reject", "apply"]);
+const props = defineProps<{
+  displayContact: Contact,
+  display: boolean,
+  source: string,
+}>();
+defineEmits(["accept", "reject", "apply"]);
 
 const groupAddMemberDialog = ref(false);
 
 const deleteConfirmDialog = ref(false);
 
-const switchValueMute = ref(props.displayContact.mute);
-const onSwitchChangeMute = () => {
-  props.displayContact.mute = switchValueMute.value;
-  console.log("mute:", props.displayContact.mute);
-};
-const switchValuePin = ref(props.displayContact.pin);
-const onSwitchChangePin = () => {
-  props.displayContact.pin = switchValuePin.value;
-  console.log("pin:", props.displayContact.pin);
-};
-const switchValueBlock = ref(false);
-const onSwitchChangeBlock = () => {
-  console.log("block:", switchValueBlock.value);
-  if (switchValueBlock.value) {
-    props.displayContact.block = true;
-    blockFriend(props.displayContact.id, switchValueBlock.value);
-  } else {
-    props.displayContact.block = false;
-    unblockFriend(props.displayContact.id);
-  }
-};
+const switchValueMute = computed<boolean>({
+  get: () => {
+    return settings.value.muted.includes(props.displayContact.id);
+  },
+  set: (value) => {
+    if (value) {
+      settings.value.muted.push(props.displayContact.id);
+    } else {
+      settings.value.muted = settings.value.muted.filter((id) => {
+        return id !== props.displayContact.id;
+      });
+    }
+  },
+})
+
+const switchValuePin = computed<boolean>({
+  get: () => {
+    return settings.value.pinned.includes(props.displayContact.id);
+  },
+  set: (value) => {
+    if (value) {
+      settings.value.pinned.push(props.displayContact.id);
+    } else {
+      settings.value.pinned = settings.value.pinned.filter((id) => {
+        return id !== props.displayContact.id;
+      });
+    }
+  },
+})
+
+const switchValueBlock = computed<boolean>({
+  get: () => {
+    return settings.value.blocked.includes(props.displayContact.id);
+  },
+  set: (value) => {
+    if (value) {
+      settings.value.blocked.push(props.displayContact.id);
+      blockFriend(props.displayContact.id);
+    } else {
+      settings.value.blocked = settings.value.blocked.filter((id) => {
+        return id !== props.displayContact.id;
+      });
+      unblockFriend(props.displayContact.id);
+    }
+  },
+})
 
 const friendCircle = ref(["THU", "PKU", "CMU", "MIT"]);
 const friendCircleSelect = ref([]);
@@ -96,8 +126,8 @@ const editName = () => {
           <v-card-title class="ma-7"> Members </v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
-              v-for="member in displayContact.members"
-              :key="member"
+              v-for="member in (displayContact as GroupContact).members"
+              :key="member.id"
               class="d-flex flex-column align-center ma-auto mb-5"
             >
               <v-avatar size="60">
@@ -159,7 +189,6 @@ const editName = () => {
             hide-details
             color="indigo"
             v-model="switchValueMute"
-            @change="onSwitchChangeMute"
           ></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center" class="ma-1">
@@ -169,7 +198,6 @@ const editName = () => {
             hide-details
             color="indigo"
             v-model="switchValuePin"
-            @change="onSwitchChangePin"
           ></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center" class="ma-1">
@@ -179,7 +207,6 @@ const editName = () => {
             hide-details
             color="error"
             v-model="switchValueBlock"
-            @change="onSwitchChangeBlock"
           ></v-switch>
         </v-row>
         <v-divider class="ma-4"/>

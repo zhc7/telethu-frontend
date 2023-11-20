@@ -88,3 +88,9 @@ export interface User {
     email: string,
     avatar: string,
 }
+
+export interface Settings {
+    muted: Array<number>,
+    pinned: Array<number>,
+    blocked: Array<number>,
+}
