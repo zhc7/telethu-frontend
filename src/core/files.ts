@@ -2,13 +2,9 @@ import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {token} from "../auth";
 
-function getFileExtension(filename: string) {
+function getFileExtension(filename: string): string {
     let parts = filename.split('.');
-    if (parts.length > 1) {
-        return parts.pop();
-    } else {
-        return '';
-    }
+    return parts.pop() || '';
 }
 
 const formatFileSize = (bytes: number) => {
