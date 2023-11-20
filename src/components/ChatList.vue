@@ -2,15 +2,14 @@
 import {computed, onMounted, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
 import {nowRef, activeChatId, contacts, user} from "../globals.ts";
-import {createGroup} from "../core/chat.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
+import axios from "axios";
+import {BASE_API_URL} from "../constants.ts";
+import {token} from "../auth.ts";
 
 const props = defineProps(['modelValue']);
-const emit = defineEmits(['update:modelValue']);
-
-const selectedChat = computed(() => contacts.value[activeChatId.value]);
 
 const createGroupDialog = ref(false);
 
@@ -71,8 +70,39 @@ const displayHotMessage = (message) => {
   }
 }
 
-onMounted(() => {
-  console.log("chat list mounted");
+onMounted(async () => {
+  const response = await axios.get(`${BASE_API_URL}users/avatar/`, {
+    headers: {
+      Authorization: token.value,
+    },
+    responseType: 'blob',
+  }).catch((error) => {
+    console.error('Http get avatar failed -> ', error);
+  });
+  const reader = new FileReader();
+  reader.readAsDataURL(response.data); // change Blob into Base64
+  reader.onloadend = function () {
+    user.value.avatar = reader.result;
+  };
+
+  for (const id in contacts.value) {
+    console.log('get avatar for ', id, contacts.value[id].avatar);
+    if (!contacts.value[id].avatar_storage) {
+      const response = await axios.get(`${BASE_API_URL}users/avatar/${contacts.value[id].avatar}`, {
+        headers: {
+          Authorization: token.value,
+        },
+        responseType: 'blob',
+      }).catch((error) => {
+        console.error('Http get avatar failed -> ', error);
+      });
+      const reader = new FileReader();
+      reader.readAsDataURL(response.data); // change Blob into Base64
+      reader.onloadend = function () {
+        contacts.value[id].avatar_storage = reader.result;
+      };
+    }
+  }
 })
 </script>
 
@@ -88,7 +118,8 @@ onMounted(() => {
   <div class="fill-height d-flex flex-column">
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
-      <a v-if="!searchFriendInput" class="ma-3" href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">{{ activeChatId }}</a>
+      <a v-if="!searchFriendInput" class="ma-3"
+         href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">{{ activeChatId }}</a>
       <v-icon v-if="!searchFriendInput" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
       <v-text-field v-if="searchFriendInput" hide-details v-model="friendName"
                     density="compact" variant="solo" class="mr-4"/>
@@ -105,7 +136,7 @@ onMounted(() => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img v-if="chat.category === 'user'" :src="chat.avatar" cover/>
+            <v-img v-if="chat.category === 'user'" :src="chat.avatar_storage" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>

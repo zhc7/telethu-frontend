@@ -66,6 +66,7 @@ export interface Contact {
     name: string,
     email: string,
     avatar: string,
+    avatar_storage?: string | ArrayBuffer,
     messages: Array<Message>,
     unread_counter: number,
     category: string,
