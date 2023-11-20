@@ -413,7 +413,6 @@ const unblockFriend = (friendId: number) => {
 }
 
 const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_type: MessageType) => {
-    // TODO: what's the type of `file`?
     const md5 = await generateMD5(file);
     console.log("md5 -> ", md5);
     const message: Message = {

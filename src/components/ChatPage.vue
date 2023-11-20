@@ -142,10 +142,8 @@ onMounted(() => {
   </v-row>
   <v-divider vertical v-if="selectedChat"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
-    <ContactProfile class="overflow-y-auto" v-if="displayProfile === 'user'" :displayContact="selectedChat"
-                    :display="showProfileDetail"/>
-    <ContactProfile class="overflow-y-auto" v-if="displayProfile === 'group'" :displayContact="selectedChat"
-                    :display="showProfileDetail"/>
+    <ContactProfile class="overflow-y-auto" :displayContact="selectedChat"
+                    :display="showProfileDetail" source="contactDetail"/>
   </div>
 </template>
 

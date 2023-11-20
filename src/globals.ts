@@ -7,7 +7,7 @@ export const nowRef = ref(Date.now());
 setInterval(() => {
     nowRef.value = Date.now();
 }, 1000);
-export const displayRightType = ref(undefined);
+export const displayRightType = ref('');
 export const activeChatId = ref<number>(-1);
 export const contacts = useLocalStorage<Contacts>("contacts", {});
 export const user = useLocalStorage<User>("user", {
