@@ -14,6 +14,7 @@ export const user = useLocalStorage<User>("user", {
     id: -1,
     name: "",
     email: "",
+    avatar: "",
 })
 
 export const userId = computed({
