@@ -90,7 +90,7 @@ const editName = () => {
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-show="display">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="displayContact.avatar !== '' ? 'public/Logo.png' : displayContact.avatar" cover />
+      <v-img :src="displayContact.avatar_storage ? displayContact.avatar_storage as string : 'public/Logo.png'" cover />
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
@@ -209,7 +209,7 @@ const editName = () => {
             v-model="switchValueBlock"
           ></v-switch>
         </v-row>
-        <v-divider class="ma-4"/>
+        <v-divider class="mt-4"/>
       </v-col>
       <v-card-actions>
         <v-col v-if="source === 'contactDetail'">

@@ -16,6 +16,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const displayProfile = ref(undefined);
 const showProfileDetail = ref(false);
+const createGroupDialog = ref(false);
 
 const groupedMessages = computed(() => {
   const grouped = [];
@@ -114,6 +115,7 @@ onMounted(() => {
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
           <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
         </v-toolbar-title>
+        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChat.category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
@@ -142,7 +144,7 @@ onMounted(() => {
   </v-row>
   <v-divider vertical v-if="selectedChat"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
-    <ContactProfile class="overflow-y-auto" :displayContact="selectedChat"
+    <ContactProfile class="overflow-y-auto" v-if="selectedChat" :displayContact="selectedChat"
                     :display="showProfileDetail" source="contactDetail"/>
   </div>
 </template>

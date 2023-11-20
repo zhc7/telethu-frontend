@@ -19,6 +19,7 @@ const chatList = computed(() => {
     id: number,
     name: string,
     avatar: string,
+    avatar_storage: string | ArrayBuffer | undefined,
     category: string,
     hotMessage: Message,
     unread_counter: number,
@@ -33,6 +34,7 @@ const chatList = computed(() => {
       id: id,
       name: contact.name,
       avatar: contact.avatar,
+      avatar_storage: contact.avatar_storage,
       category: contact.category,
       hotMessage: contact.messages[contact.messages.length - 1],
       unread_counter: contact.unread_counter,
@@ -89,31 +91,41 @@ onMounted(async () => {
     responseType: 'blob',
   }).catch((error) => {
     console.error('Http get avatar failed -> ', error);
+    return { data: null }; // 返回一个具有默认 data 属性的对象
   });
-  const reader = new FileReader();
-  reader.readAsDataURL(response.data); // change Blob into Base64
-  reader.onloadend = function () {
-    user.value.avatar = reader.result;
-  };
+
+  if (response && response.data) {
+    const reader = new FileReader();
+    reader.readAsDataURL(response.data); // change Blob into Base64
+    reader.onloadend = function () {
+      user.value.avatar = reader.result as string;
+    };
+  }
+
 
   for (const id in contacts.value) {
     console.log('get avatar for ', id, contacts.value[id].avatar);
     if (!contacts.value[id].avatar_storage) {
-      const response = await axios.get(`${BASE_API_URL}users/avatar/${contacts.value[id].avatar}`, {
-        headers: {
-          Authorization: token.value,
-        },
-        responseType: 'blob',
-      }).catch((error) => {
+      try {
+        const response = await axios.get(`${BASE_API_URL}users/avatar/${contacts.value[id].avatar}`, {
+          headers: {
+            Authorization: token.value,
+          },
+          responseType: 'blob',
+        });
+
+        const reader = new FileReader();
+        reader.readAsDataURL(response.data); // change Blob into Base64
+        reader.onloadend = function () {
+          contacts.value[id].avatar_storage = reader.result as string;
+        };
+      } catch (error) {
         console.error('Http get avatar failed -> ', error);
-      });
-      const reader = new FileReader();
-      reader.readAsDataURL(response.data); // change Blob into Base64
-      reader.onloadend = function () {
-        contacts.value[id].avatar_storage = reader.result;
-      };
+        contacts.value[id].avatar_storage = undefined;
+      }
     }
   }
+
 })
 </script>
 
@@ -147,12 +159,12 @@ onMounted(async () => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img v-if="chat.category === 'user'" :src="chat.avatar_storage ? chat.avatar_storage : 'public/Logo.png'" cover/>
+            <v-img v-if="chat.category === 'user'" :src="chat.avatar_storage ? chat.avatar_storage as string : 'public/Logo.png'" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">
-          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time) : '' }}</p>
+          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time.toString()) : '' }}</p>
           <v-icon v-show="chat.pin">mdi-pin</v-icon>
           <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
         </div>
