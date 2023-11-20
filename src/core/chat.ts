@@ -26,7 +26,16 @@ const friendRequests = ref({});
 //     }
 // }, 20000);
 
-const chatManager = {
+const chatManager: {
+    retryLimit: number,
+    timeout: number,
+    sentMessages: { [id: string]: Message },
+    sendMessage: (message: Message) => void,
+    _retrySendMessage: (message: Message, attempts?: number) => void,
+    receiveAck: (ack: Ack) => void,
+    receiveMessage: (message: Message) => void,
+    _updateMessage: (ack: Ack) => void,
+} = {
     retryLimit: 3,
     timeout: 1,
 
@@ -48,7 +57,7 @@ const chatManager = {
             }
         }, this.timeout * 1000);
 
-        this.sentMessages[message.message_id] = message;
+        this.sentMessages[message.message_id as string] = message;
     },
 
     _retrySendMessage(message: Message, attempts = 0) {
@@ -100,7 +109,7 @@ const chatManager = {
     },
 
     _updateMessage(ack: Ack) {
-        const message = this.sentMessages[ack.reference];
+        const message = this.sentMessages[ack.reference as string];
         if (message === undefined) {
             return;
         }
@@ -209,7 +218,7 @@ const handleAddGroupMember = (message: Message) => {
     let group = contacts.value[message.receiver] as GroupContact;
     let user = message.content as UserData;
     group.members.push(user);
-    group.id2member[user.id] = user;
+    group.id2member[user.id as number] = user;
 };
 const handleDeleteFriend = (message: Message) => {
     // FUNC_DELETE_FRIEND
@@ -242,6 +251,10 @@ const receiveReadMessage = (message: Message) => {
     console.log("read message", message);
     let target = [message.sender, message.receiver][message.t_type];
     let m = contacts.value[target].messages.find(m => m.message_id === message.content);
+    if (m === undefined) {
+        // TODO: handle this properly
+    }
+    m = m as Message;
     if (m.sender !== user.value.id) {
         console.log("error receive read:", target, m, "not send by this user");
         return;
@@ -425,6 +438,8 @@ const sendReadMessage = (id: number) => {
         m_type: 19,
         t_type: 1,
         content: id,
+        sender: -1,
+        receiver: -1,
     }
     chatManager.sendMessage(message);
 }

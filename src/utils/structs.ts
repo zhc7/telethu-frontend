@@ -1,4 +1,4 @@
-enum MessageType {
+export enum MessageType {
     TEXT = 0,
     IMAGE = 1,
     AUDIO = 2,
@@ -21,47 +21,47 @@ enum MessageType {
     READ_MESSAGE = 19,
 }
 
-enum TargetType {
+export enum TargetType {
     FRIEND = 0,
     GROUP = 1,
     OTHER = 2,
 }
 
-interface ContactsData {
+export interface ContactsData {
     id?: number,
     name: string,
     avatar: string,
     category: string,
 }
 
-interface UserData extends ContactsData {
+export interface UserData extends ContactsData {
     email: string,
     category: "user",
 }
 
-interface GroupData extends ContactsData {
+export interface GroupData extends ContactsData {
     members: Array<UserData | number>,
     category: "group",
 }
 
-interface Message {
+export interface Message {
     message_id: number | string,
     m_type: MessageType,
     t_type: TargetType,
     time: number,
     content: string | Array<any> | number | GroupData | UserData,
-    sender?: number,
-    receiver?: number,
+    sender: number,
+    receiver: number,
     info?: string | Array<any>,
     status?: string; // pure frontend
 }
 
-interface Ack {
+export interface Ack {
     message_id: number,
     reference?: string,
 }
 
-interface Contact {
+export interface Contact {
     id: number,
     name: string,
     email: string,
@@ -72,31 +72,17 @@ interface Contact {
     muted: boolean,
 }
 
-interface GroupContact extends Contact {
+export interface GroupContact extends Contact {
     members: Array<UserData>,
     id2member: { [id: number]: UserData },
 }
 
-interface Contacts {
+export interface Contacts {
     [id: number]: Contact,
 }
 
-interface User {
+export interface User {
     id: number,
     name: string,
     email: string,
-}
-
-export {
-    MessageType,
-    TargetType,
-    ContactsData,
-    UserData,
-    GroupData,
-    Message,
-    Ack,
-    Contact,
-    GroupContact,
-    Contacts,
-    User,
 }

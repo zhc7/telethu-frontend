@@ -26,7 +26,7 @@ const calculateMD5 = async (file: any) => {
     });
 };
 
-const generateMD5 = async (file: any) => {
+const generateMD5 = async (file: any): Promise<string> => {
     // TODO: what's the type of `file`?
     try {
         return await calculateMD5(file);
