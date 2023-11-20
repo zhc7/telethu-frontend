@@ -1,11 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {sendFiles, sendMessage, sendReadMessage} from "../core/chat.ts";
 import {getFileType, uploadFiles, formatFileSize} from "../core/files.ts";
-import ListItem from "./ListItem.vue";
 import {activeChatId, contacts} from "../globals.ts";
-import {user} from "../auth.js";
+import {user} from "../globals.ts";
 
 const props = defineProps(['chat'])
 
