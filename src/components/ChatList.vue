@@ -147,7 +147,7 @@ onMounted(async () => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img v-if="chat.category === 'user'" :src="chat.avatar_storage" cover/>
+            <v-img v-if="chat.category === 'user'" :src="chat.avatar_storage ? chat.avatar_storage : 'public/Logo.png'" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>

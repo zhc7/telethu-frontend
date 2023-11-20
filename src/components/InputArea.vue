@@ -12,12 +12,13 @@ const message = ref("");
 const showStickers = ref(false);
 const previewFilesDialog = ref(false);
 
-const fileInput = ref(null);
-const uploadingFiles = ref([]);
+const fileInput = ref<HTMLInputElement | null>(null);
+const uploadingFiles = ref<File[]>([]);
+const uploadingFilesUrl = ref<{ [key: string]: string }>({}); // {file.name: file.url}
 
-const previewIcon = (file) => {
+const previewIcon = (file: File) => {
   if (file.type.startsWith('image')) {
-    return file.url;
+    return uploadingFilesUrl.value[file.name];
   } else if (file.type.startsWith('video')) {
     return 'icons/video_icon.png';
   } else if (file.type.startsWith('audio')) {
@@ -30,33 +31,42 @@ const previewIcon = (file) => {
 }
 
 const triggerFileInput = () => {
-  fileInput.value.click();
+  if (fileInput.value) {
+    fileInput.value.click();
+  }
 };
 
-const processFilesForPreview = (files) => {
+const processFilesForPreview = (files: FileList | File[]) => {
   for (let file of files) {
-    file.url = URL.createObjectURL(file);
-    uploadingFiles.value.push(file);
+    const fileName = file.name;
+    if (fileName) {
+      uploadingFilesUrl.value[fileName] = URL.createObjectURL(file);
+      uploadingFiles.value.push(file);
+    }
   }
   if (!uploadingFiles.value.length) return;
   previewFilesDialog.value = true;
 };
 
-const handlePreviewFiles = (event) => {
+const handlePreviewFiles = (event: Event) => {
   uploadingFiles.value = [];
-  const files = event.target.files;
-  processFilesForPreview(files);
-  console.log(uploadingFiles.value);
+  const target = event.target as HTMLInputElement;
+
+  if (target && target.files) {
+    const files = target.files;
+    processFilesForPreview(files);
+    console.log(uploadingFiles.value);
+  }
 };
 
-const handlePaste = (event) => {
+const handlePaste = (event: ClipboardEvent) => {
   uploadingFiles.value = [];
-  const items = (event.clipboardData).items;
-  const filesToPreview = [];
+  const items = event.clipboardData?.items ?? [];
+  const filesToPreview: File[] = [];
   for (const item of items) {
     if (item.kind === 'file') {
       const file = item.getAsFile();
-      filesToPreview.push(file);
+      file && filesToPreview.push(file);
     }
   }
   if (filesToPreview.length > 0) {
@@ -81,7 +91,7 @@ const handleSendFiles = async () => {
   for (let file of uploadingFiles.value) {
     const m_type = getFileType(file.name);
     const md5Promise = sendFiles(+props.chat.id, file, t_type, m_type).then(md5 => {
-      return uploadFiles(file, md5, (progress) => {
+      return uploadFiles(file, md5, (progress: number) => {
         uploadProgress.value = progress;
       });
     });
@@ -97,7 +107,7 @@ const handleSendFiles = async () => {
   loading.value = false;
 };
 
-const handleTextareaKeydown = (e) => {
+const handleTextareaKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     handleSendMessage();
@@ -105,7 +115,7 @@ const handleTextareaKeydown = (e) => {
   }
 };
 
-const handleFocus = (e) => {
+const handleFocus = () => {
   // read message
   for (let m of contacts.value[activeChatId.value].messages) {
     if (m.sender !== user.value.id) {
