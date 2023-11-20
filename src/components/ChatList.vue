@@ -8,13 +8,24 @@ import SelectMember from "./SelectMember.vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {token} from "../auth.ts";
+import {Message} from "../utils/structs.ts";
 
 defineProps(['modelValue']);
 
 const createGroupDialog = ref(false);
 
 const chatList = computed(() => {
-  let list = [];
+  let list: Array<{
+    id: number,
+    name: string,
+    avatar: string,
+    category: string,
+    hotMessage: Message,
+    unread_counter: number,
+    pin: boolean,
+    mute: boolean,
+    block: boolean,
+  }> = [];
   for (let _id in contacts.value) {
     const id = + _id;
     const contact = contacts.value[id];
@@ -59,7 +70,7 @@ const chatList = computed(() => {
 const searchFriendInput = ref(false);
 const friendName = ref('');
 
-const displayHotMessage = (message) => {
+const displayHotMessage = (message: Message) => {
   const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
   if (message === undefined) {
     return '';
