@@ -2,11 +2,9 @@ import {nowRef} from '../globals'
 
 const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-// TODO: complete typing of this whole file
-
-export const FormatTimeDifference = (now, timestamp) => {
-    timestamp = parseFloat(timestamp);
-    const diff = nowRef.value - timestamp;
+export const FormatTimeDifference = (timestamp: string) => {
+    const timestampParsed = parseFloat(timestamp);
+    const diff = nowRef.value - timestampParsed;
     if (diff < 10000) {
         return 'Just now';
     }
@@ -24,26 +22,26 @@ export const FormatTimeDifference = (now, timestamp) => {
     }
 
     if (diff < 604800000) {
-        const day = new Date(timestamp).getDay();
-        const hour = new Date(timestamp).getHours();
-        const minute = new Date(timestamp).getMinutes();
+        const day = new Date(timestampParsed).getDay();
+        const hour = new Date(timestampParsed).getHours();
+        const minute = new Date(timestampParsed).getMinutes();
         return `${dayOfWeek[day]} ${(hour < 10 ? '0' : '') + hour}:${(minute < 10 ? '0' : '') + minute}`;
     }
 
-    const date = new Date(timestamp);
+    const date = new Date(timestampParsed);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}/${month}/${day}`;
 }
 
-export const FormatChatMessageTime = (now, timestamp) => {
-    timestamp = parseFloat(timestamp);
-    const minute = new Date(timestamp).getMinutes();
-    const hour = new Date(timestamp).getHours();
-    const day = new Date(timestamp).getDate();
-    const month = new Date(timestamp).getMonth() + 1;
-    const year = new Date(timestamp).getFullYear();
+export const FormatChatMessageTime = (now: number, timestamp: string) => {
+    const timestampParsed = parseFloat(timestamp);
+    const minute = new Date(timestampParsed).getMinutes();
+    const hour = new Date(timestampParsed).getHours();
+    const day = new Date(timestampParsed).getDate();
+    const month = new Date(timestampParsed).getMonth() + 1;
+    const year = new Date(timestampParsed).getFullYear();
     const nowDate = new Date(now);
     const nowDay = nowDate.getDate();
     const nowMonth = nowDate.getMonth() + 1;
