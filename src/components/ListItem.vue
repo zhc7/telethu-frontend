@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import {inject} from 'vue'
 
-const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle'])
-const {selected} = inject("selected")
-const activated = inject("activated", undefined)
+const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle']);
+const {selected} = inject<any>("selected");
+const activated = inject("activated", undefined);
 
 </script>
 

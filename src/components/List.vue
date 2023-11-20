@@ -1,5 +1,5 @@
-<script setup>
-import {ref, toRefs, provide, computed} from "vue";
+<script setup lang="ts">
+import {computed, provide} from "vue";
 
 const props = defineProps(["modelValue"])
 const emit = defineEmits(["update:modelValue"])
@@ -11,7 +11,7 @@ const selected = computed({
   }
 });
 
-provide("selected", {selected})
+provide("selected", {selected});
 
 </script>
 
