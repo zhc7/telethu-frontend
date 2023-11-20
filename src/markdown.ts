@@ -28,7 +28,7 @@ const marked = new Marked(markedHighlight({
   }
 }))
 
-const markdown2Html = (markdown) => {
+const markdown2Html = (markdown: string) => {
   return marked.parse(markdown);
 }
 
