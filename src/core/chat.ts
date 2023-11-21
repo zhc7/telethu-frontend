@@ -262,16 +262,6 @@ const receiveReadMessage = (message: Message) => {
     m.status = "read";
 }
 
-const dispatcher_old = {
-    6: handleAddFriend,
-    7: handleCreateGroup,
-    8: handleAddGroupMember,
-    10: handleReceiveRequest,
-    14: handleDeleteFriend,
-    18: handleSearchResult,
-    19: receiveReadMessage,
-}
-
 const dispatcher: {[key in MessageType]?: (arg0: Message) => void} = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
