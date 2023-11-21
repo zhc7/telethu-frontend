@@ -2,7 +2,7 @@ import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
 import {contacts, isSocketConnected} from "../globals";
 import {chatManager, dispatcher} from "./chat";
-import {Contacts} from "../utils/structs";
+import {Ack, Contacts, Message} from "../utils/structs";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -19,17 +19,18 @@ const createSocket = () => {
     };
 
     socket.onmessage = (e) => {
-        const message = JSON.parse(e.data);
+        const _message = JSON.parse(e.data);
         if (DEBUG)
-            console.log('received message: ', message);
+            console.log('received message: ', _message);
         if (first) {
-            handleLoad(message);
+            handleLoad(_message as Contacts);
             first = false;
             return;
         }
+        const message = _message as Message;
         if (message.m_type === undefined) {
             // acknowledgement from RabbitMQ
-            chatManager.receiveAck(message);
+            chatManager.receiveAck(message as Ack);
             return;
         }
         if (message.m_type <= 5) {
@@ -37,7 +38,7 @@ const createSocket = () => {
             chatManager.receiveMessage(message);
             return;
         }
-        dispatcher[message.m_type](message);
+        dispatcher[message.m_type]!(message);
     };
 
     socket.onclose = (e) => {
