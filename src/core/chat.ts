@@ -262,7 +262,7 @@ const receiveReadMessage = (message: Message) => {
     m.status = "read";
 }
 
-const dispatcher = {
+const dispatcher_old = {
     6: handleAddFriend,
     7: handleCreateGroup,
     8: handleAddGroupMember,
@@ -271,6 +271,20 @@ const dispatcher = {
     18: handleSearchResult,
     19: receiveReadMessage,
 }
+
+const dispatcher: {[key in MessageType]?: (arg0: Message) => void} = {}
+dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
+dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
+dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {}; // TODO
+dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
+dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = () => {}; // TODO
+dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {}; // TODO
+dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {}; // TODO
+dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
+dispatcher[MessageType.FUNC_READ_MSG] = receiveReadMessage;
+dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {}; // TODO
+dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {}; // TODO
+dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 
 
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
