@@ -66,7 +66,7 @@ export interface Contact {
     name: string,
     email: string,
     avatar: string,
-    avatar_storage?: string | ArrayBuffer,
+    avatar_storage?: string | ArrayBuffer | undefined,
     messages: Array<Message>,
     unread_counter: number,
     category: string,
@@ -79,7 +79,7 @@ export interface GroupContact extends Contact {
 }
 
 export interface Contacts {
-    [id: number]: Contact,
+    [id: number]: Contact | GroupContact,
 }
 
 export interface User {

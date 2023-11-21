@@ -4,7 +4,7 @@ import {computed, onMounted, ref} from "vue";
 import {createGroup, groupAddMember} from "../core/chat.ts";
 import {contacts} from "../globals.ts";
 
-const props = defineProps(['showDialog', 'type', 'title', 'displayContact'])
+const props = defineProps(['showDialog', 'type', 'title', 'contactId'])
 const emit = defineEmits(['update:showDialog']);
 const createGroupName = ref('')
 const selected = ref([])
@@ -14,9 +14,9 @@ const filterContacts = computed(() => {
     if (props.type === 'create_group') {
       return contacts.value[id].category === 'user';
     } else if (props.type === 'add_group_member') {
-      return contacts.value[id].category === 'user' && Object.keys(props.displayContact.id2member).indexOf(id) === -1;
+      return contacts.value[id].category === 'user' && Object.keys(contacts.value[props.contactId]?.id2member)?.indexOf(id) === -1;
     } else if (props.type === 'create_group_from_contact') {
-      return contacts.value[id].category === 'user' && id !== props.displayContact.id;
+      return contacts.value[id].category === 'user' && id !== props.contactId;
     }
   }).map((id) => {
     return {
@@ -45,31 +45,41 @@ const dispatchFunction = () => {
         "log",
         selected.value + "",
         "disContId",
-        props.displayContact.id
+        props.contactId
     );
     for (const id of selected.value) {
-      console.log("Adding group member", props.displayContact.id, id);
+      console.log("Adding group member", props.contactId, id);
       const contact = contacts.value[id];
-      groupAddMember(props.displayContact.id, id);
+      groupAddMember(props.contactId, id);
       const memberInfo = {
         id: contact.id,
         name: contact.name,
         avatar: contact.avatar,
       };
-      contacts.value[props.displayContact.id].id2member[contact.id] = memberInfo;
-      contacts.value[props.displayContact.id].members.push(memberInfo);
+      contacts.value[props.contactId].id2member[contact.id] = memberInfo;
+      contacts.value[props.contactId].members.push(memberInfo);
     }
     selected.value = [];
     dialog.value = false;
-  } else if (props.type === 'create_group_from_contact') {
+  }
+
+  else if (props.type === 'create_group_from_contact') {
     // TODO: create group from contact
+    console.log("create group from profile", createGroupName.value, selected.value);
+    createGroup(createGroupName.value, selected.value);
+    selected.value = [];
+    dialog.value = false;
   }
 
 }
 
 onMounted(() => {
+  console.log("contactId", props.contactId)
   selected.value = [];
-  console.log("mounted", props.type);
+  if (props.type === 'create_group_from_contact') {
+    selected.value.push(props.contactId);
+  }
+  console.log("mounted", props.type, selected.value);
 });
 </script>
 
@@ -93,7 +103,7 @@ onMounted(() => {
         />
         <div class="d-flex overflow-x-auto flex-shrink-0" v-if="selected">
           <div
-              v-for="member in displayContact.members"
+              v-for="member in contacts[contactId]?.members"
               :key="member"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               v-ripple
@@ -112,9 +122,9 @@ onMounted(() => {
               v-ripple
           >
             <v-avatar>
-              <v-img :src="contacts[id].avatar" cover></v-img>
+              <v-img :src="contacts[id]?.avatar" cover></v-img>
             </v-avatar>
-            <p>{{ contacts[id].name }}</p>
+            <p>{{ contacts[id]?.name }}</p>
           </div>
         </div>
         <v-list class="overflow-y-auto flex-1-1">
@@ -139,7 +149,7 @@ onMounted(() => {
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
-        <v-btn @click="() => {dialog = false; selected = []}">Cancel</v-btn>
+        <v-btn @click="() => {dialog = false; selected = type === 'create_group_from_contact' ? [contactId] : []}">Cancel</v-btn>
         <v-btn @click="dispatchFunction">Create</v-btn>
       </v-card-actions>
     </v-card>

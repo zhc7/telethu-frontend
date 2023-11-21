@@ -9,6 +9,13 @@ import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
 import {nowRef, activeChatId, contacts, userId, userName} from "../globals.ts";
+import SelectMember from "./SelectMember.vue";
+
+const debug = () => {
+  console.log('contacts', contacts.value);
+  console.log('activeChatId', activeChatId.value);
+  console.log('displayContact', selectedChat.value);
+}
 
 const props = defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue']);
@@ -115,6 +122,7 @@ onMounted(() => {
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
           <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
         </v-toolbar-title>
+        <v-btn icon="mdi-bug" @click="debug"/>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChat.category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
       </v-toolbar>
@@ -147,6 +155,14 @@ onMounted(() => {
     <ContactProfile class="overflow-y-auto" v-if="selectedChat" :displayContact="selectedChat"
                     :display="showProfileDetail" source="contactDetail"/>
   </div>
+
+  <SelectMember
+      :showDialog="createGroupDialog"
+      @update:showDialog="createGroupDialog = $event"
+      :type="'create_group_from_contact'"
+      :title="'create group from contact'"
+      :contactId="activeChatId"
+  />
 </template>
 
 <style scoped>

@@ -102,7 +102,7 @@ onMounted(async () => {
     };
   }
 
-
+  /*
   for (const id in contacts.value) {
     console.log('get avatar for ', id, contacts.value[id].avatar);
     if (!contacts.value[id].avatar_storage) {
@@ -125,6 +125,7 @@ onMounted(async () => {
       }
     }
   }
+   */
 
 })
 </script>
