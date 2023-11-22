@@ -1,13 +1,14 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
-import {activeChatId, contacts, displayRightType, user, userId} from "../globals"
+import {activeChatId, displayRightType, messages, settings, user, userId} from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {generateMD5, generateMessageId} from "../utils/hash";
 import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
-import {Ack, GroupContact, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
+import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
+import {getUser} from "./data.ts";
 
 
 const searchResult = ref();
@@ -46,7 +47,7 @@ const chatManager: {
         message.status = 'sending';
         message = reactive(message);
         if (message.m_type <= 5) {
-            contacts.value[message.receiver].messages.push(message);
+            messages.value[message.receiver].push(message);
         }
         socket.send(JSON.stringify(message));
 
@@ -88,14 +89,15 @@ const chatManager: {
     receiveMessage(message: Message) {
         const target = message.t_type === 1 ? message.receiver :
             message.sender === user.value.id ? message.receiver : message.sender;
-        let existing = contacts.value[target].messages.find((m: Message) => m.message_id === message.message_id);
+        let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
             message.status = 'sent';
-            contacts.value[target].messages.push(message);
-            if (message.sender !== user.value.id && !contacts.value[target].muted) {
+            messages.value[target].push(message);
+            if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
             }
             if (activeChatId.value !== message.sender && user.value.id === message.receiver) {
+                // TODO: change this
                 contacts.value[target].unread_counter += 1;
             }
         } else if (existing.status === 'sending') {
@@ -113,10 +115,10 @@ const chatManager: {
         if (message === undefined) {
             return;
         }
-        let messages = contacts.value[message.receiver].messages;
-        const existing = messages.findIndex((m) => m.message_id === ack.reference);
+        let old_messages = messages.value[message.receiver];
+        const existing = old_messages.findIndex((m) => m.message_id === ack.reference);
         if (existing !== -1) {
-            messages.splice(existing, 1);
+            old_messages.splice(existing, 1);
         } else {
             message.status = 'sent';
             message.message_id = ack.message_id;
@@ -191,6 +193,8 @@ const handleAddFriend = (message: Message) => {
 };
 const handleCreateGroup = (message: Message) => {
     // FUNC_CREATE_GROUP
+    // TODO: change this func according to new data structure
+    // TODO: DO NOT access contacts directly
     let groupData = message.content as GroupData;
     let group = groupData as GroupContact;
     const members = [];
@@ -215,10 +219,10 @@ const handleCreateGroup = (message: Message) => {
 };
 const handleAddGroupMember = (message: Message) => {
     // FUNC_ADD_GROUP_MEMBER
-    let group = contacts.value[message.receiver] as GroupContact;
-    let user = message.content as UserData;
-    group.members.push(user);
-    group.id2member[user.id as number] = user;
+    getUser(message.receiver).then((group) => {
+        let user = message.content as number;
+        (group as GroupData).members.push(user);
+    })
 };
 const handleDeleteFriend = (message: Message) => {
     // FUNC_DELETE_FRIEND
@@ -234,7 +238,7 @@ const handleDeleteFriend = (message: Message) => {
     // };
     // console.log(JSON.stringify(message));
     // socket.send(JSON.stringify(message));
-    delete contacts.value[message.receiver];
+    // delete contacts.value[message.receiver];
 };
 const handleReceiveRequest = (message: Message) => {
     console.log("code 10 received: ", message);
@@ -250,7 +254,7 @@ const handleSearchResult = (message: Message) => {
 const receiveReadMessage = (message: Message) => {
     console.log("read message", message);
     let target = [message.sender, message.receiver][message.t_type];
-    let m = contacts.value[target].messages.find(m => m.message_id === message.content);
+    let m = messages.value[target].find(m => m.message_id === message.content);
     if (m === undefined) {
         // TODO: handle this properly
     }
@@ -302,6 +306,7 @@ const createGroup = (groupName: string, members: Array<number>) => {
             category: "group",
             name: groupName,
             avatar: "",
+            id: 0,  // place holder
         },
         receiver: userId.value,
         sender: userId.value,
@@ -354,7 +359,7 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
             Authorization: token.value,
         }
     }).then((response) => {
-        response.data.push(...contacts.value[id].messages);
+        response.data.push(...messages.value[id]);
         response.data.sort((a: Message, b: Message) => (a.time - b.time));
         let last_time = 0;
         let new_msg = [];
@@ -365,7 +370,7 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
             }
         }
         console.log(new_msg);
-        contacts.value[id].messages = new_msg;
+        messages.value[id] = new_msg;
     })
 }
 

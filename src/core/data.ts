@@ -21,3 +21,8 @@ const getCache = async (hash: string) => {
     cache.value[hash] = response.data as ArrayBuffer;
     return cache.value[hash];
 }
+
+export {
+    getUser,
+    getCache,
+}
