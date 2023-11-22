@@ -1,6 +1,6 @@
 import {computed, ref} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
-import {Contacts, Settings, User} from "./utils/structs";
+import {Users, Settings, UserData, Message} from "./utils/structs";
 
 
 export const nowRef = ref(Date.now());
@@ -9,12 +9,13 @@ setInterval(() => {
 }, 1000);
 export const displayRightType = ref('');
 export const activeChatId = ref<number>(-1);
-export const contacts = useLocalStorage<Contacts>("contacts", {});
-export const user = useLocalStorage<User>("user", {
+export const contacts = useLocalStorage<Users>("contacts", {});
+export const user = useLocalStorage<UserData>("user", {
     id: -1,
     name: "",
     email: "",
     avatar: "",
+    category: "user",
 })
 
 export const userId = computed({
@@ -48,3 +49,11 @@ export const settings = useLocalStorage<Settings>("settings", {
     muted: [],
     blocked: [],
 });
+
+export const messages = ref<{
+    [id: number]: Array<Message>
+}>({});
+
+export const cache = ref<{
+    [hash: string]: ArrayBuffer
+}>({});

@@ -35,7 +35,7 @@ const login = (email: string, password: string) => {
 const logout = () => {
     token.value = "";
     contacts.value = {};
-    user.value = {email: "", id: -1, name: "", avatar: ""};
+    user.value = {email: "", id: -1, name: "", avatar: "", category: "user"};
 }
 
 const register = async (name: string, email: string, password: string) => {

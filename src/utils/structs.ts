@@ -28,7 +28,7 @@ export enum TargetType {
 }
 
 export interface ContactsData {
-    id?: number,
+    id: number,
     name: string,
     avatar: string,
     category: string,
@@ -40,7 +40,7 @@ export interface UserData extends ContactsData {
 }
 
 export interface GroupData extends ContactsData {
-    members: Array<UserData | number>,
+    members: Array<number>,
     category: "group",
 }
 
@@ -61,32 +61,8 @@ export interface Ack {
     reference?: string,
 }
 
-export interface Contact {
-    id: number,
-    name: string,
-    email: string,
-    avatar: string,
-    avatar_storage?: string | ArrayBuffer | undefined,
-    messages: Array<Message>,
-    unread_counter: number,
-    category: string,
-    muted: boolean,
-}
-
-export interface GroupContact extends Contact {
-    members: Array<UserData>,
-    id2member: { [id: number]: UserData },
-}
-
-export interface Contacts {
-    [id: number]: Contact | GroupContact,
-}
-
-export interface User {
-    id: number,
-    name: string,
-    email: string,
-    avatar: string,
+export interface Users {
+    [id: number]: UserData | GroupData,
 }
 
 export interface Settings {

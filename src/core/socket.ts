@@ -2,7 +2,7 @@ import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
 import {contacts, isSocketConnected} from "../globals";
 import {chatManager, dispatcher} from "./chat";
-import {Ack, Contacts, Message} from "../utils/structs";
+import {Ack, Users, Message} from "../utils/structs";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -23,7 +23,7 @@ const createSocket = () => {
         if (DEBUG)
             console.log('received message: ', _message);
         if (first) {
-            handleLoad(_message as Contacts);
+            handleLoad(_message as Users);
             first = false;
             return;
         }
@@ -61,8 +61,8 @@ const createSocket = () => {
     };
 }
 export {createSocket};
-const handleLoad = (message: Contacts) => {
-    // ignore friend meta, we'll manually get this by http for now
+const handleLoad = (message: Users) => {
+    // TODO: will be deprecated soon
     for (const contact of Object.values(message)) {
         if (contacts.value[contact.id] !== undefined) {
             contact.messages = contacts.value[contact.id].messages;
