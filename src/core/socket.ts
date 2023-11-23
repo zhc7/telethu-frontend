@@ -1,8 +1,8 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {users, isSocketConnected, messages, contacts} from "../globals";
+import {contacts, isSocketConnected, messages} from "../globals";
 import {chatManager, dispatcher} from "./chat";
-import {Ack, Users, Message, UserData} from "../utils/structs";
+import {Ack, Message} from "../utils/structs";
 
 export let socket: WebSocket;
 const createSocket = () => {
