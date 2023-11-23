@@ -156,7 +156,6 @@ onMounted(() => {
                         :message="message"
                         :final="mIndex === group.messages.length - 1"
                         :avatar="selectedChat.avatar"
-                        :name="getNameById(message.sender)"
                         @finished="ScrollToBottom"
                         @showProfile="DisplayFriendProfile"
             />

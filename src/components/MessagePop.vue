@@ -6,14 +6,24 @@ import {markdown2Html, emojisLoaded} from "../markdown.ts"
 import {user, userId} from "../globals.ts";
 import {Message} from "../utils/structs.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
+import {getUser} from "../core/data.ts";
 
 // TODO: display menu when right click on message
 
-const props = defineProps(['message', 'final', 'avatar', 'name']);
+const props = defineProps<{
+  message: Message,
+  final: boolean,
+  avatar: string,
+}>();
 const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
 const blobSrc = ref("");
+const name = ref("");
+
+getUser(props.message.sender).then((contact) => {
+  name.value = contact.name;
+})
 
 const previewIconUrl = (extension: string) => {
   if (extension === "pdf") {
