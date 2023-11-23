@@ -30,7 +30,7 @@ const _chatList = ref<Array<{
 }>>([]);
 
 watch(contacts, () => {
-  for (let _id of contacts.value) {
+  for (let _id in contacts.value) {
     const id = +_id;
     getUser(id).then((contact) => {
       console.log("pushing to chat list", contact);
