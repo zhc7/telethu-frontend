@@ -11,6 +11,7 @@ import {token} from "../auth.ts";
 import {Message} from "../utils/structs.ts";
 
 defineProps(['modelValue']);
+defineEmits(['update:modelValue']);
 
 const createGroupDialog = ref(false);
 
@@ -21,23 +22,29 @@ const chatList = computed(() => {
     avatar: string,
     avatar_storage: string | ArrayBuffer | undefined,
     category: string,
-    hotMessage: Message,
+    hotMessage: Message | undefined,
     unread_counter: number,
     pin: boolean,
     mute: boolean,
     block: boolean,
   }> = [];
+  console.log('contacts', contacts.value);
   for (let _id in contacts.value) {
     const id = + _id;
     const contact = contacts.value[id];
+    if (!contact) {
+      continue;
+    }
     list.push({
       id: id,
       name: contact.name,
       avatar: contact.avatar,
-      avatar_storage: contact.avatar_storage,
+      // TODO
+      avatar_storage: undefined,
       category: contact.category,
-      hotMessage: contact.messages[contact.messages.length - 1],
-      unread_counter: contact.unread_counter,
+      // TODO: hotMessage
+      hotMessage: undefined,
+      unread_counter: 0,
       // TODO: persist pin, mute, block
       pin: settings.value.pinned.includes(id),
       mute: settings.value.muted.includes(id),

@@ -1,8 +1,8 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected} from "../globals";
+import {contacts, isSocketConnected, messages} from "../globals";
 import {chatManager, dispatcher} from "./chat";
-import {Ack, Users, Message} from "../utils/structs";
+import {Ack, Users, Message, UserData} from "../utils/structs";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -23,8 +23,12 @@ const createSocket = () => {
         if (DEBUG)
             console.log('received message: ', _message);
         if (first) {
-            handleLoad(_message as Users);
-            first = false;
+            contacts.value = _message as Users;
+            for (const contact of Object.values(contacts.value)) {
+                if (!messages.value[contact.id]) {
+                    messages.value[contact.id] = [];
+                }
+            }
             return;
         }
         const message = _message as Message;
@@ -61,20 +65,3 @@ const createSocket = () => {
     };
 }
 export {createSocket};
-const handleLoad = (message: Users) => {
-    // TODO: will be deprecated soon
-    for (const contact of Object.values(message)) {
-        if (contacts.value[contact.id] !== undefined) {
-            contact.messages = contacts.value[contact.id].messages;
-        }
-        if (contact.messages === undefined) contact.messages = [];
-        if (contact.category === "group") {
-            contact.id2member = {}
-            for (const member of contact.members) {
-                contact.id2member[member.id] = member;
-            }
-        }
-        contact.unread_counter = 0;
-    }
-    contacts.value = message;
-}

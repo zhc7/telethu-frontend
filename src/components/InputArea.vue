@@ -3,7 +3,7 @@ import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {sendFiles, sendMessage, sendReadMessage} from "../core/chat.ts";
 import {getFileType, uploadFiles, formatFileSize} from "../core/files.ts";
-import {activeChatId, contacts} from "../globals.ts";
+import {activeChatId, contacts, messages} from "../globals.ts";
 import {user} from "../globals.ts";
 
 const props = defineProps(['chat'])
@@ -117,7 +117,9 @@ const handleTextareaKeydown = (e: KeyboardEvent) => {
 
 const handleFocus = () => {
   // read message
-  for (let m of contacts.value[activeChatId.value].messages) {
+  const chatMessages = messages.value[activeChatId.value];
+  for (const id in chatMessages) {
+    const m = chatMessages[id];
     if (m.sender !== user.value.id) {
       sendReadMessage(m.message_id);
     }

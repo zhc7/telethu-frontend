@@ -8,7 +8,7 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, userId, userName} from "../globals.ts";
+import {nowRef, activeChatId, contacts, userId, userName, messages} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 
 const debug = () => {
@@ -28,22 +28,23 @@ const createGroupDialog = ref(false);
 const groupedMessages = computed(() => {
   const grouped = [];
   let lastTimestamp = null;
+  console.log(messages[activeChatId]);
 
-  selectedChat.value.messages.forEach((message, index) => {
-    const messageTimestamp = new Date(message.time).getTime();
-
-    // 检查时间差是否小于一分钟
-    if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
-      grouped.push({
-        time: message.time,
-        messages: [message]
-      });
-    } else {
-      grouped[grouped.length - 1].messages.push(message);
-    }
-
-    lastTimestamp = messageTimestamp;
-  });
+  // selectedChat.value.messages.forEach((message, index) => {
+  //   const messageTimestamp = new Date(message.time).getTime();
+  //
+  //   // 检查时间差是否小于一分钟
+  //   if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
+  //     grouped.push({
+  //       time: message.time,
+  //       messages: [message]
+  //     });
+  //   } else {
+  //     grouped[grouped.length - 1].messages.push(message);
+  //   }
+  //
+  //   lastTimestamp = messageTimestamp;
+  // });
 
   return grouped;
 });
@@ -118,7 +119,7 @@ onMounted(() => {
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
           <p style="font-size: 20px; font-weight: 450">
-            {{ selectedChat.username ? selectedChat.username : selectedChat.name }}</p>
+            {{ selectedChat.name }}</p>
           <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
           <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
         </v-toolbar-title>

@@ -96,10 +96,10 @@ const chatManager: {
             if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
             }
-            if (activeChatId.value !== message.sender && user.value.id === message.receiver) {
-                // TODO: change this
-                contacts.value[target].unread_counter += 1;
-            }
+            // if (activeChatId.value !== message.sender && user.value.id === message.receiver) {
+            //     // TODO: change this
+            //     contacts.value[target].unread_counter += 1;
+            // }
         } else if (existing.status === 'sending') {
             existing.status = 'sent';
         }
@@ -284,7 +284,7 @@ dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
     const message: Message = {
         time: Date.now(),
-        m_type: 0,
+        m_type: MessageType.TEXT,
         t_type: t_type === undefined ? 0 : t_type,
         content: inputMessage,
         receiver: receiverId,
@@ -439,7 +439,7 @@ const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_t
     return md5;
 }
 
-const sendReadMessage = (id: number) => {
+const sendReadMessage = (id: number | string) => {
     const message: Message = {
         message_id: generateMessageId(id.toString(), userId.value, Date.now()),
         time: Date.now(),

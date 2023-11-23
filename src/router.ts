@@ -28,7 +28,7 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
     if (to.path === '/login') {
         next();
     } else {
