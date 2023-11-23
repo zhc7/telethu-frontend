@@ -25,7 +25,7 @@ const createSocket = () => {
         if (first) {
             console.log("receiving meta data", _message);
             contacts.value = _message as Array<number>;
-            for (const contact in contacts.value) {
+            for (const contact of contacts.value) {
                 if (!messages.value[contact]) {
                     messages.value[contact] = [];
                 }
