@@ -12,7 +12,7 @@ axios.interceptors.response.use(res => res, err => {
     return Promise.reject(err);
 });
 
-const login = (email: string, password: string) => {
+const login = async (email: string, password: string) => {
     if (DEBUG) {
         console.log("login " + email);
     }
@@ -44,6 +44,7 @@ const register = async (name: string, email: string, password: string) => {
     }
     await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
         // TODO: get actual response
+        console.log('response: ', res);
         console.log("register succeeded");
     })
 }

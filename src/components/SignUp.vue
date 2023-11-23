@@ -34,9 +34,9 @@ const submitRegister = async () => {
     confirmPassword.value = "";
     return;
   }
-  register(signupName.value, signupAccount.value, signupPassword.value);
+  await register(signupName.value, signupAccount.value, signupPassword.value);
   await login(signupAccount.value, signupPassword.value);
-  router.push('/chat')
+  await router.push('/chat');
   dialog.value = false;
 };
 </script>

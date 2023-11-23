@@ -3,11 +3,11 @@ import {useLocalStorage} from "@vueuse/core";
 import {Users, Settings, UserData, Message} from "./utils/structs";
 
 
-export const nowRef = ref(Date.now());
+export const nowRef = ref<number>(Date.now());
 setInterval(() => {
     nowRef.value = Date.now();
 }, 1000);
-export const displayRightType = ref('');
+export const displayRightType = ref<string>('');
 export const activeChatId = ref<number>(-1);
 export const contacts = useLocalStorage<Users>("contacts", {});
 export const user = useLocalStorage<UserData>("user", {
