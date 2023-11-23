@@ -9,33 +9,30 @@ import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {token} from "../auth.ts";
 import {Message} from "../utils/structs.ts";
+import {getUser} from "../core/data.ts";
 
 defineProps(['modelValue']);
 defineEmits(['update:modelValue']);
 
 const createGroupDialog = ref(false);
 
-const chatList = computed(() => {
-  let list: Array<{
-    id: number,
-    name: string,
-    avatar: string,
-    avatar_storage: string | ArrayBuffer | undefined,
-    category: string,
-    hotMessage: Message | undefined,
-    unread_counter: number,
-    pin: boolean,
-    mute: boolean,
-    block: boolean,
-  }> = [];
-  console.log('contacts', contacts.value);
-  for (let _id in contacts.value) {
-    const id = + _id;
-    const contact = contacts.value[id];
-    if (!contact) {
-      continue;
-    }
-    list.push({
+const _chatList = ref<Array<{
+  id: number,
+  name: string,
+  avatar: string,
+  avatar_storage: string | ArrayBuffer | undefined,
+  category: string,
+  hotMessage: Message | undefined,
+  unread_counter: number,
+  pin: boolean,
+  mute: boolean,
+  block: boolean,
+}>>([]);
+
+for (let _id in contacts.value) {
+  const id = + _id;
+  getUser(id).then((contact) => {
+    _chatList.value.push({
       id: id,
       name: contact.name,
       avatar: contact.avatar,
@@ -50,8 +47,12 @@ const chatList = computed(() => {
       mute: settings.value.muted.includes(id),
       block: settings.value.blocked.includes(id),
     })
-  }
-  list = list.sort((a, b) => {
+  });
+}
+
+const chatList = computed(() => {
+  console.log('contacts', contacts.value);
+  let list = _chatList.value.sort((a, b) => {
     if (a.hotMessage && b.hotMessage) {
       if (a.pin && b.pin) {
         return b.hotMessage.time - a.hotMessage.time;
@@ -79,7 +80,7 @@ const chatList = computed(() => {
 const searchFriendInput = ref(false);
 const friendName = ref('');
 
-const displayHotMessage = (message: Message) => {
+const displayHotMessage = (message: Message | undefined) => {
   const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
   if (message === undefined) {
     return '';

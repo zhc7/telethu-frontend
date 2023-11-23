@@ -1,16 +1,16 @@
-import {cache, contacts} from "../globals";
+import {cache, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
-import {UserData} from "../utils/structs";
+import {ContactsData, UserData} from "../utils/structs";
 
 
-const getUser = async (id: number) => {
-    if (contacts.value[id] !== undefined) {
-        return contacts.value[id];
+const getUser = async (id: number): Promise<ContactsData> => {
+    if (users.value[id] !== undefined) {
+        return users.value[id];
     }
     const response = await axios.get(BASE_API_URL + "users/" + id);
-    contacts.value[id] = response.data as UserData;
-    return contacts.value[id];
+    users.value[id] = response.data as UserData;
+    return users.value[id];
 }
 
 const getCache = async (hash: string) => {

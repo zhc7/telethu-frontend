@@ -7,7 +7,7 @@ import ProfilePage from "./ProfilePage.vue";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {activeChatId, contacts, isSocketConnected, user, userName} from "../globals.ts"
+import {activeChatId, users, isSocketConnected, user, userName} from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 
 const router = useRouter();
@@ -31,7 +31,7 @@ const ActivateChat = (chat) => {
 };
 
 watch(activeChatId, (id) => {
-  contacts.value[id].unread_counter = 0;
+  users.value[id].unread_counter = 0;
 })
 
 onMounted(() => {

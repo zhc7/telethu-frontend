@@ -8,11 +8,11 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, userId, userName, messages} from "../globals.ts";
+import {nowRef, activeChatId, users, userId, userName, messages} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 
 const debug = () => {
-  console.log('contacts', contacts.value);
+  console.log('contacts', users.value);
   console.log('activeChatId', activeChatId.value);
   console.log('displayContact', selectedChat.value);
 }
@@ -49,7 +49,7 @@ const groupedMessages = computed(() => {
   return grouped;
 });
 
-const selectedChat = computed(() => contacts.value[activeChatId.value]);
+const selectedChat = computed(() => users.value[activeChatId.value]);
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow');
@@ -58,11 +58,11 @@ const ScrollToBottom = () => {
 
 const displayContact = ref();
 const DisplayFriendProfile = () => {
-  displayProfile.value = contacts.value[activeChatId.value].category;
+  displayProfile.value = users.value[activeChatId.value].category;
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
-  displayContact.value = contacts.value[activeChatId.value];
+  displayContact.value = users.value[activeChatId.value];
 };
 
 const handleHideProfile = (event) => {
@@ -82,7 +82,7 @@ const getNameById = (id) => {
   if (+id === userId.value) {
     return userName.value;
   } else {
-    return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : contacts.value)[+id].name;
+    return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : users.value)[+id].name;
   }
 }
 
@@ -97,9 +97,9 @@ const handleGetMoreMessage = () => {
 
 onMounted(() => {
   if (DEBUG) {
-    console.log('contacts value here', contacts.value);
+    console.log('contacts value here', users.value);
   }
-  console.log('in chatpage', contacts.value)
+  console.log('in chatpage', users.value)
 })
 
 </script>

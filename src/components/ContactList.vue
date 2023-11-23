@@ -2,12 +2,12 @@
 import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeChatId, contacts} from "../globals.ts";
+import {activeChatId, users} from "../globals.ts";
 
 const props = defineProps(["modelValue", "displayType", "searchInput"]);
 const emit = defineEmits((["update:modelValue"]))
 const personContacts = computed(() => {
-  return Object.values(contacts.value)
+  return Object.values(users.value)
       .sort((a, b) => (a.name.localeCompare(b.name)));
 });
 

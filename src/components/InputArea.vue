@@ -3,7 +3,7 @@ import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {sendFiles, sendMessage, sendReadMessage} from "../core/chat.ts";
 import {getFileType, uploadFiles, formatFileSize} from "../core/files.ts";
-import {activeChatId, contacts, messages} from "../globals.ts";
+import {activeChatId, users, messages} from "../globals.ts";
 import {user} from "../globals.ts";
 
 const props = defineProps(['chat'])

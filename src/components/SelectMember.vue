@@ -2,7 +2,7 @@
 
 import {computed, onMounted, ref} from "vue";
 import {createGroup, groupAddMember} from "../core/chat.ts";
-import {contacts} from "../globals.ts";
+import {users} from "../globals.ts";
 
 const props = defineProps(['showDialog', 'type', 'title', 'contactId'])
 const emit = defineEmits(['update:showDialog']);
@@ -10,19 +10,19 @@ const createGroupName = ref('')
 const selected = ref([])
 
 const filterContacts = computed(() => {
-  return Object.keys(contacts.value).filter((id) => {
+  return Object.keys(users.value).filter((id) => {
     if (props.type === 'create_group') {
-      return contacts.value[id].category === 'user';
+      return users.value[id].category === 'user';
     } else if (props.type === 'add_group_member') {
-      return contacts.value[id].category === 'user' && Object.keys(contacts.value[props.contactId]?.id2member)?.indexOf(id) === -1;
+      return users.value[id].category === 'user' && Object.keys(users.value[props.contactId]?.id2member)?.indexOf(id) === -1;
     } else if (props.type === 'create_group_from_contact') {
-      return contacts.value[id].category === 'user' && id !== props.contactId;
+      return users.value[id].category === 'user' && id !== props.contactId;
     }
   }).map((id) => {
     return {
-      id: contacts.value[id].id,  // id should be int
-      name: contacts.value[id].name,
-      avatar: contacts.value[id].avatar,
+      id: users.value[id].id,  // id should be int
+      name: users.value[id].name,
+      avatar: users.value[id].avatar,
     }
   });
 });
@@ -49,15 +49,15 @@ const dispatchFunction = () => {
     );
     for (const id of selected.value) {
       console.log("Adding group member", props.contactId, id);
-      const contact = contacts.value[id];
+      const contact = users.value[id];
       groupAddMember(props.contactId, id);
       const memberInfo = {
         id: contact.id,
         name: contact.name,
         avatar: contact.avatar,
       };
-      contacts.value[props.contactId].id2member[contact.id] = memberInfo;
-      contacts.value[props.contactId].members.push(memberInfo);
+      users.value[props.contactId].id2member[contact.id] = memberInfo;
+      users.value[props.contactId].members.push(memberInfo);
     }
     selected.value = [];
     dialog.value = false;
@@ -103,7 +103,7 @@ onMounted(() => {
         />
         <div class="d-flex overflow-x-auto flex-shrink-0" v-if="selected">
           <div
-              v-for="member in contacts[contactId]?.members"
+              v-for="member in users[contactId]?.members"
               :key="member"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               v-ripple
@@ -122,9 +122,9 @@ onMounted(() => {
               v-ripple
           >
             <v-avatar>
-              <v-img :src="contacts[id]?.avatar" cover></v-img>
+              <v-img :src="users[id]?.avatar" cover></v-img>
             </v-avatar>
-            <p>{{ contacts[id]?.name }}</p>
+            <p>{{ users[id]?.name }}</p>
           </div>
         </div>
         <v-list class="overflow-y-auto flex-1-1">

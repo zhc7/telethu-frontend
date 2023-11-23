@@ -9,7 +9,8 @@ setInterval(() => {
 }, 1000);
 export const displayRightType = ref<string>('');
 export const activeChatId = ref<number>(-1);
-export const contacts = useLocalStorage<Users>("contacts", {});
+export const users = useLocalStorage<Users>("users", {});
+export const contacts = ref<Array<number>>([]);
 export const user = useLocalStorage<UserData>("user", {
     id: -1,
     name: "",

@@ -12,7 +12,7 @@ import {
   searchResult,
 } from "../core/chat.ts";
 
-import {contacts, displayRightType} from "../globals.ts"
+import {users, displayRightType} from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
@@ -32,7 +32,7 @@ const displayGroup = ref(false);
 const selectContact = (newContactId) => {
   displayRightType.value = "contactDetail";
   if (newContactId) {
-    displayContact.value = contacts.value[newContactId];
+    displayContact.value = users.value[newContactId];
   }
 };
 
@@ -74,12 +74,12 @@ const handleRequestPass = (id) => {
     friendInfo.name = friendInfo.username;
     delete friendInfo.username;
   }
-  contacts.value[id] = friendInfo;
-  if (!contacts.value[id]["messages"]) {
-    contacts.value[id]["messages"] = [];
+  users.value[id] = friendInfo;
+  if (!users.value[id]["messages"]) {
+    users.value[id]["messages"] = [];
   }
-  if (contacts.value[id]["mute"] === undefined) {
-    contacts.value[id]["mute"] = false;
+  if (users.value[id]["mute"] === undefined) {
+    users.value[id]["mute"] = false;
   }
   displayContact.value = friendInfo;
   delete friendRequests.value[id];

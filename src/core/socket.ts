@@ -1,6 +1,6 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, messages} from "../globals";
+import {users, isSocketConnected, messages} from "../globals";
 import {chatManager, dispatcher} from "./chat";
 import {Ack, Users, Message, UserData} from "../utils/structs";
 
@@ -23,8 +23,8 @@ const createSocket = () => {
         if (DEBUG)
             console.log('received message: ', _message);
         if (first) {
-            contacts.value = _message as Users;
-            for (const contact of Object.values(contacts.value)) {
+            users.value = _message as Users;
+            for (const contact of Object.values(users.value)) {
                 if (!messages.value[contact.id]) {
                     messages.value[contact.id] = [];
                 }

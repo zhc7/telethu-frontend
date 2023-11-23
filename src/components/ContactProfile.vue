@@ -7,7 +7,7 @@ import {
 import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {contacts, settings} from "../globals.ts";
+import {users, settings} from "../globals.ts";
 import {Contact, GroupContact} from "../utils/structs.ts";
 
 const props = defineProps<{
@@ -147,7 +147,7 @@ const editName = () => {
         </div>
       </v-list>
       <v-divider class="ma-4"/>
-      <v-col v-if="Object.keys(contacts).indexOf(displayContact.id.toString()) !== -1">
+      <v-col v-if="Object.keys(users).indexOf(displayContact.id.toString()) !== -1">
         <v-row style="display: flex; align-items: center;" class="ma-3">
           <!-- TODO: add rename function -->
           <p style="flex: 1" class="text-right pr-4">Rename:</p>
