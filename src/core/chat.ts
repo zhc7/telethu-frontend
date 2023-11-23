@@ -92,13 +92,22 @@ const chatManager: {
         let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
             message.status = 'sent';
-            hotMessages.value[message.receiver] = message.content;
+            hotMessages.value[message.receiver] = {
+                sender: message.receiver,
+                time: message.time,
+                content: message.content,
+            };
+
             messages.value[target].push(message);
             if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
             }
             if (message.sender !== user.value.id) {
-                hotMessages.value[message.receiver] = message.content;
+                hotMessages.value[message.receiver] = {
+                    sender: message.sender,
+                    time: message.time,
+                    content: message.content,
+                };
             }
         } else if (existing.status === 'sending') {
             existing.status = 'sent';

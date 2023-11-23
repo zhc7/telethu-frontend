@@ -53,7 +53,7 @@ watch(contacts, async () => {
 
 const chatList = computed(() => {
   let list = _chatList.value.sort((a, b) => {
-    if (a.hotMessage && b.hotMessage) {
+    if (hotMessages.value[a.id] && hotMessages.value[b.id]) {
       if (a.pin && b.pin) {
         return b.hotMessage.time - a.hotMessage.time;
       } else if (a.pin) {
@@ -61,14 +61,14 @@ const chatList = computed(() => {
       } else if (b.pin) {
         return 1;
       } else {
-        return b.hotMessage.time - a.hotMessage.time;
+        return hotMessages.value[b.id].time - hotMessages.value[a.id].time;
       }
-    } else if (a.hotMessage) {
+    } else if (hotMessages.value[a.id]) {
       return -1;
-    } else if (b.hotMessage) {
+    } else if (hotMessages.value[b.id]) {
       return 1;
     } else {
-      return 0;
+      return a.id - b.id;
     }
   });
   console.log("the list is", list);
@@ -165,7 +165,7 @@ onMounted(async () => {
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
-          :subtitle="hotMessages[chat.id]"
+          :subtitle="hotMessages[chat.id] ? hotMessages[chat.id].content : ''"
       >
         <template #prepend>
           <v-avatar>
@@ -175,7 +175,7 @@ onMounted(async () => {
           </v-avatar>
         </template>
         <div class="chat-time fill-height">
-          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time.toString()) : '' }}</p>
+          <p>{{ hotMessages[chat.id] ? FormatChatMessageTime(nowRef, hotMessages[chat.id].time.toString()) : '' }}</p>
           <v-icon v-show="chat.pin">mdi-pin</v-icon>
           <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
         </div>

@@ -60,5 +60,9 @@ export const cache = ref<{
 }>({});
 
 export const hotMessages = ref<{
-    [id: number]: string
+    [id: number]: {
+        sender: string,
+        time: number,
+        content: string,
+    } | undefined
 }>({});

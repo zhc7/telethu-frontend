@@ -3,6 +3,7 @@ import {token} from "../auth";
 import {contacts, isSocketConnected, messages, hotMessages} from "../globals";
 import {chatManager, dispatcher} from "./chat";
 import {Ack, Message} from "../utils/structs";
+import {getUser} from "./data.ts";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -31,9 +32,14 @@ const createSocket = () => {
                 }
                 const len = messages.value[id].length;
                 if (len === 0) {
-                    hotMessages.value[id] = '';
+                    hotMessages.value[id] = undefined;
                 } else {
-                    hotMessages.value[id] = messages[id][len - 1];
+                    const message = messages.value[id][len - 1];
+                    hotMessages.value[id] = {
+                        sender: message.sender,
+                        time: message.time,
+                        content: message.content,
+                    }
                 }
             }
             console.log("writing to contacts:", contacts.value);
