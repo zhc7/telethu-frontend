@@ -1,64 +1,21 @@
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, settings, hotMessages} from "../globals.ts";
+import {nowRef, activeChatId, contacts, settings, hotMessages, rawChatList} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
 import {Message} from "../utils/structs.ts";
 import {getCache, getUser} from "../core/data.ts";
+import {updateChatList} from "../core/chat.ts";
 
 defineProps(['modelValue']);
 defineEmits(['update:modelValue']);
 
 const createGroupDialog = ref(false);
 
-const _chatList = ref<Array<{
-  id: number,
-  name: string,
-  avatar: string,
-  avatar_storage: string,
-  category: string,
-  hotMessage: Message | undefined,
-  unread_counter: number,
-  pin: boolean,
-  mute: boolean,
-  block: boolean,
-}>>([]);
-
-const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
-  if (!arrayBuffer) return '/Shenium.png';
-  const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
-  return URL.createObjectURL(blob);
-}
-
-watch(contacts, async () => {
-  for (let _id of contacts.value) {
-    const id = +_id;
-
-    getUser(id).then(async (contact) => {
-      console.log("pushing to chat list", contact);
-      _chatList.value.push({
-        id: id,
-        name: contact.name,
-        avatar: contact.avatar,
-        // TODO
-        avatar_storage: parse_Avatar(await getCache(contact.avatar)),
-        category: contact.category,
-        // TODO: hotMessage
-        hotMessage: undefined,
-        unread_counter: 0,
-        // TODO: persist pin, mute, block
-        pin: settings.value.pinned.includes(id),
-        mute: settings.value.muted.includes(id),
-        block: settings.value.blocked.includes(id),
-      })
-    });
-  }
-}, {immediate: true});
-
 const chatList = computed(() => {
-  let list = _chatList.value.sort((a, b) => {
+  let list = rawChatList.value.sort((a, b) => {
     if (hotMessages.value[a.id] && hotMessages.value[b.id]) {
       if (a.pin && b.pin) {
         return b.hotMessage.time - a.hotMessage.time;
@@ -98,49 +55,7 @@ const displayHotMessage = (message: Message | undefined) => {
   }
 }
 
-onMounted(async () => {
-  // const response = await axios.get(`${BASE_API_URL}users/avatar/`, {
-  //   headers: {
-  //     Authorization: token.value,
-  //   },
-  //   responseType: 'blob',
-  // }).catch((error) => {
-  //   console.error('Http get avatar failed -> ', error);
-  //   return { data: null }; // 返回一个具有默认 data 属性的对象
-  // });
-  //
-  // if (response && response.data) {
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(response.data); // change Blob into Base64
-  //   reader.onloadend = function () {
-  //     user.value.avatar = reader.result as string;
-  //   };
-  // }
-
-  /*
-  for (const id in contacts.value) {
-    console.log('get avatar for ', id, contacts.value[id].avatar);
-    if (!contacts.value[id].avatar_storage) {
-      try {
-        const response = await axios.get(`${BASE_API_URL}users/avatar/${contacts.value[id].avatar}`, {
-          headers: {
-            Authorization: token.value,
-          },
-          responseType: 'blob',
-        });
-
-        const reader = new FileReader();
-        reader.readAsDataURL(response.data); // change Blob into Base64
-        reader.onloadend = function () {
-          contacts.value[id].avatar_storage = reader.result as string;
-        };
-      } catch (error) {
-        console.error('Http get avatar failed -> ', error);
-        contacts.value[id].avatar_storage = undefined;
-      }
-    }
-  }
-   */
+onMounted( () => {
 
 })
 </script>

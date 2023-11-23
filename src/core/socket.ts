@@ -1,7 +1,7 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
 import {contacts, isSocketConnected, messages, hotMessages} from "../globals";
-import {chatManager, dispatcher} from "./chat";
+import {chatManager, dispatcher, updateChatList} from "./chat";
 import {Ack, Message} from "../utils/structs";
 import {getUser} from "./data.ts";
 
@@ -42,6 +42,7 @@ const createSocket = () => {
                     }
                 }
             }
+            updateChatList();
             // console.log("writing to contacts:", contacts.value);
             first = false;
             return;

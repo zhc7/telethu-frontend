@@ -1,6 +1,6 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
-import {contacts, displayRightType, hotMessages, messages, settings, user, userId} from "../globals"
+import {rawChatList, contacts, displayRightType, hotMessages, messages, settings, user, userId} from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {generateMD5, generateMessageId} from "../utils/hash";
@@ -8,7 +8,7 @@ import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
-import {getUser} from "./data.ts";
+import {getCache, getUser} from "./data.ts";
 
 
 const searchResult = ref();
@@ -146,6 +146,33 @@ const addFriend = (friendId: number) => {
     })
 };
 
+const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
+    if (!arrayBuffer) return '/Shenium.png';
+    const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
+    return URL.createObjectURL(blob);
+}
+
+export const updateChatList = async () => {
+    const list = [];
+    for (const id of contacts.value) {
+        console.log('filling in chatInfo', id);
+        const contact = await getUser(id);
+        const chatInfo = {
+            id: id,
+            name: contact.name,
+            avatar: contact.avatar,
+            avatar_storage: parse_Avatar(await getCache(contact.avatar)),
+            category: contact.category,
+            unread_counter: 0,
+            pin: settings.value.pinned.includes(id),
+            mute: settings.value.muted.includes(id),
+            block: settings.value.blocked.includes(id),
+        }
+        list.push(chatInfo);
+    }
+    rawChatList.value = list;
+}
+
 const acceptFriend = (friendId: number) => {
     const message: Message = {
         time: Date.now(),
@@ -257,6 +284,7 @@ const handleDeleteFriend = (message: Message) => {
     }
     delete messages.value[message.receiver];
     contacts.value = contacts.value.filter((i: number) => i !== +message.receiver);
+    rawChatList.value = rawChatList.value.filter((i) => i.id !== message.receiver);
 };
 const handleReceiveRequest = (message: Message) => {
     console.log("code 10 received: ", message);
