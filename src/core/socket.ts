@@ -1,6 +1,6 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, messages} from "../globals";
+import {contacts, isSocketConnected, messages, hotMessages} from "../globals";
 import {chatManager, dispatcher} from "./chat";
 import {Ack, Message} from "../utils/structs";
 
@@ -25,9 +25,15 @@ const createSocket = () => {
         if (first) {
             console.log("receiving meta data", _message);
             contacts.value = _message as Array<number>;
-            for (const contact of contacts.value) {
-                if (!messages.value[contact]) {
-                    messages.value[contact] = [];
+            for (const id of contacts.value) {
+                if (!messages.value[id]) {
+                    messages.value[id] = [];
+                }
+                const len = messages.value[id].length;
+                if (len === 0) {
+                    hotMessages.value[id] = '';
+                } else {
+                    hotMessages.value[id] = messages[id][len - 1];
                 }
             }
             console.log("writing to contacts:", contacts.value);

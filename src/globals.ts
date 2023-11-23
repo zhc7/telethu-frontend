@@ -58,3 +58,7 @@ export const messages = ref<{
 export const cache = ref<{
     [hash: string]: ArrayBuffer
 }>({});
+
+export const hotMessages = ref<{
+    [id: number]: string
+}>({});

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, settings} from "../globals.ts";
+import {nowRef, activeChatId, contacts, settings, hotMessages} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
@@ -165,7 +165,7 @@ onMounted(async () => {
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
-          :subtitle="displayHotMessage(chat.hotMessage)"
+          :subtitle="hotMessages[chat.id]"
       >
         <template #prepend>
           <v-avatar>
