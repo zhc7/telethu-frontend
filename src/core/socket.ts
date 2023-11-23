@@ -31,6 +31,7 @@ const createSocket = () => {
                 }
             }
             console.log("writing to contacts:", contacts.value);
+            first = false;
             return;
         }
         const message = _message as Message;
