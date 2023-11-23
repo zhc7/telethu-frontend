@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import {
   blockFriend,
-  deleteFriend,
+  deleteFriend, exitGroup,
   unblockFriend,
 } from "../core/chat.ts";
-import { computed, ref } from "vue";
+import {computed, onMounted, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {users, settings} from "../globals.ts";
 import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
+import {getUser} from "../core/data.ts";
 
 const props = defineProps<{
   displayContact: ContactsData,
@@ -76,9 +77,23 @@ const ifGroup = computed(() => {
   return props.displayContact.category === "group";
 });
 
+const memberInfoTable = ref({});
+
+onMounted(() => {
+  if (props.displayContact.category === 'group') {
+    for (const id of (props.displayContact as GroupData).members) {
+      getUser(id).then((res) => (memberInfoTable.value[id] = res));
+    }
+  }
+})
+
 const handleDelete = () => {
   deleteConfirmDialog.value = false;
-  deleteFriend(props.displayContact.id);
+  if (props.displayContact.category === 'user') {
+    deleteFriend(props.displayContact.id);
+  } else {
+    exitGroup(props.displayContact.id);
+  }
 };
 
 const editName = () => {
@@ -126,14 +141,14 @@ const editName = () => {
           <v-card-title class="ma-7"> Members </v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
-              v-for="member in (displayContact as GroupContact).members"
+              v-for="member in (displayContact as GroupData).members"
               :key="member.id"
               class="d-flex flex-column align-center ma-auto mb-5"
             >
               <v-avatar size="60">
                 <v-img :src="member.avatar" id="member-avatar" cover />
               </v-avatar>
-              <p>{{ member.name }}</p>
+              <p>{{  }}</p>
             </div>
             <div class="d-flex flex-column align-center ma-auto mb-5">
               <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">

@@ -262,6 +262,11 @@ const handleAddGroupMember = (message: Message) => {
     })
 };
 
+const handleSomebodyExitGroup = (message) => {
+    const memberId = message.sender;
+    const groupId = message.receiver;
+}
+
 const deleteFriend = (id: number) => {
     const message = {
         time: Date.now(),
@@ -273,6 +278,7 @@ const deleteFriend = (id: number) => {
         info: "",
         message_id: generateMessageId(id, userId.value, Date.now()),
     };
+    alert('delete');
     console.log('deleting friend', JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
@@ -358,6 +364,22 @@ const createGroup = (groupName: string, members: Array<number>) => {
         sender: userId.value,
         info: groupName,
         message_id: generateMessageId(members.toString(), userId.value, Date.now()),
+        status: 'sending',
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
+const exitGroup = (id: number) => {
+    const message: Message = {
+        time: Date.now(),
+        m_type: 20,
+        t_type: 1,
+        receiver: id,
+        content: '',
+        sender: userId.value,
+        info: '',
+        message_id: generateMessageId(id, userId.value, Date.now()),
         status: 'sending',
     };
     console.log(JSON.stringify(message));
@@ -496,6 +518,7 @@ export {
     acceptFriend,
     rejectFriend,
     createGroup,
+    exitGroup,
     groupAddMember,
     getHistoryMessage,
     deleteFriend,

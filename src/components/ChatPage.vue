@@ -73,7 +73,7 @@ const ScrollToBottom = () => {
 
 const displayContact = ref();
 const DisplayFriendProfile = () => {
-  displayProfile.value = users.value[activeChatId.value].category;
+  displayProfile.value = users.value[activeChatId.value];
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
