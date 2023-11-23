@@ -1,6 +1,6 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
-import {activeChatId, displayRightType, messages, settings, user, userId} from "../globals"
+import {displayRightType, messages, settings, user, userId} from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {generateMD5, generateMessageId} from "../utils/hash";
@@ -115,6 +115,7 @@ const chatManager: {
         if (message === undefined) {
             return;
         }
+        console.log("messages", messages, "message", message);
         let old_messages = messages.value[message.receiver];
         const existing = old_messages.findIndex((m) => m.message_id === ack.reference);
         if (existing !== -1) {
@@ -275,11 +276,11 @@ dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = () => {}; // TODO
 dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {}; // TODO
 dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {}; // TODO
 dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
-dispatcher[MessageType.FUNC_READ_MSG] = receiveReadMessage;
+
 dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {}; // TODO
 dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {}; // TODO
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
-
+dispatcher[MessageType.FUNC_READ_MESSAGE] = receiveReadMessage;
 
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
     const message: Message = {
