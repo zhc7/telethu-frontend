@@ -1,15 +1,24 @@
-<script setup>
-import {computed} from 'vue';
+<script setup lang="ts">
+import {computed, ref, watch} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeChatId, users} from "../globals.ts";
+import {contacts} from "../globals";
+import {getUser} from "../core/data.ts";
+import {ContactsData} from "../utils/structs.ts";
 
 const props = defineProps(["modelValue", "displayType", "searchInput"]);
 const emit = defineEmits((["update:modelValue"]))
-const personContacts = computed(() => {
-  return Object.values(users.value)
-      .sort((a, b) => (a.name.localeCompare(b.name)));
-});
+const _personContacts = ref<Array<ContactsData>>([]);
+
+watch(contacts, () => {
+  for (const id of contacts.value) {
+    getUser(id).then((contact) => {
+      _personContacts.value.push(contact);
+    })
+  }
+}, {immediate: true});
+
+const personContacts = computed(() => _personContacts.value.sort((a, b) => a.name.localeCompare(b.name)));
 
 const selected = computed({
   get: () => props.modelValue,

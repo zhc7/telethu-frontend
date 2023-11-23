@@ -6,7 +6,6 @@ import {token} from "../auth.ts";
 
 
 const getUser = async (id: number): Promise<ContactsData> => {
-    console.log("querying", id, "from", users.value);
     if (users.value[id] !== undefined) {
         return users.value[id];
     }
