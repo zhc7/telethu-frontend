@@ -22,28 +22,27 @@ const getCache = async (hash: string) => {
     if (cache.value[hash] !== undefined) {
         return cache.value[hash];
     }
-    let response;
+    let url;
     if (hash.startsWith("http")) {
-        response = await axios.get(hash);
+        url = hash;
     } else {
-        let url;
         if (hash.startsWith("./files")) {
             url = BASE_API_URL + hash;
         } else {
             url = BASE_API_URL + 'files/' + hash;
         }
-        try {
-            response = await axios.get(url, {
-                headers: {
-                    Authorization: token.value,
-                },
-            });
-            cache.value[hash] = response.data as ArrayBuffer;
-            return cache.value[hash];
-        } catch(error) {
-            cache.value[hash] = '';
-        }
     }
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: token.value,
+            },
+        });
+        cache.value[hash] = response.data as ArrayBuffer;
+    } catch(error) {
+        console.log("error fetching", error);
+    }
+    return cache.value[hash];
 }
 
 export {
