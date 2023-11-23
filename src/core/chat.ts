@@ -137,13 +137,18 @@ const chatManager: {
 }
 
 const addFriend = (friendId: number) => {
-    axios.post(BASE_API_URL + "users/friends/apply", {friendId}, {
-        headers: {
-            Authorization: token.value,
-        }
-    }).then(() => {
-        console.log("friend request sent");
-    })
+    const message = {
+        time: Date.now(),
+        m_type: 10,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: friendId,
+        info: "",
+        message_id: generateMessageId(friendId, userId.value, Date.now()),
+    }
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
 };
 
 const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
@@ -299,8 +304,8 @@ const handleDeleteFriend = (message: Message) => {
     contacts.value = contacts.value.filter((i: number) => i !== message.receiver);
     rawChatList.value = rawChatList.value.filter((i) => i.id !== message.receiver);
 };
-const handleReceiveRequest = (message: Message) => {
-    console.log("code 10 received: ", message);
+const handleReceiveRequest = async (message: Message) => {
+    await applyList();
 }
 
 const handleSearchResult = (message: Message) => {
