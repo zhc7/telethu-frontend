@@ -95,7 +95,7 @@ const chatManager: {
             hotMessages.value[message.receiver] = {
                 sender: message.receiver,
                 time: message.time,
-                content: message.content,
+                content: message.content as string,
             };
 
             messages.value[target].push(message);
@@ -106,7 +106,7 @@ const chatManager: {
                 hotMessages.value[message.receiver] = {
                     sender: message.sender,
                     time: message.time,
-                    content: message.content,
+                    content: message.content as string,
                 };
             }
         } else if (existing.status === 'sending') {
@@ -171,6 +171,7 @@ export const updateChatList = async () => {
             pin: settings.value.pinned.includes(id),
             mute: settings.value.muted.includes(id),
             block: settings.value.blocked.includes(id),
+            hotMessage: undefined,
         }
         list.push(chatInfo);
     }

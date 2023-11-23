@@ -1,7 +1,6 @@
 import {computed, ref} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
 import {Users, Settings, UserData, Message, ContactsData} from "./utils/structs";
-import {getCache, getUser} from "./core/data.ts";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -16,7 +15,7 @@ export const contactPageContentLeft = ref<number>(0);
 export const selectedContactInfo = ref<{
     info: ContactsData | undefined,
     source: string | undefined,
-}>({});
+}>({info: undefined, source: undefined});
 export const users = useLocalStorage<Users>("users", {});
 export const contacts = ref<Array<number>>([]);
 export const user = useLocalStorage<UserData>("user", {
@@ -69,7 +68,7 @@ export const cache = ref<{
 
 export const hotMessages = ref<{
     [id: number]: {
-        sender: string,
+        sender: number,
         time: number,
         content: string,
     } | undefined
