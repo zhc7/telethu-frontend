@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {getHistoryMessage} from "../core/chat.ts";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
@@ -10,6 +10,8 @@ import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
 import {nowRef, activeChatId, users, userId, userName, messages} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
+import {getUser} from "../core/data";
+import {ContactsData, Message} from "../utils/structs";
 
 const debug = () => {
   console.log('users', users.value);
@@ -17,42 +19,55 @@ const debug = () => {
   console.log('displayContact', selectedChat.value);
 }
 
-const props = defineProps(['modelValue']);
-const emit = defineEmits(['update:modelValue']);
+defineProps(['modelValue']);
+defineEmits(['update:modelValue']);
 
 
-const displayProfile = ref(undefined);
+const displayProfile = ref<undefined | "user" | "group">(undefined);
 const showProfileDetail = ref(false);
 const createGroupDialog = ref(false);
 
 const groupedMessages = computed(() => {
-  const grouped = [];
-  let lastTimestamp = null;
-  console.log(messages[activeChatId]);
+  const grouped: Array<{
+    time: number,
+    messages: Array<Message>,
+  }> = [];
+  let lastTimestamp: null | number = null;
+  console.log(messages.value[activeChatId.value]);
 
-  // selectedChat.value.messages.forEach((message, index) => {
-  //   const messageTimestamp = new Date(message.time).getTime();
-  //
-  //   // 检查时间差是否小于一分钟
-  //   if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
-  //     grouped.push({
-  //       time: message.time,
-  //       messages: [message]
-  //     });
-  //   } else {
-  //     grouped[grouped.length - 1].messages.push(message);
-  //   }
-  //
-  //   lastTimestamp = messageTimestamp;
-  // });
+  if (messages.value[activeChatId.value] === undefined) {
+    return [];
+  }
+
+  messages.value[activeChatId.value].forEach((message) => {
+    const messageTimestamp = new Date(message.time).getTime();
+
+    // 检查时间差是否小于一分钟
+    if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
+      grouped.push({
+        time: message.time,
+        messages: [message],
+      });
+    } else {
+      grouped[grouped.length - 1].messages.push(message);
+    }
+
+    lastTimestamp = messageTimestamp;
+  });
 
   return grouped;
 });
 
-const selectedChat = computed(() => users.value[activeChatId.value]);
+const selectedChat = ref<ContactsData>({avatar: "", category: "", id: 0, name: ""});
+
+watch(activeChatId, (id) => {
+  getUser(id).then((contact) => {
+    selectedChat.value = contact;
+  })
+})
 
 const ScrollToBottom = () => {
-  const container = document.getElementById('message-flow');
+  const container = document.getElementById('message-flow')!;
   container.scrollTop = container.scrollHeight;
 };
 
@@ -78,18 +93,18 @@ const handleHideProfile = (event) => {
 }
 
 
-const getNameById = (id) => {
+const getNameById = async (id: number) => {
   if (+id === userId.value) {
     return userName.value;
   } else {
-    return (selectedChat.value.category === 'group' ? selectedChat.value.id2member : users.value)[+id].name;
+    return (await getUser(id)).name;
   }
 }
 
 const handleGetMoreMessage = () => {
   getHistoryMessage(
       activeChatId.value,
-      selectedChat.value.messages[0] === undefined ? Date.now() : selectedChat.value.messages[0].time,
+      messages.value[activeChatId.value][0] === undefined ? Date.now() : messages.value[activeChatId.value][0].time,
       selectedChat.value.category === "group" ? 1 : 0,
       20,
   )
@@ -120,8 +135,8 @@ onMounted(() => {
         <v-toolbar-title align="left" class="ml-8">
           <p style="font-size: 20px; font-weight: 450">
             {{ selectedChat.name }}</p>
-          <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>
-          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>
+<!--          <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>-->
+<!--          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>-->
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChat.category === 'user'"/>
@@ -134,7 +149,7 @@ onMounted(() => {
           </div>
           <div v-for="(group, index) in groupedMessages" :key="index">
             <div class="justify-center ma-1">
-              {{ FormatChatMessageTime(nowRef, group.time) }}
+              {{ FormatChatMessageTime(nowRef, group.time.toString()) }}
             </div>
             <MessagePop v-for="(message, mIndex) in group.messages"
                         :key="mIndex"
