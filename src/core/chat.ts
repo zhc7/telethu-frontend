@@ -265,6 +265,14 @@ const handleAddGroupMember = (message: Message) => {
 const handleSomebodyExitGroup = (message) => {
     const memberId = message.sender;
     const groupId = message.receiver;
+    if (contacts.value.indexOf(groupId) === -1) {
+        return;
+    }
+    if (memberId === user.value.id) {
+        contacts.value = contacts.value.filter((i) => i !== groupId);
+        delete messages.value[groupId];
+        rawChatList.value = rawChatList.value.filter((i) => i.id !== groupId);
+    }
 }
 
 const deleteFriend = (id: number) => {
@@ -289,7 +297,7 @@ const handleDeleteFriend = (message: Message) => {
         return;
     }
     delete messages.value[message.receiver];
-    contacts.value = contacts.value.filter((i: number) => i !== +message.receiver);
+    contacts.value = contacts.value.filter((i: number) => i !== message.receiver);
     rawChatList.value = rawChatList.value.filter((i) => i.id !== message.receiver);
 };
 const handleReceiveRequest = (message: Message) => {
@@ -321,7 +329,7 @@ const receiveReadMessage = (message: Message) => {
 const dispatcher: {[key in MessageType]?: (arg0: Message) => void} = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
-dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {}; // TODO
+dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {};
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = () => {}; // TODO
 dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {}; // TODO
@@ -332,6 +340,8 @@ dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {}; // TODO
 dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {}; // TODO
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = receiveReadMessage;
+dispatcher[MessageType.FUNC_SB_EXIT_GROUP] = handleSomebodyExitGroup;
+
 
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
     const message: Message = {

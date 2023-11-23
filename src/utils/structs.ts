@@ -19,6 +19,7 @@ export enum MessageType {
     FUNC_UNBLOCK_FRIEND = 17,
     FUN_SEND_META = 18,
     FUNC_READ_MESSAGE = 19,
+    FUNC_SB_EXIT_GROUP = 20,
 }
 
 export enum TargetType {
