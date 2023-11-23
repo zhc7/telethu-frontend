@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import {computed, onMounted, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, user, settings} from "../globals.ts";
+import {nowRef, activeChatId, contacts, settings} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
-import axios from "axios";
-import {BASE_API_URL} from "../constants.ts";
-import {token} from "../auth.ts";
 import {Message} from "../utils/structs.ts";
-import {getUser} from "../core/data.ts";
+import {getCache, getUser} from "../core/data.ts";
 
 defineProps(['modelValue']);
 defineEmits(['update:modelValue']);
@@ -32,14 +29,15 @@ const _chatList = ref<Array<{
 watch(contacts, () => {
   for (let _id of contacts.value) {
     const id = +_id;
-    getUser(id).then((contact) => {
+
+    getUser(id).then(async (contact) => {
       console.log("pushing to chat list", contact);
       _chatList.value.push({
         id: id,
         name: contact.name,
         avatar: contact.avatar,
         // TODO
-        avatar_storage: undefined,
+        avatar_storage: await getCache(contact.avatar).then((cache) => cache ? cache : 'public/Logo.png'),
         category: contact.category,
         // TODO: hotMessage
         hotMessage: undefined,
@@ -54,7 +52,6 @@ watch(contacts, () => {
 })
 
 const chatList = computed(() => {
-  console.log('contacts', contacts.value);
   let list = _chatList.value.sort((a, b) => {
     if (a.hotMessage && b.hotMessage) {
       if (a.pin && b.pin) {
