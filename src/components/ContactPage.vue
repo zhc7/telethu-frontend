@@ -30,12 +30,11 @@ const searchInput = ref("");
 const searchFriendMode = ref("id");
 const displayGroup = ref(false);
 
-const selectContact = (newContactId: number) => {
-  displayRightType.value = "contactDetail";
+const selectContact = async (newContactId: number) => {
   if (newContactId) {
-    getUser(newContactId).then((contact) => {
-      displayContact.value = contact;
-    })
+    const userInfo = await getUser(newContactId);
+    displayContact.value = userInfo;
+    displayRightType.value = "contactDetail";
   }
 };
 
