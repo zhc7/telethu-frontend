@@ -26,10 +26,24 @@ const getCache = async (hash: string) => {
     if (hash.startsWith("http")) {
         response = await axios.get(hash);
     }
-     else {
-         response = await axios.get(BASE_API_URL + "files/" + hash);
+    else {
+        response = await axios.get(`${BASE_API_URL}files/${hash}`, {
+            headers: {
+                Authorization: token.value,
+            },
+        });
+
+        if (response.data instanceof Blob) {
+            const reader = new FileReader();
+            reader.readAsDataURL(response.data);
+            reader.onloadend = function () {
+                cache.value[hash] = reader.result as string;
+            };
+        }
+        else {
+            cache.value[hash] = response.data;
+        }
     }
-    cache.value[hash] = response.data as ArrayBuffer;
     return cache.value[hash];
 }
 

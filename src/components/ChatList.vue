@@ -2,6 +2,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
 import {nowRef, activeChatId, contacts, settings, hotMessages} from "../globals.ts";
+import {activeChatId, contacts, nowRef, settings} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
@@ -17,7 +18,7 @@ const _chatList = ref<Array<{
   id: number,
   name: string,
   avatar: string,
-  avatar_storage: string | ArrayBuffer | undefined,
+  avatar_storage: string,
   category: string,
   hotMessage: Message | undefined,
   unread_counter: number,
@@ -26,7 +27,7 @@ const _chatList = ref<Array<{
   block: boolean,
 }>>([]);
 
-watch(contacts, () => {
+watch(contacts, async () => {
   for (let _id of contacts.value) {
     const id = +_id;
 
@@ -37,7 +38,7 @@ watch(contacts, () => {
         name: contact.name,
         avatar: contact.avatar,
         // TODO
-        avatar_storage: await getCache(contact.avatar).then((cache) => cache ? cache : 'public/Logo.png'),
+        avatar_storage: await getCache(contact.avatar) as string || 'public/Shenium.png',
         category: contact.category,
         // TODO: hotMessage
         hotMessage: undefined,
@@ -170,7 +171,7 @@ onMounted(async () => {
         <template #prepend>
           <v-avatar>
             <v-img v-if="chat.category === 'user'"
-                   :src="chat.avatar_storage ? chat.avatar_storage as string : 'public/Logo.png'" cover/>
+                   :src="chat.avatar_storage" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
