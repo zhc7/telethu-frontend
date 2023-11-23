@@ -2,9 +2,8 @@
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {sendFiles, sendMessage, sendReadMessage} from "../core/chat.ts";
-import {getFileType, uploadFiles, formatFileSize} from "../core/files.ts";
-import {activeChatId, users, messages} from "../globals.ts";
-import {user} from "../globals.ts";
+import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
+import {activeChatId, messages, user} from "../globals.ts";
 
 const props = defineProps(['chat'])
 
@@ -121,7 +120,7 @@ const handleFocus = () => {
   for (const id in chatMessages) {
     const m = chatMessages[id];
     if (m.sender !== user.value.id) {
-      sendReadMessage(m.message_id);
+      sendReadMessage(m.message_id as number);
     }
   }
 }
@@ -158,7 +157,7 @@ const handleFocus = () => {
         ref="fileInput"
         @change="handlePreviewFiles"
         style="display: none;"
-        multiple="multiple"
+        multiple
     />
     <v-btn class="mt-4 mb-4 mr-4 ml-1" icon="mdi-send" @click="handleSendMessage"/>
   </v-row>
