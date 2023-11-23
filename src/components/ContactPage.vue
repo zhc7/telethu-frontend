@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
@@ -12,13 +12,14 @@ import {
   searchResult,
 } from "../core/chat.ts";
 
-import {users, displayRightType} from "../globals.ts"
+import {displayRightType, messages} from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
+import {getUser} from "../core/data.ts";
 
 
-const emit = defineEmits(["chat"]);
+defineEmits(["chat"]);
 const displayType = ref();
 const selectedContactId = ref();
 const selectedRequestId = ref();
@@ -29,14 +30,16 @@ const searchInput = ref("");
 const searchFriendMode = ref("id");
 const displayGroup = ref(false);
 
-const selectContact = (newContactId) => {
+const selectContact = (newContactId: number) => {
   displayRightType.value = "contactDetail";
   if (newContactId) {
-    displayContact.value = users.value[newContactId];
+    getUser(newContactId).then((contact) => {
+      displayContact.value = contact;
+    })
   }
 };
 
-const selectRequest = (newRequestId) => {
+const selectRequest = (newRequestId: number) => {
   displayRightType.value = "requestDetail";
   if (newRequestId) {
     displayRequest.value = friendRequests.value[newRequestId];
@@ -47,7 +50,7 @@ const search = () => {
   searchForFriend(searchInput.value);
 };
 
-const handleApplyFriend = (friendId) => {
+const handleApplyFriend = (friendId: number) => {
   addFriend(friendId);
   alert("喜报：你发送了申请！");
 }
@@ -65,28 +68,21 @@ const handleRequestList = () => {
   console.log(friendRequests.value);
 };
 
-const handleRequestPass = (id) => {
+const handleRequestPass = (id: number) => {
   alert("喜报：你通过了好友的申请！")
   acceptFriend(id);
   displayType.value = "requestList";
-  const friendInfo = friendRequests.value[id];
-  if (!friendInfo.name) {
-    friendInfo.name = friendInfo.username;
-    delete friendInfo.username;
+  if (messages.value[id] === undefined) {
+    messages.value[id] = [];
   }
-  users.value[id] = friendInfo;
-  if (!users.value[id]["messages"]) {
-    users.value[id]["messages"] = [];
-  }
-  if (users.value[id]["mute"] === undefined) {
-    users.value[id]["mute"] = false;
-  }
-  displayContact.value = friendInfo;
+  getUser(id).then((contact) => {
+    displayContact.value = contact;
+  })
   delete friendRequests.value[id];
   displayRightType.value = "contactDetail";
 };
 
-const handleRequestReject = (id) => {
+const handleRequestReject = (id: number) => {
   rejectFriend(id);
   displayType.value = "requestList";
   delete friendRequests.value[id];
@@ -172,8 +168,8 @@ onMounted(() => {
           v-model="selectedRequestId"
           v-show="displayType === 'requestList'"
           :active="displayType === 'requestList'"
-          @accept="(acceptId) => handleRequestPass(acceptId)"
-          @reject="(rejectId) => handleRequestReject(rejectId)"
+          @accept="(acceptId: number) => handleRequestPass(acceptId)"
+          @reject="(rejectId: number) => handleRequestReject(rejectId)"
       />
     </v-col>
     <v-col

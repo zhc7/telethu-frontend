@@ -13,7 +13,7 @@ import {getUser} from "./data.ts";
 
 const searchResult = ref();
 
-const friendRequests = ref({});
+const friendRequests = ref<Array<number>>([]);
 
 
 // window.setInterval(() => {
