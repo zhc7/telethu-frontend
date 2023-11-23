@@ -49,7 +49,7 @@ watch(contacts, () => {
       })
     });
   }
-})
+}, {immediate: true});
 
 const chatList = computed(() => {
   let list = _chatList.value.sort((a, b) => {
