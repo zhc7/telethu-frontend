@@ -1,14 +1,20 @@
-import {cache, users} from "../globals";
+import {cache, user, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, UserData} from "../utils/structs";
+import {token} from "../auth.ts";
 
 
 const getUser = async (id: number): Promise<ContactsData> => {
+    console.log("querying", id, "from", users.value);
     if (users.value[id] !== undefined) {
         return users.value[id];
     }
-    const response = await axios.get(BASE_API_URL + "users/" + id);
+    const response = await axios.get(BASE_API_URL + "users/" + id, {
+        headers: {
+            Authorization: token.value,
+        }
+    });
     users.value[id] = response.data as UserData;
     return users.value[id];
 }

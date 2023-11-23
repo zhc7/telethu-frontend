@@ -12,7 +12,7 @@ import {nowRef, activeChatId, users, userId, userName, messages} from "../global
 import SelectMember from "./SelectMember.vue";
 
 const debug = () => {
-  console.log('contacts', users.value);
+  console.log('users', users.value);
   console.log('activeChatId', activeChatId.value);
   console.log('displayContact', selectedChat.value);
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
 import {nowRef, activeChatId, contacts, user, settings} from "../globals.ts";
 import List from "./List.vue";
@@ -29,26 +29,29 @@ const _chatList = ref<Array<{
   block: boolean,
 }>>([]);
 
-for (let _id in contacts.value) {
-  const id = + _id;
-  getUser(id).then((contact) => {
-    _chatList.value.push({
-      id: id,
-      name: contact.name,
-      avatar: contact.avatar,
-      // TODO
-      avatar_storage: undefined,
-      category: contact.category,
-      // TODO: hotMessage
-      hotMessage: undefined,
-      unread_counter: 0,
-      // TODO: persist pin, mute, block
-      pin: settings.value.pinned.includes(id),
-      mute: settings.value.muted.includes(id),
-      block: settings.value.blocked.includes(id),
-    })
-  });
-}
+watch(contacts, () => {
+  for (let _id of contacts.value) {
+    const id = +_id;
+    getUser(id).then((contact) => {
+      console.log("pushing to chat list", contact);
+      _chatList.value.push({
+        id: id,
+        name: contact.name,
+        avatar: contact.avatar,
+        // TODO
+        avatar_storage: undefined,
+        category: contact.category,
+        // TODO: hotMessage
+        hotMessage: undefined,
+        unread_counter: 0,
+        // TODO: persist pin, mute, block
+        pin: settings.value.pinned.includes(id),
+        mute: settings.value.muted.includes(id),
+        block: settings.value.blocked.includes(id),
+      })
+    });
+  }
+})
 
 const chatList = computed(() => {
   console.log('contacts', contacts.value);
@@ -71,6 +74,7 @@ const chatList = computed(() => {
       return 0;
     }
   });
+  console.log("the list is", list);
   list = list.filter((chat) => {
     return chat.name.toLowerCase().indexOf(friendName.value.toLowerCase()) !== -1;
   });
@@ -92,23 +96,23 @@ const displayHotMessage = (message: Message | undefined) => {
 }
 
 onMounted(async () => {
-  const response = await axios.get(`${BASE_API_URL}users/avatar/`, {
-    headers: {
-      Authorization: token.value,
-    },
-    responseType: 'blob',
-  }).catch((error) => {
-    console.error('Http get avatar failed -> ', error);
-    return { data: null }; // 返回一个具有默认 data 属性的对象
-  });
-
-  if (response && response.data) {
-    const reader = new FileReader();
-    reader.readAsDataURL(response.data); // change Blob into Base64
-    reader.onloadend = function () {
-      user.value.avatar = reader.result as string;
-    };
-  }
+  // const response = await axios.get(`${BASE_API_URL}users/avatar/`, {
+  //   headers: {
+  //     Authorization: token.value,
+  //   },
+  //   responseType: 'blob',
+  // }).catch((error) => {
+  //   console.error('Http get avatar failed -> ', error);
+  //   return { data: null }; // 返回一个具有默认 data 属性的对象
+  // });
+  //
+  // if (response && response.data) {
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(response.data); // change Blob into Base64
+  //   reader.onloadend = function () {
+  //     user.value.avatar = reader.result as string;
+  //   };
+  // }
 
   /*
   for (const id in contacts.value) {
@@ -168,7 +172,8 @@ onMounted(async () => {
       >
         <template #prepend>
           <v-avatar>
-            <v-img v-if="chat.category === 'user'" :src="chat.avatar_storage ? chat.avatar_storage as string : 'public/Logo.png'" cover/>
+            <v-img v-if="chat.category === 'user'"
+                   :src="chat.avatar_storage ? chat.avatar_storage as string : 'public/Logo.png'" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
