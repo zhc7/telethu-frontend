@@ -32,18 +32,8 @@ const getCache = async (hash: string) => {
                 Authorization: token.value,
             },
         });
-
-        if (response.data instanceof Blob) {
-            const reader = new FileReader();
-            reader.readAsDataURL(response.data);
-            reader.onloadend = function () {
-                cache.value[hash] = reader.result as string;
-            };
-        }
-        else {
-            cache.value[hash] = response.data;
-        }
     }
+    cache.value[hash] = response.data as ArrayBuffer;
     return cache.value[hash];
 }
 

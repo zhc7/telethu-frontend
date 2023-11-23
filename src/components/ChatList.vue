@@ -26,6 +26,12 @@ const _chatList = ref<Array<{
   block: boolean,
 }>>([]);
 
+const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
+  if (!arrayBuffer) return '/Shenium.png';
+  const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
+  return URL.createObjectURL(blob);
+}
+
 watch(contacts, async () => {
   for (let _id of contacts.value) {
     const id = +_id;
@@ -37,7 +43,7 @@ watch(contacts, async () => {
         name: contact.name,
         avatar: contact.avatar,
         // TODO
-        avatar_storage: await getCache(contact.avatar) as string || 'public/Shenium.png',
+        avatar_storage: parse_Avatar(await getCache(contact.avatar)),
         category: contact.category,
         // TODO: hotMessage
         hotMessage: undefined,
