@@ -1,6 +1,6 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
-import {rawChatList, contacts, displayRightType, hotMessages, messages, settings, user, userId} from "../globals"
+import {rawChatList, contacts, hotMessages, messages, settings, user, userId, selectedContactInfo} from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {generateMD5, generateMessageId} from "../utils/hash";
@@ -155,7 +155,6 @@ const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
 export const updateChatList = async () => {
     const list = [];
     for (const id of contacts.value) {
-        console.log('filling in chatInfo', id);
         const contact = await getUser(id);
         const chatInfo = {
             id: id,
@@ -305,10 +304,11 @@ const handleReceiveRequest = (message: Message) => {
 }
 
 const handleSearchResult = (message: Message) => {
+    alert('sousuo')
     // message.content.mute = false;
     console.log(message.content);
-    searchResult.value = message.content;
-    displayRightType.value = "searchResult";
+    selectedContactInfo.value.info = message.content;
+    selectedContactInfo.value.source = "searchResult";
 }
 
 const receiveReadMessage = (message: Message) => {
@@ -412,19 +412,17 @@ const groupAddMember = (groupId: number, memberId: number) => {
     socket.send(JSON.stringify(message));
 }
 
-const searchForFriend = (friendId: number) => {
-    const message: Message = {
-        m_type: 18,
-        t_type: 1,
-        time: Date.now(),
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-    }
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+const searchForFriend = async (friendId: number) => {
+    const result = await axios.post(BASE_API_URL + 'users/user_search', {
+        type: 0,
+        info: friendId,
+    }, {
+        headers: {
+            Authorization: token.value,
+        }
+    });
+    selectedContactInfo.value.info = result.data.users[0];
+    selectedContactInfo.value.source = 'searchResult';
 }
 
 
@@ -519,7 +517,6 @@ const sendReadMessage = (id: number | string) => {
 export {
     friendRequests,
     searchResult,
-    displayRightType,
     chatManager,
     dispatcher,
     sendMessage,

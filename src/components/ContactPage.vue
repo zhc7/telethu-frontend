@@ -12,7 +12,7 @@ import {
   searchResult,
 } from "../core/chat.ts";
 
-import {displayRightType, messages} from "../globals.ts"
+import {activeContactId, activeRequestId, contactPageContentLeft, messages, selectedContactInfo} from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
@@ -20,28 +20,27 @@ import {getUser} from "../core/data.ts";
 
 
 defineEmits(["chat"]);
-const displayType = ref();
-const selectedContactId = ref();
-const selectedRequestId = ref();
-const displayApplyList = ref();
-const displayContact = ref();
-const displayRequest = ref();
 const searchInput = ref("");
 const searchFriendMode = ref("id");
 const displayGroup = ref(false);
 
 const selectContact = async (newContactId: number) => {
-  if (newContactId) {
+  selectedContactInfo.value.info = undefined;
+  selectedContactInfo.value.source = undefined;
+  if (newContactId !== -1) {
     const userInfo = await getUser(newContactId);
-    displayContact.value = userInfo;
-    displayRightType.value = "contactDetail";
+    selectedContactInfo.value.info = userInfo;
+    selectedContactInfo.value.source = "contactList"
   }
 };
 
-const selectRequest = (newRequestId: number) => {
-  displayRightType.value = "requestDetail";
-  if (newRequestId) {
-    displayRequest.value = friendRequests.value[newRequestId];
+const selectRequest = async (newRequestId: number) => {
+  selectedContactInfo.value.info = undefined;
+  selectedContactInfo.value.source = undefined;
+  if (newRequestId !== -1) {
+    const userInfo = await getUser(newRequestId);
+    selectedContactInfo.value.info = userInfo;
+    selectedContactInfo.value.source = "requestList"
   }
 };
 
@@ -55,15 +54,13 @@ const handleApplyFriend = (friendId: number) => {
 }
 
 const handleContactList = () => {
-  displayType.value = undefined;
-  displayType.value = "contactList";
+  contactPageContentLeft.value = 0;
 };
 
 const handleRequestList = () => {
-  displayType.value = undefined;
-  displayType.value = "requestList";
-  applyList();
-  displayApplyList.value = friendRequests.value;
+  contactPageContentLeft.value = 1;
+  // applyList();
+  // displayApplyList.value = friendRequests.value;
   console.log(friendRequests.value);
 };
 
@@ -89,12 +86,9 @@ const handleRequestReject = (id: number) => {
   alert("喜报：好友申请被你拒绝了！");
 };
 
-watch(selectedContactId, selectContact);
-watch(selectedRequestId, selectRequest);
+watch(activeContactId, selectContact);
+watch(activeRequestId, selectRequest);
 
-onMounted(() => {
-  displayType.value = "contactList";
-});
 </script>
 
 <template>
@@ -110,17 +104,17 @@ onMounted(() => {
             <v-icon></v-icon>
           </template>
           <v-list-item-title class="pa-3 ma-0 fill-height">
-            {{ displayType === "contactList" ? "Contact List" : "Add Friends" }}
+            {{ contactPageContentLeft === 0 ? "Contact List" : "Add Friends" }}
           </v-list-item-title>
           <template #append>
             <v-icon
-                v-show="displayType === 'contactList'"
+                v-show="contactPageContentLeft === 0"
                 @click="handleRequestList"
             >
               mdi-plus
             </v-icon>
             <v-icon
-                v-show="displayType === 'requestList'"
+                v-show="contactPageContentLeft === 1"
                 @click="handleContactList"
             >
               mdi-account-multiple
@@ -130,7 +124,7 @@ onMounted(() => {
         <v-list-item>
           <v-text-field
               :label="
-              displayType === 'contactList'
+              contactPageContentLeft === 0
                 ? 'Search in contacts...'
                 : 'Search for new friends...'
             "
@@ -157,18 +151,17 @@ onMounted(() => {
         </v-list-item>
       </v-list>
       <ContactList
-          v-model="selectedContactId"
-          v-show="displayType === 'contactList'"
+          v-model="activeContactId"
+          v-show="contactPageContentLeft === 0"
           class="fill-height overflow-y-auto"
           :displayType="displayGroup ? 'group' : 'user'"
           :searchInput="searchInput"
       />
       <RequestList
-          v-model="selectedRequestId"
-          v-show="displayType === 'requestList'"
-          :active="displayType === 'requestList'"
-          @accept="(acceptId: number) => handleRequestPass(acceptId)"
-          @reject="(rejectId: number) => handleRequestReject(rejectId)"
+          v-model="activeRequestId"
+          v-show="contactPageContentLeft === 1"
+          @accept="(acceptId) => handleRequestPass(acceptId)"
+          @reject="(rejectId) => handleRequestReject(rejectId)"
       />
     </v-col>
     <v-col
@@ -177,29 +170,9 @@ onMounted(() => {
         class="d-flex flex-column flex-1-1 justify-center offset-sm-1"
     >
       <FriendProfile
-          v-if="displayRightType === 'contactDetail'"
-          :display="displayRightType === 'contactDetail'"
-          :source="'contactDetail'"
-          :displayContact="displayContact"
-      >
-      </FriendProfile>
-      <FriendProfile
-          v-if="displayRightType === 'requestDetail'"
-          :display="displayRightType === 'requestDetail'"
-          :displayContact="displayRequest"
-          :source="'requestDetail'"
           class="overflow-y-auto"
           @accept="(acceptId) => handleRequestPass(acceptId)"
           @reject="(rejectId) => handleRequestReject(rejectId)"
-      >
-      </FriendProfile>
-
-      <FriendProfile
-          v-if="displayRightType === 'searchResult'"
-          :display="displayRightType === 'searchResult'"
-          :displayContact="searchResult"
-          :source="'searchResult'"
-          class="overflow-y-auto"
           @apply="(applyId) => handleApplyFriend(applyId)"
       >
       </FriendProfile>

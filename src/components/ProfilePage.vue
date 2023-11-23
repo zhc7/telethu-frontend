@@ -30,6 +30,8 @@ const handleUploadAvatar = (event) => {
     }
   }).then((response) => {
     console.log("HTTP upload avatar successful -> ", response);
+  }).then(() => {
+    // await axios.get(BASE_API_URL + 'users/avatar/', )
   }).catch((error) => {
     console.log(error);
   })

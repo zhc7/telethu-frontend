@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import {
   blockFriend,
-  deleteFriend, exitGroup,
+  deleteFriend,
+  exitGroup,
   unblockFriend,
 } from "../core/chat.ts";
 import {computed, onMounted, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {users, settings} from "../globals.ts";
+import {users, settings, selectedContactInfo} from "../globals.ts";
 import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 
-const props = defineProps<{
-  displayContact: ContactsData,
-  display: boolean,
-  source: string,
-}>();
 defineEmits(["accept", "reject", "apply"]);
 
 const groupAddMemberDialog = ref(false);
@@ -74,17 +70,12 @@ const friendCircleSelect = ref([]);
 const newName = ref("");
 
 const ifGroup = computed(() => {
-  return props.displayContact.category === "group";
+  return props.displayContact && props.displayContact.category === "group";
 });
 
 const memberInfoTable = ref({});
 
 onMounted(() => {
-  if (props.displayContact.category === 'group') {
-    for (const id of (props.displayContact as GroupData).members) {
-      getUser(id).then((res) => (memberInfoTable.value[id] = res));
-    }
-  }
 })
 
 const handleDelete = () => {
@@ -103,18 +94,18 @@ const editName = () => {
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="display">
+  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="selectedContactInfo.source !== undefined">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="displayContact.avatar_storage ? displayContact.avatar_storage as string : 'public/Logo.png'" cover />
+      <v-img :src="'public/Logo.png'" cover />
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>
-          {{ displayContact.name }}
+          {{ selectedContactInfo.info ? selectedContactInfo.info.name : '' }}
         </v-list-item-title>
-        <v-list-item-subtitle> @{{ displayContact.id }} </v-list-item-subtitle>
+        <v-list-item-subtitle> @{{ selectedContactInfo.info ? selectedContactInfo.info.id : '' }} </v-list-item-subtitle>
         <v-list-item
-          v-if="displayContact.category === 'user'"
+          v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'"
           class="text-grey-darken-3"
         >
           <v-divider class="ma-4" />
@@ -127,42 +118,42 @@ const editName = () => {
               <template #title> Phone: </template>
               <template #content> 114514 </template>
             </ProfileRow>
-            <ProfileRow v-show="displayContact.email">
+            <ProfileRow v-show="selectedContactInfo.info && selectedContactInfo.info.category === 'user'">
               <template #title> Email: </template>
-              <template #content> {{ displayContact.email }} </template>
+              <template #content> {{ selectedContactInfo.info.email ? selectedContactInfo.info.email : '' }} </template>
             </ProfileRow>
           </div>
         </v-list-item>
-        <div
-          v-if="displayContact.category === 'group'"
-          class="overflow-y-auto fill-height"
-        >
-          <v-divider class="ma-4" />
-          <v-card-title class="ma-7"> Members </v-card-title>
-          <div class="overflow-y-auto fill-height d-flex flex-wrap">
-            <div
-              v-for="member in (displayContact as GroupData).members"
-              :key="member.id"
-              class="d-flex flex-column align-center ma-auto mb-5"
-            >
-              <v-avatar size="60">
-                <v-img :src="member.avatar" id="member-avatar" cover />
-              </v-avatar>
-              <p>{{  }}</p>
-            </div>
-            <div class="d-flex flex-column align-center ma-auto mb-5">
-              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
-                <v-icon style="font-size: 35px"
-                  >mdi-account-multiple-plus</v-icon
-                >
-              </v-avatar>
-              <p class="text-indigo">...</p>
-            </div>
-          </div>
-        </div>
+<!--        <div-->
+<!--          v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'group'"-->
+<!--          class="overflow-y-auto fill-height"-->
+<!--        >-->
+<!--          <v-divider class="ma-4" />-->
+<!--          <v-card-title class="ma-7"> Members </v-card-title>-->
+<!--          <div class="overflow-y-auto fill-height d-flex flex-wrap">-->
+<!--            <div-->
+<!--              v-for="member in (displayContact as GroupData).members"-->
+<!--              :key="member.id"-->
+<!--              class="d-flex flex-column align-center ma-auto mb-5"-->
+<!--            >-->
+<!--              <v-avatar size="60">-->
+<!--                <v-img :src="member.avatar" id="member-avatar" cover />-->
+<!--              </v-avatar>-->
+<!--              <p>{{  }}</p>-->
+<!--            </div>-->
+<!--            <div class="d-flex flex-column align-center ma-auto mb-5">-->
+<!--              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">-->
+<!--                <v-icon style="font-size: 35px"-->
+<!--                  >mdi-account-multiple-plus</v-icon-->
+<!--                >-->
+<!--              </v-avatar>-->
+<!--              <p class="text-indigo">...</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
       </v-list>
       <v-divider class="ma-4"/>
-      <v-col v-if="Object.keys(users).indexOf(displayContact.id.toString()) !== -1">
+      <v-col v-if="false">
         <v-row style="display: flex; align-items: center;" class="ma-3">
           <!-- TODO: add rename function -->
           <p style="flex: 1" class="text-right pr-4">Rename:</p>
@@ -227,15 +218,12 @@ const editName = () => {
         <v-divider class="mt-4"/>
       </v-col>
       <v-card-actions>
-        <v-col v-if="source === 'contactDetail'">
-            <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
-              <!-- TODO: add recommend function -->
+        <v-col v-if="selectedContactInfo.source === 'contactList'">
+            <v-row v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'" style="display: flex; justify-content: center">
               <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
-              >Recommend</v-btn
-              >
+              >Recommend</v-btn>
             </v-row>
-            <v-row v-if="!ifGroup" style="display: flex; justify-content: center">
-              <!-- TODO: test delete friend function -->
+            <v-row v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'" style="display: flex; justify-content: center">
               <v-btn
                   color="error"
                   style="font-size: 15px; font-weight: bold"
@@ -252,12 +240,12 @@ const editName = () => {
               </v-btn>
             </v-row>
         </v-col>
-        <v-col v-if="source === 'requestDetail'">
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('accept', displayContact.id)">Pass</v-btn>
-          <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="$emit('reject', displayContact.id)">Reject</v-btn>
+        <v-col v-if="selectedContactInfo.source === 'reqeustList'">
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('accept', selectedContactInfo.info.id)">Pass</v-btn>
+          <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="$emit('reject', selectedContactInfo.info.id)">Reject</v-btn>
         </v-col>
-        <v-col v-if="source === 'searchResult'">
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('apply', displayContact.id)">Apply</v-btn>
+        <v-col v-if="selectedContactInfo.source === 'searchResult'">
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('apply', selectedContactInfo.info.id)">Apply</v-btn>
         </v-col>
       </v-card-actions>
     </v-card-item>
