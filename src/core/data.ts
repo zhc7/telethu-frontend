@@ -23,7 +23,13 @@ const getCache = async (hash: string) => {
     if (cache.value[hash] !== undefined) {
         return cache.value[hash];
     }
-    const response = await axios.get(BASE_API_URL + "files/" + hash);
+    let response;
+    if (hash.startsWith("http")) {
+        response = await axios.get(hash);
+    }
+     else {
+         response = await axios.get(BASE_API_URL + "files/" + hash);
+    }
     cache.value[hash] = response.data as ArrayBuffer;
     return cache.value[hash];
 }
