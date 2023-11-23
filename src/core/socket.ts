@@ -42,7 +42,7 @@ const createSocket = () => {
                     }
                 }
             }
-            console.log("writing to contacts:", contacts.value);
+            // console.log("writing to contacts:", contacts.value);
             first = false;
             return;
         }

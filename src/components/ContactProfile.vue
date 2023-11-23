@@ -8,10 +8,10 @@ import { computed, ref } from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {users, settings} from "../globals.ts";
-import {Contact, GroupContact} from "../utils/structs.ts";
+import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
 
 const props = defineProps<{
-  displayContact: Contact,
+  displayContact: ContactsData,
   display: boolean,
   source: string,
 }>();

@@ -1,6 +1,6 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
-import {displayRightType, hotMessages, messages, settings, user, userId} from "../globals"
+import {contacts, displayRightType, hotMessages, messages, settings, user, userId} from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {generateMD5, generateMessageId} from "../utils/hash";
@@ -234,21 +234,29 @@ const handleAddGroupMember = (message: Message) => {
         (group as GroupData).members.push(user);
     })
 };
+
+const deleteFriend = (id: number) => {
+    const message = {
+        time: Date.now(),
+        m_type: 14,
+        t_type: 1,
+        content: "",
+        sender: userId.value,
+        receiver: id,
+        info: "",
+        message_id: generateMessageId(id, userId.value, Date.now()),
+    };
+    console.log('deleting friend', JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
 const handleDeleteFriend = (message: Message) => {
     // FUNC_DELETE_FRIEND
-    // const message = {
-    //     time: Date.now(),
-    //     m_type: 14,
-    //     t_type: 1,
-    //     content: "",
-    //     sender: userId.value,
-    //     receiver: friendId,
-    //     info: "",
-    //     message_id: generateMessageId(friendId, userId.value, Date.now()),
-    // };
-    // console.log(JSON.stringify(message));
-    // socket.send(JSON.stringify(message));
-    // delete contacts.value[message.receiver];
+    if (contacts.value.indexOf(message.receiver) === -1) {
+        return;
+    }
+    delete messages.value[message.receiver];
+    contacts.value = contacts.value.filter((i: number) => i !== +message.receiver);
 };
 const handleReceiveRequest = (message: Message) => {
     console.log("code 10 received: ", message);
@@ -384,21 +392,7 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
     })
 }
 
-const deleteFriend = (friendId: number) => {
-    const message: Message = {
-        m_type: 14,
-        t_type: 0,
-        time: Date.now(),
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-        content: "",
-        receiver: friendId,
-        sender: userId.value,
-        info: "",
-        status: 'sending',
-    }
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
+
 
 const blockFriend = (friendId: number) => {
     const message: Message = {
