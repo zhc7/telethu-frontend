@@ -155,7 +155,7 @@ const title = computed(() => {
           <!--          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>-->
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
-        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChatInfo.info"/>
+        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
@@ -190,9 +190,7 @@ const title = computed(() => {
   <SelectMember
       :showDialog="createGroupDialog"
       @update:showDialog="createGroupDialog = $event"
-      :type="'create_group_from_contact'"
-      :title="'create group from contact'"
-      :contactId="activeChatId"
+      source="contact"
   />
 </template>
 
