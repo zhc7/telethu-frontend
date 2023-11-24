@@ -36,7 +36,6 @@ const submit = () => {
 <template>
   <v-container fluid>
     <v-row class="fill-height ml-10 mr-10">
-      <!-- 左侧图标区域 -->
       <v-col
           cols="6"
           class="d-none d-sm-inline-block text-center align-self-center"

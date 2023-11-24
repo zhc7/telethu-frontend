@@ -2,7 +2,8 @@
 import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeContactId, rawChatList} from "../globals.ts";
+import {activeContactId, cache, rawChatList} from "../globals.ts";
+import {getAvatarOrDefault} from "../core/data.ts";
 
 const props = defineProps(["searchInput"]);
 const personContactList = computed(() => {
@@ -40,7 +41,7 @@ const userCount = computed(() => {
     >
       <template #prepend>
         <v-avatar>
-          <v-img :src="contact.avatar" cover/>
+          <v-img :src="getAvatarOrDefault(contact.avatar)" cover/>
         </v-avatar>
       </template>
       <v-list-item-title>

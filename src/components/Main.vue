@@ -7,7 +7,7 @@ import ProfilePage from "./ProfilePage.vue";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {activeChatId, users, isSocketConnected, user, userName, currentPage} from "../globals.ts"
+import {activeChatId, users, isSocketConnected, user, userName, currentPage, userAvatar} from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 
 const router = useRouter();
@@ -31,10 +31,6 @@ const ActivateChat = (chat) => {
   activePage.value = 'chat';
 };
 
-watch(activeChatId, (id) => {
-  users.value[id].unread_counter = 0;
-})
-
 onMounted(() => {
   console.log("page " + activePage.value);
   createSocket();
@@ -46,7 +42,7 @@ onMounted(() => {
     <NavBar>
       <List density="compact" nav v-model="activePage" class="overflow-x-hidden">
         <v-list-item class="text-left"
-                     :prepend-avatar="user.avatar"
+                     :prepend-avatar="userAvatar"
                      :title="userName"
                      @click="activePage = 'profile'"
         >

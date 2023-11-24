@@ -1,9 +1,10 @@
-import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, users} from "../globals";
+import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, user, users} from "../globals";
 import axios, {request} from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
 import {el} from "vuetify/locale";
+import {avatarUrl} from "../utils/urls.ts";
 
 
 const getUser = async (id: number): Promise<ContactsData> => {
@@ -19,8 +20,30 @@ const getUser = async (id: number): Promise<ContactsData> => {
     return users.value[id];
 }
 
+const getAvatar = async (hash: string) => {
+    if (cache.value[hash] !== undefined) {
+        return cache.value[hash];
+    }
+    const url = avatarUrl(hash);
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: token.value,
+            },
+            responseType: "blob",
+        });
+        const reader = new FileReader();
+        reader.readAsDataURL(response.data); // change Blob into Base64
+        reader.onloadend = () => {
+            cache.value[hash] = reader.result;
+        };
+    } catch(error) {
+        console.log("error fetching", error);
+    }
+    return cache.value[hash];
+}
+
 const getCache = async (hash: string) => {
-    return '';
     if (cache.value[hash] !== undefined) {
         return cache.value[hash];
     }
@@ -47,10 +70,17 @@ const getCache = async (hash: string) => {
     return cache.value[hash];
 }
 
-const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
-    if (!arrayBuffer) return '/Shenium.png';
+const parseAvatar = (arrayBuffer: ArrayBuffer) => {
+    if (!arrayBuffer) return '/Logo.png';
     const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
     return URL.createObjectURL(blob);
+}
+
+export const getAvatarOrDefault = (md5: string) =>  {
+    if (cache.value[md5]) {
+        return cache.value[md5] as string;
+    }
+    return './Logo.png';
 }
 
 export const contactInsert = (id: number) => {
@@ -58,7 +88,7 @@ export const contactInsert = (id: number) => {
     contacts.value.push(id);
     rawChatList.value.push({
         id: 0,
-        name: 'Telethu',
+        name: '' + id,
         avatar: '',
         avatar_storage: '',
         category: 'group',
@@ -68,12 +98,11 @@ export const contactInsert = (id: number) => {
         block: false,
     });
     getUser(id).then((contact) => {
-        getCache(contact.avatar).then((ava) => {
+        getAvatar(contact.avatar).then((ava) => {
             rawChatList.value[index] = {
                 id: id,
                 name: contact.name,
                 avatar: contact.avatar,
-                // avatar_storage: parse_Avatar(ava),
                 category: contact.category,
                 unread_counter: 0,
                 pin: settings.value.pinned.includes(id),

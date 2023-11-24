@@ -3,6 +3,7 @@
 import {computed, onMounted, ref} from "vue";
 import {createGroup, groupAddMember} from "../core/chat.ts";
 import {users} from "../globals.ts";
+import {getAvatarOrDefault} from "../core/data.ts";
 
 const props = defineProps(['showDialog', 'type', 'title', 'contactId'])
 const emit = defineEmits(['update:showDialog']);
@@ -110,7 +111,7 @@ onMounted(() => {
               v-if="type === 'add_group_member'"
           >
             <v-avatar>
-              <v-img :src="member.avatar" cover></v-img>
+              <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>
             </v-avatar>
             <p>{{ member.name }}</p>
           </div>

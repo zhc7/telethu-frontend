@@ -8,10 +8,10 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, users, userId, userName, messages, selectedChatInfo} from "../globals.ts";
+import {activeChatId, messages, nowRef, selectedChatInfo, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
-import {getUser} from "../core/data";
-import {ContactsData, Message} from "../utils/structs";
+import {getAvatarOrDefault, getUser} from "../core/data";
+import {Message} from "../utils/structs";
 
 const debug = () => {
   console.log('users', users.value);
@@ -23,7 +23,7 @@ defineProps(['modelValue']);
 defineEmits(['update:modelValue']);
 
 
-const displayProfile = ref<undefined | "user" | "group">(undefined);
+const displayProfile = ref<boolean>(false);
 const showProfileDetail = ref(false);
 const createGroupDialog = ref(false);
 
@@ -58,14 +58,15 @@ const groupedMessages = computed(() => {
   return grouped;
 });
 
-const selectedChat = ref<ContactsData>({avatar: "", category: "", id: 0, name: ""});
-
 watch(activeChatId, (id) => {
   if (id < 1) {
-    return;
+    selectedChatInfo.value = {
+      info: undefined,
+      source: undefined,
+    }
   }
   getUser(id).then((contact) => {
-    selectedChat.value = contact;
+    console.log('selectedChat.value: ', contact);
     selectedChatInfo.value = {
       info: contact,
       source: 'chatList',
@@ -80,7 +81,7 @@ const ScrollToBottom = () => {
 
 const displayContact = ref();
 const handleDisplayProfile = () => {
-  displayProfile.value = users.value[activeChatId.value];
+  displayProfile.value = true;
   window.setTimeout(() => {
     showProfileDetail.value = true;
   }, 300);
@@ -100,10 +101,13 @@ const handleHideProfile = (event) => {
 }
 
 const handleGetMoreMessage = () => {
+  if (selectedChatInfo.value.info === undefined) {
+    return;
+  }
   getHistoryMessage(
       activeChatId.value,
       messages.value[activeChatId.value][0] === undefined ? Date.now() : messages.value[activeChatId.value][0].time,
-      selectedChat.value.category === "group" ? 1 : 0,
+      selectedChatInfo.value.info.category === "group" ? 1 : 0,
       20,
   )
 }
@@ -113,6 +117,20 @@ onMounted(() => {
     console.log('contacts value here', users.value);
   }
   console.log('in chatpage', users.value)
+})
+
+const category = computed(() => {
+  if (!selectedChatInfo.value.info) {
+    return 'none';
+  }
+  return selectedChatInfo.value.info.category;
+});
+
+const title = computed(() => {
+  if (!selectedChatInfo.value.info) {
+    return 'Loading...';
+  }
+  return selectedChatInfo.value.info.name;
 })
 
 </script>
@@ -125,19 +143,19 @@ onMounted(() => {
     <v-col cols="12" sm="4" md="3" class="pa-0 fill-height">
       <ChatList v-model="activeChatId"></ChatList>
     </v-col>
-    <v-divider vertical v-if="selectedChat"/>
-    <v-col v-if="selectedChat" cols="12" sm="8" md="9"
+    <v-divider vertical v-if="selectedChatInfo.info"/>
+    <v-col v-if="selectedChatInfo.info" cols="12" sm="8" md="9"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
           <p style="font-size: 20px; font-weight: 450">
-            {{ selectedChat.name }}</p>
-<!--          <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>-->
-<!--          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>-->
+            {{ title }}</p>
+          <!--          <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>-->
+          <!--          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>-->
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
-        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChat.category === 'user'"/>
+        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChatInfo.info"/>
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
@@ -153,22 +171,22 @@ onMounted(() => {
                         :key="mIndex"
                         :message="message"
                         :final="mIndex === group.messages.length - 1"
-                        :avatar="selectedChat.avatar"
+                        :avatar="getAvatarOrDefault(selectedChatInfo.info.avatar)"
                         @finished="ScrollToBottom"
                         @showProfile="handleDisplayProfile"
             />
           </div>
         </div>
       </v-row>
-      <InputArea :chat="selectedChat"/>
+      <InputArea :chat="selectedChatInfo.info"/>
     </v-col>
   </v-row>
-  <v-divider vertical v-if="selectedChat"/>
+  <v-divider vertical v-if="selectedChatInfo.info"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
-    <ContactProfile class="overflow-y-auto" v-if="selectedChat" :displayContact="selectedChat"
-                    :display="showProfileDetail" source="contactDetail"/>
+    <ContactProfile class="overflow-y-auto"
+                    v-if="selectedChatInfo.info"
+    />
   </div>
-
   <SelectMember
       :showDialog="createGroupDialog"
       @update:showDialog="createGroupDialog = $event"

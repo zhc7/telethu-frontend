@@ -9,7 +9,7 @@ import {
   currentPage,
   selectedChatInfo,
   selectedContactInfo,
-  settings
+  settings, userAvatar, userEmail, userId, userName
 } from "../globals.ts";
 import {useRouter} from "vue-router";
 
@@ -102,13 +102,22 @@ const displayContactInfo = computed(() => {
     return selectedChatInfo.value;
   } else if (currentPage.value === 'contacts') {
     return selectedContactInfo.value;
+  } else {
+    return {
+      info: {
+        id: userId.value,
+        name: userName.value,
+        email: userEmail.value,
+        avatar: userAvatar.value,
+      }
+    }
   }
 })
 
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="displayContactInfo.source !== undefined">
+  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="displayContactInfo && displayContactInfo.source !== undefined && displayContactInfo.info !== undefined">
     <v-avatar size="80" class="mt-5">
       <v-img :src="'public/Logo.png'" cover/>
     </v-avatar>
@@ -329,7 +338,6 @@ const displayContactInfo = computed(() => {
         @update:showDialog="groupAddMemberDialog = $event"
         :type="'add_group_member'"
         :title="'Add Member'"
-        :displayContact="displayContact"
     />
   </v-card>
 </template>

@@ -2,11 +2,9 @@
 import {logout, token} from "../auth.ts";
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
-import {getFileType, uploadFiles} from "../core/files.ts";
-import {sendFiles} from "../core/chat.ts";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {user, userEmail, userId, userName} from "../globals.ts";
+import {cache, user, userEmail, userId, userName} from "../globals.ts";
 
 const router = useRouter();
 
@@ -31,7 +29,20 @@ const handleUploadAvatar = (event) => {
   }).then((response) => {
     console.log("HTTP upload avatar successful -> ", response);
   }).then(() => {
-    // await axios.get(BASE_API_URL + 'users/avatar/', )
+    axios.get(BASE_API_URL + 'users/avatar', {
+      headers: {
+        Authorization: token.value,
+      },
+      responseType: 'blob',
+    }).then((response) => {
+          console.log('userAvatar: ', response.data);
+          const reader = new FileReader();
+          reader.readAsDataURL(response.data); // change Blob into Base64
+          reader.onloadend = () => {
+            user.value.avatar = reader.result;
+          }
+        }
+    )
   }).catch((error) => {
     console.log(error);
   })
@@ -60,7 +71,7 @@ onMounted(async () => {
     });
     const reader = new FileReader();
     reader.readAsDataURL(response.data); // change Blob into Base64
-    reader.onloadend = function() {
+    reader.onloadend = () => {
       user.value.avatar = reader.result;
     };
   } catch (error) {

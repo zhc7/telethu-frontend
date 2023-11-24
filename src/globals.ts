@@ -57,6 +57,14 @@ export const userEmail = computed({
         user.value.email = newValue;
     }
 })
+export const userAvatar = computed({
+    get() {
+        return user.value.avatar;
+    },
+    set(newValue) {
+        user.value.avatar = newValue;
+    }
+})
 export const isSocketConnected = ref(false);
 
 export const settings = useLocalStorage<Settings>("settings", {
@@ -101,6 +109,3 @@ export const rawRequestList = ref<Array<{
     email: string,
     time: number,
 } | undefined>>([]);
-
-
-
