@@ -3,7 +3,14 @@ import {blockFriend, deleteFriend, exitGroup, unblockFriend,} from "../core/chat
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {activeChatId, activeContactId, selectedContactInfo,settings} from "../globals.ts";
+import {
+  activeChatId,
+  activeContactId,
+  currentPage,
+  selectedChatInfo,
+  selectedContactInfo,
+  settings
+} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 
@@ -91,21 +98,29 @@ const editName = () => {
   console.log("editName");
 };
 
+const displayContactInfo = computed(() => {
+  if (currentPage.value === 'chat') {
+    return selectedChatInfo.value;
+  } else if (currentPage.value === 'contacts') {
+    return selectedContactInfo.value;
+  }
+})
+
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="selectedContactInfo.source !== undefined">
+  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="displayContactInfo.source !== undefined">
     <v-avatar size="80" class="mt-5">
       <v-img :src="'public/Logo.png'" cover/>
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>
-          {{ selectedContactInfo.info ? selectedContactInfo.info.name : '' }}
+          {{ displayContactInfo.info ? displayContactInfo.info.name : '' }}
         </v-list-item-title>
-        <v-list-item-subtitle> @{{ selectedContactInfo.info ? selectedContactInfo.info.id : '' }}</v-list-item-subtitle>
+        <v-list-item-subtitle> @{{ displayContactInfo.info ? displayContactInfo.info.id : '' }}</v-list-item-subtitle>
         <v-list-item
-            v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'"
+            v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'"
             class="text-grey-darken-3"
         >
           <v-divider class="ma-4"/>
@@ -118,14 +133,14 @@ const editName = () => {
               <template #title> Phone:</template>
               <template #content> 114514</template>
             </ProfileRow>
-            <ProfileRow v-show="selectedContactInfo.info && selectedContactInfo.info.category === 'user'">
+            <ProfileRow v-show="displayContactInfo.info && displayContactInfo.info.category === 'user'">
               <template #title> Email:</template>
-              <template #content> {{ selectedContactInfo.info.email ? selectedContactInfo.info.email : '' }}</template>
+              <template #content> {{ displayContactInfo.info.email ? displayContactInfo.info.email : '' }}</template>
             </ProfileRow>
           </div>
         </v-list-item>
         <!--        <div-->
-        <!--          v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'group'"-->
+        <!--          v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'"-->
         <!--          class="overflow-y-auto fill-height"-->
         <!--        >-->
         <!--          <v-divider class="ma-4" />-->
@@ -218,8 +233,8 @@ const editName = () => {
         <v-divider class="mt-4"/>
       </v-col>
       <v-card-actions>
-        <v-col v-if="selectedContactInfo.source === 'contactList'">
-          <template v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'">
+        <v-col v-if="displayContactInfo.source === 'contactList'">
+          <template v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'">
             <v-row style="display: flex; justify-content: center">
               <v-btn
                   color="green"
@@ -242,7 +257,7 @@ const editName = () => {
               </v-btn>
             </v-row>
           </template>
-          <template v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'group'">
+          <template v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'">
             <v-row style="display: flex; justify-content: center">
               <v-btn
                   color="error"
@@ -253,17 +268,17 @@ const editName = () => {
             </v-row>
           </template>
         </v-col>
-        <v-col v-if="selectedContactInfo.source === 'requestList'">
+        <v-col v-if="displayContactInfo.source === 'requestList'">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('accept', selectedContactInfo.info.id)">Pass
+                 @click="$emit('accept', displayContactInfo.info.id)">Pass
           </v-btn>
           <v-btn color="error" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('reject', selectedContactInfo.info.id)">Reject
+                 @click="$emit('reject', displayContactInfo.info.id)">Reject
           </v-btn>
         </v-col>
-        <v-col v-if="selectedContactInfo.source === 'searchResult'">
+        <v-col v-if="displayContactInfo.source === 'searchResult'">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('apply', selectedContactInfo.info.id)">Apply
+                 @click="$emit('apply', displayContactInfo.info.id)">Apply
           </v-btn>
         </v-col>
       </v-card-actions>

@@ -66,7 +66,7 @@ const handleRequestPass = (id: number) => {
   alert("喜报：你通过了好友的申请！")
   acceptFriend(id);
   getUser(id).then((contact) => {
-    displayContact.value = contact;
+    selectedContactInfo.value = contact;
   })
   delete friendRequests.value[id];
   displayRightType.value = "contactDetail";

@@ -7,12 +7,18 @@ export const nowRef = ref<number>(Date.now());
 setInterval(() => {
     nowRef.value = Date.now();
 }, 1000);
+export const currentPage = ref<string>('chat');
 export const activeChatId = ref<number>(-1);
 export const activeContactId = ref<number>(-1);
 export const activeRequestId = ref<number>(-1);
 export const contactPageContentLeft = ref<number>(0);
 
 export const selectedContactInfo = ref<{
+    info: ContactsData | undefined,
+    source: string | undefined,
+}>({info: undefined, source: undefined});
+
+export const selectedChatInfo = ref<{
     info: ContactsData | undefined,
     source: string | undefined,
 }>({info: undefined, source: undefined});

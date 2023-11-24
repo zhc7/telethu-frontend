@@ -7,7 +7,7 @@ import ProfilePage from "./ProfilePage.vue";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {activeChatId, users, isSocketConnected, user, userName} from "../globals.ts"
+import {activeChatId, users, isSocketConnected, user, userName, currentPage} from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 
 const router = useRouter();
@@ -20,6 +20,7 @@ const activePage = computed({
     return props.page;
   },
   set: (value) => {
+    currentPage.value = '' + value;
     console.log("pushing " + value);
     router.replace(value);
   }

@@ -8,7 +8,7 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, users, userId, userName, messages} from "../globals.ts";
+import {nowRef, activeChatId, users, userId, userName, messages, selectedChatInfo} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
 import {ContactsData, Message} from "../utils/structs";
@@ -66,6 +66,10 @@ watch(activeChatId, (id) => {
   }
   getUser(id).then((contact) => {
     selectedChat.value = contact;
+    selectedChatInfo.value = {
+      info: contact,
+      source: 'chatList',
+    }
   })
 }, {immediate: true})
 
