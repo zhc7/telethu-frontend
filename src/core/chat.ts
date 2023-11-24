@@ -8,7 +8,7 @@ import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
-import {getCache, getUser} from "./data.ts";
+import {getCache, getUser, contactInsert, contactRemove} from "./data.ts";
 
 
 const searchResult = ref();
@@ -151,32 +151,7 @@ const addFriend = (friendId: number) => {
     socket.send(JSON.stringify(message));
 };
 
-const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
-    if (!arrayBuffer) return '/Shenium.png';
-    const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
-    return URL.createObjectURL(blob);
-}
 
-export const updateChatList = async () => {
-    const list = [];
-    for (const id of contacts.value) {
-        const contact = await getUser(id);
-        const chatInfo = {
-            id: id,
-            name: contact.name,
-            avatar: contact.avatar,
-            avatar_storage: parse_Avatar(await getCache(contact.avatar)),
-            category: contact.category,
-            unread_counter: 0,
-            pin: settings.value.pinned.includes(id),
-            mute: settings.value.muted.includes(id),
-            block: settings.value.blocked.includes(id),
-            hotMessage: undefined,
-        }
-        list.push(chatInfo);
-    }
-    rawChatList.value = list;
-}
 
 const acceptFriend = (friendId: number) => {
     const message: Message = {

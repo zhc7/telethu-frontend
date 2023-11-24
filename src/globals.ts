@@ -85,5 +85,7 @@ export const rawChatList = ref<Array<{
     pin: boolean,
     mute: boolean,
     block: boolean,
-}>>([]);
+} | undefined>>([]);
+
+
 

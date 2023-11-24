@@ -3,7 +3,7 @@ import {token} from "../auth";
 import {contacts, isSocketConnected, messages, hotMessages} from "../globals";
 import {chatManager, dispatcher, updateChatList} from "./chat";
 import {Ack, Message} from "../utils/structs";
-import {getUser} from "./data.ts";
+import {getUser, contactRemove, contactInsert} from "./data.ts";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -25,25 +25,10 @@ const createSocket = () => {
             console.log('received message: ', _message);
         if (first) {
             console.log("receiving meta data", _message);
-            contacts.value = _message as Array<number>;
-            for (const id of contacts.value) {
-                if (!messages.value[id]) {
-                    messages.value[id] = [];
-                }
-                const len = messages.value[id].length;
-                if (len === 0) {
-                    hotMessages.value[id] = undefined;
-                } else {
-                    const message = messages.value[id][len - 1];
-                    hotMessages.value[id] = {
-                        sender: message.sender,
-                        time: message.time,
-                        content: message.content,
-                    }
-                }
+            const idList: Array<number> = _message as Array<number>;
+            for (const id of idList) {
+                contactInsert(id);
             }
-            updateChatList();
-            // console.log("writing to contacts:", contacts.value);
             first = false;
             return;
         }
