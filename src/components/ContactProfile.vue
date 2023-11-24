@@ -12,7 +12,6 @@ import {
   settings
 } from "../globals.ts";
 import {useRouter} from "vue-router";
-import {getUser} from "../core/data.ts";
 
 defineEmits(["accept", "reject", "apply"]);
 
@@ -234,39 +233,39 @@ const displayContactInfo = computed(() => {
       </v-col>
       <v-card-actions>
         <v-col v-if="displayContactInfo.source === 'contactList'">
-          <template v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'">
-            <v-row style="display: flex; justify-content: center">
-              <v-btn
-                  color="green"
-                  style="font-size: 15px; font-weight: bold"
-                  @click="handleChat"
-              >Chat
-              </v-btn>
-            </v-row>
-            <v-row style="display: flex; justify-content: center">
-              <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
-              >Recommend
-              </v-btn>
-            </v-row>
-            <v-row style="display: flex; justify-content: center">
-              <v-btn
-                  color="error"
-                  style="font-size: 15px; font-weight: bold"
-                  @click="deleteConfirmDialog = true"
-              >Delete Friend
-              </v-btn>
-            </v-row>
-          </template>
-          <template v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'">
-            <v-row style="display: flex; justify-content: center">
-              <v-btn
-                  color="error"
-                  style="font-size: 15px; font-weight: bold"
-                  @click="deleteConfirmDialog = true"
-              >Quit Group
-              </v-btn>
-            </v-row>
-          </template>
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="green"
+                style="font-size: 15px; font-weight: bold"
+                @click="handleChat"
+            >Chat
+            </v-btn>
+          </v-row>
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'"
+                 style="display: flex; justify-content: center">
+            <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
+            >Recommend
+            </v-btn>
+          </v-row>
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="error"
+                style="font-size: 15px; font-weight: bold"
+                @click="deleteConfirmDialog = true"
+            >Delete Friend
+            </v-btn>
+          </v-row>
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="error"
+                style="font-size: 15px; font-weight: bold"
+                @click="deleteConfirmDialog = true"
+            >Quit Group
+            </v-btn>
+          </v-row>
         </v-col>
         <v-col v-if="displayContactInfo.source === 'requestList'">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold"
@@ -280,6 +279,33 @@ const displayContactInfo = computed(() => {
           <v-btn color="blue" style="font-size: 15px; font-weight: bold"
                  @click="$emit('apply', displayContactInfo.info.id)">Apply
           </v-btn>
+        </v-col>
+        <v-col v-if="displayContactInfo.source === 'chatList'">
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="indigo" style="font-size: 15px; font-weight: bold"
+            >Recommend
+            </v-btn>
+          </v-row>
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'user'"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="error"
+                style="font-size: 15px; font-weight: bold"
+                @click="deleteConfirmDialog = true"
+            >Delete Friend
+            </v-btn>
+          </v-row>
+          <v-row v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="error"
+                style="font-size: 15px; font-weight: bold"
+                @click="deleteConfirmDialog = true"
+            >Quit Group
+            </v-btn>
+          </v-row>
         </v-col>
       </v-card-actions>
     </v-card-item>
