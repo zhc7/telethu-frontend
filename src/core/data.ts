@@ -53,8 +53,8 @@ const parse_Avatar = (arrayBuffer: ArrayBuffer) => {
 }
 
 export const contactInsert = (id: number) => {
-    contacts.value.push(id);
     const index = contacts.value.length;
+    contacts.value.push(id);
     rawChatList.value.push({
         id: 0,
         name: 'Telethu',
