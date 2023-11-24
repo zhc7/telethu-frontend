@@ -1,6 +1,6 @@
 import {computed, ref} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
-import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs";
+import {ChatListItem, ContactsData, Message, Settings, UserData, Users} from "./utils/structs";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -89,18 +89,8 @@ export const hotMessages = ref<{
     } | undefined
 }>({});
 
-export const rawChatList = ref<Array<{
-    id: number,
-    name: string,
-    avatar: string,
-    avatar_storage: string,
-    category: string,
-    hotMessage: Message | undefined,
-    unread_counter: number,
-    pin: boolean,
-    mute: boolean,
-    block: boolean,
-} | undefined>>([]);
+
+export const rawChatList = ref<Array<ChatListItem | undefined>>([]);
 
 export const rawRequestList = ref<Array<{
     id: number,

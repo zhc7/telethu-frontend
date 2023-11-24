@@ -71,3 +71,16 @@ export interface Settings {
     pinned: Array<number>,
     blocked: Array<number>,
 }
+
+export interface ChatListItem {
+    id: number,
+    name: string,
+    avatar: string,
+    avatar_storage: string,
+    category: string,
+    hotMessage: Message | undefined,
+    unread_counter: number,
+    pin: boolean,
+    mute: boolean,
+    block: boolean,
+}

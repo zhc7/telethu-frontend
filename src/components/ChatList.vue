@@ -1,39 +1,34 @@
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import {FormatChatMessageTime} from "../utils/datetime.ts";
-import {nowRef, activeChatId, contacts, settings, hotMessages, rawChatList, cache} from "../globals.ts";
+import {activeChatId, cache, hotMessages, nowRef, rawChatList} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
-import {Message} from "../utils/structs.ts";
-import {getCache, getUser} from "../core/data.ts";
+import {ChatListItem, Message} from "../utils/structs.ts";
 
 const createGroupDialog = ref(false);
 
 const chatList = computed(() => {
-  let list = rawChatList.value.sort((a, b) => {
-    if (hotMessages.value[a.id] && hotMessages.value[b.id]) {
-      if (a.pin && b.pin) {
-        return b.hotMessage.time - a.hotMessage.time;
-      } else if (a.pin) {
-        return -1;
-      } else if (b.pin) {
-        return 1;
-      } else {
-        return hotMessages.value[b.id].time - hotMessages.value[a.id].time;
-      }
-    } else if (hotMessages.value[a.id]) {
+  const filtered = rawChatList.value.filter((i): i is ChatListItem => i !== undefined);
+  // TODO: what does this do?
+  // list = list.filter((chat) => {
+  //   return chat.name.toLowerCase().indexOf(friendName.value.toLowerCase()) !== -1;
+  // });
+  return filtered.sort((a, b) => {
+    if (a.pin === b.pin) {
+      const hot_a = hotMessages.value[a.id];
+      const hot_b = hotMessages.value[b.id];
+      if (hot_a === undefined) return -1;
+      if (hot_b === undefined) return 1;
+      return hot_b.time - hot_a.time;
+    } else if (a.pin) {
       return -1;
-    } else if (hotMessages.value[b.id]) {
+    } else if (b.pin) {
       return 1;
-    } else {
-      return a.id - b.id;
     }
+    throw new Error('error in chatList computing ' + a.pin + b.pin);
   });
-  list = list.filter((chat) => {
-    return chat.name.toLowerCase().indexOf(friendName.value.toLowerCase()) !== -1;
-  });
-  return list;
 });
 
 const searchFriendInput = ref(false);
@@ -77,17 +72,17 @@ const displayHotMessage = (message: Message | undefined) => {
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
-          :subtitle="hotMessages[chat.id] ? hotMessages[chat.id].content : ''"
+          :subtitle="displayHotMessage(chat.hotMessage)"
       >
         <template #prepend>
           <v-avatar>
             <v-img v-if="chat.category === 'user'"
-                   :src="cache[chat.avatar] ? cache[chat.avatar] as string : './Shenium.png'" cover/>
+                   :src="cache[chat.avatar] ? cache[chat.avatar] as string : '/Shenium.png'" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>
         <div class="chat-time fill-height">
-          <p>{{ hotMessages[chat.id] ? FormatChatMessageTime(nowRef, hotMessages[chat.id].time.toString()) : '' }}</p>
+          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time.toString()) : '' }}</p>
           <v-icon v-show="chat.pin">mdi-pin</v-icon>
           <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
         </div>
