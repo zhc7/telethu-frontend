@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import {
-  blockFriend,
-  deleteFriend,
-  exitGroup,
-  unblockFriend,
-} from "../core/chat.ts";
-import {computed, onMounted, ref} from "vue";
+import {blockFriend, deleteFriend, exitGroup, unblockFriend,} from "../core/chat.ts";
+import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {users, settings, selectedContactInfo} from "../globals.ts";
-import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
+import {activeChatId, activeContactId, selectedContactInfo,settings} from "../globals.ts";
+import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 
 defineEmits(["accept", "reject", "apply"]);
@@ -65,6 +60,9 @@ const switchValueBlock = computed<boolean>({
   },
 })
 
+const router = useRouter();
+
+
 const friendCircle = ref(["THU", "PKU", "CMU", "MIT"]);
 const friendCircleSelect = ref([]);
 const newName = ref("");
@@ -84,6 +82,11 @@ const handleDelete = () => {
   }
 };
 
+const handleChat = async () => {
+  activeChatId.value = activeContactId.value;
+  router.replace('chat');
+}
+
 const editName = () => {
   console.log("editName");
 };
@@ -93,61 +96,61 @@ const editName = () => {
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-show="selectedContactInfo.source !== undefined">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="'public/Logo.png'" cover />
+      <v-img :src="'public/Logo.png'" cover/>
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>
           {{ selectedContactInfo.info ? selectedContactInfo.info.name : '' }}
         </v-list-item-title>
-        <v-list-item-subtitle> @{{ selectedContactInfo.info ? selectedContactInfo.info.id : '' }} </v-list-item-subtitle>
+        <v-list-item-subtitle> @{{ selectedContactInfo.info ? selectedContactInfo.info.id : '' }}</v-list-item-subtitle>
         <v-list-item
-          v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'"
-          class="text-grey-darken-3"
+            v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'"
+            class="text-grey-darken-3"
         >
-          <v-divider class="ma-4" />
+          <v-divider class="ma-4"/>
           <div>
             <ProfileRow>
-              <template v-slot:title> Location: </template>
-              <template v-slot:content> Beijing, China Mainland </template>
+              <template v-slot:title> Location:</template>
+              <template v-slot:content> Beijing, China Mainland</template>
             </ProfileRow>
             <ProfileRow>
-              <template #title> Phone: </template>
-              <template #content> 114514 </template>
+              <template #title> Phone:</template>
+              <template #content> 114514</template>
             </ProfileRow>
             <ProfileRow v-show="selectedContactInfo.info && selectedContactInfo.info.category === 'user'">
-              <template #title> Email: </template>
-              <template #content> {{ selectedContactInfo.info.email ? selectedContactInfo.info.email : '' }} </template>
+              <template #title> Email:</template>
+              <template #content> {{ selectedContactInfo.info.email ? selectedContactInfo.info.email : '' }}</template>
             </ProfileRow>
           </div>
         </v-list-item>
-<!--        <div-->
-<!--          v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'group'"-->
-<!--          class="overflow-y-auto fill-height"-->
-<!--        >-->
-<!--          <v-divider class="ma-4" />-->
-<!--          <v-card-title class="ma-7"> Members </v-card-title>-->
-<!--          <div class="overflow-y-auto fill-height d-flex flex-wrap">-->
-<!--            <div-->
-<!--              v-for="member in (displayContact as GroupData).members"-->
-<!--              :key="member.id"-->
-<!--              class="d-flex flex-column align-center ma-auto mb-5"-->
-<!--            >-->
-<!--              <v-avatar size="60">-->
-<!--                <v-img :src="member.avatar" id="member-avatar" cover />-->
-<!--              </v-avatar>-->
-<!--              <p>{{  }}</p>-->
-<!--            </div>-->
-<!--            <div class="d-flex flex-column align-center ma-auto mb-5">-->
-<!--              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">-->
-<!--                <v-icon style="font-size: 35px"-->
-<!--                  >mdi-account-multiple-plus</v-icon-->
-<!--                >-->
-<!--              </v-avatar>-->
-<!--              <p class="text-indigo">...</p>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+        <!--        <div-->
+        <!--          v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'group'"-->
+        <!--          class="overflow-y-auto fill-height"-->
+        <!--        >-->
+        <!--          <v-divider class="ma-4" />-->
+        <!--          <v-card-title class="ma-7"> Members </v-card-title>-->
+        <!--          <div class="overflow-y-auto fill-height d-flex flex-wrap">-->
+        <!--            <div-->
+        <!--              v-for="member in (displayContact as GroupData).members"-->
+        <!--              :key="member.id"-->
+        <!--              class="d-flex flex-column align-center ma-auto mb-5"-->
+        <!--            >-->
+        <!--              <v-avatar size="60">-->
+        <!--                <v-img :src="member.avatar" id="member-avatar" cover />-->
+        <!--              </v-avatar>-->
+        <!--              <p>{{  }}</p>-->
+        <!--            </div>-->
+        <!--            <div class="d-flex flex-column align-center ma-auto mb-5">-->
+        <!--              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">-->
+        <!--                <v-icon style="font-size: 35px"-->
+        <!--                  >mdi-account-multiple-plus</v-icon-->
+        <!--                >-->
+        <!--              </v-avatar>-->
+        <!--              <p class="text-indigo">...</p>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
       </v-list>
       <v-divider class="ma-4"/>
       <v-col v-if="false">
@@ -155,72 +158,82 @@ const editName = () => {
           <!-- TODO: add rename function -->
           <p style="flex: 1" class="text-right pr-4">Rename:</p>
           <v-text-field
-            variant="outlined"
-            label="New name"
-            density="compact"
-            style="flex: 2"
-            hide-details
-            append-inner-icon="mdi-pencil"
-            v-model="newName"
-            @click:append-inner="editName"
+              variant="outlined"
+              label="New name"
+              density="compact"
+              style="flex: 2"
+              hide-details
+              append-inner-icon="mdi-pencil"
+              v-model="newName"
+              @click:append-inner="editName"
           />
         </v-row>
         <v-row
-          style="display: flex; align-items: center"
-          class="ma-3 text-right"
+            style="display: flex; align-items: center"
+            class="ma-3 text-right"
         >
           <!-- TODO: add friend circle function -->
           <p style="flex: 1" class="pr-4">Label:</p>
           <v-combobox
-            v-model="friendCircleSelect"
-            chips
-            :items="friendCircle"
-            multiple
-            variant="outlined"
-            density="compact"
-            hide-details
-            style="flex: 2"
+              v-model="friendCircleSelect"
+              chips
+              :items="friendCircle"
+              multiple
+              variant="outlined"
+              density="compact"
+              hide-details
+              style="flex: 2"
           ></v-combobox>
         </v-row>
         <v-row
-          style="display: flex; align-items: center"
-          class="ma-1 text-right"
+            style="display: flex; align-items: center"
+            class="ma-1 text-right"
         >
           <p style="flex: 1" class="pr-4">Mute:</p>
           <v-switch
-            style="flex: 2"
-            hide-details
-            color="indigo"
-            v-model="switchValueMute"
+              style="flex: 2"
+              hide-details
+              color="indigo"
+              v-model="switchValueMute"
           ></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center" class="ma-1">
           <p style="flex: 1" class="text-right pr-4">Pin:</p>
           <v-switch
-            style="flex: 2"
-            hide-details
-            color="indigo"
-            v-model="switchValuePin"
+              style="flex: 2"
+              hide-details
+              color="indigo"
+              v-model="switchValuePin"
           ></v-switch>
         </v-row>
         <v-row style="display: flex; align-items: center" class="ma-1">
           <p style="flex: 1" class="text-right pr-4">Block:</p>
           <v-switch
-            style="flex: 2"
-            hide-details
-            color="error"
-            v-model="switchValueBlock"
+              style="flex: 2"
+              hide-details
+              color="error"
+              v-model="switchValueBlock"
           ></v-switch>
         </v-row>
         <v-divider class="mt-4"/>
       </v-col>
       <v-card-actions>
         <v-col v-if="selectedContactInfo.source === 'contactList'">
-            <v-row v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'" style="display: flex; justify-content: center">
-              <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
-              >Recommend</v-btn>
+          <template v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'">
+            <v-row style="display: flex; justify-content: center">
+              <v-btn
+                  color="green"
+                  style="font-size: 15px; font-weight: bold"
+                  @click="handleChat"
+              >Chat
+              </v-btn>
             </v-row>
-            <v-row v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'user'" style="display: flex; justify-content: center">
+            <v-row style="display: flex; justify-content: center">
+              <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
+              >Recommend
+              </v-btn>
+            </v-row>
+            <v-row style="display: flex; justify-content: center">
               <v-btn
                   color="error"
                   style="font-size: 15px; font-weight: bold"
@@ -228,7 +241,9 @@ const editName = () => {
               >Delete Friend
               </v-btn>
             </v-row>
-            <v-row v-else style="display: flex; justify-content: center">
+          </template>
+          <template v-if="selectedContactInfo.info && selectedContactInfo.info.category === 'group'">
+            <v-row style="display: flex; justify-content: center">
               <v-btn
                   color="error"
                   style="font-size: 15px; font-weight: bold"
@@ -236,13 +251,20 @@ const editName = () => {
               >Quit Group
               </v-btn>
             </v-row>
+          </template>
         </v-col>
         <v-col v-if="selectedContactInfo.source === 'requestList'">
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('accept', selectedContactInfo.info.id)">Pass</v-btn>
-          <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="$emit('reject', selectedContactInfo.info.id)">Reject</v-btn>
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold"
+                 @click="$emit('accept', selectedContactInfo.info.id)">Pass
+          </v-btn>
+          <v-btn color="error" style="font-size: 15px; font-weight: bold"
+                 @click="$emit('reject', selectedContactInfo.info.id)">Reject
+          </v-btn>
         </v-col>
         <v-col v-if="selectedContactInfo.source === 'searchResult'">
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('apply', selectedContactInfo.info.id)">Apply</v-btn>
+          <v-btn color="blue" style="font-size: 15px; font-weight: bold"
+                 @click="$emit('apply', selectedContactInfo.info.id)">Apply
+          </v-btn>
         </v-col>
       </v-card-actions>
     </v-card-item>
@@ -250,9 +272,9 @@ const editName = () => {
     <v-dialog v-model="deleteConfirmDialog" max-width="30vw">
       <v-card>
         <v-alert
-          type="warning"
-          title="Are you sure?"
-          text="This operation cannot be undone."
+            type="warning"
+            title="Are you sure?"
+            text="This operation cannot be undone."
         ></v-alert>
         <v-card-actions class="justify-end">
           <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
@@ -262,11 +284,11 @@ const editName = () => {
     </v-dialog>
 
     <SelectMember
-      :showDialog="groupAddMemberDialog"
-      @update:showDialog="groupAddMemberDialog = $event"
-      :type="'add_group_member'"
-      :title="'Add Member'"
-      :displayContact="displayContact"
+        :showDialog="groupAddMemberDialog"
+        @update:showDialog="groupAddMemberDialog = $event"
+        :type="'add_group_member'"
+        :title="'Add Member'"
+        :displayContact="displayContact"
     />
   </v-card>
 </template>

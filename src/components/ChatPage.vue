@@ -61,10 +61,13 @@ const groupedMessages = computed(() => {
 const selectedChat = ref<ContactsData>({avatar: "", category: "", id: 0, name: ""});
 
 watch(activeChatId, (id) => {
+  if (id < 1) {
+    return;
+  }
   getUser(id).then((contact) => {
     selectedChat.value = contact;
   })
-})
+}, {immediate: true})
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow')!;
@@ -89,15 +92,6 @@ const handleHideProfile = (event) => {
     window.setTimeout(() => {
       showProfileDetail.value = false;
     }, 300);
-  }
-}
-
-
-const getNameById = async (id: number) => {
-  if (+id === userId.value) {
-    return userName.value;
-  } else {
-    return (await getUser(id)).name;
   }
 }
 
