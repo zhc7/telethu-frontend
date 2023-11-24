@@ -1,6 +1,16 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
-import {rawChatList, contacts, hotMessages, messages, settings, user, userId, selectedContactInfo} from "../globals"
+import {
+    rawChatList,
+    contacts,
+    hotMessages,
+    messages,
+    settings,
+    user,
+    userId,
+    selectedContactInfo,
+    requests
+} from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
 import {generateMD5, generateMessageId} from "../utils/hash";
@@ -8,7 +18,7 @@ import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
-import {getCache, getUser, contactInsert, contactRemove} from "./data.ts";
+import {getCache, getUser, contactInsert, contactRemove, requestInsert} from "./data.ts";
 
 
 const searchResult = ref();
@@ -193,12 +203,11 @@ const applyList = async () => {
             if (DEBUG) {
                 console.log(response.data);
             }
-            const newRequests = {};
-            for (let request of response.data["friends"]) {
-                newRequests[request.id] = request;
-                console.log("requests updated");
+            const idList = response.data['friends'];
+            for (const request of idList) {
+                requestInsert(request.id, undefined);
             }
-            friendRequests.value = newRequests;
+            console.log(requests.value);
         });
 }
 

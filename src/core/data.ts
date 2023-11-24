@@ -1,8 +1,9 @@
-import {cache, contacts, messages, rawChatList, settings, users} from "../globals";
-import axios from "axios";
+import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, users} from "../globals";
+import axios, {request} from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
+import {el} from "vuetify/locale";
 
 
 const getUser = async (id: number): Promise<ContactsData> => {
@@ -79,8 +80,6 @@ export const contactInsert = (id: number) => {
                 mute: settings.value.muted.includes(id),
                 block: settings.value.blocked.includes(id),
             }
-            console.log(rawChatList.value[index], '----', index, rawChatList.value);
-
         })
     });
     if (messages.value[id] === undefined) {
@@ -94,6 +93,34 @@ export const contactRemove = (id: number) => {
         return entry === undefined || entry.id !== id
     });
     delete messages.value[id];
+}
+
+export const requestInsert = (id: number, info: ContactsData | undefined = undefined) => {
+    const index = requests.value.length;
+    requests.value.push(id);
+    rawRequestList.value.push({
+        id: 0,
+        name: 'Telethu',
+        email: 'tele@thu.com',
+        avatar: './Shenium.png',
+    });
+    if (info !== undefined) {
+        rawRequestList.value[index] = {
+            id: info.id,
+            name: info.name,
+            email: info.email,
+            avatar: info.avatar,
+        };
+    } else {
+        getUser(id).then((contact) => {
+            rawRequestList.value[index] = {
+                id: contact.id,
+                name: contact.name,
+                email: contact.email ? contact.email : 'tele@thu.com',
+                avatar: contact.avatar ? contact.avatar : './Shenium.png',
+            };
+        })
+    }
 }
 
 export {

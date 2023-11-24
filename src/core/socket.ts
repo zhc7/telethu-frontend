@@ -1,7 +1,7 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, messages, hotMessages} from "../globals";
-import {chatManager, dispatcher, updateChatList} from "./chat";
+import {contacts, isSocketConnected, messages, hotMessages, requests} from "../globals";
+import {applyList, chatManager, dispatcher, updateChatList} from "./chat";
 import {Ack, Message} from "../utils/structs";
 import {getUser, contactRemove, contactInsert} from "./data.ts";
 
@@ -26,6 +26,7 @@ const createSocket = () => {
         if (first) {
             console.log("receiving meta data", _message);
             const idList: Array<number> = _message as Array<number>;
+            applyList();
             for (const id of idList) {
                 contactInsert(id);
             }

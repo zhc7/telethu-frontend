@@ -59,8 +59,6 @@ const handleContactList = () => {
 
 const handleRequestList = () => {
   contactPageContentLeft.value = 1;
-  // applyList();
-  // displayApplyList.value = friendRequests.value;
   console.log(friendRequests.value);
 };
 
