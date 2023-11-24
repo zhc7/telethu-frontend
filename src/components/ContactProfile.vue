@@ -75,9 +75,6 @@ const ifGroup = computed(() => {
 
 const memberInfoTable = ref({});
 
-onMounted(() => {
-})
-
 const handleDelete = () => {
   deleteConfirmDialog.value = false;
   if (props.displayContact.category === 'user') {
@@ -240,7 +237,7 @@ const editName = () => {
               </v-btn>
             </v-row>
         </v-col>
-        <v-col v-if="selectedContactInfo.source === 'reqeustList'">
+        <v-col v-if="selectedContactInfo.source === 'requestList'">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold" @click="$emit('accept', selectedContactInfo.info.id)">Pass</v-btn>
           <v-btn color="error" style="font-size: 15px; font-weight: bold" @click="$emit('reject', selectedContactInfo.info.id)">Reject</v-btn>
         </v-col>

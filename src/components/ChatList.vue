@@ -7,10 +7,6 @@ import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
 import {Message} from "../utils/structs.ts";
 import {getCache, getUser} from "../core/data.ts";
-import {updateChatList} from "../core/chat.ts";
-
-defineProps(['modelValue']);
-defineEmits(['update:modelValue']);
 
 const createGroupDialog = ref(false);
 
@@ -55,9 +51,6 @@ const displayHotMessage = (message: Message | undefined) => {
   }
 }
 
-onMounted( () => {
-
-})
 </script>
 
 <template>

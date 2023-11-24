@@ -72,7 +72,7 @@ const ScrollToBottom = () => {
 };
 
 const displayContact = ref();
-const DisplayFriendProfile = () => {
+const handleDisplayProfile = () => {
   displayProfile.value = users.value[activeChatId.value];
   window.setTimeout(() => {
     showProfileDetail.value = true;
@@ -140,7 +140,7 @@ onMounted(() => {
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="selectedChat.category === 'user'"/>
-        <v-btn icon="mdi-account-cog-outline" @click="DisplayFriendProfile"/>
+        <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
@@ -157,7 +157,7 @@ onMounted(() => {
                         :final="mIndex === group.messages.length - 1"
                         :avatar="selectedChat.avatar"
                         @finished="ScrollToBottom"
-                        @showProfile="DisplayFriendProfile"
+                        @showProfile="handleDisplayProfile"
             />
           </div>
         </div>

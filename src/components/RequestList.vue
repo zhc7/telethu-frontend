@@ -1,32 +1,62 @@
 <script setup>
-import {computed, ref} from 'vue';
+import {computed, ref, watch} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {friendRequests} from "../core/chat.ts";
+import {activeRequestId, rawRequestList, requests, selectedContactInfo} from "../globals.ts";
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits((["update:modelValue", 'accept', 'reject']))
-const requests = computed(() => {
-  return Object.values(friendRequests.value);
+
+const requestList = computed(() => {
+  const list = [];
+  for (const entry of rawRequestList.value) {
+    list.push({
+      id: entry.id,
+      name: entry.name,
+      avatar: entry.avatar ? entry.avatar : './Shenium.png',
+      email: entry.email ? entry.email : 'tele@thu.com',
+      time: entry.time,
+    })
+  }
+  list.sort((a, b) => {
+    if (a === undefined) return -1;
+    if (b === undefined) return 1;
+    return a.time - b.time;
+  });
+  return list;
 });
 
-const selected = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value);
+watch(activeRequestId, (newValue) => {
+  const userInfo = rawRequestList.value.filter((entry) => entry.id === newValue);
+  if (userInfo === undefined) {
+    selectedContactInfo.value = {
+      info: undefined,
+      source: undefined,
+    }
+    return;
   }
+  selectedContactInfo.value.info = {
+    id: userInfo.id,
+    name: userInfo.name,
+    email: userInfo.name,
+    avatar: userInfo.avatar ? userInfo.avatar : './Shenium.png',
+  }
+  selectedContactInfo.value.source = 'requestList';
 });
+
 
 
 </script>
 
 <template>
-  <List class="fill-height" v-model="selected">
-    <ListItem :key="request.id"
+  <List class="fill-height" v-model="activeRequestId">
+    <ListItem
+        v-for="request in requestList"
+        :key="request.id"
               :k="request.id"
               class="pa-3 pl-6 chat-list-item text-left"
-              v-for="request in requests"
-              :title="request.username"
+              :title="request.name"
               :subtitle="'@' + request.id"
     >
       <template #prepend>

@@ -1,48 +1,42 @@
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue';
+import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {contacts} from "../globals";
-import {getUser} from "../core/data.ts";
-import {ContactsData} from "../utils/structs.ts";
+import {activeContactId, rawChatList} from "../globals.ts";
 
-const props = defineProps(["modelValue", "displayType", "searchInput"]);
-const emit = defineEmits((["update:modelValue"]))
-const _personContacts = ref<Array<ContactsData>>([]);
-
-watch(contacts, () => {
-  for (const id of contacts.value) {
-    getUser(id).then((contact) => {
-      _personContacts.value.push(contact);
-    })
-  }
-}, {immediate: true});
-
-const personContacts = computed(() => _personContacts.value.sort((a, b) => a.name.localeCompare(b.name)));
-
-const selected = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value);
-  }
+const props = defineProps(["searchInput"]);
+const personContactList = computed(() => {
+  return rawChatList.value
+      .filter((i) => {
+        return i.category === 'user';
+      }).sort((a, b) => {
+    if (a.id === 0) {
+      return 1;
+    }
+    if (b.id === 0) {
+      return -1;
+    }
+    return a.name.localeCompare(b.name);
+  });
 });
-
-const displayContacts = computed(() => {
-  let returnContacts = personContacts.value.filter((c) => (c.category === props.displayType));
-  if (props.searchInput) {
-    returnContacts = returnContacts.filter((c) => c.name.toLowerCase().includes(props.searchInput.toLowerCase()));
-  }
-  return returnContacts;
-});
+const userCount = computed(() => {
+  let count = 0;
+  rawChatList.value.forEach((entry) => {
+    if (entry && entry.category === 'user') {
+      count += 1;
+    }
+  })
+  return count;
+})
 
 </script>
 
 <template>
-  <List class="fill-height overflow-y-auto" v-model="selected">
+  <List class="fill-height overflow-y-auto" v-model="activeContactId">
     <ListItem :key="contact.id"
               :k="contact.id"
               class="pa-3 pl-6 chat-list-item text-left"
-              v-for="contact in displayContacts"
+              v-for="contact in personContactList"
     >
       <template #prepend>
         <v-avatar>
@@ -56,8 +50,8 @@ const displayContacts = computed(() => {
     <v-list-item>
       <span class="text-blue-grey-lighten-2">
         {{
-          personContacts.filter((c) => (c.category === 'user')).length === 0 ? 'No friends yet' : personContacts.length === 1 ? '1 friend in total' :
-              personContacts.length + ' friends in total'
+          userCount === 0 ? 'No friends yet' : userCount === 1 ? '1 friend in total' :
+              userCount + ' friends in total'
         }}
       </span>
     </v-list-item>

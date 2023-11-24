@@ -16,7 +16,7 @@ import {activeContactId, activeRequestId, contactPageContentLeft, messages, sele
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
-import {getUser} from "../core/data.ts";
+import {contactInsert, getUser} from "../core/data.ts";
 
 
 defineEmits(["chat"]);
@@ -65,10 +65,6 @@ const handleRequestList = () => {
 const handleRequestPass = (id: number) => {
   alert("喜报：你通过了好友的申请！")
   acceptFriend(id);
-  displayType.value = "requestList";
-  if (messages.value[id] === undefined) {
-    messages.value[id] = [];
-  }
   getUser(id).then((contact) => {
     displayContact.value = contact;
   })
@@ -149,7 +145,6 @@ watch(activeRequestId, selectRequest);
         </v-list-item>
       </v-list>
       <ContactList
-          v-model="activeContactId"
           v-show="contactPageContentLeft === 0"
           class="fill-height overflow-y-auto"
           :displayType="displayGroup ? 'group' : 'user'"

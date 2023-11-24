@@ -95,32 +95,17 @@ export const contactRemove = (id: number) => {
     delete messages.value[id];
 }
 
-export const requestInsert = (id: number, info: ContactsData | undefined = undefined) => {
+export const requestInsert = (id: number,  info = undefined) => {
     const index = requests.value.length;
     requests.value.push(id);
-    rawRequestList.value.push({
-        id: 0,
-        name: 'Telethu',
-        email: 'tele@thu.com',
-        avatar: './Shenium.png',
-    });
-    if (info !== undefined) {
-        rawRequestList.value[index] = {
-            id: info.id,
-            name: info.name,
-            email: info.email,
-            avatar: info.avatar,
-        };
-    } else {
-        getUser(id).then((contact) => {
-            rawRequestList.value[index] = {
-                id: contact.id,
-                name: contact.name,
-                email: contact.email ? contact.email : 'tele@thu.com',
-                avatar: contact.avatar ? contact.avatar : './Shenium.png',
-            };
-        })
-    }
+    rawRequestList.value.push(
+        info
+    );
+}
+
+export const requestRemove = (id: number) => {
+    requests.value.filter((i: number) => (i !== id));
+    rawRequestList.value.filter((i) => (i.id !== id));
 }
 
 export {

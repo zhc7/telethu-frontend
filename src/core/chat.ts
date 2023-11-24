@@ -174,6 +174,7 @@ const acceptFriend = (friendId: number) => {
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
+    contactInsert(friendId);
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 };
@@ -205,7 +206,12 @@ const applyList = async () => {
             }
             const idList = response.data['friends'];
             for (const request of idList) {
-                requestInsert(request.id, undefined);
+                requestInsert(request.id, {
+                    id: request.id,
+                    name: request.name,
+                    email: request.email,
+                    time: request.time,
+                });
             }
             console.log(requests.value);
         });
