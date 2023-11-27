@@ -156,7 +156,7 @@ watch(displayContactInfo, (newInfo) => {
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-show="displayContactInfo.info">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="'public/Logo.png'" cover/>
+      <v-img :src="getAvatarOrDefault(displayContactInfo?.info?.avatar)" cover/>
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
