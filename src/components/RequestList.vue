@@ -1,13 +1,13 @@
-<script setup>
-import {computed, ref, watch} from 'vue';
+<script setup lang="ts">
+import {computed, watch} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {friendRequests} from "../core/chat.ts";
 import {activeRequestId, contactPageProfileSource, rawRequestList, requests, selectedContactInfo} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
+import {UserData} from "../utils/structs.ts";
 
-const props = defineProps(["modelValue"]);
-const emit = defineEmits((["update:modelValue", 'accept', 'reject']))
+defineProps(["modelValue"]);
+defineEmits((["update:modelValue", 'accept', 'reject']))
 
 const requestList = computed(() => {
   const list = [];
@@ -15,7 +15,7 @@ const requestList = computed(() => {
     list.push({
       id: entry.id,
       name: entry.name,
-      avatar: entry.avatar ? entry.avatar : './Shenium.png',
+      avatar: entry.avatar ? entry.avatar : '/Shenium.png',
       email: entry.email ? entry.email : 'tele@thu.com',
       time: entry.time,
     })
@@ -29,17 +29,14 @@ const requestList = computed(() => {
 });
 
 watch(activeRequestId, (newValue) => {
-  const userInfo = rawRequestList.value.filter((entry) => entry.id === newValue);
-  if (userInfo === undefined) {
-    selectedContactInfo.value = undefined;
-    return;
-  }
+  const userInfo = rawRequestList.value.filter((entry) => entry.id === newValue)[0];
   selectedContactInfo.value = {
     id: userInfo.id,
     name: userInfo.name,
     email: userInfo.email,
     avatar: getAvatarOrDefault(userInfo.avatar),
-  }
+    category: "user",
+  } as UserData;
   contactPageProfileSource.value = 'requestList';
 });
 

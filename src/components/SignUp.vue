@@ -1,11 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {login, register} from "../auth.ts";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, minLength } from "@vuelidate/validators";
+import {useVuelidate} from "@vuelidate/core";
+import {email, required} from "@vuelidate/validators";
 
-const emits = defineEmits(["finished"])
+defineEmits(["finished"])
 
 const dialog = ref(false);
 const signupName = ref("");

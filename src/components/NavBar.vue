@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {ref, provide} from "vue";
 
 const activated = ref(false);

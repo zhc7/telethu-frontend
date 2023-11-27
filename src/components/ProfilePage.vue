@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import {logout, token} from "../auth.ts";
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {cache, user, userEmail, userId, userName} from "../globals.ts";
+import {user, userEmail, userId, userName} from "../globals.ts";
 
 const router = useRouter();
 
