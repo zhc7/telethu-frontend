@@ -88,9 +88,8 @@ export const contactInsert = (id: number) => {
     contacts.value.push(id);
     rawChatList.value.push({
         id: 0,
-        name: '' + id,
+        name: 'Loading...',
         avatar: '',
-        avatar_storage: '',
         category: 'group',
         unread_counter: 0,
         pin: false,

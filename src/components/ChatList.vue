@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {FormatChatMessageTime} from "../utils/datetime.ts";
+import {formatChatMessageTime} from "../utils/datetime.ts";
 import {activeChatId, cache, hotMessages, nowRef, rawChatList} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
@@ -11,10 +11,6 @@ const createGroupDialog = ref(false);
 
 const chatList = computed(() => {
   const filtered = rawChatList.value.filter((i): i is ChatListItem => i !== undefined);
-  // TODO: what does this do?
-  // list = list.filter((chat) => {
-  //   return chat.name.toLowerCase().indexOf(friendName.value.toLowerCase()) !== -1;
-  // });
   return filtered.sort((a, b) => {
     if (a.pin === b.pin) {
       const hot_a = hotMessages.value[a.id];
@@ -72,7 +68,7 @@ const displayHotMessage = (message: Message | undefined) => {
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
-          :subtitle="displayHotMessage(chat.hotMessage)"
+          :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
       >
         <template #prepend>
           <v-avatar>
@@ -82,7 +78,7 @@ const displayHotMessage = (message: Message | undefined) => {
           </v-avatar>
         </template>
         <div class="chat-time fill-height">
-          <p>{{ chat.hotMessage ? FormatChatMessageTime(nowRef, chat.hotMessage.time.toString()) : '' }}</p>
+          <p>{{ hotMessages[chat.id] ? formatChatMessageTime(nowRef, hotMessages[chat.id]?.time) : '' }}</p>
           <v-icon v-show="chat.pin">mdi-pin</v-icon>
           <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
         </div>

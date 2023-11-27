@@ -28,7 +28,15 @@ const createSocket = () => {
             const idList: Array<number> = _message as Array<number>;
             applyList();
             for (const id of idList) {
-                contactInsert(id);
+                let flag = true;
+                contacts.value.forEach((entry) => {
+                    if (entry === id) {
+                        flag = false;
+                    }
+                });
+                if (flag) {
+                    contactInsert(id);
+                }
             }
             first = false;
             return;

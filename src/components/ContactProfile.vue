@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {blockFriend, deleteFriend, exitGroup, unblockFriend,} from "../core/chat.ts";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -12,6 +12,7 @@ import {
   settings, userAvatar, userEmail, userId, userName
 } from "../globals.ts";
 import {useRouter} from "vue-router";
+import {getAvatarOrDefault, getUser} from "../core/data.ts";
 
 defineEmits(["accept", "reject", "apply"]);
 
@@ -24,11 +25,15 @@ const switchValueMute = computed<boolean>({
     return settings.value.muted.includes(props.displayContact.id);
   },
   set: (value) => {
+    if (!selectedChatInfo.value.info) {
+      return;
+    }
     if (value) {
-      settings.value.muted.push(props.displayContact.id);
+        settings.value.muted.push(selectedChatInfo.value.info.id);
     } else {
+      const selId = selectedChatInfo.value.info.id;
       settings.value.muted = settings.value.muted.filter((id) => {
-        return id !== props.displayContact.id;
+        return id !== selId;
       });
     }
   },
@@ -74,17 +79,23 @@ const friendCircleSelect = ref([]);
 const newName = ref("");
 
 const ifGroup = computed(() => {
-  return props.displayContact && props.displayContact.category === "group";
+  return displayContactInfo.value.info && displayContactInfo.value.info.category === "group";
 });
 
-const memberInfoTable = ref({});
+const memberInfoTable = ref<Array<{
+  id: number,
+  name: string,
+  time: number,
+  avatar: string,
+  role: number,
+}>>([]);
 
 const handleDelete = () => {
   deleteConfirmDialog.value = false;
-  if (props.displayContact.category === 'user') {
-    deleteFriend(props.displayContact.id);
+  if (displayContactInfo.value.info?.category === 'user') {
+    deleteFriend(displayContactInfo.value.info?.id);
   } else {
-    exitGroup(props.displayContact.id);
+    exitGroup(displayContactInfo.value.info?.id);
   }
 };
 
@@ -109,8 +120,34 @@ const displayContactInfo = computed(() => {
         name: userName.value,
         email: userEmail.value,
         avatar: userAvatar.value,
+        category: 'self',
       }
     }
+  }
+});
+
+watch(displayContactInfo, (newInfo) => {
+  if (!newInfo || !newInfo.info || newInfo.info.category !== 'group') return;
+  const members = newInfo.info.members;
+  memberInfoTable.value = [];
+  for (const id of members) {
+    const index = memberInfoTable.value.length;
+    memberInfoTable.value.push({
+      id: 0,
+      name: 'Loading...',
+      avatar: '',
+      time: Date.now(),
+      role: 0,
+    });
+    getUser(id).then((info) => {
+      memberInfoTable.value[index] = {
+        id: info.id,
+        name: info.name,
+        avatar: info.avatar,
+        time: Date.now(),
+        role: 0,
+      }
+    });
   }
 })
 
@@ -147,33 +184,34 @@ const displayContactInfo = computed(() => {
             </ProfileRow>
           </div>
         </v-list-item>
-        <!--        <div-->
-        <!--          v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'"-->
-        <!--          class="overflow-y-auto fill-height"-->
-        <!--        >-->
-        <!--          <v-divider class="ma-4" />-->
-        <!--          <v-card-title class="ma-7"> Members </v-card-title>-->
-        <!--          <div class="overflow-y-auto fill-height d-flex flex-wrap">-->
-        <!--            <div-->
-        <!--              v-for="member in (displayContact as GroupData).members"-->
-        <!--              :key="member.id"-->
-        <!--              class="d-flex flex-column align-center ma-auto mb-5"-->
-        <!--            >-->
-        <!--              <v-avatar size="60">-->
-        <!--                <v-img :src="member.avatar" id="member-avatar" cover />-->
-        <!--              </v-avatar>-->
-        <!--              <p>{{  }}</p>-->
-        <!--            </div>-->
-        <!--            <div class="d-flex flex-column align-center ma-auto mb-5">-->
-        <!--              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">-->
-        <!--                <v-icon style="font-size: 35px"-->
-        <!--                  >mdi-account-multiple-plus</v-icon-->
-        <!--                >-->
-        <!--              </v-avatar>-->
-        <!--              <p class="text-indigo">...</p>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
+                <div
+                  v-if="displayContactInfo.info && displayContactInfo.info.category === 'group'"
+                  class="overflow-y-auto fill-height"
+                >
+                  <v-divider class="ma-4" />
+                  <v-card-title class="ma-7"> Members </v-card-title>
+                  <div class="overflow-y-auto fill-height d-flex flex-wrap">
+<!--                    {{ displayContactInfo.info.members }}-->
+                    <div
+                      v-for="member in memberInfoTable"
+                      :key="member.id"
+                      class="d-flex flex-column align-center ma-auto mb-5"
+                    >
+                      <v-avatar size="60">
+                        <v-img :src="getAvatarOrDefault(member.avatar)" id="member-avatar" cover />
+                      </v-avatar>
+<!--                      <p>{{ member.avatar }}</p>-->
+                    </div>
+                    <div class="d-flex flex-column align-center ma-auto mb-5">
+                      <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
+                        <v-icon style="font-size: 35px"
+                          >mdi-account-multiple-plus</v-icon
+                        >
+                      </v-avatar>
+                      <p class="text-indigo">...</p>
+                    </div>
+                  </div>
+                </div>
       </v-list>
       <v-divider class="ma-4"/>
       <v-col v-if="false">
