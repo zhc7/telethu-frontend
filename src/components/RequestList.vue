@@ -3,7 +3,8 @@ import {computed, ref, watch} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {friendRequests} from "../core/chat.ts";
-import {activeRequestId, rawRequestList, requests, selectedContactInfo} from "../globals.ts";
+import {activeRequestId, contactPageProfileSource, rawRequestList, requests, selectedContactInfo} from "../globals.ts";
+import {getAvatarOrDefault} from "../core/data.js";
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits((["update:modelValue", 'accept', 'reject']))
@@ -30,19 +31,16 @@ const requestList = computed(() => {
 watch(activeRequestId, (newValue) => {
   const userInfo = rawRequestList.value.filter((entry) => entry.id === newValue);
   if (userInfo === undefined) {
-    selectedContactInfo.value = {
-      info: undefined,
-      source: undefined,
-    }
+    selectedContactInfo.value = undefined;
     return;
   }
-  selectedContactInfo.value.info = {
+  selectedContactInfo.value = {
     id: userInfo.id,
     name: userInfo.name,
-    email: userInfo.name,
-    avatar: userInfo.avatar ? userInfo.avatar : './Shenium.png',
+    email: userInfo.email,
+    avatar: getAvatarOrDefault(userInfo.avatar),
   }
-  selectedContactInfo.value.source = 'requestList';
+  contactPageProfileSource.value = 'requestList';
 });
 
 
