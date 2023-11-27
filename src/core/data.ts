@@ -79,8 +79,8 @@ export const getAvatarOrDefault = (md5: string | undefined) => {
 export const contactInsert = (id: number) => {
     if (contacts.value.includes(id) || id === userId.value) return;
     const index = contacts.value.length;
-    contacts.value.unshift(id);
-    rawChatList.value.unshift({
+    contacts.value.push(id);
+    rawChatList.value.push({
         id: 0,
         name: 'Loading...',
         avatar: '',
@@ -91,18 +91,17 @@ export const contactInsert = (id: number) => {
         block: false,
     });
     getUser(id).then((contact) => {
-        getAvatar(contact.avatar).then((ava) => {
-            rawChatList.value[index] = {
-                id: id,
-                name: contact.name,
-                avatar: contact.avatar,
-                category: contact.category,
-                unread_counter: 0,
-                pin: settings.value.pinned.includes(id),
-                mute: settings.value.muted.includes(id),
-                block: settings.value.blocked.includes(id),
-            }
-        })
+        rawChatList.value[index] = {
+            id: id,
+            name: contact.name,
+            avatar: contact.avatar,
+            category: contact.category,
+            unread_counter: 0,
+            pin: settings.value.pinned.includes(id),
+            mute: settings.value.muted.includes(id),
+            block: settings.value.blocked.includes(id),
+        };
+        console.log(contact);
     });
     if (messages.value[id] === undefined) {
         messages.value[id] = [];

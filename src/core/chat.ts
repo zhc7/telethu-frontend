@@ -2,10 +2,8 @@ import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
 import {
     contactPageProfileSource,
-    contacts,
     hotMessages,
     messages,
-    rawChatList,
     requests,
     selectedContactInfo,
     settings,
@@ -18,8 +16,9 @@ import {generateMD5, generateMessageId} from "../utils/hash";
 import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
-import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
-import {contactInsert, contactRemove, getUser, requestInsert, requestRemove} from "./data.ts";
+import {Ack, Message, MessageType, TargetType} from "../utils/structs";
+import {contactInsert, contactRemove, requestInsert, requestRemove} from "./data.ts";
+import {groupAddMember, handleAddGroupMember, handleCreateGroup, handleSomebodyExitGroup} from "./groupops.ts"
 
 
 const searchResult = ref();
@@ -228,49 +227,6 @@ const handleAddFriend = (message: Message) => {
     console.log(message);
     // FUNC_ADD_FRIEND
 };
-const handleCreateGroup = (message: Message) => {
-    let groupData = message.content as GroupData;
-    let group = groupData as GroupContact;
-    const members = [];
-    group.messages = [];
-    console.log('group members', message.content);
-    for (const id in groupData.members) {
-        let memberInfo: UserData = {
-            id: +id,
-            name: 'Me',
-            avatar: '/download.jpeg',
-            email: "",
-            category: "user",
-        }   // TODO @sjh: I'm not quite sure what's the purpose of this
-        if (contacts.value[id] !== undefined) {
-            memberInfo = contacts.value[id] as UserData;
-        }
-        members.push(memberInfo);
-    }
-    group.members = members;
-    contacts.value[group.id] = group;
-    console.log('group info', contacts.value[group.id]);
-};
-const handleAddGroupMember = (message: Message) => {
-    // FUNC_ADD_GROUP_MEMBER
-    getUser(message.receiver).then((group) => {
-        let user = message.content as number;
-        (group as GroupData).members.push(user);
-    })
-};
-
-const handleSomebodyExitGroup = (message) => {
-    const memberId = message.sender;
-    const groupId = message.receiver;
-    if (contacts.value.indexOf(groupId) === -1) {
-        return;
-    }
-    if (memberId === user.value.id) {
-        contacts.value = contacts.value.filter((i) => i !== groupId);
-        delete messages.value[groupId];
-        rawChatList.value = rawChatList.value.filter((i) => i.id !== groupId);
-    }
-}
 
 const deleteFriend = (id: number) => {
     const message = {

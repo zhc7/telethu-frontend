@@ -1,7 +1,33 @@
-import {Message} from "../utils/structs.ts";
-import {rawChatList, userId} from "../globals.ts";
+import {GroupData, Message, UserData} from "../utils/structs.ts";
+import {contacts, messages, rawChatList, user, userId} from "../globals.ts";
 import {generateMessageId} from "../utils/hash.ts";
 import {socket} from "./socket.ts";
+import {contactInsert, getUser} from "./data.ts";
+
+export const handleCreateGroup = (message: Message) => {
+    contactInsert(message.content.id);
+};
+
+export const handleAddGroupMember = (message: Message) => {
+    // FUNC_ADD_GROUP_MEMBER
+    getUser(message.receiver).then((group) => {
+        let user = message.content as number;
+        (group as GroupData).members.push(user);
+    })
+};
+
+export const handleSomebodyExitGroup = (message) => {
+    const memberId = message.sender;
+    const groupId = message.receiver;
+    if (contacts.value.indexOf(groupId) === -1) {
+        return;
+    }
+    if (memberId === user.value.id) {
+        contacts.value = contacts.value.filter((i) => i !== groupId);
+        delete messages.value[groupId];
+        rawChatList.value = rawChatList.value.filter((i) => i.id !== groupId);
+    }
+}
 
 export const groupChangeOwner = (groupId: number, memberId: number) => {
     const message: Message = {
