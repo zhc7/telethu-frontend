@@ -24,13 +24,21 @@ defineEmits(['update:modelValue']);
 const displayProfile = ref<boolean>(false);
 const showProfileDetail = ref(false);
 
-const createGroupDialog = ref(false);
-const selectMemberSource = ref('chatList');
+const selectMemberDialog = ref(false);
+const selectMemberSource = ref('contact');
+const sharedMessages = ref([]);
 provide('selectMemberSource', selectMemberSource);
+provide('sharedMessages', sharedMessages);
 const selectMemberTitle = ref('Create Group from Contact');
 watch(selectMemberSource, () => {
-  createGroupDialog.value = true;
+  selectMemberDialog.value = true;
   selectMemberTitle.value = 'Share to Contact';
+})
+watch(selectMemberDialog, () => {
+  if (!selectMemberDialog.value && selectMemberSource.value === 'share') {
+    selectMemberSource.value = 'contact';
+    sharedMessages.value = [];
+  }
 })
 
 const groupedMessages = computed(() => {
@@ -160,7 +168,7 @@ const title = computed(() => {
           <!--          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>-->
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
-        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
+        <v-btn icon="mdi-plus" @click="selectMemberDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
@@ -193,10 +201,11 @@ const title = computed(() => {
     />
   </div>
   <SelectMember
-      :showDialog="createGroupDialog"
-      @update:showDialog="createGroupDialog = $event"
-      source="contact"
+      :showDialog="selectMemberDialog"
+      @update:showDialog="selectMemberDialog = $event"
+      :source="selectMemberSource"
       :title="selectMemberTitle"
+      :sharedMessages="sharedMessages"
   />
 </template>
 
