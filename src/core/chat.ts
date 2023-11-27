@@ -341,6 +341,8 @@ const createGroup = (groupName: string, members: Array<number>) => {
             name: groupName,
             avatar: "",
             id: 0,  // place holder
+            owner: user.value.id,
+            admin: [],
         },
         receiver: userId.value,
         sender: userId.value,
