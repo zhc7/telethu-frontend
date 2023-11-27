@@ -417,22 +417,6 @@ const exitGroup = (id: number | undefined) => {
     socket.send(JSON.stringify(message));
 }
 
-const groupAddMember = (groupId: number, memberId: number) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 8,
-        t_type: 1,
-        content: groupId,
-        sender: userId.value,
-        receiver: memberId,
-        info: "",
-        message_id: generateMessageId(groupId, userId.value, Date.now()),
-        status: 'sending',
-    };
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
-
 const searchForFriend = async (friendId: number) => {
     const result = await axios.post(BASE_API_URL + 'users/user_search', {
         type: 0,

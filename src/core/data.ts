@@ -69,12 +69,6 @@ const getCache = async (hash: string) => {
     return cache.value[hash];
 }
 
-const parseAvatar = (arrayBuffer: ArrayBuffer) => {
-    if (!arrayBuffer) return '/Logo.png';
-    const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
-    return URL.createObjectURL(blob);
-}
-
 export const getAvatarOrDefault = (md5: string | undefined) => {
     if (md5 === undefined) return './Logo.png';
     if (cache.value[md5]) {
