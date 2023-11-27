@@ -9,7 +9,7 @@ import {
     user,
     userId,
     selectedContactInfo,
-    requests
+    requests, contactPageProfileSource
 } from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
@@ -435,8 +435,8 @@ const searchForFriend = async (friendId: number) => {
             Authorization: token.value,
         }
     });
-    selectedContactInfo.value.info = result.data.users[0];
-    selectedContactInfo.value.source = 'searchResult';
+    selectedContactInfo.value = result.data.users[0];
+    contactPageProfileSource.value = 'searchResult';
 }
 
 

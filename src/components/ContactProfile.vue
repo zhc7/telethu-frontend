@@ -119,7 +119,7 @@ const displayContactInfo = computed(() => {
     if (selectedChatInfo.value !== undefined) {
       return selectedChatInfo.value;
     }
-  } else if (props.source === 'contactList' || props.source === 'requestList') {
+  } else if (props.source === 'contactList' || props.source === 'requestList' || props.source === 'searchResult') {
     if (selectedContactInfo.value !== undefined)
       return selectedContactInfo.value;
   }
