@@ -124,7 +124,7 @@ export const contactRemove = (id: number) => {
 }
 
 export const requestInsert = (id: number,  info = undefined) => {
-    const index = requests.value.length;
+    if (requests.value.includes(id)) return;
     requests.value.push(id);
     rawRequestList.value.push(
         info

@@ -6,6 +6,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
 import {ChatListItem, Message} from "../utils/structs.ts";
+import {getAvatarOrDefault} from "../core/data.ts";
 
 const createGroupDialog = ref(false);
 
@@ -15,8 +16,8 @@ const chatList = computed(() => {
     if (a.pin === b.pin) {
       const hot_a = hotMessages.value[a.id];
       const hot_b = hotMessages.value[b.id];
-      if (hot_a === undefined) return -1;
-      if (hot_b === undefined) return 1;
+      if (hot_a === undefined) return 1;
+      if (hot_b === undefined) return -1;
       return hot_b.time - hot_a.time;
     } else if (a.pin) {
       return -1;
@@ -73,7 +74,7 @@ const displayHotMessage = (message: Message | undefined) => {
         <template #prepend>
           <v-avatar>
             <v-img v-if="chat.category === 'user'"
-                   :src="cache[chat.avatar] ? cache[chat.avatar] as string : '/Shenium.png'" cover/>
+                   :src="getAvatarOrDefault(chat.avatar)" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>

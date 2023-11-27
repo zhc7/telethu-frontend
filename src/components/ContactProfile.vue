@@ -191,7 +191,6 @@ watch(displayContactInfo, (newInfo) => {
                   <v-divider class="ma-4" />
                   <v-card-title class="ma-7"> Members </v-card-title>
                   <div class="overflow-y-auto fill-height d-flex flex-wrap">
-<!--                    {{ displayContactInfo.info.members }}-->
                     <div
                       v-for="member in memberInfoTable"
                       :key="member.id"
@@ -200,7 +199,7 @@ watch(displayContactInfo, (newInfo) => {
                       <v-avatar size="60">
                         <v-img :src="getAvatarOrDefault(member.avatar)" id="member-avatar" cover />
                       </v-avatar>
-<!--                      <p>{{ member.avatar }}</p>-->
+                      <p>{{ member.name }}</p>
                     </div>
                     <div class="d-flex flex-column align-center ma-auto mb-5">
                       <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
@@ -208,7 +207,7 @@ watch(displayContactInfo, (newInfo) => {
                           >mdi-account-multiple-plus</v-icon
                         >
                       </v-avatar>
-                      <p class="text-indigo">...</p>
+                      <p>...</p>
                     </div>
                   </div>
                 </div>
