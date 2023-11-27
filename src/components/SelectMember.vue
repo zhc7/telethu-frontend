@@ -65,12 +65,6 @@ const possibleMembers = computed(() => {
   return list;
 });
 
-const title = computed(() => {
-  if (props.source === 'contact') {
-    return 'Create a new group...'
-  }
-})
-
 const dialog = computed({
   get: () => props.showDialog,
   set: (value) => emit('update:showDialog', value)
@@ -85,37 +79,48 @@ const dispatchFunction = () => {
     list.push(member);
   }
   if (props.source === 'chatList') {
-    console.log("create group", createGroupName.value, list);
-    createGroup(createGroupName.value, list);
-    dialog.value = false;
+    dispatchedCreateGroup(list);
   } else if (props.type === 'add_group_member') {
-    console.log(
-        "log",
-        selected.value + "",
-        "disContId",
-        props.contactId
-    );
-    for (const id of selected.value) {
-      console.log("Adding group member", props.contactId, id);
-      const contact = users.value[id];
-      groupAddMember(props.contactId, id);
-      const memberInfo = {
-        id: contact.id,
-        name: contact.name,
-        avatar: contact.avatar,
-      };
-      users.value[props.contactId].id2member[contact.id] = memberInfo;
-      users.value[props.contactId].members.push(memberInfo);
-    }
-    selected.value = [];
-    dialog.value = false;
+    dispatchedGroupAddMember();
   } else if (props.type === 'create_group_from_contact') {
-    // TODO: create group from contact
-    console.log("create group from profile", createGroupName.value, selected.value);
-    createGroup(createGroupName.value, selected.value);
-    selected.value = [];
-    dialog.value = false;
+    dispatchedGroupAddMember();
   }
+}
+
+const dispatchedCreateGroup = (list) => {
+  console.log("create group", createGroupName.value, list);
+  createGroup(createGroupName.value, list);
+  dialog.value = false;
+}
+
+const dispatchedGroupAddMember = () => {
+  console.log(
+      "log",
+      selected.value + "",
+      "disContId",
+      props.contactId
+  );
+  for (const id of selected.value) {
+    console.log("Adding group member", props.contactId, id);
+    const contact = users.value[id];
+    groupAddMember(props.contactId, id);
+    const memberInfo = {
+      id: contact.id,
+      name: contact.name,
+      avatar: contact.avatar,
+    };
+    users.value[props.contactId].id2member[contact.id] = memberInfo;
+    users.value[props.contactId].members.push(memberInfo);
+  }
+  selected.value = [];
+  dialog.value = false;
+}
+
+const dispatchedCreateGroupFromContact = () => {
+  console.log("create group from contact", createGroupName.value, selected.value);
+  createGroup(createGroupName.value, selected.value);
+  selected.value = [];
+  dialog.value = false;
 }
 </script>
 
@@ -182,10 +187,11 @@ const dispatchFunction = () => {
                 APPEND
               </v-btn>
               <v-btn
-                v-else
-                @click="actUnselect(member.id)"
-                color="red"
-                >REMOVE</v-btn>
+                  v-else
+                  @click="actUnselect(member.id)"
+                  color="red"
+              >REMOVE
+              </v-btn>
             </template>
           </v-list-item>
         </v-list>

@@ -2,13 +2,16 @@
 
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
+import {inject, Ref} from "vue";
 
 const props = defineProps(['x', 'y', 'message'])
+const selectMemberSource : Ref<string> = inject('selectMemberSource') as Ref<string>;
 
 const menuItems = ['Copy', 'Share', 'Delete', 'Withdraw'];
 
 const shareMessage = () => {
-  alert('share');
+  selectMemberSource.value = 'share';
+  console.log('share');
 };
 
 const deleteMessage = () => {
@@ -33,14 +36,15 @@ const dispatchFunction = (item: string) => {
 </script>
 
 <template>
-<List class="context-menu" :style="{'top': y + 'px', 'left': x + 'px'}">
-  <ListItem
-    v-for="item in menuItems"
-    :key="item"
-    :k="item"
-    @click="dispatchFunction(item)"
-  >{{ item }}</ListItem>
-</List>
+  <List class="context-menu" :style="{'top': y + 'px', 'left': x + 'px'}">
+    <ListItem
+        v-for="item in menuItems"
+        :key="item"
+        :k="item"
+        @click="dispatchFunction(item)"
+    >{{ item }}
+    </ListItem>
+  </List>
 </template>
 
 <style scoped>
