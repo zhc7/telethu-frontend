@@ -2,13 +2,15 @@ import axios from "axios";
 import {BASE_API_URL, DEBUG} from "./constants"
 import {useLocalStorage} from "@vueuse/core"
 import {user} from "./globals";
+import router from "./router.ts";
 
 const token = useLocalStorage("token", "");
 
 axios.interceptors.response.use(res => res, err => {
-    // if (err.response && err.response.status === 401) {
-    //     logout();
-    // }
+    if (err.response && err.response.status === 401) {
+        logout();
+        router.push("/login");
+    }
     return Promise.reject(err);
 });
 

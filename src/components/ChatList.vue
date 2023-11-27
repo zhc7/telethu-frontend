@@ -45,15 +45,13 @@ const displayHotMessage = (message: Message | undefined) => {
 </script>
 
 <template>
-  <SelectMember
-      :showDialog="createGroupDialog"
-      @update:showDialog="createGroupDialog = $event"
-      source="chatList"
-      title="Create Group"
-  />
-
-
   <div class="fill-height d-flex flex-column">
+    <SelectMember
+        :showDialog="createGroupDialog"
+        @update:showDialog="createGroupDialog = $event"
+        source="chatList"
+        title="Create Group"
+    />
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
       <a v-if="!searchFriendInput" class="ma-3"
