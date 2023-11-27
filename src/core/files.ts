@@ -41,7 +41,7 @@ const getFileType = (filename: string) => {
     }
 }
 
-const uploadFiles = (file, md5: string, updateLoading) => {
+const uploadFiles = (file: File, md5: string, updateLoading: Function) => {
     // TODO: complete typing
     const fileType = file.type;
     return axios.post(BASE_API_URL + "files/" + md5 + "/", file, {
