@@ -20,6 +20,7 @@ export enum MessageType {
     FUN_SEND_META = 18,
     FUNC_READ_MESSAGE = 19,
     FUNC_SB_EXIT_GROUP = 20,
+    FUNC_SB_REMOVED_FROM_GROUP = 23,
 }
 
 export enum TargetType {

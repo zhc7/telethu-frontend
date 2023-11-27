@@ -116,5 +116,24 @@ export const groupAddMember = (groupId: number, memberId: number) => {
     socket.send(JSON.stringify(message));
 }
 
+export const removeGroupMember = (groupId: number, memberId: number) => {
+    const message = {
+        time: Date.now(),
+        m_type: 23,
+        t_type: 1,
+        content: groupId,
+        sender: userId.value,
+        receiver: memberId,
+        info: "",
+        message_id: generateMessageId(memberId, userId.value, Date.now()),
+    };
+    console.log('kicking member', JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
+
+export const handleSomebodyRemovedFromGroup = (message: Message) => {
+
+}
+
 export const handleMemberAddedToGroup = (message) => {
 }

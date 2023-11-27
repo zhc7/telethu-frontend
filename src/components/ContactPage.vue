@@ -55,7 +55,7 @@ const search = () => {
 
 const handleApplyFriend = (friendId: number) => {
   addFriend(friendId);
-  alert("喜报：你发送了申请！");
+  alert("喜报：你发送了申请！\nGood news! You sent an application! ");
 }
 
 const handleContactList = () => {
@@ -68,7 +68,7 @@ const handleRequestList = () => {
 };
 
 const handleRequestPass = (id: number) => {
-  alert("喜报：你通过了好友的申请！")
+  alert("喜报：你通过了好友的申请！\nGood news! You've just passed a request! ")
   acceptFriend(id);
   getUser(id).then((contact) => {
     selectedContactInfo.value = contact;
@@ -79,7 +79,7 @@ const handleRequestPass = (id: number) => {
 const handleRequestReject = (id: number) => {
   rejectFriend(id);
   delete friendRequests.value[id];
-  alert("喜报：好友申请被你拒绝了！");
+  alert("喜报：好友申请被你拒绝了！\nGood news! Request turned down! ");
 };
 
 watch(activeContactId, selectContact);

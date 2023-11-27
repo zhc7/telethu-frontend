@@ -18,7 +18,13 @@ import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, Message, MessageType, TargetType} from "../utils/structs";
 import {contactInsert, contactRemove, requestInsert, requestRemove} from "./data.ts";
-import {groupAddMember, handleAddGroupMember, handleCreateGroup, handleSomebodyExitGroup} from "./groupops.ts"
+import {
+    groupAddMember,
+    handleAddGroupMember,
+    handleCreateGroup,
+    handleSomebodyExitGroup,
+    handleSomebodyRemovedFromGroup
+} from "./groupops.ts"
 
 
 const searchResult = ref();
@@ -243,21 +249,6 @@ const deleteFriend = (id: number) => {
     socket.send(JSON.stringify(message));
 }
 
-export const kickMember = (groupId: number, memberId: number) => {
-    const message = {
-        time: Date.now(),
-        m_type: 23,
-        t_type: 1,
-        content: groupId,
-        sender: userId.value,
-        receiver: memberId,
-        info: "",
-        message_id: generateMessageId(memberId, userId.value, Date.now()),
-    };
-    console.log('kicking member', JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
-
 const handleDeleteFriend = (message: Message) => {
     contactRemove(message.sender);
     contactRemove(message.receiver)
@@ -313,6 +304,7 @@ dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = receiveReadMessage;
 dispatcher[MessageType.FUNC_SB_EXIT_GROUP] = handleSomebodyExitGroup;
+dispatcher[MessageType.FUNC_SB_REMOVED_FROM_GROUP] = handleSomebodyRemovedFromGroup;
 
 
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {

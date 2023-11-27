@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {blockFriend, deleteFriend, exitGroup, kickMember, unblockFriend,} from "../core/chat.ts";
+import {blockFriend, deleteFriend, exitGroup, unblockFriend} from "../core/chat.ts";
 import {computed, ref, watch} from "vue";
+import {removeGroupMember} from "../core/groupops.ts";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -176,7 +177,7 @@ watch(displayContactInfo, (newInfo: GroupData) => {
 })
 
 const handleKickMember = (memberId: number) => {
-  kickMember(displayContactInfo.value.id, memberId);
+  removeGroupMember(displayContactInfo.value.id, memberId);
 }
 
 
