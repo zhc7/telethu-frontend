@@ -1,6 +1,6 @@
 <script setup>
 
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {createGroup, groupAddMember, sendMessage} from "../core/chat.ts";
 import {activeChatId, messages, rawChatList, user, userId, users} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
@@ -17,8 +17,10 @@ const selectedList = ref([]);
 
 const pinedInfo = computed(() => {
   const list = [];
-  if (props.source === 'chatList') {
-    list.push(user.value);
+  for (const entry of rawChatList.value) {
+    if (pinedList.value.includes(entry.id)) {
+      list.push(entry);
+    }
   }
   return list;
 });
@@ -33,24 +35,10 @@ const selectedInfo = computed(() => {
   return list;
 })
 
-onMounted(() => {
-  if (props.source === 'personalFriend') {
-    pinedList.value.push(activeChatId.value);
-    pinedList.value.push(userId.value);
-  } else if (props.source === 'existingGroup') {
-
-  } else if (props.source === 'chatList') {
-    if (!pinedList.value.includes(userId.value)) {
-      pinedList.value.push(userId.value);
-    }
-  }
-});
-
 const actSelect = (id) => {
   if (!selectedList.value.includes(id)) {
     selectedList.value.push(id);
   }
-
 }
 const actUnselect = (id) => {
   selectedList.value = selectedList.value.filter((i) => {
@@ -70,8 +58,29 @@ const possibleMembers = computed(() => {
 
 const dialog = computed({
   get: () => props.showDialog,
-  set: (value) => emit('update:showDialog', value)
+  set: (value) => {
+    emit('update:showDialog', value)
+  }
 });
+
+watch(dialog, (newValue) => {
+  if (newValue === false) {
+    pinedList.value = [];
+    selectedList.value = [];
+    return;
+  }
+  if (props.source === 'personalFriend') {
+    pinedList.value.push(activeChatId.value);
+    pinedList.value.push(userId.value);
+    alert(pinedList.value);
+  } else if (props.source === 'existingGroup') {
+
+  } else if (props.source === 'chatList') {
+    if (!pinedList.value.includes(userId.value)) {
+      pinedList.value.push(userId.value);
+    }
+  }
+})
 
 const dispatchFunction = () => {
   console.log('source', props.source);
@@ -194,7 +203,7 @@ const dispatchedShare = () => {
             </v-list-item-title>
             <template #append>
               <v-btn
-                  v-if="!selectedList.includes(member.id)"
+                  v-if="!selectedList.includes(member.id) && !pinedList.includes(member.id)"
                   @click="actSelect(member.id)"
                   color="blue"
               >
@@ -204,6 +213,7 @@ const dispatchedShare = () => {
                   v-else
                   @click="actUnselect(member.id)"
                   color="red"
+                  :disabled="pinedList.includes(member.id)"
               >REMOVE
               </v-btn>
             </template>

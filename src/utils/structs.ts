@@ -43,6 +43,8 @@ export interface UserData extends ContactsData {
 export interface GroupData extends ContactsData {
     members: Array<number>,
     category: "group",
+    owner: number,
+    admin: Array<number>,
 }
 
 export interface Message {

@@ -87,7 +87,8 @@ const parseAvatar = (arrayBuffer: ArrayBuffer) => {
     return URL.createObjectURL(blob);
 }
 
-export const getAvatarOrDefault = (md5: string) =>  {
+export const getAvatarOrDefault = (md5: string | undefined) =>  {
+    if (md5 === undefined) return './Logo.png';
     if (cache.value[md5]) {
         return cache.value[md5] as string;
     }

@@ -73,17 +73,11 @@ const groupedMessages = computed(() => {
 
 watch(activeChatId, (id) => {
   if (id < 1) {
-    selectedChatInfo.value = {
-      info: undefined,
-      source: undefined,
-    }
+    selectedChatInfo.value = undefined
   }
   getUser(id).then((contact) => {
     console.log('selectedChat.value: ', contact);
-    selectedChatInfo.value = {
-      info: contact,
-      source: 'chatList',
-    }
+    selectedChatInfo.value = contact;
   })
 }, {immediate: true})
 
@@ -105,7 +99,7 @@ const handleHideProfile = (event) => {
   const target = event.target.parentNode.parentNode;
   if (target.classList.contains('v-avatar') || target.classList.contains('v-btn')) {
   } else {
-    displayProfile.value = undefined;
+    displayProfile.value = false;
     showProfileDetail.value = false;
     window.setTimeout(() => {
       showProfileDetail.value = false;
@@ -113,14 +107,15 @@ const handleHideProfile = (event) => {
   }
 }
 
+
 const handleGetMoreMessage = () => {
-  if (selectedChatInfo.value.info === undefined) {
+  if (selectedChatInfo.value === undefined) {
     return;
   }
   getHistoryMessage(
       activeChatId.value,
       messages.value[activeChatId.value][0] === undefined ? Date.now() : messages.value[activeChatId.value][0].time,
-      selectedChatInfo.value.info.category === "group" ? 1 : 0,
+      selectedChatInfo.category === "group" ? 1 : 0,
       20,
   )
 }
@@ -133,17 +128,17 @@ onMounted(() => {
 })
 
 const category = computed(() => {
-  if (!selectedChatInfo.value.info) {
+  if (!selectedChatInfo.value) {
     return 'none';
   }
-  return selectedChatInfo.value.info.category;
+  return selectedChatInfo.value.category;
 });
 
 const title = computed(() => {
-  if (!selectedChatInfo.value.info) {
+  if (!selectedChatInfo.value) {
     return 'Loading...';
   }
-  return selectedChatInfo.value.info.name;
+  return selectedChatInfo.value.name;
 })
 
 </script>
@@ -156,8 +151,8 @@ const title = computed(() => {
     <v-col cols="12" sm="4" md="3" class="pa-0 fill-height">
       <ChatList v-model="activeChatId"></ChatList>
     </v-col>
-    <v-divider vertical v-if="selectedChatInfo.info"/>
-    <v-col v-if="selectedChatInfo.info" cols="12" sm="8" md="9"
+    <v-divider vertical v-if="selectedChatInfo"/>
+    <v-col v-if="selectedChatInfo" cols="12" sm="8" md="9"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
       <v-toolbar class="megatron" style="width: 100%">
@@ -184,26 +179,27 @@ const title = computed(() => {
                         :key="mIndex"
                         :message="message"
                         :final="mIndex === group.messages.length - 1"
-                        :avatar="getAvatarOrDefault(selectedChatInfo.info.avatar)"
+                        :avatar="getAvatarOrDefault(selectedChatInfo.avatar)"
                         @finished="ScrollToBottom"
                         @showProfile="handleDisplayProfile"
             />
           </div>
         </div>
       </v-row>
-      <InputArea :chat="selectedChatInfo.info"/>
+      <InputArea :chat="selectedChatInfo"/>
     </v-col>
   </v-row>
-  <v-divider vertical v-if="selectedChatInfo.info"/>
+  <v-divider vertical v-if="selectedChatInfo"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
     <ContactProfile class="overflow-y-auto"
-                    v-if="selectedChatInfo.info"
+                    v-if="selectedChatInfo"
+                    source="chatPage"
     />
   </div>
   <SelectMember
       :showDialog="selectMemberDialog"
       @update:showDialog="selectMemberDialog = $event"
-      :source="selectMemberSource"
+      :source="category === 'user' ? 'personalFriend' : 'existingGroup'"
       :title="selectMemberTitle"
       :sharedMessages="sharedMessages"
   />

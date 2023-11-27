@@ -13,15 +13,10 @@ export const activeContactId = ref<number>(-1);
 export const activeRequestId = ref<number>(-1);
 export const contactPageContentLeft = ref<number>(0);
 
-export const selectedContactInfo = ref<{
-    info: ContactsData | undefined,
-    source: string | undefined,
-}>({info: undefined, source: undefined});
+export const selectedContactInfo = ref<ContactsData | undefined>(undefined);
+export const contactPageProfileSource = ref('contactList');
 
-export const selectedChatInfo = ref<{
-    info: ContactsData | undefined,
-    source: string | undefined,
-}>({info: undefined, source: undefined});
+export const selectedChatInfo = ref<ContactsData | undefined>(undefined);
 export const users = useLocalStorage<Users>("users", {});
 export const contacts = ref<Array<number>>([]);
 export const requests = ref<Array<number>>([]);

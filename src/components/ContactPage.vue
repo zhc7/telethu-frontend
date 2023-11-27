@@ -12,7 +12,14 @@ import {
   searchResult,
 } from "../core/chat.ts";
 
-import {activeContactId, activeRequestId, contactPageContentLeft, messages, selectedContactInfo} from "../globals.ts"
+import {
+  activeContactId,
+  activeRequestId,
+  contactPageContentLeft,
+  contactPageProfileSource,
+  messages,
+  selectedContactInfo
+} from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
@@ -25,27 +32,25 @@ const searchFriendMode = ref("id");
 const displayGroup = ref(false);
 
 const selectContact = async (newContactId: number) => {
-  selectedContactInfo.value.info = undefined;
-  selectedContactInfo.value.source = undefined;
-  if (newContactId !== -1) {
+  selectedContactInfo.value = undefined;
+  contactPageProfileSource.value = 'contactList'
+  if (newContactId > 0) {
     const userInfo = await getUser(newContactId);
-    selectedContactInfo.value.info = userInfo;
-    selectedContactInfo.value.source = "contactList"
+    selectedContactInfo.value = userInfo;
   }
 };
 
 const selectRequest = async (newRequestId: number) => {
-  selectedContactInfo.value.info = undefined;
-  selectedContactInfo.value.source = undefined;
-  if (newRequestId !== -1) {
+  selectedContactInfo.value = undefined;
+  contactPageProfileSource.value = 'requestList';
+  if (newRequestId > 0) {
     const userInfo = await getUser(newRequestId);
-    selectedContactInfo.value.info = userInfo;
-    selectedContactInfo.value.source = "requestList"
+    selectedContactInfo.value = userInfo;
   }
 };
 
 const search = () => {
-  searchForFriend(searchInput.value);
+  searchForFriend(+searchInput.value);
 };
 
 const handleApplyFriend = (friendId: number) => {
@@ -66,16 +71,14 @@ const handleRequestPass = (id: number) => {
   alert("喜报：你通过了好友的申请！")
   acceptFriend(id);
   getUser(id).then((contact) => {
-    selectedContactInfo.value.info = contact;
-    selectedContactInfo.value.source = 'contactList';
+    selectedContactInfo.value = contact;
+    contactPageProfileSource.value = 'contactList';
   })
 };
 
 const handleRequestReject = (id: number) => {
   rejectFriend(id);
-  displayType.value = "requestList";
   delete friendRequests.value[id];
-  displayRightType.value = "contactDetail";
   alert("喜报：好友申请被你拒绝了！");
 };
 
@@ -166,6 +169,7 @@ watch(activeRequestId, selectRequest);
           @accept="(acceptId) => handleRequestPass(acceptId)"
           @reject="(rejectId) => handleRequestReject(rejectId)"
           @apply="(applyId) => handleApplyFriend(applyId)"
+          :source="contactPageProfileSource"
       >
       </FriendProfile>
     </v-col>
