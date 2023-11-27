@@ -1,15 +1,16 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
 import {
-    rawChatList,
+    contactPageProfileSource,
     contacts,
     hotMessages,
     messages,
+    rawChatList,
+    requests,
+    selectedContactInfo,
     settings,
     user,
-    userId,
-    selectedContactInfo,
-    requests, contactPageProfileSource
+    userId
 } from "../globals"
 import {reactive, ref} from "vue";
 import axios from "axios";
@@ -18,7 +19,7 @@ import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
-import {getCache, getUser, contactInsert, contactRemove, requestInsert, requestRemove} from "./data.ts";
+import {contactInsert, contactRemove, getUser, requestInsert, requestRemove} from "./data.ts";
 
 
 const searchResult = ref();
@@ -40,7 +41,9 @@ const friendRequests = ref<Array<number>>([]);
 const chatManager: {
     retryLimit: number,
     timeout: number,
-    sentMessages: { [id: string]: Message },
+    sentMessages: {
+        [id: string]: Message
+    },
     sendMessage: (message: Message) => void,
     _retrySendMessage: (message: Message, attempts?: number) => void,
     receiveAck: (ack: Ack) => void,
@@ -160,7 +163,6 @@ const addFriend = (friendId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 };
-
 
 
 const acceptFriend = (friendId: number) => {
@@ -337,18 +339,23 @@ const receiveReadMessage = (message: Message) => {
     m.status = "read";
 }
 
-const dispatcher: {[key in MessageType]?: (arg0: Message) => void} = {}
+const dispatcher: { [key in MessageType]?: (arg0: Message) => void } = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
-dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {};
+dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {
+};
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted; // TODO
-dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {}; // TODO
-dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {}; // TODO
+dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {
+}; // TODO
+dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {
+}; // TODO
 dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
 
-dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {}; // TODO
-dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {}; // TODO
+dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {
+}; // TODO
+dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {
+}; // TODO
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = receiveReadMessage;
 dispatcher[MessageType.FUNC_SB_EXIT_GROUP] = handleSomebodyExitGroup;
@@ -463,7 +470,6 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
         messages.value[id] = new_msg;
     })
 }
-
 
 
 const blockFriend = (friendId: number) => {
