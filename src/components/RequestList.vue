@@ -4,7 +4,7 @@ import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {friendRequests} from "../core/chat.ts";
 import {activeRequestId, contactPageProfileSource, rawRequestList, requests, selectedContactInfo} from "../globals.ts";
-import {getAvatarOrDefault} from "../core/data.js";
+import {getAvatarOrDefault} from "../core/data.ts";
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits((["update:modelValue", 'accept', 'reject']))
