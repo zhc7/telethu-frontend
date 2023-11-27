@@ -26,11 +26,6 @@ const activePage = computed({
   }
 });
 
-const ActivateChat = (chat) => {
-  activeChatId.value = chat;
-  activePage.value = 'chat';
-};
-
 onMounted(() => {
   console.log("page " + activePage.value);
   createSocket();
@@ -59,7 +54,7 @@ onMounted(() => {
       </div>
     </NavBar>
     <ChatPage v-if="activePage === 'chat'" v-model="activeChatId" />
-    <ContactPage v-if="activePage === 'contacts'" @chat="(chat) => ActivateChat(chat)"/>
+    <ContactPage v-if="activePage === 'contacts'"/>
     <ProfilePage v-if="activePage === 'profile'"/>
   </v-container>
 </template>

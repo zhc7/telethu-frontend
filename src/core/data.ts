@@ -1,4 +1,15 @@
-import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, user, users} from "../globals";
+import {
+    cache,
+    contacts,
+    messages,
+    rawChatList,
+    rawRequestList,
+    requests,
+    settings,
+    user,
+    userId,
+    users
+} from "../globals";
 import axios, {request} from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, UserData} from "../utils/structs";
@@ -84,6 +95,7 @@ export const getAvatarOrDefault = (md5: string) =>  {
 }
 
 export const contactInsert = (id: number) => {
+    if (contacts.value.includes(id) || id === userId.value) return;
     const index = contacts.value.length;
     contacts.value.push(id);
     rawChatList.value.push({
@@ -116,6 +128,8 @@ export const contactInsert = (id: number) => {
 }
 
 export const contactRemove = (id: number) => {
+    if (!contacts.value.includes(id)) return;
+    if (id === userId.value) return;
     contacts.value = contacts.value.filter((i: number) => i !== id);
     rawChatList.value = rawChatList.value.filter((entry: any) => {
         return entry === undefined || entry.id !== id

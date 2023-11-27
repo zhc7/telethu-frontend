@@ -281,32 +281,24 @@ const deleteFriend = (id: number) => {
         info: "",
         message_id: generateMessageId(id, userId.value, Date.now()),
     };
-    alert('delete');
     console.log('deleting friend', JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
 
 const handleDeleteFriend = (message: Message) => {
-    if (contacts.value.indexOf(message.sender) === -1) {
-        return;
-    }
     contactRemove(message.sender);
+    contactRemove(message.receiver)
 };
 const handleReceiveRequest = async (_: Message) => {
     await applyList();
 }
 
 const handleApplicationAccepted = (message: Message) => {
-    if (contacts.value.includes(message.receiver) || message.receiver === userId.value) return;
+    contactInsert(message.sender);
     contactInsert(message.receiver);
 }
 
-const handleBeDeleted = (message: Message) => {
-    contactRemove(message.sender);
-}
-
 const handleSearchResult = (message: Message) => {
-    alert('sousuo')
     // message.content.mute = false;
     console.log(message.content);
     selectedContactInfo.value.info = message.content;

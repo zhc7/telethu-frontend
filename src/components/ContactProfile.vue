@@ -154,7 +154,7 @@ watch(displayContactInfo, (newInfo) => {
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="displayContactInfo && displayContactInfo.source !== undefined && displayContactInfo.info !== undefined">
+  <v-card class="mb-auto mt-6 overflow-y-auto" v-show="displayContactInfo.info">
     <v-avatar size="80" class="mt-5">
       <v-img :src="'public/Logo.png'" cover/>
     </v-avatar>
