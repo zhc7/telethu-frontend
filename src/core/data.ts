@@ -37,7 +37,6 @@ const getAvatar = async (hash: string) => {
             cache.value[hash] = reader.result;
         };
     } catch (error) {
-        console.log("error fetching", error);
     }
     return cache.value[hash];
 }
@@ -80,8 +79,8 @@ export const getAvatarOrDefault = (md5: string | undefined) => {
 export const contactInsert = (id: number) => {
     if (contacts.value.includes(id) || id === userId.value) return;
     const index = contacts.value.length;
-    contacts.value.push(id);
-    rawChatList.value.push({
+    contacts.value.unshift(id);
+    rawChatList.value.unshift({
         id: 0,
         name: 'Loading...',
         avatar: '',
@@ -120,12 +119,15 @@ export const contactRemove = (id: number) => {
     delete messages.value[id];
 }
 
-export const requestInsert = (id: number, info = undefined) => {
+export const requestInsert = (id: number, info: {
+    id: number,
+    name: string,
+    time: number,
+    email: string,
+} | undefined) => {
     if (requests.value.includes(id)) return;
     requests.value.push(id);
-    rawRequestList.value.push(
-        info
-    );
+    rawRequestList.value.push(info);
 }
 
 export const requestRemove = (id: number) => {

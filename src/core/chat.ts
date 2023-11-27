@@ -209,6 +209,7 @@ const applyList = async () => {
                 console.log(response.data);
             }
             const idList = response.data['friends'];
+            console.log(response.data);
             for (const request of idList) {
                 requestInsert(request.id, {
                     id: request.id,
@@ -217,7 +218,7 @@ const applyList = async () => {
                     time: request.time,
                 });
             }
-            console.log(requests.value);
+            console.log('requests', requests.value);
         });
 }
 
@@ -228,9 +229,6 @@ const handleAddFriend = (message: Message) => {
     // FUNC_ADD_FRIEND
 };
 const handleCreateGroup = (message: Message) => {
-    // FUNC_CREATE_GROUP
-    // TODO: change this func according to new data structure
-    // TODO: DO NOT access contacts directly
     let groupData = message.content as GroupData;
     let group = groupData as GroupContact;
     const members = [];

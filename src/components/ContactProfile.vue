@@ -31,7 +31,7 @@ const switchValueMute = computed<boolean>({
     return settings.value.muted.includes(props.displayContact.id);
   },
   set: (value) => {
-    if (!selectedChatInfo.value.info) {
+    if (!selectedChatInfo.value) {
       return;
     }
     if (value) {
@@ -98,10 +98,10 @@ const memberInfoTable = ref<Array<{
 
 const handleDelete = () => {
   deleteConfirmDialog.value = false;
-  if (displayContactInfo.value.info?.category === 'user') {
-    deleteFriend(displayContactInfo.value.info?.id);
+  if (displayContactInfo.value.category === 'user') {
+    deleteFriend(displayContactInfo.value.id);
   } else {
-    exitGroup(displayContactInfo.value.info?.id);
+    exitGroup(displayContactInfo.value.id);
   }
 };
 
@@ -192,7 +192,8 @@ const handleKickMember = (memberId: number) => {
         <v-list-item-title>
           {{ displayContactInfo.name }}
         </v-list-item-title>
-        <v-list-item-subtitle> @{{ displayContactInfo ? displayContactInfo.id : '' }}</v-list-item-subtitle>
+        <v-list-item-subtitle> @{{ displayContactInfo ? displayContactInfo.id : '' }}
+        </v-list-item-subtitle>
         <v-list-item
             v-if="displayContactInfo && displayContactInfo.category === 'user'"
             class="text-grey-darken-3"
