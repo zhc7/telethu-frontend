@@ -84,3 +84,11 @@ export interface ChatListItem {
     mute: boolean,
     block: boolean,
 }
+
+export interface RequestListItem {
+    id: number,
+    name: string,
+    avatar: string,
+    email: string,
+    time: number,
+}

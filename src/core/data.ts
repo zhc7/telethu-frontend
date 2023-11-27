@@ -1,9 +1,8 @@
 import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, userId, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
-import {ContactsData, UserData} from "../utils/structs";
+import {ContactsData, RequestListItem, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
-import {avatarUrl} from "../utils/urls.ts";
 
 
 const getUser = async (id: number): Promise<ContactsData> => {
@@ -17,55 +16,6 @@ const getUser = async (id: number): Promise<ContactsData> => {
     });
     users.value[id] = response.data as UserData;
     return users.value[id];
-}
-
-const getAvatar = async (hash: string) => {
-    if (cache.value[hash] !== undefined) {
-        return cache.value[hash];
-    }
-    const url = avatarUrl(hash);
-    try {
-        const response = await axios.get(url, {
-            headers: {
-                Authorization: token.value,
-            },
-            responseType: "blob",
-        });
-        const reader = new FileReader();
-        reader.readAsDataURL(response.data); // change Blob into Base64
-        reader.onloadend = () => {
-            cache.value[hash] = reader.result;
-        };
-    } catch (error) {
-    }
-    return cache.value[hash];
-}
-
-const getCache = async (hash: string) => {
-    if (cache.value[hash] !== undefined) {
-        return cache.value[hash];
-    }
-    let url;
-    if (hash.startsWith("http")) {
-        url = hash;
-    } else {
-        if (hash.startsWith("./files")) {
-            url = BASE_API_URL + hash;
-        } else {
-            url = BASE_API_URL + 'files/' + hash;
-        }
-    }
-    try {
-        const response = await axios.get(url, {
-            headers: {
-                Authorization: token.value,
-            },
-        });
-        cache.value[hash] = response.data as ArrayBuffer;
-    } catch (error) {
-        console.log("error fetching", error);
-    }
-    return cache.value[hash];
 }
 
 export const getAvatarOrDefault = (md5: string | undefined) => {
@@ -118,12 +68,7 @@ export const contactRemove = (id: number) => {
     delete messages.value[id];
 }
 
-export const requestInsert = (id: number, info: {
-    id: number,
-    name: string,
-    time: number,
-    email: string,
-} | undefined) => {
+export const requestInsert = (id: number, info: RequestListItem) => {
     if (requests.value.includes(id)) return;
     requests.value.push(id);
     rawRequestList.value.push(info);
@@ -136,5 +81,4 @@ export const requestRemove = (id: number) => {
 
 export {
     getUser,
-    getCache,
 }
