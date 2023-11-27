@@ -132,7 +132,12 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
 }
 
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
-
+    const groupId = message.content;
+    const groupEntry = rawChatList.value.filter((i) => i.id === groupId)[0];
+    if (groupEntry === undefined) return;
+    const memberId = message.receiver;
+    groupEntry.members = groupEntry.members.filter((i) => i !== memberId);
+    console.log(`Member ${memberId} removed successfully from group ${groupId}`);
 }
 
 export const handleMemberAddedToGroup = (message) => {
