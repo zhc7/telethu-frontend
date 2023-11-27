@@ -191,6 +191,7 @@ const title = computed(() => {
       :showDialog="createGroupDialog"
       @update:showDialog="createGroupDialog = $event"
       source="contact"
+      title="Create Group from Contact"
   />
 </template>
 

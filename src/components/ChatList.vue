@@ -52,6 +52,7 @@ const displayHotMessage = (message: Message | undefined) => {
       :showDialog="createGroupDialog"
       @update:showDialog="createGroupDialog = $event"
       source="chatList"
+      title="Create Group"
   />
 
 

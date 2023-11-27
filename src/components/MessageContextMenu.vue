@@ -2,13 +2,18 @@
 
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
+import SelectMember from "./SelectMember.vue";
+import {ref} from "vue";
 
 const props = defineProps(['x', 'y', 'message'])
 
 const menuItems = ['Copy', 'Share', 'Delete', 'Withdraw'];
 
+const shareMessageDialog = ref(false);
+
 const shareMessage = () => {
-  alert('share');
+  shareMessageDialog.value = true;
+  console.log('share');
 };
 
 const deleteMessage = () => {
@@ -33,14 +38,21 @@ const dispatchFunction = (item: string) => {
 </script>
 
 <template>
-<List class="context-menu" :style="{'top': y + 'px', 'left': x + 'px'}">
-  <ListItem
-    v-for="item in menuItems"
-    :key="item"
-    :k="item"
-    @click="dispatchFunction(item)"
-  >{{ item }}</ListItem>
-</List>
+  <List class="context-menu" :style="{'top': y + 'px', 'left': x + 'px'}">
+    <ListItem
+        v-for="item in menuItems"
+        :key="item"
+        :k="item"
+        @click="dispatchFunction(item)"
+    >{{ item }}
+    </ListItem>
+  </List>
+
+  <SelectMember
+      :showDialog="shareMessageDialog"
+      @update:showDialog="shareMessageDialog = $event"
+      source="chatList"
+  />
 </template>
 
 <style scoped>

@@ -83,50 +83,55 @@ const filterContacts = computed(() => {
   });
 });
 
-const title = computed(() => {
-  if (props.source === 'contact') {
-    return 'Create a new group...'
-  }
-})
-
 const dialog = computed({
   get: () => props.showDialog,
   set: (value) => emit('update:showDialog', value)
 });
 
+const createGroup = () => {
+  console.log("create group", createGroupName.value, selected.value);
+  createGroup(createGroupName.value, selected.value);
+  selected.value = [];
+  dialog.value = false;
+}
+
+const addGroupMember = () => {
+  console.log(
+      "log",
+      selected.value + "",
+      "disContId",
+      props.contactId
+  );
+  for (const id of selected.value) {
+    console.log("Adding group member", props.contactId, id);
+    const contact = users.value[id];
+    groupAddMember(props.contactId, id);
+    const memberInfo = {
+      id: contact.id,
+      name: contact.name,
+      avatar: contact.avatar,
+    };
+    users.value[props.contactId].id2member[contact.id] = memberInfo;
+    users.value[props.contactId].members.push(memberInfo);
+  }
+  selected.value = [];
+  dialog.value = false;
+}
+
+const createGroupFromContact = () => {
+  console.log("create group from profile", createGroupName.value, selected.value);
+  createGroup(createGroupName.value, selected.value);
+  selected.value = [];
+  dialog.value = false;
+}
+
 const dispatchFunction = () => {
   if (props.type === 'create_group') {
-    console.log("create group", createGroupName.value, selected.value);
-    createGroup(createGroupName.value, selected.value);
-    selected.value = [];
-    dialog.value = false;
+    createGroup();
   } else if (props.type === 'add_group_member') {
-    console.log(
-        "log",
-        selected.value + "",
-        "disContId",
-        props.contactId
-    );
-    for (const id of selected.value) {
-      console.log("Adding group member", props.contactId, id);
-      const contact = users.value[id];
-      groupAddMember(props.contactId, id);
-      const memberInfo = {
-        id: contact.id,
-        name: contact.name,
-        avatar: contact.avatar,
-      };
-      users.value[props.contactId].id2member[contact.id] = memberInfo;
-      users.value[props.contactId].members.push(memberInfo);
-    }
-    selected.value = [];
-    dialog.value = false;
+    addGroupMember();
   } else if (props.type === 'create_group_from_contact') {
-    // TODO: create group from contact
-    console.log("create group from profile", createGroupName.value, selected.value);
-    createGroup(createGroupName.value, selected.value);
-    selected.value = [];
-    dialog.value = false;
+    createGroupFromContact();
   }
 
 }
