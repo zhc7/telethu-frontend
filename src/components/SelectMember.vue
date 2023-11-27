@@ -88,7 +88,6 @@ const dispatchFunction = () => {
 }
 
 const dispatchedCreateGroup = (list) => {
-  console.log("create group", createGroupName.value, list);
   createGroup(createGroupName.value, list);
   dialog.value = false;
 }

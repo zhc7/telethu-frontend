@@ -2,7 +2,7 @@
 import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeContactId, cache, rawChatList} from "../globals.ts";
+import {activeContactId, rawChatList} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
 
 const props = defineProps(["searchInput"]);
@@ -11,14 +11,14 @@ const personContactList = computed(() => {
       .filter((i) => {
         return i.category === 'user';
       }).sort((a, b) => {
-    if (a.id === 0) {
-      return 1;
-    }
-    if (b.id === 0) {
-      return -1;
-    }
-    return a.name.localeCompare(b.name);
-  });
+        if (a.id === 0) {
+          return 1;
+        }
+        if (b.id === 0) {
+          return -1;
+        }
+        return a.name.localeCompare(b.name);
+      });
 });
 const userCount = computed(() => {
   let count = 0;
@@ -34,10 +34,11 @@ const userCount = computed(() => {
 
 <template>
   <List class="fill-height overflow-y-auto" v-model="activeContactId">
-    <ListItem :key="contact.id"
-              :k="contact.id"
-              class="pa-3 pl-6 chat-list-item text-left"
-              v-for="contact in personContactList"
+    <ListItem
+        v-for="contact in personContactList"
+        :key="contact.id"
+        :k="contact.id"
+        class="pa-3 pl-6 chat-list-item text-left"
     >
       <template #prepend>
         <v-avatar>

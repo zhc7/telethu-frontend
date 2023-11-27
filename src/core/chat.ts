@@ -18,7 +18,7 @@ import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs";
-import {getCache, getUser, contactInsert, contactRemove, requestInsert} from "./data.ts";
+import {getCache, getUser, contactInsert, contactRemove, requestInsert, requestRemove} from "./data.ts";
 
 
 const searchResult = ref();
@@ -175,6 +175,7 @@ const acceptFriend = (friendId: number) => {
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
     contactInsert(friendId);
+    requestRemove(friendId);
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 };
@@ -190,6 +191,7 @@ const rejectFriend = (friendId: number) => {
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
+    requestRemove(friendId);
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 };

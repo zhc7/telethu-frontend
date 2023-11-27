@@ -146,8 +146,8 @@ export const requestInsert = (id: number,  info = undefined) => {
 }
 
 export const requestRemove = (id: number) => {
-    requests.value.filter((i: number) => (i !== id));
-    rawRequestList.value.filter((i) => (i.id !== id));
+    requests.value = requests.value.filter((i: number) => (i !== id));
+    rawRequestList.value = rawRequestList.value.filter((i) => (i.id !== id));
 }
 
 export {
