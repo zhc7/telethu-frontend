@@ -4,6 +4,7 @@ import {computed, ref, watch} from "vue";
 import {createGroup, sendMessage} from "../core/chat.ts";
 import {activeChatId, rawChatList, user, userId, users} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
+import {ChatListItem} from "../utils/structs.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -13,48 +14,30 @@ const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'shared
 const emit = defineEmits(['update:showDialog']);
 const createGroupName = ref('');
 
-const pinedList = ref([]);
-const selectedList = ref([]);
+const pinedList = ref<Array<number>>([]);
+const selectedList = ref<Array<number>>([]);
 
 const pinedInfo = computed(() => {
-  const list = [];
-  for (const entry of rawChatList.value) {
-    if (pinedList.value.includes(entry.id)) {
-      list.push(entry);
-    }
-  }
-  return list;
+  return rawChatList.value.filter((i): i is ChatListItem => i !== undefined && pinedList.value.includes(i.id));
 });
 
 const selectedInfo = computed(() => {
-  const list = [];
-  for (const entry of rawChatList.value) {
-    if (selectedList.value.includes(entry.id)) {
-      list.push(entry);
-    }
-  }
-  return list;
+  return rawChatList.value.filter((i): i is ChatListItem => i !== undefined && selectedList.value.includes(i.id));
 })
 
-const actSelect = (id) => {
+const actSelect = (id: number) => {
   if (!selectedList.value.includes(id)) {
     selectedList.value.push(id);
   }
 }
-const actUnselect = (id) => {
+const actUnselect = (id: number) => {
   selectedList.value = selectedList.value.filter((i) => {
     return id !== i;
   })
 }
 
 const possibleMembers = computed(() => {
-  const list = [];
-  for (const entry of rawChatList.value) {
-    if (entry.category === 'user') {
-      list.push(entry);
-    }
-  }
-  return list;
+  return rawChatList.value.filter((i): i is ChatListItem => i !== undefined && i.category === "user");
 });
 
 const dialog = computed({
@@ -102,7 +85,7 @@ const dispatchFunction = () => {
   }
 }
 
-const dispatchedCreateGroup = (list) => {
+const dispatchedCreateGroup = (list: Array<number>) => {
   createGroup(createGroupName.value, list);
   dialog.value = false;
 }
