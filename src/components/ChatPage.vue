@@ -2,7 +2,7 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, provide, ref, watch} from "vue";
 import {getHistoryMessage} from "../core/chat.ts";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
@@ -14,9 +14,7 @@ import {getAvatarOrDefault, getUser} from "../core/data";
 import {Message} from "../utils/structs";
 
 const debug = () => {
-  console.log('users', users.value);
-  console.log('activeChatId', activeChatId.value);
-  console.log('displayContact', selectedChat.value);
+  console.log('selectMemberSource: ', selectMemberSource.value);
 }
 
 defineProps(['modelValue']);
@@ -25,7 +23,15 @@ defineEmits(['update:modelValue']);
 
 const displayProfile = ref<boolean>(false);
 const showProfileDetail = ref(false);
+
 const createGroupDialog = ref(false);
+const selectMemberSource = ref('chatList');
+provide('selectMemberSource', selectMemberSource);
+const selectMemberTitle = ref('Create Group from Contact');
+watch(selectMemberSource, () => {
+  createGroupDialog.value = true;
+  selectMemberTitle.value = 'Share to Contact';
+})
 
 const groupedMessages = computed(() => {
   const grouped: Array<{
@@ -190,7 +196,7 @@ const title = computed(() => {
       :showDialog="createGroupDialog"
       @update:showDialog="createGroupDialog = $event"
       source="contact"
-      title="Create Group from Contact"
+      :title="selectMemberTitle"
   />
 </template>
 

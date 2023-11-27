@@ -65,30 +65,6 @@ const possibleMembers = computed(() => {
   return list;
 });
 
-const filterContacts = computed(() => {
-  return Object.keys(users.value).filter((id) => {
-    if (props.type === 'create_group') {
-      return users.value[id].category === 'user';
-    } else if (props.type === 'add_group_member') {
-      return users.value[id].category === 'user' && Object.keys(users.value[props.contactId]?.id2member)?.indexOf(id) === -1;
-    } else if (props.type === 'create_group_from_contact') {
-      return users.value[id].category === 'user' && id !== props.contactId;
-    }
-  }).map((id) => {
-    return {
-      id: users.value[id].id,  // id should be int
-      name: users.value[id].name,
-      avatar: users.value[id].avatar,
-    }
-  });
-});
-
-const title = computed(() => {
-  if (props.source === 'contact') {
-    return 'Create a new group...'
-  }
-})
-
 const dialog = computed({
   get: () => props.showDialog,
   set: (value) => emit('update:showDialog', value)
@@ -103,45 +79,21 @@ const dispatchFunction = () => {
     list.push(member);
   }
   if (props.source === 'chatList') {
-    console.log("create group", createGroupName.value, list);
-    createGroup(createGroupName.value, list);
-    dialog.value = false;
+    dispatchedCreateGroup(list);
   } else if (props.type === 'add_group_member') {
-    console.log(
-        "log",
-        selected.value + "",
-        "disContId",
-        props.contactId
-    );
-    for (const id of selected.value) {
-      console.log("Adding group member", props.contactId, id);
-      const contact = users.value[id];
-      groupAddMember(props.contactId, id);
-      const memberInfo = {
-        id: contact.id,
-        name: contact.name,
-        avatar: contact.avatar,
-      };
-      users.value[props.contactId].id2member[contact.id] = memberInfo;
-      users.value[props.contactId].members.push(memberInfo);
-    }
-    selected.value = [];
-    dialog.value = false;
+    dispatchedGroupAddMember();
   } else if (props.type === 'create_group_from_contact') {
-    // TODO: create group from contact
-    console.log("create group from profile", createGroupName.value, selected.value);
-    createGroup(createGroupName.value, selected.value);
-    selected.value = [];
-    dialog.value = false;
+    dispatchedGroupAddMember();
   }
-const createGroup = () => {
-  console.log("create group", createGroupName.value, selected.value);
-  createGroup(createGroupName.value, selected.value);
-  selected.value = [];
+}
+
+const dispatchedCreateGroup = (list) => {
+  console.log("create group", createGroupName.value, list);
+  createGroup(createGroupName.value, list);
   dialog.value = false;
 }
 
-const addGroupMember = () => {
+const dispatchedGroupAddMember = () => {
   console.log(
       "log",
       selected.value + "",
@@ -164,22 +116,11 @@ const addGroupMember = () => {
   dialog.value = false;
 }
 
-const createGroupFromContact = () => {
-  console.log("create group from profile", createGroupName.value, selected.value);
+const dispatchedCreateGroupFromContact = () => {
+  console.log("create group from contact", createGroupName.value, selected.value);
   createGroup(createGroupName.value, selected.value);
   selected.value = [];
   dialog.value = false;
-}
-
-const dispatchFunction = () => {
-  if (props.type === 'create_group') {
-    createGroup();
-  } else if (props.type === 'add_group_member') {
-    addGroupMember();
-  } else if (props.type === 'create_group_from_contact') {
-    createGroupFromContact();
-  }
-
 }
 </script>
 
@@ -246,10 +187,11 @@ const dispatchFunction = () => {
                 APPEND
               </v-btn>
               <v-btn
-                v-else
-                @click="actUnselect(member.id)"
-                color="red"
-                >REMOVE</v-btn>
+                  v-else
+                  @click="actUnselect(member.id)"
+                  color="red"
+              >REMOVE
+              </v-btn>
             </template>
           </v-list-item>
         </v-list>

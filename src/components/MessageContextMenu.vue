@@ -2,17 +2,15 @@
 
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import SelectMember from "./SelectMember.vue";
-import {ref} from "vue";
+import {inject, Ref} from "vue";
 
 const props = defineProps(['x', 'y', 'message'])
+const selectMemberSource : Ref<string> = inject('selectMemberSource') as Ref<string>;
 
 const menuItems = ['Copy', 'Share', 'Delete', 'Withdraw'];
 
-const shareMessageDialog = ref(false);
-
 const shareMessage = () => {
-  shareMessageDialog.value = true;
+  selectMemberSource.value = 'share';
   console.log('share');
 };
 
@@ -47,12 +45,6 @@ const dispatchFunction = (item: string) => {
     >{{ item }}
     </ListItem>
   </List>
-
-  <SelectMember
-      :showDialog="shareMessageDialog"
-      @update:showDialog="shareMessageDialog = $event"
-      source="chatList"
-  />
 </template>
 
 <style scoped>
