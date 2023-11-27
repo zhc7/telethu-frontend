@@ -287,20 +287,22 @@ const deleteFriend = (id: number) => {
 }
 
 const handleDeleteFriend = (message: Message) => {
-    // FUNC_DELETE_FRIEND
-    if (contacts.value.indexOf(message.receiver) === -1) {
+    if (contacts.value.indexOf(message.sender) === -1) {
         return;
     }
-    delete messages.value[message.receiver];
-    contacts.value = contacts.value.filter((i: number) => i !== message.receiver);
-    rawChatList.value = rawChatList.value.filter((i) => i.id !== message.receiver);
+    contactRemove(message.sender);
 };
 const handleReceiveRequest = async (_: Message) => {
     await applyList();
 }
 
 const handleApplicationAccepted = (message: Message) => {
-    alert(message.sender);
+    if (contacts.value.includes(message.receiver) || message.receiver === userId.value) return;
+    contactInsert(message.receiver);
+}
+
+const handleBeDeleted = (message: Message) => {
+    contactRemove(message.sender);
 }
 
 const handleSearchResult = (message: Message) => {
