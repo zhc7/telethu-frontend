@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
 import {createGroup, sendMessage} from "../core/chat.ts";
@@ -9,7 +9,7 @@ import {getAvatarOrDefault} from "../core/data.ts";
  * source: chatList, personalFriend, existingGroup, share
  *
  */
-const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages']);
+const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup']);
 const emit = defineEmits(['update:showDialog']);
 const createGroupName = ref('');
 
@@ -73,9 +73,8 @@ watch(dialog, (newValue) => {
   if (props.source === 'personalFriend') {
     pinedList.value.push(activeChatId.value);
     pinedList.value.push(userId.value);
-    alert(pinedList.value);
   } else if (props.source === 'existingGroup') {
-
+    pinedList.value = props.baseGroup;
   } else if (props.source === 'chatList') {
     if (!pinedList.value.includes(userId.value)) {
       pinedList.value.push(userId.value);

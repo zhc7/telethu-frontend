@@ -413,8 +413,9 @@ const handleKickMember = (memberId: number) => {
     <SelectMember
         :showDialog="groupAddMemberDialog"
         @update:showDialog="groupAddMemberDialog = $event"
-        :type="'add_group_member'"
+        source="existingGroup"
         :title="'Add Member'"
+        :base-group="displayContactInfo.members"
     />
   </v-card>
 </template>
