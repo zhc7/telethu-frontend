@@ -1,11 +1,14 @@
 <script setup>
 
 import {computed, onMounted, ref} from "vue";
-import {createGroup, groupAddMember} from "../core/chat.ts";
-import {activeChatId, rawChatList, user, userId, users} from "../globals.ts";
+import {createGroup, groupAddMember, sendMessage} from "../core/chat.ts";
+import {activeChatId, messages, rawChatList, user, userId, users} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
-
-const props = defineProps(['showDialog', 'type', 'title', 'contactId', 'source']);
+/**
+ * source: chatList, personalFriend, existingGroup, share
+ *
+ */
+const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages']);
 const emit = defineEmits(['update:showDialog']);
 const createGroupName = ref('');
 
@@ -71,6 +74,7 @@ const dialog = computed({
 });
 
 const dispatchFunction = () => {
+  console.log('source', props.source);
   const list = [];
   for (const member of pinedList.value) {
     list.push(member);
@@ -80,10 +84,12 @@ const dispatchFunction = () => {
   }
   if (props.source === 'chatList') {
     dispatchedCreateGroup(list);
-  } else if (props.type === 'add_group_member') {
+  } else if (props.source === 'existingGroup') {
     dispatchedGroupAddMember();
-  } else if (props.type === 'create_group_from_contact') {
-    dispatchedGroupAddMember();
+  } else if (props.source === 'personalFriend') {
+    dispatchedCreateGroupFromContact();
+  } else if (props.source === 'share') {
+    dispatchedShare(list);
   }
 }
 
@@ -120,6 +126,15 @@ const dispatchedCreateGroupFromContact = () => {
   console.log("create group from contact", createGroupName.value, selected.value);
   createGroup(createGroupName.value, selected.value);
   selected.value = [];
+  dialog.value = false;
+}
+
+const dispatchedShare = () => {
+  for (const receiverId of selectedList.value) {
+    for (const message of props.sharedMessages) {
+      sendMessage(receiverId, message.content, message.t_type);
+    }
+  }
   dialog.value = false;
 }
 </script>

@@ -6,12 +6,14 @@ import {inject, Ref} from "vue";
 
 const props = defineProps(['x', 'y', 'message'])
 const selectMemberSource : Ref<string> = inject('selectMemberSource') as Ref<string>;
+const sharedMessages : Ref<Array<number>> = inject('sharedMessages') as Ref<Array<number>>;
 
 const menuItems = ['Copy', 'Share', 'Delete', 'Withdraw'];
 
 const shareMessage = () => {
   selectMemberSource.value = 'share';
-  console.log('share');
+  sharedMessages.value.push(props.message);
+  console.log('share', sharedMessages.value);
 };
 
 const deleteMessage = () => {
