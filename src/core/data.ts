@@ -1,20 +1,8 @@
-import {
-    cache,
-    contacts,
-    messages,
-    rawChatList,
-    rawRequestList,
-    requests,
-    settings,
-    user,
-    userId,
-    users
-} from "../globals";
-import axios, {request} from "axios";
+import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, userId, users} from "../globals";
+import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
-import {el} from "vuetify/locale";
 import {avatarUrl} from "../utils/urls.ts";
 
 
@@ -48,7 +36,7 @@ const getAvatar = async (hash: string) => {
         reader.onloadend = () => {
             cache.value[hash] = reader.result;
         };
-    } catch(error) {
+    } catch (error) {
         console.log("error fetching", error);
     }
     return cache.value[hash];
@@ -75,7 +63,7 @@ const getCache = async (hash: string) => {
             },
         });
         cache.value[hash] = response.data as ArrayBuffer;
-    } catch(error) {
+    } catch (error) {
         console.log("error fetching", error);
     }
     return cache.value[hash];
@@ -87,7 +75,7 @@ const parseAvatar = (arrayBuffer: ArrayBuffer) => {
     return URL.createObjectURL(blob);
 }
 
-export const getAvatarOrDefault = (md5: string | undefined) =>  {
+export const getAvatarOrDefault = (md5: string | undefined) => {
     if (md5 === undefined) return './Logo.png';
     if (cache.value[md5]) {
         return cache.value[md5] as string;
@@ -138,7 +126,7 @@ export const contactRemove = (id: number) => {
     delete messages.value[id];
 }
 
-export const requestInsert = (id: number,  info = undefined) => {
+export const requestInsert = (id: number, info = undefined) => {
     if (requests.value.includes(id)) return;
     requests.value.push(id);
     rawRequestList.value.push(
