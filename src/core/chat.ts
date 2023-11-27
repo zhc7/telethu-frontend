@@ -372,11 +372,14 @@ const createGroup = (groupName: string, members: Array<number>) => {
         message_id: generateMessageId(members.toString(), userId.value, Date.now()),
         status: 'sending',
     };
-    console.log(JSON.stringify(message));
+    console.log('create message sending: ', JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
 
-const exitGroup = (id: number) => {
+const exitGroup = (id: number | undefined) => {
+    if (id === undefined) {
+        return;
+    }
     const message: Message = {
         time: Date.now(),
         m_type: 20,

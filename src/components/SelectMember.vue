@@ -2,7 +2,7 @@
 
 import {computed, onMounted, ref} from "vue";
 import {createGroup, groupAddMember} from "../core/chat.ts";
-import {activeChatId, rawChatList, userId, users} from "../globals.ts";
+import {activeChatId, rawChatList, user, userId, users} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
 
 const props = defineProps(['showDialog', 'type', 'title', 'contactId', 'source']);
@@ -12,14 +12,12 @@ const createGroupName = ref('');
 const pinedList = ref([]);
 const selectedList = ref([]);
 
-const pinedMember = computed(() => {
+const pinedInfo = computed(() => {
   const list = [];
-  for (const entry of rawChatList.value) {
-    if (pinedList.value.includes(entry.id)) {
-      list.push(entry);
-    }
+  if (props.source === 'chatList') {
+    list.push(user.value);
   }
-  return entry;
+  return list;
 });
 
 const selectedInfo = computed(() => {
@@ -39,7 +37,9 @@ onMounted(() => {
   } else if (props.source === 'existingGroup') {
 
   } else if (props.source === 'chatList') {
-    pinedList.value.push(userId.value);
+    if (!pinedList.value.includes(userId.value)) {
+      pinedList.value.push(userId.value);
+    }
   }
 });
 
@@ -83,11 +83,57 @@ const filterContacts = computed(() => {
   });
 });
 
+const title = computed(() => {
+  if (props.source === 'contact') {
+    return 'Create a new group...'
+  }
+})
+
 const dialog = computed({
   get: () => props.showDialog,
   set: (value) => emit('update:showDialog', value)
 });
 
+const dispatchFunction = () => {
+  const list = [];
+  for (const member of pinedList.value) {
+    list.push(member);
+  }
+  for (const member of selectedList.value) {
+    list.push(member);
+  }
+  if (props.source === 'chatList') {
+    console.log("create group", createGroupName.value, list);
+    createGroup(createGroupName.value, list);
+    dialog.value = false;
+  } else if (props.type === 'add_group_member') {
+    console.log(
+        "log",
+        selected.value + "",
+        "disContId",
+        props.contactId
+    );
+    for (const id of selected.value) {
+      console.log("Adding group member", props.contactId, id);
+      const contact = users.value[id];
+      groupAddMember(props.contactId, id);
+      const memberInfo = {
+        id: contact.id,
+        name: contact.name,
+        avatar: contact.avatar,
+      };
+      users.value[props.contactId].id2member[contact.id] = memberInfo;
+      users.value[props.contactId].members.push(memberInfo);
+    }
+    selected.value = [];
+    dialog.value = false;
+  } else if (props.type === 'create_group_from_contact') {
+    // TODO: create group from contact
+    console.log("create group from profile", createGroupName.value, selected.value);
+    createGroup(createGroupName.value, selected.value);
+    selected.value = [];
+    dialog.value = false;
+  }
 const createGroup = () => {
   console.log("create group", createGroupName.value, selected.value);
   createGroup(createGroupName.value, selected.value);
@@ -135,12 +181,6 @@ const dispatchFunction = () => {
   }
 
 }
-
-onMounted(() => {
-  if (props.type === 'create_group_from_contact') {
-    selected.value.push(props.contactId);
-  }
-});
 </script>
 
 <template>
@@ -162,9 +202,23 @@ onMounted(() => {
         />
         <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
+              v-for="member in pinedInfo"
+              :key="member.id"
+              class="d-flex flex-column align-center bg-indigo rounded-lg pa-1 ma-1"
+              v-ripple
+          >
+            <v-avatar>
+              <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>
+            </v-avatar>
+            <p>{{ member.name }}</p>
+          </div>
+        </div>
+        <div class="d-flex overflow-x-auto flex-shrink-0">
+          <div
               v-for="member in selectedInfo"
               :key="member.id"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+              @click="actUnselect(member.id)"
               v-ripple
           >
             <v-avatar>
@@ -184,9 +238,18 @@ onMounted(() => {
               {{ member.name }}
             </v-list-item-title>
             <template #append>
-              <v-btn @click="actSelect(member.id)">
+              <v-btn
+                  v-if="!selectedList.includes(member.id)"
+                  @click="actSelect(member.id)"
+                  color="blue"
+              >
                 APPEND
               </v-btn>
+              <v-btn
+                v-else
+                @click="actUnselect(member.id)"
+                color="red"
+                >REMOVE</v-btn>
             </template>
           </v-list-item>
         </v-list>

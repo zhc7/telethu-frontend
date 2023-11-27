@@ -98,4 +98,4 @@ export const rawRequestList = ref<Array<{
     avatar: string,
     email: string,
     time: number,
-} | undefined>>([]);
+}>>([]);

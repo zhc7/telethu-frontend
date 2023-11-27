@@ -7,7 +7,7 @@ import {getHistoryMessage} from "../core/chat.ts";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
-import {FormatChatMessageTime} from "../utils/datetime.ts";
+import {formatChatMessageTime} from "../utils/datetime.ts";
 import {activeChatId, messages, nowRef, selectedChatInfo, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getAvatarOrDefault, getUser} from "../core/data";
@@ -42,7 +42,6 @@ const groupedMessages = computed(() => {
   messages.value[activeChatId.value].forEach((message) => {
     const messageTimestamp = new Date(message.time).getTime();
 
-    // 检查时间差是否小于一分钟
     if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
       grouped.push({
         time: message.time,
@@ -165,7 +164,7 @@ const title = computed(() => {
           </div>
           <div v-for="(group, index) in groupedMessages" :key="index">
             <div class="justify-center ma-1">
-              {{ FormatChatMessageTime(nowRef, group.time.toString()) }}
+              {{ formatChatMessageTime(nowRef, group.time.toString()) }}
             </div>
             <MessagePop v-for="(message, mIndex) in group.messages"
                         :key="mIndex"

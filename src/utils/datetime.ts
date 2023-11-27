@@ -35,7 +35,7 @@ export const FormatTimeDifference = (timestamp: string) => {
     return `${year}/${month}/${day}`;
 }
 
-export const FormatChatMessageTime = (now: number, timestamp: string) => {
+export const formatChatMessageTime = (now: number, timestamp: string) => {
     const timestampParsed = parseFloat(timestamp);
     const minute = new Date(timestampParsed).getMinutes();
     const hour = new Date(timestampParsed).getHours();
