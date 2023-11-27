@@ -49,7 +49,7 @@ const getFileInformation = (message: Message) => {
 const download = (retry: number) => {
   if (retry === 2) return;
   console.log('filename: ', props.message.content);
-  downloadFile(props.message.content).then((url) => {
+  downloadFile(props.message.content as string).then((url) => {
     blobSrc.value = url;
   }).catch((e) => {
     console.log("an error occurred when fetching data", e);
@@ -144,7 +144,7 @@ console.log("message", props.message);
             :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
             style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
         >
-          <div :key="emojisLoaded" v-html="markdown2Html(message.content)"></div>
+          <div :key="emojisLoaded" v-html="markdown2Html(message.content as string)"></div>
         </div>
         <v-img
             v-else-if="message.m_type === 1"
@@ -174,7 +174,7 @@ console.log("message", props.message);
             ref="messagePop"
             class="pa-3 rounded-lg border"
             style="white-space: pre-wrap; overflow-wrap: break-word; width: 200px; background-color: rgba(243,243,243,0.5)"
-            @click="triggerDownload(message.content, message.info.split('/')[0])"
+            @click="triggerDownload(message.content as string, (message.info as string).split('/')[0])"
         >
           <template #prepend>
             <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover
