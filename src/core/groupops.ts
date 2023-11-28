@@ -1,8 +1,8 @@
-import {GroupData, Message, MessageType, UserData} from "../utils/structs";
-import {contacts, messages, rawChatList, user, userId} from "../globals";
+import {Message, MessageType} from "../utils/structs";
+import {userId} from "../globals";
 import {generateMessageId} from "../utils/hash";
 import {socket} from "./socket";
-import {contactInsert, contactRemove, contactUpdate, getUser} from "./data.ts";
+import {contactInsert, contactRemove, contactUpdate} from "./data.ts";
 
 export const handleCreateGroup = (message: Message) => {
     contactInsert(message.content.id);
