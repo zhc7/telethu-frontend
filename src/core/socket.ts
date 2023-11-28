@@ -1,8 +1,8 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
 import {contacts, isSocketConnected} from "../globals";
-import {applyList, chatManager, dispatcher} from "./chat";
-import {Ack, Message} from "../utils/structs";
+import {applyList, chatManager} from "./chat";
+import {Message} from "../utils/structs";
 import {contactInsert} from "./data.ts";
 
 export let socket: WebSocket;
@@ -42,7 +42,7 @@ const createSocket = () => {
             return;
         }
         const message = _message as Message;
-        chatManager.handle(message);
+        chatManager.handleMessage(message);
     };
 
     socket.onclose = (e) => {

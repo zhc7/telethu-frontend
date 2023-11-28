@@ -1,4 +1,4 @@
-import {Message, MessageType} from "../utils/structs";
+import {GroupData, Message, MessageType} from "../utils/structs";
 import {userId} from "../globals";
 import {generateMessageId} from "../utils/hash";
 import {socket} from "./socket";
