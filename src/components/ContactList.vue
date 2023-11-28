@@ -44,8 +44,13 @@ const userCount = computed(() => {
   return count;
 });
 const groupCount = computed(() => {
-  return rawChatList.length - userCount.value;
-});
+  let count = 0;
+  rawChatList.value.forEach((entry) => {
+    if (entry && entry.category === 'group') {
+      count += 1;
+    }
+  })
+  return count;});
 
 const displayList = computed(() => {
   if (props.displayType === 'user') {
