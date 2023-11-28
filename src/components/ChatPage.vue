@@ -79,7 +79,7 @@ watch(activeChatId, (id) => {
     console.log('selectedChat.value: ', contact);
     selectedChatInfo.value = contact;
   })
-}, {immediate: true})
+}, {immediate: true});
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow')!;

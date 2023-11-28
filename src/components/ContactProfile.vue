@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {blockFriend, deleteFriend, exitGroup, unblockFriend} from "../core/chat.ts";
+import {blockFriend, deleteFriend, unblockFriend} from "../core/chat.ts";
 import {computed, ref, watch} from "vue";
-import {removeGroupMember} from "../core/groupops.ts";
+import {removeGroupMember, exitGroup} from "../core/groupops.ts";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -102,7 +102,11 @@ const handleDelete = () => {
   if (displayContactInfo.value.category === 'user') {
     deleteFriend(displayContactInfo.value.id);
   } else {
-    exitGroup(displayContactInfo.value.id);
+    if (displayContactInfo.value.owner === userId.value) {
+      alert('不许退群！成年人要学会负责任，你作为群主退群让其他群成员咋办？起码指定一个接班人再说！')
+    } else {
+      exitGroup(displayContactInfo.value.id);
+    }
   }
 };
 
@@ -120,9 +124,24 @@ const displayContactInfo = computed(() => {
     if (selectedChatInfo.value !== undefined) {
       return selectedChatInfo.value;
     }
+    return {
+      id: 0,
+      name: 'Loading...',
+      email: 'Loading...',
+      avatar: '/Logo.png',
+      category: 'temp',
+    }
   } else if (props.source === 'contactList' || props.source === 'requestList' || props.source === 'searchResult') {
-    if (selectedContactInfo.value !== undefined)
+    if (selectedContactInfo.value !== undefined) {
       return selectedContactInfo.value;
+    }
+    return {
+      id: 0,
+      name: 'Loading...',
+      email: 'Loading...',
+      avatar: '/Logo.png',
+      category: 'temp',
+    }
   }
   return {
     id: userId.value,
@@ -184,7 +203,7 @@ const handleKickMember = (memberId: number) => {
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo">
+  <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
     <v-avatar size="80" class="mt-5">
       <v-img :src="getAvatarOrDefault(displayContactInfo.avatar)" cover/>
     </v-avatar>

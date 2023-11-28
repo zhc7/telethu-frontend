@@ -2,7 +2,7 @@ import {GroupData, Message, UserData} from "../utils/structs";
 import {contacts, messages, rawChatList, user, userId} from "../globals";
 import {generateMessageId} from "../utils/hash";
 import {socket} from "./socket";
-import {contactInsert, getUser} from "./data.ts";
+import {contactInsert, contactRemove, contactUpdate, getUser} from "./data.ts";
 
 export const handleCreateGroup = (message: Message) => {
     contactInsert(message.content.id);
@@ -10,22 +10,37 @@ export const handleCreateGroup = (message: Message) => {
 
 export const handleAddGroupMember = (message: Message) => {
     // FUNC_ADD_GROUP_MEMBER
-    getUser(message.receiver).then((group) => {
-        let user = message.content as number;
-        (group as GroupData).members.push(user);
-    })
+    contactUpdate(message.receiver);
+    console.log('member added');
 };
+
+export const exitGroup = (id: number | undefined) => {
+    if (id === undefined) {
+        return;
+    }
+    const message: Message = {
+        time: Date.now(),
+        m_type: 20,
+        t_type: 1,
+        receiver: id,
+        content: '',
+        sender: userId.value,
+        info: '',
+        message_id: generateMessageId(id, userId.value, Date.now()),
+        status: 'sending',
+    };
+    console.log(JSON.stringify(message));
+    socket.send(JSON.stringify(message));
+}
 
 export const handleSomebodyExitGroup = (message) => {
     const memberId = message.sender;
     const groupId = message.receiver;
-    if (contacts.value.indexOf(groupId) === -1) {
-        return;
+    if (memberId === userId.value) {
+        contactRemove(groupId)
     }
-    if (memberId === user.value.id) {
-        contacts.value = contacts.value.filter((i) => i !== groupId);
-        delete messages.value[groupId];
-        rawChatList.value = rawChatList.value.filter((i) => i.id !== groupId);
+    else {
+        contactUpdate(groupid);
     }
 }
 
@@ -133,11 +148,7 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
 
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
     const groupId = message.content;
-    const groupEntry = rawChatList.value.filter((i) => i.id === groupId)[0];
-    if (groupEntry === undefined) return;
-    const memberId = message.receiver;
-    groupEntry.members = groupEntry.members.filter((i) => i !== memberId);
-    console.log(`Member ${memberId} removed successfully from group ${groupId}`);
+    contactUpdate(groupId);
 }
 
 export const handleMemberAddedToGroup = (message) => {

@@ -18,6 +18,7 @@ import {
   rawRequestList
 } from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
+import {getUser} from "../core/data.ts";
 
 const router = useRouter();
 const curTab = ref(1);
@@ -38,7 +39,14 @@ const activePage = computed({
 onMounted(() => {
   console.log("page " + activePage.value);
   createSocket();
-})
+});
+
+const debugAction = async () => {
+  await getUser(162).then((contact) => {
+    alert(contact);
+  })
+}
+
 </script>
 
 <template>
@@ -50,6 +58,8 @@ onMounted(() => {
                      :title="userName"
                      @click="activePage = 'profile'"
         >
+        </v-list-item>
+        <v-list-item class="text-left" @click="debugAction">
         </v-list-item>
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" k="chat"></ListItem>

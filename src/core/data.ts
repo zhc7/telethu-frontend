@@ -1,12 +1,23 @@
-import {cache, contacts, messages, rawChatList, rawRequestList, requests, settings, userId, users} from "../globals";
+import {
+    cache,
+    contacts,
+    messages,
+    rawChatList,
+    rawRequestList,
+    requests,
+    selectedChatInfo, selectedContactInfo,
+    settings,
+    userId,
+    users
+} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, RequestListItem, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
 
 
-const getUser = async (id: number): Promise<ContactsData> => {
-    if (users.value[id] !== undefined) {
+const getUser = async (id: number, force: boolean = false): Promise<ContactsData> => {
+    if (!force && users.value[id] !== undefined) {
         return users.value[id];
     }
     const response = await axios.get(BASE_API_URL + "users/" + id, {
@@ -36,6 +47,9 @@ export const contactInsert = (id: number) => {
         avatar: '',
         category: 'group',
         unread_counter: 0,
+        members: [],
+        owner: 0,
+        admin: [],
         pin: false,
         mute: false,
         block: false,
@@ -47,6 +61,9 @@ export const contactInsert = (id: number) => {
             avatar: contact.avatar,
             category: contact.category,
             unread_counter: 0,
+            members: contact.members,
+            owner: contact.owner,
+            admin: contact.admin,
             pin: settings.value.pinned.includes(id),
             mute: settings.value.muted.includes(id),
             block: settings.value.blocked.includes(id),
@@ -66,6 +83,39 @@ export const contactRemove = (id: number) => {
         return entry === undefined || entry.id !== id
     });
     delete messages.value[id];
+}
+
+export const contactUpdate = (id: number) => {
+    if (!contacts.value.includes(id)) return;
+    if (id === userId.value) return;
+    getUser(id, true).then((contact) => {
+        let index = -1;
+        for (const i in rawChatList.value) {
+            if (rawChatList.value[i].id === id) {
+                index = i;
+                break;
+            }
+        }
+        if (index < 1) return;
+        rawChatList.value[index] = {
+            id: id,
+            name: contact.name,
+            avatar: contact.avatar,
+            category: contact.category,
+            unread_counter: 0,
+            members: contact.members,
+            pin: settings.value.pinned.includes(id),
+            mute: settings.value.muted.includes(id),
+            block: settings.value.blocked.includes(id),
+        };
+        console.log('contact force updated: ', contact);
+        if (selectedChatInfo.value && selectedChatInfo.value.id === id) {
+            selectedChatInfo.value = contact;
+        }
+        if (selectedContactInfo.value && selectedContactInfo.value.id === id) {
+            selectedContactInfo.value = contact;
+        }
+    });
 }
 
 export const requestInsert = (id: number, info: RequestListItem) => {
