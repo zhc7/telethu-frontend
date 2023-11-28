@@ -223,19 +223,19 @@ const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_t
     chatManager.sendMessage(message);
     return md5;
 }
-const sendReadMessage = (id: number | string) => {
+const readMessage = (mid: number) => {
     const message: Message = {
-        message_id: generateMessageId(id.toString(), userId.value, Date.now()),
+        message_id: generateMessageId('' + mid, userId.value, Date.now()),
         time: Date.now(),
         m_type: 19,
         t_type: 1,
-        content: id,
+        content: mid,
         sender: -1,
         receiver: -1,
     }
     chatManager.sendMessage(message);
 }
-export {sendReadMessage};
+export {readMessage};
 export {sendFiles};
 export {unblockFriend};
 export {blockFriend};

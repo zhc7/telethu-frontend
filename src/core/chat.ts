@@ -1,9 +1,9 @@
 import {DEBUG} from "../constants";
-import {hotMessages, messages, settings, user} from "../globals"
+import {hotMessages, messages, rawChatList, settings, user, userId} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
-import {Ack, Message, MessageType} from "../utils/structs";
+import {Ack, Message, MessageType, TargetType} from "../utils/structs";
 import {
     handleAddGroupMember,
     handleCreateGroup,
@@ -16,9 +16,9 @@ import {groupAddMember} from "./groups/send.ts";
 import {
     handleApplicationAccepted,
     handleDeleteFriend,
+    handleReceiveMessageRead,
     handleReceiveRequest,
-    handleSearchResult,
-    handleReceiveMessageRead
+    handleSearchResult
 } from "./users/receive.ts";
 
 
@@ -120,7 +120,7 @@ const chatManager: {
     },
 
     receiveMessage(message: Message) {
-        const target = message.t_type === 1 ? message.receiver :
+        const target = message.t_type === TargetType.GROUP ? message.receiver :
             message.sender === user.value.id ? message.receiver : message.sender;
         let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
@@ -130,7 +130,10 @@ const chatManager: {
                 time: message.time,
                 content: message.content as string,
             };
-
+            const entry = rawChatList.value.filter((i) => i.id === target)[0];
+            if (message.sender !== user.value.id) {
+                entry.unread_counter += 1;
+            }
             messages.value[target].push(message);
             if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
