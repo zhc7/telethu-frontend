@@ -49,7 +49,11 @@ const uploadFiles = (file: File, md5: string, updateLoading: Function) => {
             "Content-Type": fileType,
             Authorization: token.value,
         },
-        onUploadProgress: progressEvent => {
+        onUploadProgress: (progressEvent) => {
+            if (!progressEvent.total) {
+                updateLoading(1);
+                return;
+            }
             let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             updateLoading(percentCompleted);
             console.log("Percent completed -> ", percentCompleted);

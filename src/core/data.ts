@@ -1,4 +1,5 @@
 import {
+    activeRequestId,
     cache,
     contacts,
     messages,
@@ -12,11 +13,14 @@ import {
 } from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
-import {ContactsData, RequestListItem, UserData} from "../utils/structs";
+import {ChatListItem, ContactsData, RequestListItem, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
 
 
 const getUser = async (id: number, force: boolean = false): Promise<ContactsData> => {
+    if (id === -1) {
+        id = userId.value;
+    }
     if (!force && users.value[id] !== undefined) {
         return users.value[id];
     }
@@ -32,7 +36,7 @@ const getUser = async (id: number, force: boolean = false): Promise<ContactsData
 export const getAvatarOrDefault = (md5: string | undefined) => {
     if (md5 === undefined) return './Logo.png';
     if (cache.value[md5]) {
-        return cache.value[md5] as string;
+        return cache.value[md5] as unknown as string;
     }
     return './Logo.png';
 }
@@ -55,19 +59,12 @@ export const contactInsert = (id: number) => {
         block: false,
     });
     getUser(id).then((contact) => {
-        rawChatList.value[index] = {
-            id: id,
-            name: contact.name,
-            avatar: contact.avatar,
-            category: contact.category,
-            unread_counter: 0,
-            members: contact.members,
-            owner: contact.owner,
-            admin: contact.admin,
-            pin: settings.value.pinned.includes(id),
-            mute: settings.value.muted.includes(id),
-            block: settings.value.blocked.includes(id),
-        };
+        const item = contact as ChatListItem;
+        item.pin = settings.value.pinned.includes(id);
+        item.mute = settings.value.muted.includes(id);
+        item.block = settings.value.blocked.includes(id);
+        item.unread_counter = 0;
+        rawChatList.value[index] = item;
         console.log(contact);
     });
     if (messages.value[id] === undefined) {
@@ -92,22 +89,17 @@ export const contactUpdate = (id: number) => {
         let index = -1;
         for (const i in rawChatList.value) {
             if (rawChatList.value[i].id === id) {
-                index = i;
+                index = +i;
                 break;
             }
         }
         if (index < 1) return;
-        rawChatList.value[index] = {
-            id: id,
-            name: contact.name,
-            avatar: contact.avatar,
-            category: contact.category,
-            unread_counter: 0,
-            members: contact.members,
-            pin: settings.value.pinned.includes(id),
-            mute: settings.value.muted.includes(id),
-            block: settings.value.blocked.includes(id),
-        };
+        const item = contact as ChatListItem;
+        item.pin = settings.value.pinned.includes(id);
+        item.mute = settings.value.muted.includes(id);
+        item.block = settings.value.blocked.includes(id);
+        item.unread_counter = 0;
+        rawChatList.value[index] = item;
         console.log('contact force updated: ', contact);
         if (selectedChatInfo.value && selectedChatInfo.value.id === id) {
             selectedChatInfo.value = contact;
@@ -125,6 +117,7 @@ export const requestInsert = (id: number, info: RequestListItem) => {
 }
 
 export const requestRemove = (id: number) => {
+    activeRequestId.value = 0;
     requests.value = requests.value.filter((i: number) => (i !== id));
     rawRequestList.value = rawRequestList.value.filter((i) => (i.id !== id));
 }

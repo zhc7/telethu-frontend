@@ -13,7 +13,7 @@ const calculateMD5 = async (file: File) => {
 
         reader.onload = function(event) {
             const data = event.target?.result as ArrayBuffer;
-            const md5 = SparkMD5.ArrayBuffer.hash(data);
+            const md5: string = SparkMD5.ArrayBuffer.hash(data);
             resolve(md5);
         };
 

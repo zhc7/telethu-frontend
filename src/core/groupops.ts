@@ -5,7 +5,7 @@ import {socket} from "./socket";
 import {contactInsert, contactRemove, contactUpdate} from "./data.ts";
 
 export const handleCreateGroup = (message: Message) => {
-    contactInsert(message.content.id);
+    contactInsert((message.content as GroupData).id);
 };
 
 export const handleAddGroupMember = (message: Message) => {
@@ -33,14 +33,14 @@ export const exitGroup = (id: number | undefined) => {
     socket.send(JSON.stringify(message));
 }
 
-export const handleSomebodyExitGroup = (message) => {
+export const handleSomebodyExitGroup = (message: Message) => {
     const memberId = message.sender;
     const groupId = message.receiver;
     if (memberId === userId.value) {
         contactRemove(groupId)
     }
     else {
-        contactUpdate(groupid);
+        contactUpdate(groupId);
     }
 }
 
@@ -61,7 +61,7 @@ export const groupChangeOwner = (groupId: number, memberId: number) => {
 }
 
 export const handleGroupOwnerChanged = (message: Message) => {
-    const groupId = message.content;
+    const groupId = message.content as number;
     contactUpdate(groupId);
 }
 
@@ -82,10 +82,10 @@ export const groupAddAdmin = (groupId: number, memberId: number) => {
 }
 
 export const handleGroupAdminAdded = (message: Message) => {
-    contactUpdate(message.content);
+    contactUpdate(message.content as number);
 }
 
-export const groupRemoveAdmin = (groupId, memberId) => {
+export const groupRemoveAdmin = (groupId: number, memberId: number) => {
     const message: Message = {
         time: Date.now(),
         m_type: 22,
@@ -102,7 +102,7 @@ export const groupRemoveAdmin = (groupId, memberId) => {
 }
 
 export const handleGroupAdminRemoved = (message: Message) => {
-    const groupId = message.content;
+    const groupId = message.content as number;
     contactUpdate(groupId);
 }
 
@@ -138,6 +138,6 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
 }
 
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
-    const groupId = message.content;
+    const groupId = message.content as number;
     contactUpdate(groupId);
 }

@@ -1,6 +1,7 @@
 import {token} from "../auth";
 import {BASE_API_URL, DEBUG} from "../constants";
 import {
+    activeRequestId,
     contactPageProfileSource,
     hotMessages,
     messages,
@@ -16,7 +17,7 @@ import {generateMD5, generateMessageId} from "../utils/hash";
 import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
-import {Ack, Message, MessageType, TargetType} from "../utils/structs";
+import {Ack, ContactsData, Message, MessageType, TargetType} from "../utils/structs";
 import {contactInsert, contactRemove, requestInsert, requestRemove} from "./data.ts";
 import {
     groupAddMember,
@@ -213,6 +214,10 @@ const rejectFriend = (friendId: number) => {
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
+    activeRequestId.value = 0;
+    if (selectedContactInfo.value && selectedContactInfo.value.id === friendId) {
+        selectedContactInfo.value = undefined;
+    }
     requestRemove(friendId);
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
@@ -235,19 +240,13 @@ const applyList = async () => {
                     id: request.id,
                     name: request.name,
                     email: request.email,
+                    avatar: request.avatar,
                     time: request.time,
                 });
             }
             console.log('requests', requests.value);
         });
 }
-
-
-const handleAddFriend = (message: Message) => {
-    console.log('received add friend request');
-    console.log(message);
-    // FUNC_ADD_FRIEND
-};
 
 const deleteFriend = (id: number) => {
     const message = {
@@ -280,8 +279,8 @@ const handleApplicationAccepted = (message: Message) => {
 const handleSearchResult = (message: Message) => {
     // message.content.mute = false;
     console.log(message.content);
-    selectedContactInfo.value.info = message.content;
-    selectedContactInfo.value.source = "searchResult";
+    selectedContactInfo.value = message.content as ContactsData;
+    contactPageProfileSource.value = "searchResult";
 }
 
 const receiveReadMessage = (message: Message) => {
@@ -477,7 +476,6 @@ export {
     acceptFriend,
     rejectFriend,
     createGroup,
-    exitGroup,
     groupAddMember,
     getHistoryMessage,
     deleteFriend,

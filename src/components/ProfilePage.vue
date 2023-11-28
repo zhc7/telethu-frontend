@@ -17,7 +17,7 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-const handleUploadAvatar = (event) => {
+const handleUploadAvatar = (event: any) => {
   console.log(event);
   const avatar = event.target.files[0];
   avatar.url = URL.createObjectURL(avatar);

@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
 import {
   acceptFriend,
   rejectFriend,
   addFriend,
-  applyList,
   friendRequests,
   searchForFriend,
-  searchResult,
 } from "../core/chat.ts";
 
 import {
@@ -17,7 +15,7 @@ import {
   activeRequestId,
   contactPageContentLeft,
   contactPageProfileSource,
-  messages,
+  messages, rawRequestList,
   selectedContactInfo
 } from "../globals.ts"
 
@@ -73,7 +71,7 @@ const handleRequestPass = (id: number) => {
   getUser(id).then((contact) => {
     selectedContactInfo.value = contact;
     contactPageProfileSource.value = 'contactList';
-  })
+  });
 };
 
 const handleRequestReject = (id: number) => {
@@ -102,7 +100,8 @@ watch(activeRequestId, selectRequest);
           <v-list-item-title class="pa-3 ma-0 fill-height">
             {{ contactPageContentLeft === 0 ? "Contact List" : "Add Friends" }}
           </v-list-item-title>
-          <template #append>
+          <template #append style="position: relative">
+            <div class="badge" v-if="rawRequestList.length">{{ rawRequestList.length }}</div>
             <v-icon
                 v-show="contactPageContentLeft === 0"
                 @click="handleRequestList"
@@ -183,5 +182,17 @@ watch(activeRequestId, selectRequest);
 
 .v-list-item--active {
   background-color: #248aff !important;
+}
+
+.badge {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  line-height: 16px;
+  background-color: red;
+  font-size: 12px;
+  right: 0.7em;
+  top: 0.6em;
 }
 </style>

@@ -6,7 +6,7 @@ import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
   activeChatId,
-  activeContactId,
+  activeContactId, requests,
   selectedChatInfo,
   selectedContactInfo,
   settings,
@@ -381,7 +381,7 @@ const handleRemoveAdmin = (memberId: number) => {
             </v-btn>
           </v-row>
         </v-col>
-        <v-col v-if="source === 'requestList'">
+        <v-col v-if="source === 'requestList' && requests.includes(displayContactInfo.id)">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold"
                  @click="$emit('accept', displayContactInfo.id)">Pass
           </v-btn>

@@ -85,6 +85,6 @@ export const hotMessages = ref<{
 }>({});
 
 
-export const rawChatList = ref<Array<ChatListItem | undefined>>([]);
+export const rawChatList = ref<Array<ChatListItem>>([]);
 
 export const rawRequestList = ref<Array<RequestListItem>>([]);

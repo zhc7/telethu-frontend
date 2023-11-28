@@ -29,6 +29,7 @@ const requestList = computed(() => {
 });
 
 watch(activeRequestId, (newValue) => {
+  if (newValue < 1) return;
   const userInfo = rawRequestList.value.filter((entry) => entry.id === newValue)[0];
   selectedContactInfo.value = {
     id: userInfo.id,
