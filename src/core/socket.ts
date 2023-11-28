@@ -42,17 +42,7 @@ const createSocket = () => {
             return;
         }
         const message = _message as Message;
-        if (message.m_type === undefined) {
-            // acknowledgement from RabbitMQ
-            chatManager.receiveAck(message as Ack);
-            return;
-        }
-        if (message.m_type <= 5) {
-            // normal message or confirm message
-            chatManager.receiveMessage(message);
-            return;
-        }
-        dispatcher[message.m_type]!(message);
+        chatManager.handle(message);
     };
 
     socket.onclose = (e) => {

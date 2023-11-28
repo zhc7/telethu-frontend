@@ -51,6 +51,7 @@ const chatManager: {
     },
     sendMessage: (message: Message) => void,
     _retrySendMessage: (message: Message, attempts?: number) => void,
+    handleMessage: (message: Message) => void,
     receiveAck: (ack: Ack) => void,
     receiveMessage: (message: Message) => void,
     _updateMessage: (ack: Ack) => void,
@@ -97,6 +98,25 @@ const chatManager: {
         }, this.timeout * 1000);
     },
 
+    handleMessage(message: Message) {
+        if (message.m_type === undefined) {
+            // acknowledgement from RabbitMQ
+            this.receiveAck(message as Ack);
+            return;
+        }
+        if (message.m_type <= 5) {
+            // normal message or confirm message
+            this.receiveMessage(message);
+            return;
+        }
+        dispatcher[message.m_type]!(message);
+        const ack: Ack = {
+            message_id: message.message_id as number,
+        }
+        console.log("receive message and send ack", ack);
+        socket.send(JSON.stringify(ack));
+    },
+
     receiveAck(ack: Ack) {
         if (DEBUG) {
             // console.log("received ack", ack);
@@ -130,11 +150,6 @@ const chatManager: {
         } else if (existing.status === 'sending') {
             existing.status = 'sent';
         }
-        const ack: Ack = {
-            message_id: message.message_id as number,
-        }
-        console.log("receive message and send ack", ack);
-        socket.send(JSON.stringify(ack));
     },
 
     _updateMessage(ack: Ack) {
