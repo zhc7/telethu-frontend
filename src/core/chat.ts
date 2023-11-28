@@ -1,31 +1,25 @@
-import {token} from "../auth";
-import {BASE_API_URL, DEBUG} from "../constants";
-import {
-    activeRequestId,
-    contactPageProfileSource,
-    hotMessages,
-    messages,
-    requests,
-    selectedContactInfo,
-    settings,
-    user,
-    userId
-} from "../globals"
+import {DEBUG} from "../constants";
+import {hotMessages, messages, settings, user} from "../globals"
 import {reactive, ref} from "vue";
-import axios from "axios";
-import {generateMD5, generateMessageId} from "../utils/hash";
-import {formatFileSize, getFileType} from "./files";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
-import {Ack, ContactsData, Message, MessageType, TargetType} from "../utils/structs";
-import {contactInsert, contactRemove, requestInsert, requestRemove} from "./data.ts";
+import {Ack, Message, MessageType} from "../utils/structs";
 import {
-    groupAddMember,
     handleAddGroupMember,
-    handleCreateGroup, handleGroupAdminAdded, handleGroupAdminRemoved,
+    handleCreateGroup,
+    handleGroupAdminAdded,
+    handleGroupAdminRemoved,
     handleSomebodyExitGroup,
     handleSomebodyRemovedFromGroup
-} from "./groupops.ts"
+} from "./groups/receive.ts";
+import {groupAddMember} from "./groups/send.ts";
+import {
+    handleApplicationAccepted,
+    handleDeleteFriend,
+    handleReceiveRequest,
+    handleSearchResult,
+    handleReceiveMessageRead
+} from "./users/receive.ts";
 
 
 const searchResult = ref();
@@ -170,133 +164,6 @@ const chatManager: {
     },
 }
 
-const addFriend = (friendId: number) => {
-    const message = {
-        time: Date.now(),
-        m_type: 10,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-    }
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-};
-
-
-const acceptFriend = (friendId: number) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 11,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-    };
-    contactInsert(friendId);
-    requestRemove(friendId);
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-};
-
-const rejectFriend = (friendId: number) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 12,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-    };
-    activeRequestId.value = 0;
-    if (selectedContactInfo.value && selectedContactInfo.value.id === friendId) {
-        selectedContactInfo.value = undefined;
-    }
-    requestRemove(friendId);
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-};
-
-const applyList = async () => {
-    await axios.get(BASE_API_URL + "users/friends/apply_list", {
-        headers: {
-            Authorization: token.value,
-        }
-    })
-        .then((response) => {
-            if (DEBUG) {
-                console.log(response.data);
-            }
-            const idList = response.data['friends'];
-            console.log(response.data);
-            for (const request of idList) {
-                requestInsert(request.id, {
-                    id: request.id,
-                    name: request.name,
-                    email: request.email,
-                    avatar: request.avatar,
-                    time: request.time,
-                });
-            }
-            console.log('requests', requests.value);
-        });
-}
-
-const deleteFriend = (id: number) => {
-    const message = {
-        time: Date.now(),
-        m_type: 14,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: id,
-        info: "",
-        message_id: generateMessageId(id, userId.value, Date.now()),
-    };
-    console.log('deleting friend', JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
-
-const handleDeleteFriend = (message: Message) => {
-    contactRemove(message.sender);
-    contactRemove(message.receiver)
-};
-const handleReceiveRequest = async (_: Message) => {
-    await applyList();
-}
-
-const handleApplicationAccepted = (message: Message) => {
-    contactInsert(message.sender);
-    contactInsert(message.receiver);
-}
-
-const handleSearchResult = (message: Message) => {
-    // message.content.mute = false;
-    console.log(message.content);
-    selectedContactInfo.value = message.content as ContactsData;
-    contactPageProfileSource.value = "searchResult";
-}
-
-const receiveReadMessage = (message: Message) => {
-    console.log("read message", message);
-    let target = [message.sender, message.receiver][message.t_type];
-    let m = messages.value[target].find(m => m.message_id === message.content);
-    if (m === undefined) {
-        // TODO: handle this properly
-    }
-    m = m as Message;
-    if (m.sender !== user.value.id) {
-        console.log("error receive read:", target, m, "not send by this user");
-        return;
-    }
-    m.status = "read";
-}
 
 const dispatcher: { [key in MessageType]?: (arg0: Message) => void } = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
@@ -316,172 +183,18 @@ dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {
 dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {
 }; // TODO
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
-dispatcher[MessageType.FUNC_READ_MESSAGE] = receiveReadMessage;
+dispatcher[MessageType.FUNC_READ_MESSAGE] = handleReceiveMessageRead;
 dispatcher[MessageType.FUNC_SB_EXIT_GROUP] = handleSomebodyExitGroup;
 dispatcher[MessageType.FUNC_GROUP_ADDED_ADMIN] = handleGroupAdminAdded;
 dispatcher[MessageType.FUNC_GROUP_REMOVED_ADMIN] = handleGroupAdminRemoved;
 dispatcher[MessageType.FUNC_SB_REMOVED_FROM_GROUP] = handleSomebodyRemovedFromGroup;
 
 
-const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: MessageType.TEXT,
-        t_type: t_type === undefined ? 0 : t_type,
-        content: inputMessage,
-        receiver: receiverId,
-        sender: userId.value,
-        info: "",
-        message_id: generateMessageId(inputMessage, userId.value, Date.now()),
-        status: 'sending',
-    };
-    chatManager.sendMessage(message);
-};
-
-const createGroup = (groupName: string, members: Array<number>) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 7,
-        t_type: 1,
-        content: {
-            members,
-            category: "group",
-            name: groupName,
-            avatar: "",
-            id: 0,  // place holder
-            owner: user.value.id,
-            admin: [],
-        },
-        receiver: userId.value,
-        sender: userId.value,
-        info: groupName,
-        message_id: generateMessageId(members.toString(), userId.value, Date.now()),
-        status: 'sending',
-    };
-    console.log('create message sending: ', JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
-
-
-
-const searchForFriend = async (friendId: number) => {
-    const result = await axios.post(BASE_API_URL + 'users/user_search', {
-        type: 0,
-        info: friendId,
-    }, {
-        headers: {
-            Authorization: token.value,
-        }
-    });
-    selectedContactInfo.value = result.data.users[0];
-    contactPageProfileSource.value = 'searchResult';
-}
-
-
-const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: number) => {
-    axios.get(BASE_API_URL + "chat/history", {
-        params: {
-            id, from, t_type, num,
-        },
-        headers: {
-            Authorization: token.value,
-        }
-    }).then((response) => {
-        response.data.push(...messages.value[id]);
-        response.data.sort((a: Message, b: Message) => (a.time - b.time));
-        let last_time = 0;
-        let new_msg = [];
-        for (let msg of response.data) {
-            if (last_time !== msg.time) {
-                new_msg.push(msg);
-                last_time = msg.time;
-            }
-        }
-        console.log(new_msg);
-        messages.value[id] = new_msg;
-    })
-}
-
-
-const blockFriend = (friendId: number) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 13,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-        status: 'sending',
-    }
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
-const unblockFriend = (friendId: number) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 17,
-        t_type: 1,
-        content: "",
-        sender: userId.value,
-        receiver: friendId,
-        info: "",
-        message_id: generateMessageId(friendId, userId.value, Date.now()),
-        status: 'sending',
-    }
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-}
-
-const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_type: MessageType) => {
-    const md5 = await generateMD5(file);
-    console.log("md5 -> ", md5);
-    const message: Message = {
-        time: Date.now(),
-        m_type: m_type,
-        t_type: t_type,
-        content: md5,
-        receiver: receiverId,
-        sender: userId.value,
-        info: file.name + "/" + formatFileSize(file.size) + "/" + getFileType(file.name),
-        message_id: generateMessageId(file.name, userId.value, Date.now()),
-        status: 'sending',
-    };
-    chatManager.sendMessage(message);
-    return md5;
-}
-
-const sendReadMessage = (id: number | string) => {
-    const message: Message = {
-        message_id: generateMessageId(id.toString(), userId.value, Date.now()),
-        time: Date.now(),
-        m_type: 19,
-        t_type: 1,
-        content: id,
-        sender: -1,
-        receiver: -1,
-    }
-    chatManager.sendMessage(message);
-}
 
 export {
     friendRequests,
     searchResult,
     chatManager,
     dispatcher,
-    sendMessage,
-    applyList,
-    addFriend,
-    acceptFriend,
-    rejectFriend,
-    createGroup,
     groupAddMember,
-    getHistoryMessage,
-    deleteFriend,
-    blockFriend,
-    unblockFriend,
-    searchForFriend,
-    sendFiles,
-    sendReadMessage,
 }

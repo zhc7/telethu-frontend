@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
-import {sendFiles, sendMessage, sendReadMessage} from "../core/chat.ts";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
 import {activeChatId, messages, user} from "../globals.ts";
+import {sendFiles, sendMessage, sendReadMessage} from "../core/users/send.ts";
 
 const props = defineProps(['chat'])
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {createGroup, sendMessage} from "../core/chat.ts";
 import {activeChatId, rawChatList, user, userId, users} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
 import {ChatListItem} from "../utils/structs.ts";
+import {createGroup, sendMessage} from "../core/users/send.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share

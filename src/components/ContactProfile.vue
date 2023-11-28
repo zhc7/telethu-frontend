@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import {blockFriend, deleteFriend, unblockFriend} from "../core/chat.ts";
 import {computed, ref, watch} from "vue";
-import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groupops.ts";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -18,6 +16,8 @@ import {
 import {useRouter} from "vue-router";
 import {getAvatarOrDefault, getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
+import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
+import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 
 
 const props = defineProps(['source']);

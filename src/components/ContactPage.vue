@@ -3,11 +3,8 @@ import {ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
 import {
-  acceptFriend,
-  rejectFriend,
-  addFriend,
   friendRequests,
-  searchForFriend,
+
 } from "../core/chat.ts";
 
 import {
@@ -22,6 +19,7 @@ import {
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
 import {contactInsert, getUser} from "../core/data.ts";
+import {acceptFriend, addFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 
 
 defineEmits(["chat"]);

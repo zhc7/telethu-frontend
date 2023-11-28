@@ -1,18 +1,7 @@
-import {GroupData, Message, MessageType} from "../utils/structs";
-import {userId} from "../globals";
-import {generateMessageId} from "../utils/hash";
-import {socket} from "./socket";
-import {contactInsert, contactRemove, contactUpdate} from "./data.ts";
-
-export const handleCreateGroup = (message: Message) => {
-    contactInsert((message.content as GroupData).id);
-};
-
-export const handleAddGroupMember = (message: Message) => {
-    // FUNC_ADD_GROUP_MEMBER
-    contactUpdate(message.receiver);
-    console.log('member added');
-};
+import {Message, MessageType} from "../../utils/structs.ts";
+import {userId} from "../../globals.ts";
+import {generateMessageId} from "../../utils/hash.ts";
+import {socket} from "../socket.ts";
 
 export const exitGroup = (id: number | undefined) => {
     if (id === undefined) {
@@ -32,18 +21,6 @@ export const exitGroup = (id: number | undefined) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-
-export const handleSomebodyExitGroup = (message: Message) => {
-    const memberId = message.sender;
-    const groupId = message.receiver;
-    if (memberId === userId.value) {
-        contactRemove(groupId)
-    }
-    else {
-        contactUpdate(groupId);
-    }
-}
-
 export const groupChangeOwner = (groupId: number, memberId: number) => {
     const message: Message = {
         time: Date.now(),
@@ -59,12 +36,6 @@ export const groupChangeOwner = (groupId: number, memberId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-
-export const handleGroupOwnerChanged = (message: Message) => {
-    const groupId = message.content as number;
-    contactUpdate(groupId);
-}
-
 export const groupAddAdmin = (groupId: number, memberId: number) => {
     const message: Message = {
         time: Date.now(),
@@ -80,11 +51,6 @@ export const groupAddAdmin = (groupId: number, memberId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-
-export const handleGroupAdminAdded = (message: Message) => {
-    contactUpdate(message.content as number);
-}
-
 export const groupRemoveAdmin = (groupId: number, memberId: number) => {
     const message: Message = {
         time: Date.now(),
@@ -100,12 +66,6 @@ export const groupRemoveAdmin = (groupId: number, memberId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-
-export const handleGroupAdminRemoved = (message: Message) => {
-    const groupId = message.content as number;
-    contactUpdate(groupId);
-}
-
 export const groupAddMember = (groupId: number, memberId: number) => {
     const message: Message = {
         time: Date.now(),
@@ -121,7 +81,6 @@ export const groupAddMember = (groupId: number, memberId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-
 export const removeGroupMember = (groupId: number, memberId: number) => {
     const message = {
         time: Date.now(),
@@ -135,9 +94,4 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
     };
     console.log('kicking member', JSON.stringify(message));
     socket.send(JSON.stringify(message));
-}
-
-export const handleSomebodyRemovedFromGroup = (message: Message) => {
-    const groupId = message.content as number;
-    contactUpdate(groupId);
 }

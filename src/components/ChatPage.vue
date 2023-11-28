@@ -3,7 +3,6 @@
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
 import {computed, onMounted, provide, ref, watch} from "vue";
-import {getHistoryMessage} from "../core/chat.ts";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
@@ -12,6 +11,7 @@ import {activeChatId, messages, nowRef, selectedChatInfo, users} from "../global
 import SelectMember from "./SelectMember.vue";
 import {getAvatarOrDefault, getUser} from "../core/data";
 import {Message} from "../utils/structs";
+import {getHistoryMessage} from "../core/users/send.ts";
 
 const debug = () => {
   console.log('selectMemberSource: ', selectMemberSource.value);
