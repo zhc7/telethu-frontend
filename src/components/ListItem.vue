@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {inject} from 'vue'
 
-const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle']);
+const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle', 'badge', 'badgeValue']);
 const {selected} = inject<any>("selected");
 const activated = inject("activated", undefined);
 
@@ -18,7 +18,12 @@ const activated = inject("activated", undefined);
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" cover/>
     </v-avatar>
-    <v-icon class="mr-1" v-if="props.prependIcon">{{ props.prependIcon }}</v-icon>
+    <v-badge v-if="prependIcon && badgeValue && badgeValue > 0" color="red" :content="badgeValue" floating>
+      <v-icon class="mr-1">
+        {{ prependIcon }}
+      </v-icon>
+    </v-badge>
+    <v-icon v-else class="mr-1" v-if="props.prependIcon">{{ props.prependIcon }}</v-icon>
     <div class="mr-2">
       <slot name="prepend"/>
     </div>

@@ -44,7 +44,7 @@ onMounted(() => {
         </v-list-item>
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" k="chat"></ListItem>
-        <ListItem prepend-icon="mdi-account-multiple" title="Contacts" k="contacts"></ListItem>
+        <ListItem prepend-icon="mdi-account-multiple" title="Contacts" k="contacts" badge-value="5"></ListItem>
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>

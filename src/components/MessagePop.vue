@@ -124,7 +124,6 @@ console.log("message", props.message);
             :y="contextMenuY"
             :message="message"
         />
-
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"

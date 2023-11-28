@@ -44,6 +44,7 @@ const dispatchFunction = (item: string) => {
         :key="item"
         :k="item"
         @click="dispatchFunction(item)"
+        class="context-menu-item"
     >{{ item }}
     </ListItem>
   </List>
@@ -54,5 +55,8 @@ const dispatchFunction = (item: string) => {
   position: absolute;
   background-color: white;
   z-index: 10000;
+}
+.context-menu-item:hover {
+  background-color: #eee;
 }
 </style>
