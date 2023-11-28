@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {blockFriend, deleteFriend, unblockFriend} from "../core/chat.ts";
 import {computed, ref, watch} from "vue";
-import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groupops.ts";
+import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groupops.ts";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -113,6 +113,10 @@ const handleDelete = () => {
 const handleChat = async () => {
   activeChatId.value = activeContactId.value;
   router.replace('chat');
+}
+
+const handleChangeOwner = () => {
+  alert('change owner');
 }
 
 const editName = () => {
@@ -358,6 +362,15 @@ const handleRemoveAdmin = (memberId: number) => {
             >Delete Friend
             </v-btn>
           </v-row>
+          <v-row v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="info"
+                style="font-size: 15px; font-weight: bold"
+                @click="alert('change')"
+            >Change Owner
+            </v-btn>
+          </v-row>
           <v-row v-if="displayContactInfo && displayContactInfo.category === 'group'"
                  style="display: flex; justify-content: center">
             <v-btn
@@ -396,6 +409,15 @@ const handleRemoveAdmin = (memberId: number) => {
                 style="font-size: 15px; font-weight: bold"
                 @click="deleteConfirmDialog = true"
             >Delete Friend
+            </v-btn>
+          </v-row>
+          <v-row v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
+                 style="display: flex; justify-content: center">
+            <v-btn
+                color="info"
+                style="font-size: 15px; font-weight: bold"
+                @click="handleChangeOwner"
+            >Change Owner
             </v-btn>
           </v-row>
           <v-row v-if="displayContactInfo && displayContactInfo.category === 'group'"
