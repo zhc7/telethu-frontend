@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, cache, hotMessages, nowRef, rawChatList} from "../globals.ts";
+import {activeChatId, cache, hotMessages, nowRef, rawChatList, selectedChatInfo} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
@@ -55,7 +55,7 @@ const displayHotMessage = (message: Message | undefined) => {
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
       <a v-if="!searchFriendInput" class="ma-3"
-         href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">{{ activeChatId }}</a>
+         href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">{{ selectedChatInfo?.id }}</a>
       <v-icon v-if="!searchFriendInput" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
       <v-text-field v-if="searchFriendInput" hide-details v-model="friendName"
                     density="compact" variant="solo" class="mr-4"/>

@@ -102,7 +102,7 @@ const handleDelete = () => {
   if (displayContactInfo.value.category === 'user') {
     deleteFriend(displayContactInfo.value.id);
   } else {
-    if (displayContactInfo.value.owner === userId.value) {
+    if (displayContactInfo.value.owner === userId.value && displayContactInfo.value.members.length > 1) {
       alert('不许退群！成年人要学会负责任，你作为群主退群让其他群成员咋办？起码指定一个接班人再说！')
     } else {
       exitGroup(displayContactInfo.value.id);
@@ -122,6 +122,7 @@ const editName = () => {
 const displayContactInfo = computed(() => {
   if (props.source === 'chatPage') {
     if (selectedChatInfo.value !== undefined) {
+      console.log('selectedChatInfo in displayContactInfo', selectedChatInfo.value)
       return selectedChatInfo.value;
     }
     return {
@@ -175,25 +176,9 @@ watch(displayContactInfo, (newInfo: GroupData) => {
         time: Date.now(),
         role: 0,
       }
-      // memberInfoTable.value.sort((a, b) => {
-      //   if (a.id < 1) return 1;
-      //   if (b.id < 1) return -1;
-      //   if (a.id === owner) return 1;
-      //   if (b.id === owner) return -1;
-      //   if (admin.includes(a.id)) {
-      //     if (admin.includes(b.id)) {
-      //       return members.indexOf(a.id) - members.indexOf(b.id);
-      //     }
-      //     return -1;
-      //   }
-      //   if (admin.includes(b.id)) {
-      //     return 1;
-      //   }
-      //   return members.indexOf(a.id) - members.indexOf(b.id);
-      // })
     });
   }
-})
+}, {immediate: true});
 
 const handleKickMember = (memberId: number) => {
   removeGroupMember(displayContactInfo.value.id, memberId);
