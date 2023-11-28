@@ -1,4 +1,4 @@
-import {GroupData, Message, UserData} from "../utils/structs";
+import {GroupData, Message, MessageType, UserData} from "../utils/structs";
 import {contacts, messages, rawChatList, user, userId} from "../globals";
 import {generateMessageId} from "../utils/hash";
 import {socket} from "./socket";
@@ -61,11 +61,8 @@ export const groupChangeOwner = (groupId: number, memberId: number) => {
 }
 
 export const handleGroupOwnerChanged = (message: Message) => {
-    const entry = rawChatList.value.filter((i) => i.id === message.content)[0];
-    if (entry === undefined) return;
-    if (entry.owner === message.receiver) return;
-    entry.owner = message.receiver;
-    console.log('Group owner of group-', message.content, 'changed to', message.receiver);
+    const groupId = message.content;
+    contactUpdate(groupId);
 }
 
 export const groupAddAdmin = (groupId: number, memberId: number) => {
@@ -128,7 +125,7 @@ export const groupAddMember = (groupId: number, memberId: number) => {
 export const removeGroupMember = (groupId: number, memberId: number) => {
     const message = {
         time: Date.now(),
-        m_type: 23,
+        m_type: MessageType.FUNC_SB_REMOVED_FROM_GROUP,
         t_type: 1,
         content: groupId,
         sender: userId.value,
@@ -143,7 +140,4 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
     const groupId = message.content;
     contactUpdate(groupId);
-}
-
-export const handleMemberAddedToGroup = (message) => {
 }
