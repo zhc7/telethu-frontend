@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {inject} from 'vue'
 
-const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle', 'badge', 'badgeValue']);
+const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle', 'badgeValue']);
 const {selected} = inject<any>("selected");
 const activated = inject("activated", undefined);
 
@@ -18,12 +18,14 @@ const activated = inject("activated", undefined);
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" cover/>
     </v-avatar>
-    <v-badge v-if="prependIcon && badgeValue && badgeValue > 0" color="red" :content="badgeValue" floating>
+    <div v-if="prependIcon" style="position: relative">
+      <div class="badge" v-if="badgeValue">
+        {{ badgeValue }}
+      </div>
       <v-icon class="mr-1">
         {{ prependIcon }}
       </v-icon>
-    </v-badge>
-    <v-icon v-else class="mr-1" v-if="props.prependIcon">{{ props.prependIcon }}</v-icon>
+    </div>
     <div class="mr-2">
       <slot name="prepend"/>
     </div>
@@ -53,6 +55,20 @@ const activated = inject("activated", undefined);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.badge {
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  line-height: 14px;
+  right: -0.36em;
+  top: -0.4em;
+  font-size: 0.6em;
+  z-index: 10000;
+  background-color: red;
+  border-radius: 7px;
+  color: white;
 }
 
 </style>

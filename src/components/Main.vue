@@ -7,7 +7,16 @@ import ProfilePage from "./ProfilePage.vue";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {activeChatId, users, isSocketConnected, user, userName, currentPage, userAvatar} from "../globals.ts"
+import {
+  activeChatId,
+  users,
+  isSocketConnected,
+  user,
+  userName,
+  currentPage,
+  userAvatar,
+  rawRequestList
+} from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 
 const router = useRouter();
@@ -44,7 +53,7 @@ onMounted(() => {
         </v-list-item>
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" k="chat"></ListItem>
-        <ListItem prepend-icon="mdi-account-multiple" title="Contacts" k="contacts" badge-value="5"></ListItem>
+        <ListItem prepend-icon="mdi-account-multiple" :badge-value="rawRequestList.length" title="Contacts" k="contacts"></ListItem>
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
