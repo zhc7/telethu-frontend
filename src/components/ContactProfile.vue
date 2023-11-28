@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {blockFriend, deleteFriend, unblockFriend} from "../core/chat.ts";
 import {computed, ref, watch} from "vue";
-import {removeGroupMember, exitGroup} from "../core/groupops.ts";
+import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groupops.ts";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -184,6 +184,14 @@ const handleKickMember = (memberId: number) => {
   removeGroupMember(displayContactInfo.value.id, memberId);
 }
 
+const handleAddAdmin = (memberId: number) => {
+  groupAddAdmin(displayContactInfo.value.id, memberId);
+}
+
+const handleRemoveAdmin = (memberId: number) => {
+  groupRemoveAdmin(displayContactInfo.value.id, memberId);
+}
+
 
 </script>
 
@@ -229,21 +237,23 @@ const handleKickMember = (memberId: number) => {
             <div
                 v-for="member in memberInfoTable"
                 :key="member.id"
-                class="d-flex flex-column align-center ma-auto mb-5 pt-4"
+                class="d-flex flex-column align-center ma-auto mb-5 pt-4 member-pop"
             >
-              <v-badge color="red" content="-"
-                       v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
-                       @click="handleKickMember(member.id)">
-                <v-avatar size="60" style="position: relative"
-                          :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 1px solid' : '' ">
-                  <v-img :src="getAvatarOrDefault(member.avatar)" id="member-avatar" cover/>
-                </v-avatar>
-              </v-badge>
-              <v-avatar v-else size="60" style="position: relative"
-                        :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 1px solid' : '' ">
+
+              <v-avatar size="60" style="position: relative"
+                        :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' ">
                 <v-img :src="getAvatarOrDefault(member.avatar)" id="member-avatar" cover/>
               </v-avatar>
+              <div class="badge-kick"
+                  v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
+                  @click="handleKickMember(member.id)">——</div>
               <p>{{ member.name }}</p>
+              <div class="badge-lift"
+                   v-if="displayContactInfo.owner === userId && member.id !== userId && !displayContactInfo.admin.includes(member.id)"
+                   @click="handleAddAdmin(member.id)">|</div>
+              <div class="badge-fire"
+                   v-if="displayContactInfo.owner === userId && member.id !== userId && displayContactInfo.admin.includes(member.id)"
+                   @click="handleRemoveAdmin(member.id)">*</div>
             </div>
             <div class="d-flex flex-column align-center ma-auto mb-5">
               <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
@@ -429,4 +439,49 @@ const handleKickMember = (memberId: number) => {
 .v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
   margin-inline-start: 0;
 }
+
+.member-pop {
+  position: relative;
+}
+
+.badge-kick {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  position: absolute;
+  right: 0;
+  top: 12px;
+  line-height: 10px;
+  font-size: 12px;
+  color: white;
+  background-color: red;
+}
+
+.badge-lift {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  position: absolute;
+  right: 0;
+  top: 28px;
+  line-height: 10px;
+  font-size: 12px;
+  color: white;
+  background-color: dodgerblue;
+}
+
+.badge-fire {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  position: absolute;
+  right: 0;
+  top: 28px;
+  line-height: 10px;
+  font-size: 12px;
+  color: white;
+  background-color: grey;
+}
+
+
 </style>

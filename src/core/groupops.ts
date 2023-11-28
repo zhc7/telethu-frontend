@@ -85,11 +85,7 @@ export const groupAddAdmin = (groupId: number, memberId: number) => {
 }
 
 export const handleGroupAdminAdded = (message: Message) => {
-    const entry = rawChatList.value.filter((i) => i.id === message.content)[0];
-    if (entry === undefined) return;
-    if (entry.admin.includes(message.receiver)) return;
-    entry.admin.push(message.receiver);
-    console.log(`Admin${message.receiver} added to ${message.content}`);
+    contactUpdate(message.content);
 }
 
 export const groupRemoveAdmin = (groupId, memberId) => {
@@ -109,10 +105,8 @@ export const groupRemoveAdmin = (groupId, memberId) => {
 }
 
 export const handleGroupAdminRemoved = (message: Message) => {
-    const entry = rawChatList.value.filter((i) => i.id === message.content)[0];
-    if (entry === undefined) return;
-    entry.admin.filter((i) => i.id !== message.receiver);
-    console.log(`Admin${message.receiver} removed from ${message.content}`);
+    const groupId = message.content;
+    contactUpdate(groupId);
 }
 
 export const groupAddMember = (groupId: number, memberId: number) => {

@@ -21,7 +21,7 @@ import {contactInsert, contactRemove, requestInsert, requestRemove} from "./data
 import {
     groupAddMember,
     handleAddGroupMember,
-    handleCreateGroup,
+    handleCreateGroup, handleGroupAdminAdded, handleGroupAdminRemoved,
     handleSomebodyExitGroup,
     handleSomebodyRemovedFromGroup
 } from "./groupops.ts"
@@ -304,6 +304,8 @@ dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = receiveReadMessage;
 dispatcher[MessageType.FUNC_SB_EXIT_GROUP] = handleSomebodyExitGroup;
+dispatcher[MessageType.FUNC_GROUP_ADDED_ADMIN] = handleGroupAdminAdded;
+dispatcher[MessageType.FUNC_GROUP_REMOVED_ADMIN] = handleGroupAdminRemoved;
 dispatcher[MessageType.FUNC_SB_REMOVED_FROM_GROUP] = handleSomebodyRemovedFromGroup;
 
 
