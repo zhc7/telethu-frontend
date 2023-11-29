@@ -123,15 +123,14 @@ const chatManager: {
     receiveMessage(message: Message) {
         const target = message.t_type === TargetType.GROUP ? message.receiver :
             message.sender === user.value.id ? message.receiver : message.sender;
-
+        hotMessages.value[target] = {
+            sender: message.receiver,
+            time: message.time,
+            content: message,
+        };
         let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
             message.status = 'sent';
-            hotMessages.value[target] = {
-                sender: message.receiver,
-                time: message.time,
-                content: message,
-            };
             const entry = rawChatList.value.filter((i) => i.id === target)[0];
             if (message.sender !== user.value.id) {
                 entry.unread_counter += 1;

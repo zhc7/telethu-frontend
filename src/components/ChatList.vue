@@ -82,7 +82,7 @@ const computedAvatar = computed((avatar) => {
         <template #prepend>
           <v-avatar>
             <v-img v-if="chat.category === 'user'"
-                   :src="(() => {getAvatar(chat.avatar); return cache[chat.avatar] ? cache[chat.avatar] : 'Logo.png';})()" cover/>
+                   :src="(() => {getAvatar(chat.avatar); return cache[chat.avatar] !== undefined ? cache[chat.avatar] : '/Logo.png';})()" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>

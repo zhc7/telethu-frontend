@@ -36,6 +36,7 @@ const getUser = async (id: number, force: boolean = false): Promise<ContactsData
 }
 
 export const getAvatar = async (hash: string) => {
+    if (cache.value[hash]) return;
     const url = avatarUrl(hash);
     try {
         const response = await axios.get(url, {
@@ -51,6 +52,7 @@ export const getAvatar = async (hash: string) => {
         };
     } catch(error) {
         console.log("error fetching", error);
+        return './Logo.png'
     }
     return cache.value[hash];
 }
