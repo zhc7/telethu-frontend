@@ -3,7 +3,6 @@ import {computed, watch} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {activeRequestId, contactPageProfileSource, rawRequestList, requests, selectedContactInfo} from "../globals.ts";
-import {getAvatarOrDefault} from "../core/data.ts";
 import {UserData} from "../utils/structs.ts";
 
 defineProps(["modelValue"]);

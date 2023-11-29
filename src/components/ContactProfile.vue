@@ -4,7 +4,7 @@ import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
   activeChatId,
-  activeContactId,
+  activeContactId, cache,
   requests,
   selectedChatInfo,
   selectedContactInfo,
@@ -16,10 +16,11 @@ import {
   userName
 } from "../globals.ts";
 import {useRouter} from "vue-router";
-import {getAvatarOrDefault, getUser} from "../core/data.ts";
+import {getAvatar, getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
 import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
+import {avatarUrl} from "../utils/urls.ts";
 
 
 const props = defineProps(['source']);
@@ -203,13 +204,23 @@ const handleRemoveAdmin = (memberId: number) => {
   groupRemoveAdmin(displayContactInfo.value.id, memberId);
 }
 
+const avatar = computed(() => {
+  const avatar = displayContactInfo.value.avatar;
+  const ret = cache.value[avatar];
+  if (ret) {
+    return ret;
+  }
+  getAvatar(displayContactInfo.value.avatar);
+  return '/Logo.png';
+});
+
 
 </script>
 
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="getAvatarOrDefault(displayContactInfo.avatar)" cover/>
+      <v-img :src="avatar" cover/>
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
@@ -253,7 +264,7 @@ const handleRemoveAdmin = (memberId: number) => {
 
               <v-avatar size="60" style="position: relative"
                         :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' ">
-                <v-img :src="getAvatarOrDefault(member.avatar)" id="member-avatar" cover/>
+                <v-img :src="cache[member.avatar]" id="member-avatar" cover/>
               </v-avatar>
               <div class="badge-kick"
                    v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
@@ -283,8 +294,8 @@ const handleRemoveAdmin = (memberId: number) => {
       </v-list>
       <v-divider class="ma-4"/>
       <v-col v-if="displayContactInfo.id !== user.id">
-        <v-row>
-          <p>Pin</p>
+        <v-row style="display: flex; align-items: center" class="ma-1">
+          <p style="flex: 1" class="text-right pr-4">Pin:</p>
           <v-switch
               style="flex: 2"
               hide-details
@@ -292,11 +303,23 @@ const handleRemoveAdmin = (memberId: number) => {
               v-model="switchValuePin"
           ></v-switch>
         </v-row>
-        <v-row>
-          <p>Mute</p>
+        <v-row style="display: flex; align-items: center" class="ma-1">
+          <p style="flex: 1" class="text-right pr-4">Mute:</p>
+          <v-switch
+              style="flex: 2"
+              hide-details
+              color="indigo"
+              v-model="switchValueMute"
+          ></v-switch>
         </v-row>
-        <v-row>
-          <p>Block</p>
+        <v-row style="display: flex; align-items: center" class="ma-1">
+          <p style="flex: 1" class="text-right pr-4">Block:</p>
+          <v-switch
+              style="flex: 2"
+              hide-details
+              color="indigo"
+              v-model="switchValueBlock"
+          ></v-switch>
         </v-row>
       </v-col>
       <!--      <v-col v-if="displayContactInfo.id !== user.id">-->
@@ -335,34 +358,6 @@ const handleRemoveAdmin = (memberId: number) => {
       <!--&lt;!&ndash;            style="display: flex; align-items: center"&ndash;&gt;-->
       <!--&lt;!&ndash;            class="ma-1 text-right"&ndash;&gt;-->
       <!--&lt;!&ndash;        >&ndash;&gt;-->
-      <!--          <p style="flex: 1" class="pr-4">Mute:</p>-->
-      <!--          <v-switch-->
-      <!--              style="flex: 2"-->
-      <!--              hide-details-->
-      <!--              color="indigo"-->
-      <!--              v-model="switchValueMute"-->
-      <!--          ></v-switch>-->
-      <!--&lt;!&ndash;        </v-row>&ndash;&gt;-->
-      <!--        <v-row style="display: flex; align-items: center" class="ma-1">-->
-      <!--          <p style="flex: 1" class="text-right pr-4">Pin:</p>-->
-      <!--          <v-switch-->
-      <!--              style="flex: 2"-->
-      <!--              hide-details-->
-      <!--              color="indigo"-->
-      <!--              v-model="switchValuePin"-->
-      <!--          ></v-switch>-->
-      <!--        </v-row>-->
-      <!--        <v-row style="display: flex; align-items: center" class="ma-1">-->
-      <!--          <p style="flex: 1" class="text-right pr-4">Block:</p>-->
-      <!--          <v-switch-->
-      <!--              style="flex: 2"-->
-      <!--              hide-details-->
-      <!--              color="error"-->
-      <!--              v-model="switchValueBlock"-->
-      <!--          ></v-switch>-->
-      <!--        </v-row>-->
-      <!--        <v-divider class="mt-4"/>-->
-      <!--      </v-col>-->
       <v-card-actions>
         <v-col v-if="source === 'contactList'">
           <v-row v-if="displayContactInfo && displayContactInfo.category === 'user'"

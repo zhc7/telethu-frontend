@@ -2,7 +2,6 @@
 
 import {computed, ref, watch} from "vue";
 import {activeChatId, rawChatList, user, userId} from "../globals.ts";
-import {getAvatarOrDefault} from "../core/data.ts";
 import {ChatListItem} from "../utils/structs.ts";
 import {createGroup, sendMessage} from "../core/users/send.ts";
 import {groupAddMember} from "../core/groups/send.ts";

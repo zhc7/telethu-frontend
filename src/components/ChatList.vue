@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, hotMessages, nowRef, rawChatList, selectedChatInfo} from "../globals.ts";
+import {activeChatId, cache, hotMessages, nowRef, rawChatList, selectedChatInfo} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
 import {ChatListItem, Message} from "../utils/structs.ts";
-import {getAvatarOrDefault} from "../core/data.ts";
+import {getAvatar} from "../core/data.ts";
 
 const createGroupDialog = ref(false);
 
@@ -42,6 +42,15 @@ const displayHotMessage = (message: Message | undefined) => {
   }
 }
 
+const computedAvatar = computed((avatar) => {
+  const ret = cache.value[avatar];
+  if (ret) {
+    return ret;
+  }
+  getAvatar(avatar);
+  return '/Logo.png';
+})
+
 </script>
 
 <template>
@@ -68,12 +77,13 @@ const displayHotMessage = (message: Message | undefined) => {
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
-              :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
+          :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
+          :avatar-hash="chat.avatar"
       >
         <template #prepend>
           <v-avatar>
             <v-img v-if="chat.category === 'user'"
-                   :src="getAvatarOrDefault(chat.avatar)" cover/>
+                   :src="computedAvatar(chat.avatar)" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>

@@ -63,7 +63,7 @@ const handleEdit = () => {
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`${BASE_API_URL}users/avatar/`, {
+    const response = await axios.get(`${BASE_API_URL}users/avatar`, {
       headers: {
         Authorization: token.value,
       },

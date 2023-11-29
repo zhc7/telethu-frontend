@@ -16,6 +16,7 @@ import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {ChatListItem, ContactsData, RequestListItem, UserData} from "../utils/structs";
 import {token} from "../auth.ts";
+import {avatarUrl} from "../utils/urls.ts";
 
 
 const getUser = async (id: number, force: boolean = false): Promise<ContactsData> => {
@@ -34,12 +35,28 @@ const getUser = async (id: number, force: boolean = false): Promise<ContactsData
     return users.value[id];
 }
 
-export const getAvatarOrDefault = (md5: string | undefined) => {
-    if (md5 === undefined) return './Logo.png';
-    if (cache.value[md5]) {
-        return cache.value[md5] as unknown as string;
+export const getAvatar = async (hash: string) => {
+    if (cache.value[hash] !== undefined) {
+        return cache.value[hash];
     }
-    return './Logo.png';
+    const url = avatarUrl(hash);
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: token.value,
+            },
+            responseType: "blob",
+        });
+        const reader = new FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onloadend = () => {
+            cache.value[hash] = reader.result;
+        };
+    } catch(error) {
+        console.log("error fetching", error);
+    }
+
+    return cache.value[hash];
 }
 
 
