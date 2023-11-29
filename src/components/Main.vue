@@ -7,7 +7,15 @@ import ProfilePage from "./ProfilePage.vue";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {activeChatId, currentPage, isSocketConnected, rawRequestList, userAvatar, userName} from "../globals.ts"
+import {
+  activeChatId,
+  currentPage,
+  isSocketConnected,
+  rawChatList,
+  rawRequestList,
+  userAvatar,
+  userName
+} from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
 
@@ -35,7 +43,15 @@ const debugAction = async () => {
   await getUser(162).then((contact) => {
     alert(contact);
   })
-}
+};
+
+const unreadTotal = computed(() => {
+  let counter = 0;
+  rawChatList.value.forEach((i) => {
+    counter += i.unread_counter;
+  });
+  return counter;
+})
 
 </script>
 
@@ -52,7 +68,7 @@ const debugAction = async () => {
         <v-list-item class="text-left" @click="debugAction">
         </v-list-item>
         <v-divider/>
-        <ListItem prepend-icon="mdi-chat" title="Chat" k="chat"></ListItem>
+        <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="rawRequestList.length" title="Contacts" k="contacts"></ListItem>
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
