@@ -11,7 +11,7 @@ import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, users}
 import SelectMember from "./SelectMember.vue";
 import {getAvatarOrDefault, getUser} from "../core/data";
 import {Message} from "../utils/structs";
-import {getHistoryMessage} from "../core/users/send.ts";
+import {getHistoryMessage} from "../core/chat.ts";
 
 const debug = () => {
   console.log('selectMemberSource: ', selectMemberSource.value);

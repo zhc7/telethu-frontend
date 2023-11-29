@@ -1,13 +1,5 @@
 import {Message, MessageType, TargetType} from "../../utils/structs.ts";
-import {
-    activeRequestId,
-    contactPageProfileSource,
-    messages,
-    requests,
-    selectedContactInfo,
-    user,
-    userId
-} from "../../globals.ts";
+import {activeRequestId, contactPageProfileSource, requests, selectedContactInfo, user, userId} from "../../globals.ts";
 import {generateMD5, generateMessageId} from "../../utils/hash.ts";
 import {socket} from "../socket.ts";
 import axios from "axios";
@@ -153,29 +145,6 @@ const searchForFriend = async (friendId: number) => {
     selectedContactInfo.value = result.data.users[0];
     contactPageProfileSource.value = 'searchResult';
 }
-const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: number) => {
-    axios.get(BASE_API_URL + "chat/history", {
-        params: {
-            id, from, t_type, num,
-        },
-        headers: {
-            Authorization: token.value,
-        }
-    }).then((response) => {
-        response.data.push(...messages.value[id]);
-        response.data.sort((a: Message, b: Message) => (a.time - b.time));
-        let last_time = 0;
-        let new_msg = [];
-        for (let msg of response.data) {
-            if (last_time !== msg.time) {
-                new_msg.push(msg);
-                last_time = msg.time;
-            }
-        }
-        console.log(new_msg);
-        messages.value[id] = new_msg;
-    })
-}
 const blockFriend = (friendId: number) => {
     const message: Message = {
         time: Date.now(),
@@ -239,7 +208,6 @@ export {readMessage};
 export {sendFiles};
 export {unblockFriend};
 export {blockFriend};
-export {getHistoryMessage};
 export {searchForFriend};
 export {createGroup};
 export {sendMessage};

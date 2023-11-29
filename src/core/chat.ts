@@ -1,4 +1,4 @@
-import {DEBUG} from "../constants";
+import {BASE_API_URL, DEBUG} from "../constants";
 import {hotMessages, messages, rawChatList, settings, user} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
@@ -12,7 +12,6 @@ import {
     handleSomebodyExitGroup,
     handleSomebodyRemovedFromGroup
 } from "./groups/receive.ts";
-import {groupAddMember} from "./groups/send.ts";
 import {
     handleApplicationAccepted,
     handleDeleteFriend,
@@ -20,6 +19,8 @@ import {
     handleReceiveRequest,
     handleSearchResult
 } from "./users/receive.ts";
+import axios from "axios";
+import {token} from "../auth.ts";
 
 
 const searchResult = ref();
@@ -162,6 +163,37 @@ const chatManager: {
     },
 }
 
+const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: number) => {
+    axios.get(BASE_API_URL + "chat/history", {
+        params: {
+            id, from, t_type, num,
+        },
+        headers: {
+            Authorization: token.value,
+        }
+    }).then((response) => {
+        const pulled_messages = response.data as Array<Message>;
+        for (let msg of response.data) {
+            // TODO: should change to backend real status
+            msg.status = 'sent';
+        }
+        // sort and merge
+        pulled_messages.push(...messages.value[id]);
+        pulled_messages.sort((a: Message, b: Message) => (a.time - b.time));
+        // deduplicate
+        let last_time = 0;
+        const new_msg: Array<Message> = [];
+        for (let msg of response.data) {
+            if (last_time !== msg.time) {
+                new_msg.push(msg);
+                last_time = msg.time;
+            }
+        }
+        console.log(new_msg);
+        messages.value[id] = new_msg;
+    })
+}
+
 
 const dispatcher: { [key in MessageType]?: (arg0: Message) => void } = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
@@ -188,10 +220,10 @@ dispatcher[MessageType.FUNC_GROUP_REMOVED_ADMIN] = handleGroupAdminRemoved;
 dispatcher[MessageType.FUNC_SB_REMOVED_FROM_GROUP] = handleSomebodyRemovedFromGroup;
 
 
-
 export {
     friendRequests,
     searchResult,
     chatManager,
     dispatcher,
+    getHistoryMessage,
 }
