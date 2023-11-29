@@ -63,12 +63,14 @@ const handleRequestList = () => {
   console.log(friendRequests.value);
 };
 
-const handleRequestPass = (id: number) => {
-  alert("喜报：你通过了好友的申请！\nGood news! You've just passed a request! ")
-  acceptFriend(id);
-  getUser(id).then((contact) => {
-    selectedContactInfo.value = contact;
-    contactPageProfileSource.value = 'contactList';
+const handleRequestPass = async (id: number) => {
+  acceptFriend(id).then(() => {
+    getUser(id).then((contact) => {
+      activeContactId.value = contact.id;
+      selectedContactInfo.value = contact;
+      contactPageProfileSource.value = 'contactList';
+      alert("喜报：你通过了好友的申请！\nGood news! You've just passed a request! ")
+    });
   });
 };
 

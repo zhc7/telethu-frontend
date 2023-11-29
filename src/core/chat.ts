@@ -122,13 +122,14 @@ const chatManager: {
     receiveMessage(message: Message) {
         const target = message.t_type === TargetType.GROUP ? message.receiver :
             message.sender === user.value.id ? message.receiver : message.sender;
+
         let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
             message.status = 'sent';
-            hotMessages.value[message.receiver] = {
+            hotMessages.value[target] = {
                 sender: message.receiver,
                 time: message.time,
-                content: message.content as string,
+                content: message,
             };
             const entry = rawChatList.value.filter((i) => i.id === target)[0];
             if (message.sender !== user.value.id) {
@@ -137,13 +138,6 @@ const chatManager: {
             messages.value[target].push(message);
             if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
-            }
-            if (message.sender !== user.value.id) {
-                hotMessages.value[message.receiver] = {
-                    sender: message.sender,
-                    time: message.time,
-                    content: message.content as string,
-                };
             }
         } else if (existing.status === 'sending') {
             existing.status = 'sent';

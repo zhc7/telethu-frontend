@@ -80,7 +80,7 @@ export const hotMessages = ref<{
     [id: number]: {
         sender: number,
         time: number,
-        content: string,
+        content: Message,
     } | undefined
 }>({});
 

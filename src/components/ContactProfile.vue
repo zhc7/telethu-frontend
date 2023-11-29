@@ -383,7 +383,7 @@ const handleRemoveAdmin = (memberId: number) => {
         </v-col>
         <v-col v-if="source === 'requestList' && requests.includes(displayContactInfo.id)">
           <v-btn color="blue" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('accept', displayContactInfo.id)">Pass
+                 @click="$emit('accept', displayContactInfo.id)">Accept
           </v-btn>
           <v-btn color="error" style="font-size: 15px; font-weight: bold"
                  @click="$emit('reject', displayContactInfo.id)">Reject

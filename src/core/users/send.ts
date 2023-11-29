@@ -31,7 +31,7 @@ const addFriend = (friendId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 };
-const acceptFriend = (friendId: number) => {
+const acceptFriend = async (friendId: number) => {
     const message: Message = {
         time: Date.now(),
         m_type: 11,
@@ -42,10 +42,10 @@ const acceptFriend = (friendId: number) => {
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
-    contactInsert(friendId);
-    requestRemove(friendId);
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
+    await contactInsert(friendId);
+    requestRemove(friendId);
 };
 const rejectFriend = (friendId: number) => {
     const message: Message = {

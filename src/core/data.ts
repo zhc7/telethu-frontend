@@ -6,7 +6,8 @@ import {
     rawChatList,
     rawRequestList,
     requests,
-    selectedChatInfo, selectedContactInfo,
+    selectedChatInfo,
+    selectedContactInfo,
     settings,
     userId,
     users
@@ -41,8 +42,23 @@ export const getAvatarOrDefault = (md5: string | undefined) => {
     return './Logo.png';
 }
 
-export const contactInsert = (id: number) => {
+export const contactInsert = async (id: number, force: boolean = false) => {
     if (contacts.value.includes(id) || id === userId.value) return;
+    if (force) {
+        contacts.value.push(id);
+        const contact = await getUser(id);
+        const item = contact as ChatListItem;
+        item.pin = settings.value.pinned.includes(id);
+        item.mute = settings.value.muted.includes(id);
+        item.block = settings.value.blocked.includes(id);
+        item.unread_counter = 0;
+        rawChatList.value.push(item);
+        console.log(contact);
+        if (messages.value[id] === undefined) {
+            messages.value[id] = [];
+        }
+        return;
+    }
     const index = contacts.value.length;
     contacts.value.push(id);
     rawChatList.value.push({

@@ -153,20 +153,20 @@ const dispatchedShare = () => {
               :key="member.id"
               class="d-flex flex-column align-center bg-indigo rounded-lg pa-1 ma-1"
               v-ripple
+              style="max-width: 40px"
           >
             <v-avatar>
               <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>
             </v-avatar>
             <p>{{ member.name }}</p>
           </div>
-        </div>
-        <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
               v-for="member in selectedInfo"
               :key="member.id"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               @click="actUnselect(member.id)"
               v-ripple
+              style="max-width: 40px"
           >
             <v-avatar>
               <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>

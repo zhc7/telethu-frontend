@@ -35,7 +35,11 @@ export const FormatTimeDifference = (timestamp: string) => {
     return `${year}/${month}/${day}`;
 }
 
-export const formatChatMessageTime = (now: number, timestamp: string) => {
+export const formatChatMessageTime = (now: number, timestamp: number | string | undefined) => {
+    if (timestamp === undefined) {
+        return 'Just now';
+    }
+    timestamp = timestamp as string;
     const timestampParsed = parseFloat(timestamp);
     const minute = new Date(timestampParsed).getMinutes();
     const hour = new Date(timestampParsed).getHours();

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, cache, hotMessages, nowRef, rawChatList, selectedChatInfo} from "../globals.ts";
+import {activeChatId, hotMessages, nowRef, rawChatList, selectedChatInfo} from "../globals.ts";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
@@ -68,7 +68,7 @@ const displayHotMessage = (message: Message | undefined) => {
           rounded="lg"
           v-for="chat in chatList"
           :title="chat.name"
-          :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
+              :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
       >
         <template #prepend>
           <v-avatar>
