@@ -1,5 +1,5 @@
-<script setup>
-import {computed, onMounted, ref, watch} from 'vue'
+<script setup lang="ts">
+import {computed, onMounted} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
@@ -7,21 +7,11 @@ import ProfilePage from "./ProfilePage.vue";
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
-import {
-  activeChatId,
-  users,
-  isSocketConnected,
-  user,
-  userName,
-  currentPage,
-  userAvatar,
-  rawRequestList
-} from "../globals.ts"
+import {activeChatId, currentPage, isSocketConnected, rawRequestList, userAvatar, userName} from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
 
 const router = useRouter();
-const curTab = ref(1);
 
 const props = defineProps(['page'])
 const activePage = computed({

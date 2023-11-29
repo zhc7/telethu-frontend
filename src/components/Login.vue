@@ -1,9 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import SignUp from "./SignUp.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {login} from "../auth.ts";
-import {email} from "@vuelidate/validators";
 import {DEBUG} from "../constants.ts";
 import {userId} from "../globals.ts";
 
@@ -14,7 +13,7 @@ const passwordVisible = ref(false);
 const router = useRouter();
 const hint = ref("");
 
-if (userId.value !== "") {
+if (userId.value !== -1) {
   router.push("/");
 }
 
@@ -67,7 +66,7 @@ const submit = () => {
             :type="passwordVisible ? 'text' : 'password'"
             :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
             @click:append-inner="passwordVisible = !passwordVisible"
-            @keydown="(e) => {if (e.key === 'Enter') submit()}"
+            @keydown="(e: KeyboardEvent) => {if (e.key === 'Enter') submit()}"
             variant="outlined"
             class="mb-7"
             :error-messages="hint"
