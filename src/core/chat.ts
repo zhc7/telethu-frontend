@@ -150,7 +150,12 @@ const chatManager: {
             return;
         }
         console.log("messages", messages, "message", message);
+        if (message.receiver < 1) {
+            // TODO: Not sure why this might happen
+            return;
+        }
         let old_messages = messages.value[message.receiver];
+        console.log('get old_message', old_messages);
         const existing = old_messages.findIndex((m) => m.message_id === ack.reference);
         if (existing !== -1) {
             old_messages.splice(existing, 1);

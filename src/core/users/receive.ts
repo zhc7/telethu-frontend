@@ -22,8 +22,11 @@ export const handleSearchResult = (message: Message) => {
 }
 export const handleReceiveMessageRead = (message: Message) => {
     console.log("read message", message);
-    let target = [message.receiver, message.receiver][message.t_type];
-
+    let target = [message.receiver, message.sender][message.t_type];
+    if (target === user.value.id) {
+        return;
+    }
+    console.log('message read: ', messages.value[target]);
     let m = messages.value[target].find(m => m.message_id === message.content);
     if (m === undefined) {
         // TODO: handle this properly
