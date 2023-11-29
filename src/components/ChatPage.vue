@@ -10,7 +10,7 @@ import {formatChatMessageTime} from "../utils/datetime.ts";
 import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getAvatarOrDefault, getUser} from "../core/data";
-import {Message} from "../utils/structs";
+import {Message, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 
 const debug = () => {
@@ -115,7 +115,7 @@ const handleGetMoreMessage = () => {
   getHistoryMessage(
       activeChatId.value,
       messages.value[activeChatId.value][0] === undefined ? Date.now() : messages.value[activeChatId.value][0].time,
-      selectedChatInfo.category === "group" ? 1 : 0,
+      selectedChatInfo.value.category === "group" ? TargetType.GROUP: TargetType.FRIEND,
       20,
   )
 }
