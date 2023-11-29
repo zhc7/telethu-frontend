@@ -126,7 +126,6 @@ const editName = () => {
 const displayContactInfo = computed(() => {
   if (props.source === 'chatPage') {
     if (selectedChatInfo.value !== undefined) {
-      console.log('selectedChatInfo in displayContactInfo', selectedChatInfo.value)
       return selectedChatInfo.value;
     }
     return {

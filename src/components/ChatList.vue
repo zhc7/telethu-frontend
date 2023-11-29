@@ -104,4 +104,18 @@ const displayHotMessage = (message: Message | undefined) => {
   top: 2em;
   color: #888
 }
+
+.unread-counter-badge {
+  position: absolute;
+  overflow: visible;
+  right: -10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: red;
+  color: white;
+  line-height: 16px;
+  font-size: 14px;
+  z-index: 100000;
+}
 </style>

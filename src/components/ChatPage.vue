@@ -7,7 +7,7 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, messages, nowRef, selectedChatInfo, users} from "../globals.ts";
+import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getAvatarOrDefault, getUser} from "../core/data";
 import {Message} from "../utils/structs";
@@ -152,15 +152,16 @@ const title = computed(() => {
       <ChatList v-model="activeChatId"></ChatList>
     </v-col>
     <v-divider vertical v-if="selectedChatInfo"/>
-    <v-col v-if="selectedChatInfo" cols="12" sm="8" md="9"
+    <v-col v-if="selectedChatInfo?.id !== user.id" cols="12" sm="8" md="9"
            class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
           <p style="font-size: 20px; font-weight: 450">
-            {{ title }}</p>
-          <!--          <v-icon size="x-small" v-if="selectedChat.mute">mdi-bell-off</v-icon>-->
-          <!--          <v-icon size="x-small" v-if="selectedChat.block">mdi-account-off-outline</v-icon>-->
+            {{ title }}
+          </p>
+                    <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.includes(selectedChatInfo.id)">mdi-bell-off</v-icon>
+                    <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.includes(selectedChatInfo.id)">mdi-account-off-outline</v-icon>
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
         <v-btn icon="mdi-plus" @click="selectMemberDialog = true;" v-if="category === 'user'"/>
