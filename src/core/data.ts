@@ -42,16 +42,23 @@ export const getAvatarOrDefault = (md5: string | undefined) => {
     return './Logo.png';
 }
 
+
+const parseChatListItem = (contact: ContactsData): ChatListItem => {
+    const item = contact as ChatListItem;
+    const id = item.id;
+    item.pin = settings.value.pinned.includes(id);
+    item.mute = settings.value.muted.includes(id);
+    item.block = settings.value.blocked.includes(id);
+    item.unread_counter = 0;
+    return item;
+}
+
 export const contactInsert = async (id: number, force: boolean = false) => {
     if (contacts.value.includes(id) || id === userId.value) return;
     if (force) {
         contacts.value.push(id);
         const contact = await getUser(id);
-        const item = contact as ChatListItem;
-        item.pin = settings.value.pinned.includes(id);
-        item.mute = settings.value.muted.includes(id);
-        item.block = settings.value.blocked.includes(id);
-        item.unread_counter = 0;
+        const item = parseChatListItem(contact);
         rawChatList.value.push(item);
         console.log(contact);
         if (messages.value[id] === undefined) {
@@ -75,12 +82,7 @@ export const contactInsert = async (id: number, force: boolean = false) => {
         block: false,
     });
     getUser(id).then((contact) => {
-        const item = contact as ChatListItem;
-        item.pin = settings.value.pinned.includes(id);
-        item.mute = settings.value.muted.includes(id);
-        item.block = settings.value.blocked.includes(id);
-        item.unread_counter = 0;
-        rawChatList.value[index] = item;
+        rawChatList.value[index] = parseChatListItem(contact);
         console.log(contact);
     });
     if (messages.value[id] === undefined) {
@@ -110,12 +112,7 @@ export const contactUpdate = (id: number) => {
             }
         }
         if (index < 1) return;
-        const item = contact as ChatListItem;
-        item.pin = settings.value.pinned.includes(id);
-        item.mute = settings.value.muted.includes(id);
-        item.block = settings.value.blocked.includes(id);
-        item.unread_counter = 0;
-        rawChatList.value[index] = item;
+        rawChatList.value[index] = parseChatListItem(contact);
         console.log('contact force updated: ', contact);
         if (selectedChatInfo.value && selectedChatInfo.value.id === id) {
             selectedChatInfo.value = contact;
