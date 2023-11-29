@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {activeChatId, rawChatList, user, userId, users} from "../globals.ts";
+import {activeChatId, rawChatList, user, userId} from "../globals.ts";
 import {getAvatarOrDefault} from "../core/data.ts";
 import {ChatListItem} from "../utils/structs.ts";
 import {createGroup, sendMessage} from "../core/users/send.ts";
+import {groupAddMember} from "../core/groups/send.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -18,7 +19,11 @@ const pinedList = ref<Array<number>>([]);
 const selectedList = ref<Array<number>>([]);
 
 const pinedInfo = computed(() => {
-  return rawChatList.value.filter((i): i is ChatListItem => i !== undefined && pinedList.value.includes(i.id));
+  const retList = rawChatList.value.filter((i): i is ChatListItem => i !== undefined && pinedList.value.includes(i.id));
+  if (pinedList.value.includes(user.value.id)) {
+    retList.unshift(user.value as ChatListItem);
+  }
+  return retList;
 });
 
 const selectedInfo = computed(() => {
@@ -49,21 +54,23 @@ const dialog = computed({
 
 watch(dialog, (newValue) => {
   if (newValue === false) {
-    pinedList.value = [];
-    selectedList.value = [];
+    setTimeout(() => {
+      pinedList.value = [];
+      selectedList.value = [];
+    }, 200);
     return;
   }
   if (props.source === 'personalFriend') {
     pinedList.value.push(activeChatId.value);
     pinedList.value.push(userId.value);
   } else if (props.source === 'existingGroup') {
-    pinedList.value = props.baseGroup;
+    pinedList.value = props.baseGroup.members;
   } else if (props.source === 'chatList') {
     if (!pinedList.value.includes(userId.value)) {
       pinedList.value.push(userId.value);
     }
   }
-})
+});
 
 const dispatchFunction = () => {
   console.log('source', props.source);
@@ -91,25 +98,7 @@ const dispatchedCreateGroup = (list: Array<number>) => {
 }
 
 const dispatchedGroupAddMember = () => {
-  console.log(
-      "log",
-      selected.value + "",
-      "disContId",
-      props.contactId
-  );
-  for (const id of selected.value) {
-    console.log("Adding group member", props.contactId, id);
-    const contact = users.value[id];
-    groupAddMember(props.contactId, id);
-    const memberInfo = {
-      id: contact.id,
-      name: contact.name,
-      avatar: contact.avatar,
-    };
-    users.value[props.contactId].id2member[contact.id] = memberInfo;
-    users.value[props.contactId].members.push(memberInfo);
-  }
-  selected.value = [];
+  groupAddMember(props.baseGroup.id, selectedList.value);
   dialog.value = false;
 }
 
@@ -128,6 +117,23 @@ const dispatchedShare = () => {
   }
   dialog.value = false;
 }
+
+const positiveButtonText = computed(() => {
+  if (props.source === 'personalFriend') {
+    return 'Create';
+  } else if (props.source === 'existingGroup') {
+    return 'Add';
+  } else if (props.source === 'chatList') {
+    return 'Create';
+  } else {
+    return 'Confirm';
+  }
+});
+
+const negativeButtonText = computed(() => {
+  return 'Cancel';
+})
+
 </script>
 
 <template>
@@ -205,10 +211,10 @@ const dispatchedShare = () => {
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
-        <v-btn @click="() => {dialog = false; selected = type === 'create_group_from_contact' ? [contactId] : []}">
-          Cancel
+        <v-btn @click="dialog=false">
+          {{ negativeButtonText }}
         </v-btn>
-        <v-btn @click="dispatchFunction">Create</v-btn>
+        <v-btn @click="dispatchFunction">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

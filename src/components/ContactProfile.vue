@@ -451,7 +451,7 @@ const handleRemoveAdmin = (memberId: number) => {
         @update:showDialog="groupAddMemberDialog = $event"
         source="existingGroup"
         :title="'Add Member'"
-        :base-group="displayContactInfo.members"
+        :base-group="displayContactInfo"
     />
   </v-card>
 </template>

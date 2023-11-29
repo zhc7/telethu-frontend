@@ -66,14 +66,19 @@ export const groupRemoveAdmin = (groupId: number, memberId: number) => {
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
 }
-export const groupAddMember = (groupId: number, memberId: number) => {
+export const groupAddMember = (groupId: number, memberList: number []) => {
     const message: Message = {
         time: Date.now(),
-        m_type: 8,
+        m_type: MessageType.FUNC_ADD_GROUP_MEMBER,
         t_type: 1,
-        content: groupId,
+        content: {
+            members: memberList,
+            category: 'group',
+            name: '',
+            avatar: '',
+        },
         sender: userId.value,
-        receiver: memberId,
+        receiver: groupId,
         info: "",
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         status: 'sending',

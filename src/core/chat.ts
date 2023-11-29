@@ -194,5 +194,4 @@ export {
     searchResult,
     chatManager,
     dispatcher,
-    groupAddMember,
 }
