@@ -2,8 +2,8 @@
 import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeContactId, cache, rawChatList} from "../globals.ts";
-import {getAvatar} from "../core/data.ts";
+import {activeContactId, rawChatList} from "../globals.ts";
+import Avatar from "./Avatar.vue";
 
 const props = defineProps(["searchInput", "displayType"]);
 const personContactList = computed(() => {
@@ -71,9 +71,7 @@ const displayList = computed(() => {
         class="pa-3 pl-6 chat-list-item text-left"
     >
       <template #prepend>
-        <v-avatar>
-          <v-img :src="(() => {getAvatar(contact.avatar); return cache[contact.avatar] ? cache[contact.avatar] : '/Logo.png';})()" cover/>
-        </v-avatar>
+        <Avatar :contact-id="contact.id"/>
       </template>
       <v-list-item-title>
         {{ contact.name }}

@@ -7,6 +7,7 @@ import {user, userId} from "../globals.ts";
 import {Message} from "../utils/structs.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {getUser} from "../core/data.ts";
+import Avatar from "./Avatar.vue";
 
 // TODO: display menu when right click on message
 
@@ -94,13 +95,12 @@ console.log("message", props.message);
   <div class="d-flex mt-1"
        :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}"
        :class="([message.sender === userId ? 'mr-6':'ml-6', message.t_type === 0 ? 'ma-4': ''])">
-    <v-avatar v-if="userId !== message.sender" class="ml-2 mr-2" @click="$emit('showProfile')">
-      <v-img
-          :src="avatar"
-          :alt="name"
-          cover
-      />
-    </v-avatar>
+    <Avatar
+        :contact-id="message.sender"
+        v-if="userId !== message.sender"
+        class="ml-2 mr-2"
+        @click="$emit('showProfile')"
+    />
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
       <div class="d-flex" v-if="message.t_type === 1">
         <v-spacer v-if="message.sender === userId"/>
@@ -140,7 +140,7 @@ console.log("message", props.message);
             :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
             style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
         >
-          <div :key="emojisLoaded" v-html="markdown2Html(message.content as string)"></div>
+          <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string)"></div>
         </div>
         <v-img
             v-else-if="message.m_type === 1"
@@ -195,13 +195,11 @@ console.log("message", props.message);
       <!-- end message column -->
     </div>
 
-    <v-avatar v-if="userId === message.sender" class="ml-2 mr-2">
-      <v-img
-          :src="user.avatar"
-          :alt="user.name"
-          cover
-      />
-    </v-avatar>
+    <Avatar
+        :contact-id="user.id"
+        v-if="user.id === message.sender"
+        class="ml-2 mr-2"
+    />
   </div>
 </template>
 

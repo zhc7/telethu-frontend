@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {activeChatId, cache, rawChatList, user, userId} from "../globals.ts";
+import {activeChatId, rawChatList, user, userId} from "../globals.ts";
 import {ChatListItem} from "../utils/structs.ts";
 import {createGroup, sendMessage} from "../core/users/send.ts";
 import {groupAddMember} from "../core/groups/send.ts";
-import {getAvatar} from "../core/data.ts";
+import Avatar from "./Avatar.vue";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -161,9 +161,7 @@ const negativeButtonText = computed(() => {
               v-ripple
               style="max-width: 40px"
           >
-            <v-avatar>
-              <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" cover></v-img>
-            </v-avatar>
+            <Avatar :contact-id="member.id"/>
             <p>{{ member.name }}</p>
           </div>
           <div
@@ -174,18 +172,14 @@ const negativeButtonText = computed(() => {
               v-ripple
               style="max-width: 40px"
           >
-            <v-avatar>
-              <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" cover></v-img>
-            </v-avatar>
+            <Avatar :contact-id="member.id"/>
             <p>{{ member.name }}</p>
           </div>
         </div>
         <v-list class="overflow-y-auto flex-1-1">
           <v-list-item v-for="member in possibleMembers">
             <template #prepend>
-              <v-avatar>
-                <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" cover></v-img>
-              </v-avatar>
+              <Avatar :contact-id="member.id"/>
             </template>
             <v-list-item-title>
               {{ member.name }}

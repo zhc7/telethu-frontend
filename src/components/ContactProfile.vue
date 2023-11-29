@@ -4,7 +4,7 @@ import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
   activeChatId,
-  activeContactId, cache,
+  activeContactId,
   requests,
   selectedChatInfo,
   selectedContactInfo,
@@ -16,11 +16,11 @@ import {
   userName
 } from "../globals.ts";
 import {useRouter} from "vue-router";
-import {getAvatar, getUser} from "../core/data.ts";
+import {getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
 import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
-import {avatarUrl} from "../utils/urls.ts";
+import Avatar from "./Avatar.vue";
 
 
 const props = defineProps(['source']);
@@ -203,25 +203,11 @@ const handleAddAdmin = (memberId: number) => {
 const handleRemoveAdmin = (memberId: number) => {
   groupRemoveAdmin(displayContactInfo.value.id, memberId);
 }
-
-const avatar = computed(() => {
-  const avatar = displayContactInfo.value.avatar;
-  const ret = cache.value[avatar];
-  if (ret) {
-    return ret;
-  }
-  getAvatar(displayContactInfo.value.avatar);
-  return '/Logo.png';
-});
-
-
 </script>
 
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
-    <v-avatar size="80" class="mt-5">
-      <v-img :src="(() => {getAvatar(displayContactInfo.avatar); return cache[displayContactInfo.avatar] ? cache[displayContactInfo.avatar] : 'Logo.png';})()" cover/>
-    </v-avatar>
+    <Avatar size="80" class="mt-5" :contact-id="displayContactInfo.id"/>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>
@@ -262,10 +248,12 @@ const avatar = computed(() => {
                 class="d-flex flex-column align-center ma-auto mb-5 pt-4 member-pop"
             >
 
-              <v-avatar size="60" style="position: relative"
-                        :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' ">
-                <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" id="member-avatar" cover/>
-              </v-avatar>
+              <Avatar
+                  :contact-id="displayContactInfo.id"
+                  size="60"
+                  style="position: relative"
+                  :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' "
+              />
               <div class="badge-kick"
                    v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
                    @click="handleKickMember(member.id)">——
