@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {logout, token} from "../auth.ts";
 import {useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {user, userEmail, userId, userName} from "../globals.ts";
@@ -78,9 +78,54 @@ onMounted(async () => {
     console.error('Http get avatar failed -> ', error);
   }
 });
+
+const displayEditEntry = ref(undefined);
+const editingEntry = ref<string | undefined>(undefined);
+
+const usernameEditing = ref(false);
+const userPhoneNumber = ref(false);
+
+const inputValue = ref('');
+
+const dialog = computed(() => {
+  return editingEntry.value !== undefined;
+});
+
+const editingTitle = computed(() => {
+  if (editingEntry.value === 'username') {
+    return 'Edit your user name';
+  } else if (editingEntry.value === 'location') {
+    return 'Change location';
+  } else if (editingEntry.value === 'phone') {
+    return 'Change phone number';
+  }
+  return '';
+})
+
+const handleConfirm = () => {
+  if (editingEntry.value === 'username') {
+    alert('changing username to', inputValue.value);
+    editingEntry.value = undefined;
+  }
+}
+
+
 </script>
 
 <template>
+  <v-dialog v-model="dialog" max-width="30vw" max-height="80vh">
+    <v-card class="fill-height overflow-y-auto">
+      <v-card-title>{{ editingTitle }}</v-card-title>
+      <v-card-text>
+        <v-text-field autofocus v-model="inputValue"></v-text-field>
+      </v-card-text>
+      <v-card-actions class="mb-3 mr-4">
+        <v-spacer></v-spacer>
+        <v-btn color="info" @click="handleConfirm">Confirm</v-btn>
+        <v-btn color="error" @click="editingEntry=undefined">Cancel</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <v-row no-gutters>
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
@@ -91,29 +136,45 @@ onMounted(async () => {
           <v-row no-gutters pa="4">
             <v-col cols="8" offset="2">
               <v-list>
-                <v-list-item-title>
-                  {{ userName }}
+                <v-list-item-title @mouseover="displayEditEntry='username'"
+                                   @mouseleave="displayEditEntry=undefined">
+                  <v-icon size="xs"></v-icon>
+                  <span>{{ userName }}</span>
+                  <v-icon v-if="displayEditEntry==='username'" size="xs"
+                          @click="editingEntry='username'; inputValue=userName">
+                    mdi-grease-pencil
+                  </v-icon>
+                  <v-icon v-else size="xs"></v-icon>
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   @{{ userId }}
                 </v-list-item-subtitle>
                 <v-divider class="ma-4"/>
                 <v-list-item class="text-grey-darken-3 pa-4">
-                  <v-row pa="2">
+                  <v-row pa="2" @mouseover="displayEditEntry='location'" @mouseleave="displayEditEntry=undefined">
                     <v-col cols="4" offset="1" class="text-right">
                       Location:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      Beijing, China Mainland
+                      <span>Beijing, China Mainland</span>
+                      <v-icon v-if="displayEditEntry==='location'" size="xs"
+                              @click="editingEntry='location'; inputValue='Beijing, China Mainland'">
+                        mdi-grease-pencil
+                      </v-icon>
+                      <v-icon v-else></v-icon>
                     </v-col>
                   </v-row>
-                  <v-row pa="2">
+                  <v-row pa="2" @mouseover="displayEditEntry='phone'" @mouseleave="displayEditEntry=undefined">
                     <v-col cols="4" offset="1" class="text-right">
                       Phone:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <span v-if="!editingMode">114514</span>
-                      <span v-if="editingMode"><input v-model="phoneNumberInput"/></span>
+                      <span>114514</span>
+                      <v-icon v-if="displayEditEntry==='phone'" size="xs"
+                              @click="editingEntry='phone'; inputValue='114514'">
+                        mdi-grease-pencil
+                      </v-icon>
+                      <v-icon v-else></v-icon>
                     </v-col>
                   </v-row>
                   <v-row>

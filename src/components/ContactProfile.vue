@@ -4,10 +4,12 @@ import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
   activeChatId,
-  activeContactId, requests,
+  activeContactId,
+  requests,
   selectedChatInfo,
   selectedContactInfo,
   settings,
+  user,
   userAvatar,
   userEmail,
   userId,
@@ -16,7 +18,7 @@ import {
 import {useRouter} from "vue-router";
 import {getAvatarOrDefault, getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
-import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
+import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 
 
@@ -29,16 +31,16 @@ const deleteConfirmDialog = ref(false);
 
 const switchValueMute = computed<boolean>({
   get: () => {
-    return settings.value.muted.includes(props.displayContact.id);
+    return settings.value.muted.includes(displayContactInfo.value.id);
   },
   set: (value) => {
-    if (!selectedChatInfo.value) {
+    if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.muted.push(selectedChatInfo.value.id);
+      settings.value.muted.push(displayContactInfo.value.id);
     } else {
-      const selId = selectedChatInfo.value.id;
+      const selId = displayContactInfo.value.id;
       settings.value.muted = settings.value.muted.filter((id) => {
         return id !== selId;
       });
@@ -48,14 +50,17 @@ const switchValueMute = computed<boolean>({
 
 const switchValuePin = computed<boolean>({
   get: () => {
-    return settings.value.pinned.includes(props.displayContact.id);
+    return settings.value.pinned.includes(displayContactInfo.value.id);
   },
   set: (value) => {
+    if (displayContactInfo.value.id < 1) {
+      return;
+    }
     if (value) {
-      settings.value.pinned.push(props.displayContact.id);
+      settings.value.pinned.push(displayContactInfo.value.id);
     } else {
       settings.value.pinned = settings.value.pinned.filter((id) => {
-        return id !== props.displayContact.id;
+        return id !== displayContactInfo.value.id;
       });
     }
   },
@@ -63,17 +68,20 @@ const switchValuePin = computed<boolean>({
 
 const switchValueBlock = computed<boolean>({
   get: () => {
-    return settings.value.blocked.includes(props.displayContact.id);
+    return settings.value.blocked.includes(displayContactInfo.value.id);
   },
   set: (value) => {
+    if (displayContactInfo.value.id < 1) {
+      return;
+    }
     if (value) {
-      settings.value.blocked.push(props.displayContact.id);
-      blockFriend(props.displayContact.id);
+      settings.value.blocked.push(displayContactInfo.value.id);
+      blockFriend(displayContactInfo.value.id);
     } else {
       settings.value.blocked = settings.value.blocked.filter((id) => {
-        return id !== props.displayContact.id;
+        return id !== displayContactInfo.value.id;
       });
-      unblockFriend(props.displayContact.id);
+      unblockFriend(displayContactInfo.value.id);
     }
   },
 })
@@ -248,15 +256,18 @@ const handleRemoveAdmin = (memberId: number) => {
                 <v-img :src="getAvatarOrDefault(member.avatar)" id="member-avatar" cover/>
               </v-avatar>
               <div class="badge-kick"
-                  v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
-                  @click="handleKickMember(member.id)">——</div>
+                   v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
+                   @click="handleKickMember(member.id)">——
+              </div>
               <p>{{ member.name }}</p>
               <div class="badge-lift"
                    v-if="displayContactInfo.owner === userId && member.id !== userId && !displayContactInfo.admin.includes(member.id)"
-                   @click="handleAddAdmin(member.id)">|</div>
+                   @click="handleAddAdmin(member.id)">|
+              </div>
               <div class="badge-fire"
                    v-if="displayContactInfo.owner === userId && member.id !== userId && displayContactInfo.admin.includes(member.id)"
-                   @click="handleRemoveAdmin(member.id)">*</div>
+                   @click="handleRemoveAdmin(member.id)">*
+              </div>
             </div>
             <div class="d-flex flex-column align-center ma-auto mb-5">
               <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
@@ -271,52 +282,9 @@ const handleRemoveAdmin = (memberId: number) => {
         </div>
       </v-list>
       <v-divider class="ma-4"/>
-      <v-col v-if="false">
-        <v-row style="display: flex; align-items: center;" class="ma-3">
-          <!-- TODO: add rename function -->
-          <p style="flex: 1" class="text-right pr-4">Rename:</p>
-          <v-text-field
-              variant="outlined"
-              label="New name"
-              density="compact"
-              style="flex: 2"
-              hide-details
-              append-inner-icon="mdi-pencil"
-              v-model="newName"
-              @click:append-inner="editName"
-          />
-        </v-row>
-        <v-row
-            style="display: flex; align-items: center"
-            class="ma-3 text-right"
-        >
-          <!-- TODO: add friend circle function -->
-          <p style="flex: 1" class="pr-4">Label:</p>
-          <v-combobox
-              v-model="friendCircleSelect"
-              chips
-              :items="friendCircle"
-              multiple
-              variant="outlined"
-              density="compact"
-              hide-details
-              style="flex: 2"
-          ></v-combobox>
-        </v-row>
-        <v-row
-            style="display: flex; align-items: center"
-            class="ma-1 text-right"
-        >
-          <p style="flex: 1" class="pr-4">Mute:</p>
-          <v-switch
-              style="flex: 2"
-              hide-details
-              color="indigo"
-              v-model="switchValueMute"
-          ></v-switch>
-        </v-row>
-        <v-row style="display: flex; align-items: center" class="ma-1">
-          <p style="flex: 1" class="text-right pr-4">Pin:</p>
+      <v-col v-if="displayContactInfo.id !== user.id">
+        <v-row>
+          <p>Pin</p>
           <v-switch
               style="flex: 2"
               hide-details
@@ -324,17 +292,77 @@ const handleRemoveAdmin = (memberId: number) => {
               v-model="switchValuePin"
           ></v-switch>
         </v-row>
-        <v-row style="display: flex; align-items: center" class="ma-1">
-          <p style="flex: 1" class="text-right pr-4">Block:</p>
-          <v-switch
-              style="flex: 2"
-              hide-details
-              color="error"
-              v-model="switchValueBlock"
-          ></v-switch>
+        <v-row>
+          <p>Mute</p>
         </v-row>
-        <v-divider class="mt-4"/>
+        <v-row>
+          <p>Block</p>
+        </v-row>
       </v-col>
+      <!--      <v-col v-if="displayContactInfo.id !== user.id">-->
+      <!--&lt;!&ndash;        <v-row style="display: flex; align-items: center;" class="ma-3">&ndash;&gt;-->
+      <!--&lt;!&ndash;          &lt;!&ndash; TODO: add rename function &ndash;&gt;&ndash;&gt;-->
+      <!--&lt;!&ndash;          <p style="flex: 1" class="text-right pr-4">Rename:</p>&ndash;&gt;-->
+      <!--&lt;!&ndash;          <v-text-field&ndash;&gt;-->
+      <!--&lt;!&ndash;              variant="outlined"&ndash;&gt;-->
+      <!--&lt;!&ndash;              label="New name"&ndash;&gt;-->
+      <!--&lt;!&ndash;              density="compact"&ndash;&gt;-->
+      <!--&lt;!&ndash;              style="flex: 2"&ndash;&gt;-->
+      <!--&lt;!&ndash;              hide-details&ndash;&gt;-->
+      <!--&lt;!&ndash;              append-inner-icon="mdi-pencil"&ndash;&gt;-->
+      <!--&lt;!&ndash;          />&ndash;&gt;-->
+      <!--&lt;!&ndash;          v-model="newName"&ndash;&gt;-->
+      <!--&lt;!&ndash;          @click:append-inner="editName"&ndash;&gt;-->
+      <!--&lt;!&ndash;        </v-row>&ndash;&gt;-->
+      <!--&lt;!&ndash;        <v-row&ndash;&gt;-->
+      <!--&lt;!&ndash;            style="display: flex; align-items: center"&ndash;&gt;-->
+      <!--&lt;!&ndash;            class="ma-3 text-right"&ndash;&gt;-->
+      <!--&lt;!&ndash;        >&ndash;&gt;-->
+      <!--          &lt;!&ndash; TODO: add friend circle function &ndash;&gt;-->
+      <!--&lt;!&ndash;          <p style="flex: 1" class="pr-4">Label:</p>&ndash;&gt;-->
+      <!--&lt;!&ndash;          <v-combobox&ndash;&gt;-->
+      <!--&lt;!&ndash;              v-model="friendCircleSelect"&ndash;&gt;-->
+      <!--&lt;!&ndash;              chips&ndash;&gt;-->
+      <!--&lt;!&ndash;              :items="friendCircle"&ndash;&gt;-->
+      <!--&lt;!&ndash;              multiple&ndash;&gt;-->
+      <!--&lt;!&ndash;              variant="outlined"&ndash;&gt;-->
+      <!--&lt;!&ndash;              density="compact"&ndash;&gt;-->
+      <!--&lt;!&ndash;              hide-details&ndash;&gt;-->
+      <!--&lt;!&ndash;              style="flex: 2"&ndash;&gt;-->
+      <!--&lt;!&ndash;          ></v-combobox>&ndash;&gt;-->
+      <!--&lt;!&ndash;        </v-row>&ndash;&gt;-->
+      <!--&lt;!&ndash;        <v-row&ndash;&gt;-->
+      <!--&lt;!&ndash;            style="display: flex; align-items: center"&ndash;&gt;-->
+      <!--&lt;!&ndash;            class="ma-1 text-right"&ndash;&gt;-->
+      <!--&lt;!&ndash;        >&ndash;&gt;-->
+      <!--          <p style="flex: 1" class="pr-4">Mute:</p>-->
+      <!--          <v-switch-->
+      <!--              style="flex: 2"-->
+      <!--              hide-details-->
+      <!--              color="indigo"-->
+      <!--              v-model="switchValueMute"-->
+      <!--          ></v-switch>-->
+      <!--&lt;!&ndash;        </v-row>&ndash;&gt;-->
+      <!--        <v-row style="display: flex; align-items: center" class="ma-1">-->
+      <!--          <p style="flex: 1" class="text-right pr-4">Pin:</p>-->
+      <!--          <v-switch-->
+      <!--              style="flex: 2"-->
+      <!--              hide-details-->
+      <!--              color="indigo"-->
+      <!--              v-model="switchValuePin"-->
+      <!--          ></v-switch>-->
+      <!--        </v-row>-->
+      <!--        <v-row style="display: flex; align-items: center" class="ma-1">-->
+      <!--          <p style="flex: 1" class="text-right pr-4">Block:</p>-->
+      <!--          <v-switch-->
+      <!--              style="flex: 2"-->
+      <!--              hide-details-->
+      <!--              color="error"-->
+      <!--              v-model="switchValueBlock"-->
+      <!--          ></v-switch>-->
+      <!--        </v-row>-->
+      <!--        <v-divider class="mt-4"/>-->
+      <!--      </v-col>-->
       <v-card-actions>
         <v-col v-if="source === 'contactList'">
           <v-row v-if="displayContactInfo && displayContactInfo.category === 'user'"
@@ -361,8 +389,9 @@ const handleRemoveAdmin = (memberId: number) => {
             >Delete Friend
             </v-btn>
           </v-row>
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
-                 style="display: flex; justify-content: center">
+          <v-row
+              v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
+              style="display: flex; justify-content: center">
             <v-btn
                 color="info"
                 style="font-size: 15px; font-weight: bold"
@@ -410,8 +439,9 @@ const handleRemoveAdmin = (memberId: number) => {
             >Delete Friend
             </v-btn>
           </v-row>
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
-                 style="display: flex; justify-content: center">
+          <v-row
+              v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
+              style="display: flex; justify-content: center">
             <v-btn
                 color="info"
                 style="font-size: 15px; font-weight: bold"
