@@ -3,7 +3,7 @@ import SparkMD5 from "spark-md5";
 
 const generateMessageId = (content: any, sender: number, time: number) => {
     const data = `${content}${sender}${time}`;
-    const hash = CryptoJS.SHA256(data);
+    const hash: CryptoJS.lib.WordArray = CryptoJS.SHA256(data);
     return hash.toString(CryptoJS.enc.Hex);
 }
 
