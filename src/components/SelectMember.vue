@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {activeChatId, rawChatList, user, userId} from "../globals.ts";
+import {activeChatId, cache, rawChatList, user, userId} from "../globals.ts";
 import {ChatListItem} from "../utils/structs.ts";
 import {createGroup, sendMessage} from "../core/users/send.ts";
 import {groupAddMember} from "../core/groups/send.ts";
+import {getAvatar} from "../core/data.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -161,7 +162,7 @@ const negativeButtonText = computed(() => {
               style="max-width: 40px"
           >
             <v-avatar>
-              <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>
+              <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" cover></v-img>
             </v-avatar>
             <p>{{ member.name }}</p>
           </div>
@@ -174,7 +175,7 @@ const negativeButtonText = computed(() => {
               style="max-width: 40px"
           >
             <v-avatar>
-              <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>
+              <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" cover></v-img>
             </v-avatar>
             <p>{{ member.name }}</p>
           </div>
@@ -183,7 +184,7 @@ const negativeButtonText = computed(() => {
           <v-list-item v-for="member in possibleMembers">
             <template #prepend>
               <v-avatar>
-                <v-img :src="getAvatarOrDefault(member.avatar)" cover></v-img>
+                <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" cover></v-img>
               </v-avatar>
             </template>
             <v-list-item-title>

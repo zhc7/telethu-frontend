@@ -102,9 +102,6 @@ console.log("message", props.message);
       />
     </v-avatar>
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
-      <!-- begin message column -->
-
-      <!-- name row -->
       <div class="d-flex" v-if="message.t_type === 1">
         <v-spacer v-if="message.sender === userId"/>
         <span class="text-grey mr-1 ml-1" style="font-size: small">

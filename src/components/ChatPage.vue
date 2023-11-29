@@ -55,7 +55,6 @@ const groupedMessages = computed(() => {
 
   messages.value[activeChatId.value].forEach((message) => {
     const messageTimestamp = new Date(message.time).getTime();
-
     if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
       grouped.push({
         time: message.time,
@@ -180,7 +179,7 @@ const title = computed(() => {
                         :key="mIndex"
                         :message="message"
                         :final="mIndex === group.messages.length - 1"
-                        :avatar="getAvatarOrDefault(selectedChatInfo.avatar)"
+                        :avatar="selectedChatInfo.avatar"
                         @finished="ScrollToBottom"
                         @showProfile="handleDisplayProfile"
             />

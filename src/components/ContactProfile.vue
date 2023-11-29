@@ -220,7 +220,7 @@ const avatar = computed(() => {
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
     <v-avatar size="80" class="mt-5">
-      <v-img :src="avatar" cover/>
+      <v-img :src="(() => {getAvatar(displayContactInfo.avatar); return cache[displayContactInfo.avatar] ? cache[displayContactInfo.avatar] : 'Logo.png';})()" cover/>
     </v-avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
@@ -264,7 +264,7 @@ const avatar = computed(() => {
 
               <v-avatar size="60" style="position: relative"
                         :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' ">
-                <v-img :src="cache[member.avatar]" id="member-avatar" cover/>
+                <v-img :src="(() => {getAvatar(member.avatar); return cache[member.avatar] ? cache[member.avatar] : 'Logo.png';})()" id="member-avatar" cover/>
               </v-avatar>
               <div class="badge-kick"
                    v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
