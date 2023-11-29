@@ -1,5 +1,5 @@
 import {DEBUG} from "../constants";
-import {hotMessages, messages, rawChatList, settings, user, userId} from "../globals"
+import {hotMessages, messages, rawChatList, settings, user} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
@@ -102,9 +102,9 @@ const chatManager: {
         if (message.m_type <= 5) {
             // normal message or confirm message
             this.receiveMessage(message);
-            return;
+        } else {
+            dispatcher[message.m_type]!(message);
         }
-        dispatcher[message.m_type]!(message);
         const ack: Ack = {
             message_id: message.message_id as number,
         }
@@ -149,19 +149,15 @@ const chatManager: {
         if (message === undefined) {
             return;
         }
-        console.log("messages", messages, "message", message);
-        if (message.receiver < 1) {
-            // TODO: Not sure why this might happen
-            return;
-        }
-        let old_messages = messages.value[message.receiver];
-        console.log('get old_message', old_messages);
-        const existing = old_messages.findIndex((m) => m.message_id === ack.reference);
-        if (existing !== -1) {
-            old_messages.splice(existing, 1);
-        } else {
-            message.status = 'sent';
-            message.message_id = ack.message_id;
+        message.status = 'sent';
+        message.message_id = ack.message_id;
+        if (message.m_type < MessageType.FUNCTION) {
+            let old_messages = messages.value[message.receiver];
+            console.log('get old_message', old_messages);
+            const existing = old_messages.findIndex((m) => m.message_id === ack.reference);
+            if (existing !== -1) {
+                old_messages.splice(existing, 1);
+            }
         }
     },
 }
