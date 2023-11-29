@@ -78,12 +78,11 @@ const computedAvatar = computed((avatar) => {
           v-for="chat in chatList"
           :title="chat.name"
           :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
-          :avatar-hash="chat.avatar"
       >
         <template #prepend>
           <v-avatar>
             <v-img v-if="chat.category === 'user'"
-                   :src="computedAvatar(chat.avatar)" cover/>
+                   :src="(() => {getAvatar(chat.avatar); return cache[chat.avatar] ? cache[chat.avatar] : 'Logo.png';})()" cover/>
             <v-icon v-else>mdi-account-multiple</v-icon>
           </v-avatar>
         </template>

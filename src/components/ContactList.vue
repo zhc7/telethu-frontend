@@ -2,7 +2,7 @@
 import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeContactId, rawChatList} from "../globals.ts";
+import {activeContactId, cache, rawChatList} from "../globals.ts";
 import {getAvatar} from "../core/data.ts";
 
 const props = defineProps(["searchInput", "displayType"]);
@@ -69,8 +69,12 @@ const displayList = computed(() => {
         :key="contact.id"
         :k="contact.id"
         class="pa-3 pl-6 chat-list-item text-left"
-        :avatar-hash="contact.avatar"
     >
+      <template #prepend>
+        <v-avatar>
+          <v-img :src="(() => {getAvatar(contact.avatar); return cache[contact.avatar] ? cache[contact.avatar] : '/Logo.png';})()" cover/>
+        </v-avatar>
+      </template>
       <v-list-item-title>
         {{ contact.name }}
       </v-list-item-title>

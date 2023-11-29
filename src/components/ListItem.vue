@@ -1,21 +1,9 @@
 <script setup lang="ts">
-import {computed, inject} from 'vue'
-import {cache} from "../globals.ts";
-import {getAvatar} from "../core/data.ts";
+import {inject} from 'vue'
 
-const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle', 'badgeValue', 'avatarHash']);
+const props = defineProps(['k', 'prepend-icon', 'prepend-avatar', 'title', 'subtitle', 'badgeValue']);
 const {selected} = inject<any>("selected");
 const activated = inject("activated", undefined);
-
-const computedAvatar = computed(() => {
-  const avatar = props.avatarHash;
-  const ret = cache.value[avatar];
-  if (ret) {
-    return ret;
-  }
-  getAvatar(props.avatarHash);
-  return '/Logo.png';
-});
 
 </script>
 
@@ -27,8 +15,8 @@ const computedAvatar = computed(() => {
       class="pa-3 d-flex flex-row justify-start align-center rounded-lg"
       :class="{'v-list-item--active': selected === props.k, 'dark-ocean': selected === props.k}"
   >
-    <v-avatar v-if="props.avatarHash" class="mr-1" size="small">
-      <v-img :src="computedAvatar" cover/>
+    <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
+      <v-img :src="props.prependAvatar" cover/>
     </v-avatar>
     <div v-if="prependIcon" style="position: relative">
       <div class="badge" v-if="badgeValue">
@@ -39,9 +27,7 @@ const computedAvatar = computed(() => {
       </v-icon>
     </div>
     <div class="mr-2">
-      <v-avatar v-if="avatar">
-        <v-img :src="computedAvatar(chat.avatar)" cover/>
-      </v-avatar>
+      <slot name="prepend"/>
     </div>
     <div :class="{'d-none': activated===false, 'd-flex': activated!==false}" class="flex-column title-area">
       <p class="text-left" v-text="props.title"/>
