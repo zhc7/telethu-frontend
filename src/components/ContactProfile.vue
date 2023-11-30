@@ -21,6 +21,7 @@ import {GroupData} from "../utils/structs.ts";
 import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
+import AnotherAvatar from "./AnotherAvatar.vue";
 
 
 const props = defineProps(['source']);
@@ -207,7 +208,7 @@ const handleRemoveAdmin = (memberId: number) => {
 
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
-    <Avatar :contact-id="displayContactInfo.id"></Avatar>
+    <AnotherAvatar :md5="displayContactInfo.avatar"></AnotherAvatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>
