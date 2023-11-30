@@ -207,7 +207,7 @@ const handleRemoveAdmin = (memberId: number) => {
 
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
-    <Avatar size="80" class="mt-5" :contact-id="displayContactInfo.id"/>
+    <Avatar :contact-id="displayContactInfo.id"></Avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>
@@ -249,7 +249,7 @@ const handleRemoveAdmin = (memberId: number) => {
             >
 
               <Avatar
-                  :contact-id="displayContactInfo.id"
+                  :contact-id="member.id"
                   size="60"
                   style="position: relative"
                   :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' "
