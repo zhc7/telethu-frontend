@@ -2,23 +2,20 @@
 import {ref, watch} from "vue";
 import ContactList from "./ContactList.vue";
 
-import {
-  friendRequests,
-
-} from "../core/chat.ts";
+import {friendRequests,} from "../core/chat.ts";
 
 import {
   activeContactId,
   activeRequestId,
   contactPageContentLeft,
   contactPageProfileSource,
-  messages, rawRequestList,
+  rawRequestList,
   selectedContactInfo
 } from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
-import {contactInsert, getUser} from "../core/data.ts";
+import {getUser} from "../core/data.ts";
 import {acceptFriend, addFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 
 
@@ -31,8 +28,7 @@ const selectContact = async (newContactId: number) => {
   selectedContactInfo.value = undefined;
   contactPageProfileSource.value = 'contactList'
   if (newContactId > 0) {
-    const userInfo = await getUser(newContactId);
-    selectedContactInfo.value = userInfo;
+    selectedContactInfo.value = getUser(newContactId);
   }
 };
 
@@ -40,8 +36,7 @@ const selectRequest = async (newRequestId: number) => {
   selectedContactInfo.value = undefined;
   contactPageProfileSource.value = 'requestList';
   if (newRequestId > 0) {
-    const userInfo = await getUser(newRequestId);
-    selectedContactInfo.value = userInfo;
+    selectedContactInfo.value = getUser(newRequestId);
   }
 };
 
@@ -65,12 +60,10 @@ const handleRequestList = () => {
 
 const handleRequestPass = async (id: number) => {
   acceptFriend(id).then(() => {
-    getUser(id).then((contact) => {
-      activeContactId.value = contact.id;
-      selectedContactInfo.value = contact;
-      contactPageProfileSource.value = 'contactList';
-      alert("喜报：你通过了好友的申请！\nGood news! You've just passed a request! ")
-    });
+    selectedContactInfo.value = getUser(id);
+    activeContactId.value = id;
+    contactPageProfileSource.value = 'contactList';
+    alert("喜报：你通过了好友的申请！\nGood news! You've just passed a request! ")
   });
 };
 

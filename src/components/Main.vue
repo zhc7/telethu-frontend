@@ -11,8 +11,8 @@ import {
   activeChatId,
   currentPage,
   isSocketConnected,
-  rawChatList,
   rawRequestList,
+  UnreadCounter,
   userAvatar,
   userName
 } from "../globals.ts"
@@ -39,17 +39,16 @@ onMounted(() => {
   createSocket();
 });
 
-const debugAction = async () => {
-  await getUser(162).then((contact) => {
-    alert(contact);
-  })
+const debugAction = () => {
+  const contact = getUser(162);
+  alert(contact);
 };
 
 const unreadTotal = computed(() => {
   let counter = 0;
-  rawChatList.value.forEach((i) => {
-    counter += i.unread_counter;
-  });
+  for (const key in UnreadCounter.value) {
+    counter += UnreadCounter.value[key];
+  }
   return counter;
 })
 

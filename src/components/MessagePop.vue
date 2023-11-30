@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {markdown2Html, emojisLoaded} from "../markdown.ts"
@@ -14,17 +14,13 @@ import Avatar from "./Avatar.vue";
 const props = defineProps<{
   message: Message,
   final: boolean,
-  avatar: string,
 }>();
 const emits = defineEmits((['finished', 'showProfile']));
 
 const messagePop = ref();
 const blobSrc = ref("");
-const name = ref("");
-
-getUser(props.message.sender).then((contact) => {
-  name.value = contact.name;
-})
+const sender = getUser(props.message.sender);
+const name = computed(() => sender.name); // maintain reactivity
 
 const previewIconUrl = (extension: string) => {
   if (extension === "pdf") {

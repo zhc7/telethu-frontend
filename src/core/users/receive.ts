@@ -1,18 +1,19 @@
 import {ContactsData, Message} from "../../utils/structs.ts";
-import {contactPageProfileSource, messages, selectedContactInfo, user} from "../../globals.ts";
+import {contactPageProfileSource, contacts, messages, selectedContactInfo, user} from "../../globals.ts";
 import {applyList} from "./send";
-import {contactInsert, contactRemove} from "../data.ts";
 
 export const handleDeleteFriend = (message: Message) => {
-    contactRemove(message.sender);
-    contactRemove(message.receiver)
+    contacts.value = contacts.value.filter(id => id !== message.sender && id !== message.receiver);
 };
 export const handleReceiveRequest = async (_: Message) => {
     await applyList();
 }
 export const handleApplicationAccepted = (message: Message) => {
-    contactInsert(message.sender);
-    contactInsert(message.receiver);
+    if (message.sender === user.value.id) {
+        contacts.value.push(message.receiver);
+    } else {
+        contacts.value.push(message.sender);
+    }
 }
 export const handleSearchResult = (message: Message) => {
     // message.content.mute = false;

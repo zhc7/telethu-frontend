@@ -21,7 +21,6 @@ import {GroupData} from "../utils/structs.ts";
 import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
-import AnotherAvatar from "./AnotherAvatar.vue";
 
 
 const props = defineProps(['source']);
@@ -33,56 +32,50 @@ const deleteConfirmDialog = ref(false);
 
 const switchValueMute = computed<boolean>({
   get: () => {
-    return settings.value.muted.includes(displayContactInfo.value.id);
+    return settings.value.muted.has(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.muted.push(displayContactInfo.value.id);
+      settings.value.muted.add(displayContactInfo.value.id);
     } else {
       const selId = displayContactInfo.value.id;
-      settings.value.muted = settings.value.muted.filter((id) => {
-        return id !== selId;
-      });
+      settings.value.muted.delete(selId);
     }
   },
 })
 
 const switchValuePin = computed<boolean>({
   get: () => {
-    return settings.value.pinned.includes(displayContactInfo.value.id);
+    return settings.value.pinned.has(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.pinned.push(displayContactInfo.value.id);
+      settings.value.pinned.add(displayContactInfo.value.id);
     } else {
-      settings.value.pinned = settings.value.pinned.filter((id) => {
-        return id !== displayContactInfo.value.id;
-      });
+      settings.value.pinned.delete(displayContactInfo.value.id);
     }
   },
 })
 
 const switchValueBlock = computed<boolean>({
   get: () => {
-    return settings.value.blocked.includes(displayContactInfo.value.id);
+    return settings.value.blocked.has(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.blocked.push(displayContactInfo.value.id);
+      settings.value.blocked.add(displayContactInfo.value.id);
       blockFriend(displayContactInfo.value.id);
     } else {
-      settings.value.blocked = settings.value.blocked.filter((id) => {
-        return id !== displayContactInfo.value.id;
-      });
+      settings.value.blocked.delete(displayContactInfo.value.id);
       unblockFriend(displayContactInfo.value.id);
     }
   },
@@ -181,15 +174,14 @@ watch(displayContactInfo, (newInfo: GroupData) => {
       time: Date.now(),
       role: 0,
     });
-    getUser(id).then((info) => {
-      memberInfoTable.value[index] = {
-        id: info.id,
-        name: info.name,
-        avatar: info.avatar,
-        time: Date.now(),
-        role: 0,
-      }
-    });
+    const info = getUser(id);
+    memberInfoTable.value[index] ={
+      id: info.id,
+      name: info.name,
+      avatar: info.avatar,
+      time: Date.now(),
+      role: 0,
+    }
   }
 }, {immediate: true});
 
@@ -208,7 +200,7 @@ const handleRemoveAdmin = (memberId: number) => {
 
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
-    <AnotherAvatar :md5="displayContactInfo.avatar"></AnotherAvatar>
+    <Avatar :contact-id="displayContactInfo.id"></Avatar>
     <v-card-item class="overflow-y-auto">
       <v-list class="overflow-y-auto">
         <v-list-item-title>

@@ -2,55 +2,47 @@
 import {computed} from 'vue';
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeContactId, rawChatList} from "../globals.ts";
+import {activeContactId, contacts} from "../globals.ts";
 import Avatar from "./Avatar.vue";
+import {getUser} from "../core/data.ts";
 
 const props = defineProps(["searchInput", "displayType"]);
 const personContactList = computed(() => {
-  return rawChatList.value
-      .filter((i) => {
-        return i.category === 'user';
-      }).sort((a, b) => {
-        if (a.id === 0) {
-          return 1;
-        }
-        if (b.id === 0) {
-          return -1;
-        }
-        return a.name.localeCompare(b.name);
-      });
+  return contacts.value.filter((i) => {
+    return getUser(i).category === 'user';
+  }).sort((aId, bId) => {
+    const a = getUser(aId);
+    const b = getUser(bId);
+    if (a.id === 0) {
+      return 1;
+    }
+    if (b.id === 0) {
+      return -1;
+    }
+    return a.name.localeCompare(b.name);
+  });
 });
 const groupContactList = computed(() => {
-  return rawChatList.value
-      .filter((i) => {
-        return i.category === 'group';
-      }).sort((a, b) => {
-        if (a.id < 1) {
-          return 1;
-        }
-        if (b.id < 1) {
-          return -1;
-        }
-        return a.name.localeCompare(b.name);
-      });
+  return contacts.value.filter((i) => {
+    return getUser(i).category === 'group';
+  }).sort((aId, bId) => {
+    const a = getUser(aId);
+    const b = getUser(bId);
+    if (a.id === 0) {
+      return 1;
+    }
+    if (b.id === 0) {
+      return -1;
+    }
+    return a.name.localeCompare(b.name);
+  });
 });
 const userCount = computed(() => {
-  let count = 0;
-  rawChatList.value.forEach((entry) => {
-    if (entry && entry.category === 'user') {
-      count += 1;
-    }
-  })
-  return count;
+  return personContactList.value.length;
 });
 const groupCount = computed(() => {
-  let count = 0;
-  rawChatList.value.forEach((entry) => {
-    if (entry && entry.category === 'group') {
-      count += 1;
-    }
-  })
-  return count;});
+  return groupContactList.value.length;
+});
 
 const displayList = computed(() => {
   if (props.displayType === 'user') {
@@ -65,16 +57,16 @@ const displayList = computed(() => {
 <template>
   <List class="fill-height overflow-y-auto" v-model="activeContactId">
     <ListItem
-        v-for="contact in displayList"
-        :key="contact.id"
-        :k="contact.id"
+        v-for="contactId in displayList"
+        :key="contactId"
+        :k="contactId"
         class="pa-3 pl-6 chat-list-item text-left"
     >
       <template #prepend>
-        <Avatar :contact-id="contact.id"/>
+        <Avatar :contact-id="contactId"/>
       </template>
       <v-list-item-title>
-        {{ contact.name }}
+        {{ getUser(contactId).name }}
       </v-list-item-title>
     </ListItem>
     <v-list-item>

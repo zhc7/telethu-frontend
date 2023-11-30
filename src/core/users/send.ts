@@ -1,11 +1,19 @@
 import {Message, MessageType, TargetType} from "../../utils/structs.ts";
-import {activeRequestId, contactPageProfileSource, requests, selectedContactInfo, user, userId} from "../../globals.ts";
+import {
+    activeRequestId,
+    contactPageProfileSource,
+    contacts,
+    requests,
+    selectedContactInfo,
+    user,
+    userId
+} from "../../globals.ts";
 import {generateMD5, generateMessageId} from "../../utils/hash.ts";
 import {socket} from "../socket.ts";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../../constants.ts";
 import {token} from "../../auth.ts";
-import {contactInsert, requestInsert, requestRemove} from "../data.ts";
+import {requestInsert, requestRemove} from "../data.ts";
 import {formatFileSize, getFileType} from "../files.ts";
 import {chatManager} from "../chat.ts";
 
@@ -36,7 +44,7 @@ const acceptFriend = async (friendId: number) => {
     };
     console.log(JSON.stringify(message));
     socket.send(JSON.stringify(message));
-    await contactInsert(friendId);
+    contacts.value.push(friendId);
     requestRemove(friendId);
 };
 const rejectFriend = (friendId: number) => {

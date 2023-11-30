@@ -2,8 +2,8 @@
 import {ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
-import {activeChatId, messages, rawChatList, user} from "../globals.ts";
-import {sendFiles, sendMessage, readMessage} from "../core/users/send.ts";
+import {activeChatId, messages, UnreadCounter, user} from "../globals.ts";
+import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 
 const props = defineProps(['chat'])
 
@@ -117,8 +117,7 @@ const handleTextareaKeydown = (e: KeyboardEvent) => {
 const handleFocus = () => {
   // read message
   const chatMessages = messages.value[activeChatId.value];
-  const entry = rawChatList.value.filter((i) => i.id === activeChatId.value)[0];
-  entry.unread_counter = 0;
+  UnreadCounter.value[activeChatId.value] = 0;
   for (const m of chatMessages) {
     if (m.sender !== user.value.id) {
       readMessage(m.message_id as number);

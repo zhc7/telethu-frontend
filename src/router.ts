@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import {token} from "./auth";
+import Test from "./components/Test.vue";
 
 const Login = () => import('./components/Login.vue');
 const Main = () => import ('./components/Main.vue')
@@ -18,7 +19,7 @@ const router = createRouter({
         },
         {
             path: '/test',
-            component: Main,
+            component: Test,
         },
         {
             path: '/:page',

@@ -1,6 +1,6 @@
-import {computed, ref} from 'vue';
+import {computed, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
-import {ChatListItem, ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
+import {ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -63,14 +63,44 @@ export const userAvatar = computed({
 export const isSocketConnected = ref(false);
 
 export const settings = useLocalStorage<Settings>("settings", {
-    pinned: [],
-    muted: [],
-    blocked: [],
+    pinned: new Set(),
+    muted: new Set(),
+    blocked: new Set(),
+}, {
+    serializer: {
+        read(raw: string): Settings {
+            const data = JSON.parse(raw);
+            console.log(data);
+            for (const key in data) {
+                data[key] = new Set(Object.keys(data[key]));
+            }
+            return data;
+        },
+        write(value: Settings): string {
+            const data: { [key: string]: any } = {};
+            for (const key in value) {
+                const row: { [id: number]: number } = {};
+                for (const item in value[key as keyof Settings]) {
+                    row[+item] = 1;
+                }
+                data[key] = row;
+            }
+            return JSON.stringify(data);
+        }
+    }
 });
 
 export const messages = ref<{
     [id: number]: Array<Message>
 }>({});
+
+watch(contacts, () => {
+    for (const id of contacts.value) {
+        if (messages.value[id] === undefined) {
+            messages.value[id] = [];
+        }
+    }
+});
 
 export const cache = ref<{
     [hash: string]: string
@@ -85,6 +115,6 @@ export const hotMessages = ref<{
 }>({});
 
 
-export const rawChatList = ref<Array<ChatListItem>>([]);
-
 export const rawRequestList = ref<Array<RequestListItem>>([]);
+
+export const UnreadCounter = ref<{ [id: number]: number }>({});

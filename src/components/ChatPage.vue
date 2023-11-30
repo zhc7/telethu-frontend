@@ -74,10 +74,7 @@ watch(activeChatId, (id) => {
   if (id < 1) {
     selectedChatInfo.value = undefined
   }
-  getUser(id).then((contact) => {
-    console.log('selectedChat.value: ', contact);
-    selectedChatInfo.value = contact;
-  })
+  selectedChatInfo.value = getUser(id);
 }, {immediate: true});
 
 const ScrollToBottom = () => {
@@ -94,7 +91,8 @@ const handleDisplayProfile = () => {
   displayContact.value = users.value[activeChatId.value];
 };
 
-const handleHideProfile = (event) => {
+const handleHideProfile = (event: any) => {
+  // TODO: complete event type
   const target = event.target.parentNode.parentNode;
   if (target.classList.contains('v-avatar') || target.classList.contains('v-btn')) {
   } else {
@@ -114,7 +112,7 @@ const handleGetMoreMessage = () => {
   getHistoryMessage(
       activeChatId.value,
       messages.value[activeChatId.value][0] === undefined ? Date.now() : messages.value[activeChatId.value][0].time,
-      selectedChatInfo.value.category === "group" ? TargetType.GROUP: TargetType.FRIEND,
+      selectedChatInfo.value.category === "group" ? TargetType.GROUP : TargetType.FRIEND,
       20,
   )
 }
@@ -159,8 +157,11 @@ const title = computed(() => {
           <p style="font-size: 20px; font-weight: 450">
             {{ title }}
           </p>
-                    <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.includes(selectedChatInfo.id)">mdi-bell-off</v-icon>
-                    <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.includes(selectedChatInfo.id)">mdi-account-off-outline</v-icon>
+          <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.has(selectedChatInfo.id)">mdi-bell-off
+          </v-icon>
+          <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.has(selectedChatInfo.id)">
+            mdi-account-off-outline
+          </v-icon>
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
         <v-btn icon="mdi-plus" @click="selectMemberDialog = true;" v-if="category === 'user'"/>
@@ -175,13 +176,13 @@ const title = computed(() => {
             <div class="justify-center ma-1">
               {{ formatChatMessageTime(nowRef, group.time.toString()) }}
             </div>
-            <MessagePop v-for="(message, mIndex) in group.messages"
-                        :key="mIndex"
-                        :message="message"
-                        :final="mIndex === group.messages.length - 1"
-                        :avatar="selectedChatInfo.avatar"
-                        @finished="ScrollToBottom"
-                        @showProfile="handleDisplayProfile"
+            <MessagePop
+                v-for="(message, mIndex) in group.messages"
+                :key="mIndex"
+                :message="message"
+                :final="mIndex === group.messages.length - 1"
+                @finished="ScrollToBottom"
+                @showProfile="handleDisplayProfile"
             />
           </div>
         </div>

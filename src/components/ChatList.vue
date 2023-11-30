@@ -1,46 +1,38 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, hotMessages, nowRef, rawChatList, selectedChatInfo} from "../globals.ts";
+import {activeChatId, contacts, hotMessages, selectedChatInfo, settings} from "../globals.ts";
 import List from "./List.vue";
-import ListItem from "./ListItem.vue";
 import SelectMember from "./SelectMember.vue";
-import {ChatListItem, Message} from "../utils/structs.ts";
-import Avatar from "./Avatar.vue";
+import {getUser} from "../core/data.ts";
+import ChatListItem from "./ChatListItem.vue";
 
 const createGroupDialog = ref(false);
 
 const chatList = computed(() => {
-  const filtered = rawChatList.value.filter((i): i is ChatListItem => i !== undefined);
-  return filtered.sort((a, b) => {
-    if (a.pin === b.pin) {
+  return contacts.value.sort((aId, bId) => {
+    const a = getUser(aId);
+    const b = getUser(bId);
+    const aPinned = settings.value.pinned.has(aId);
+    const bPinned = settings.value.pinned.has(bId);
+    if (aPinned === bPinned) {
       const hot_a = hotMessages.value[a.id];
       const hot_b = hotMessages.value[b.id];
       if (hot_a === undefined) return 1;
       if (hot_b === undefined) return -1;
       return hot_b.time - hot_a.time;
-    } else if (a.pin) {
+    } else if (aPinned) {
       return -1;
-    } else if (b.pin) {
+    } else {
+      // bPinned
       return 1;
     }
-    throw new Error('error in chatList computing ' + a.pin + b.pin);
   });
 });
 
 const searchFriendInput = ref(false);
 const friendName = ref('');
 
-const displayHotMessage = (message: Message | undefined) => {
-  const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
-  if (message === undefined) {
-    return '';
-  } else if (message.m_type === 0) {
-    return message.content;
-  } else {
-    return '[' + types[message.m_type] + ']';
-  }
-}
+
 </script>
 
 <template>
@@ -60,57 +52,11 @@ const displayHotMessage = (message: Message | undefined) => {
                     density="compact" variant="solo" class="mr-4"/>
     </div>
     <List class="overflow-y-auto fill-height" v-model="activeChatId">
-      <ListItem
-          :key="chat.id"
-          :k="chat.id"
-          class="pa-3 pl-6 chat-list-item text-left hot-message"
-          rounded="lg"
-          v-for="chat in chatList"
-          :title="chat.name"
-          :subtitle="displayHotMessage(hotMessages[chat.id]?.content)"
-      >
-        <template #prepend>
-          <Avatar :contact-id="chat.id"/>
-        </template>
-        <div class="chat-time fill-height">
-          <p>{{ hotMessages[chat.id] ? formatChatMessageTime(nowRef, hotMessages[chat.id]?.time) : '' }}</p>
-          <v-icon v-show="chat.pin">mdi-pin</v-icon>
-          <v-icon v-show="chat.mute">mdi-bell-off</v-icon>
-        </div>
-        <template #append>
-          <v-badge v-if="!chat.mute && chat.unread_counter" color="red" :content="chat.unread_counter" inline></v-badge>
-        </template>
-      </ListItem>
+      <ChatListItem v-for="id in chatList" :contact-id="id"/>
     </List>
   </div>
 </template>
 
 <style scoped>
 
-
-.chat-list-item {
-  position: relative;
-}
-
-.chat-time {
-  font-size: 0.75em;
-  position: absolute;
-  right: 4em;
-  top: 2em;
-  color: #888
-}
-
-.unread-counter-badge {
-  position: absolute;
-  overflow: visible;
-  right: -10px;
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background-color: red;
-  color: white;
-  line-height: 16px;
-  font-size: 14px;
-  z-index: 100000;
-}
 </style>

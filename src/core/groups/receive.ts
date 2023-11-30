@@ -1,36 +1,36 @@
 import {GroupData, Message} from "../../utils/structs.ts";
-import {userId} from "../../globals.ts";
-import {contactInsert, contactRemove, contactUpdate} from "../data.ts";
+import {contacts, userId} from "../../globals.ts";
+import {getUser} from "../data.ts";
 
 export const handleAddGroupMember = (message: Message) => {
     // FUNC_ADD_GROUP_MEMBER
-    contactUpdate(message.receiver);
+    getUser(message.receiver, true);
     console.log('member added');
 };
 export const handleSomebodyExitGroup = (message: Message) => {
     const memberId = message.sender;
     const groupId = message.receiver;
     if (memberId === userId.value) {
-        contactRemove(groupId)
+        contacts.value = contacts.value.filter(id => id !== groupId);
     } else {
-        contactUpdate(groupId);
+        getUser(groupId, true);
     }
 }
 export const handleGroupOwnerChanged = (message: Message) => {
     const groupId = message.content as number;
-    contactUpdate(groupId);
+    getUser(groupId, true);
 }
 export const handleGroupAdminAdded = (message: Message) => {
-    contactUpdate(message.content as number);
+    getUser(message.content as number, true);
 }
 export const handleGroupAdminRemoved = (message: Message) => {
     const groupId = message.content as number;
-    contactUpdate(groupId);
+    getUser(groupId, true);
 }
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
     const groupId = message.content as number;
-    contactUpdate(groupId);
+    getUser(groupId, true);
 }
 export const handleCreateGroup = (message: Message) => {
-    contactInsert((message.content as GroupData).id);
+    contacts.value.push((message.content as GroupData).id);
 };

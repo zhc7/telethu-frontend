@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {activeChatId, rawChatList, user, userId} from "../globals.ts";
-import {ChatListItem} from "../utils/structs.ts";
+import {activeChatId, contacts, user, userId} from "../globals.ts";
 import {createGroup, sendMessage} from "../core/users/send.ts";
 import {groupAddMember} from "../core/groups/send.ts";
 import Avatar from "./Avatar.vue";
+import {getUser} from "../core/data.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -19,15 +19,17 @@ const pinedList = ref<Array<number>>([]);
 const selectedList = ref<Array<number>>([]);
 
 const pinedInfo = computed(() => {
-  const retList = rawChatList.value.filter((i): i is ChatListItem => i !== undefined && pinedList.value.includes(i.id));
+  const retList = contacts.value.filter(id => pinedList.value.includes(id));
   if (pinedList.value.includes(user.value.id)) {
-    retList.unshift(user.value as ChatListItem);
+    retList.unshift(user.value.id);
   }
   return retList;
 });
 
 const selectedInfo = computed(() => {
-  return rawChatList.value.filter((i): i is ChatListItem => i !== undefined && selectedList.value.includes(i.id));
+  return contacts.value.filter((id) => {
+    return selectedList.value.includes(id);
+  })
 })
 
 const actSelect = (id: number) => {
@@ -42,7 +44,9 @@ const actUnselect = (id: number) => {
 }
 
 const possibleMembers = computed(() => {
-  return rawChatList.value.filter((i): i is ChatListItem => i !== undefined && i.category === "user");
+  return contacts.value.filter((id) => {
+    return getUser(id).category === "user";
+  })
 });
 
 const dialog = computed({

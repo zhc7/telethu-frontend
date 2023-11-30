@@ -54,7 +54,7 @@ onBeforeMount(async () => {
     avatar.value = '/Logo.png';
     return;
   }
-  contact.value = await getUser(props.contactId);
+  contact.value = getUser(props.contactId);
   avatar.value = await getAvatar(contact.value?.avatar);
 })
 </script>

@@ -68,16 +68,16 @@ export interface Ack {
 }
 
 export interface Users {
-    [id: number]: UserData | GroupData,
+    [id: number]: ContactsData,
 }
 
 export interface Settings {
-    muted: Array<number>,
-    pinned: Array<number>,
-    blocked: Array<number>,
+    muted: Set<number>,
+    pinned: Set<number>,
+    blocked: Set<number>,
 }
 
-export interface ChatListItem {
+export interface ChatListItemData {
     id: number,
     name: string,
     avatar: string,

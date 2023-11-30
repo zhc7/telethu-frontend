@@ -3,7 +3,6 @@ import {token} from "../auth";
 import {contacts, isSocketConnected} from "../globals";
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
-import {contactInsert} from "./data.ts";
 import {applyList} from "./users/send.ts";
 
 export let socket: WebSocket;
@@ -28,17 +27,7 @@ const createSocket = () => {
             console.log("receiving meta data", _message);
             const idList: Array<number> = _message as Array<number>;
             applyList();
-            for (const id of idList) {
-                let flag = true;
-                contacts.value.forEach((entry) => {
-                    if (entry === id) {
-                        flag = false;
-                    }
-                });
-                if (flag) {
-                    contactInsert(id);
-                }
-            }
+            contacts.value = idList;
             first = false;
             return;
         }
