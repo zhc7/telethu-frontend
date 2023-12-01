@@ -117,4 +117,4 @@ export const hotMessages = ref<{
 
 export const rawRequestList = ref<Array<RequestListItem>>([]);
 
-export const UnreadCounter = ref<{ [id: number]: number }>({});
+export const unreadCounter = ref<{ [id: number]: number }>({});

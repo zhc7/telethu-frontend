@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {hotMessages, nowRef, settings, UnreadCounter} from "../globals";
+import {hotMessages, nowRef, settings, unreadCounter} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
 import {Message} from "../utils/structs";
 import {computed} from "vue";
@@ -35,7 +35,7 @@ const mute = computed(() => {
 })
 
 const unread = computed<number>(() => {
-  return UnreadCounter.value[props.contactId] || 0;
+  return unreadCounter.value[props.contactId] || 0;
 })
 </script>
 

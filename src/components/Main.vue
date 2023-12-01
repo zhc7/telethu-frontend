@@ -12,7 +12,7 @@ import {
   currentPage,
   isSocketConnected,
   rawRequestList,
-  UnreadCounter,
+  unreadCounter,
   userAvatar,
   userName
 } from "../globals.ts"
@@ -46,8 +46,8 @@ const debugAction = () => {
 
 const unreadTotal = computed(() => {
   let counter = 0;
-  for (const key in UnreadCounter.value) {
-    counter += UnreadCounter.value[key];
+  for (const key in unreadCounter.value) {
+    counter += unreadCounter.value[key];
   }
   return counter;
 })

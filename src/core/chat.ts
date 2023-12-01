@@ -1,5 +1,5 @@
 import {BASE_API_URL, DEBUG} from "../constants";
-import {hotMessages, messages, settings, UnreadCounter, user} from "../globals"
+import {hotMessages, messages, settings, unreadCounter, user} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
@@ -132,7 +132,7 @@ const chatManager: {
         if (existing === undefined) {
             message.status = 'sent';
             if (message.sender !== user.value.id) {
-                UnreadCounter.value[target] += 1;
+                unreadCounter.value[target] += 1;
             }
             messages.value[target].push(message);
             if (message.sender !== user.value.id && !settings.value.muted.has(target)) {
