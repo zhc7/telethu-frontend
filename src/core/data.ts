@@ -6,15 +6,15 @@ import {token} from "../auth.ts";
 
 
 const getUser = (id: number, force: boolean = false): ContactsData => {
-    if (users.value[id] === undefined || users.value[id].category === "") {
+    if (users.value[id] === undefined) {
         users.value[id] = {
             id,
             name: "Loading...",
             avatar: "",
             category: "",
-        }
-        force = true;
+        };
     }
+    force ||= users.value[id].category === "";
     if (force) {
         axios.get(BASE_API_URL + "users/" + id, {
             headers: {
@@ -26,7 +26,6 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
             for (const key in data) {
                 (users.value[id][key as keyof ContactsData] as any) = data[key];
             }
-            console.log("updated " + id)
         }).catch((err) => {
             console.log(err);
         })
