@@ -77,9 +77,10 @@ const unreadTotal = computed(() => {
         <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isSocketConnected">mdi-loading</v-icon>
       </div>
     </NavBar>
-    <ChatPage v-if="activePage === 'chat'" v-model="activeChatId" />
-    <ContactPage v-if="activePage === 'contacts'"/>
-    <ProfilePage v-if="activePage === 'profile'"/>
+    <!--ChatPage contains fragments, must manually apply show-->
+    <ChatPage :show="activePage === 'chat'" v-model="activeChatId" />
+    <ContactPage v-show="activePage === 'contacts'"/>
+    <ProfilePage v-show="activePage === 'profile'"/>
   </v-container>
 </template>
 

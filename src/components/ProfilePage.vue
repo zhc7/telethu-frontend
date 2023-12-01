@@ -113,20 +113,21 @@ const handleConfirm = () => {
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="30vw" max-height="80vh">
-    <v-card class="fill-height overflow-y-auto">
-      <v-card-title>{{ editingTitle }}</v-card-title>
-      <v-card-text>
-        <v-text-field autofocus v-model="inputValue"></v-text-field>
-      </v-card-text>
-      <v-card-actions class="mb-3 mr-4">
-        <v-spacer></v-spacer>
-        <v-btn color="info" @click="handleConfirm">Confirm</v-btn>
-        <v-btn color="error" @click="editingEntry=undefined">Cancel</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
   <v-row no-gutters>
+    <v-dialog v-model="dialog" max-width="30vw" max-height="80vh">
+      <v-card class="fill-height overflow-y-auto">
+        <v-card-title>{{ editingTitle }}</v-card-title>
+        <v-card-text>
+          <v-text-field autofocus v-model="inputValue"></v-text-field>
+        </v-card-text>
+        <v-card-actions class="mb-3 mr-4">
+          <v-spacer></v-spacer>
+          <v-btn color="info" @click="handleConfirm">Confirm</v-btn>
+          <v-btn color="error" @click="editingEntry=undefined">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
         <v-avatar size="80" class="mt-5">

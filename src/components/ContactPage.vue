@@ -79,7 +79,7 @@ watch(activeRequestId, selectRequest);
 </script>
 
 <template>
-  <v-row class="mt-auto mb-2 d-flex flex-1-1 overflow-y-auto fill-height">
+  <v-row class="mt-auto mb-2 overflow-y-auto fill-height">
     <v-col
         cols="12"
         sm="4"

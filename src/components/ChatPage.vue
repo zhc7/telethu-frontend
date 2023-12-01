@@ -17,7 +17,7 @@ const debug = () => {
   console.log('selectMemberSource: ', selectMemberSource.value);
 }
 
-defineProps(['modelValue']);
+defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
 
 
@@ -141,9 +141,11 @@ const title = computed(() => {
 </script>
 
 <template>
-  <v-row class="mt-auto d-flex flex-1-1 overflow-y-auto fill-height"
-         @click="handleHideProfile($event)"
-         style="margin-right: 0; margin-bottom: 0"
+  <v-row
+      class="mt-auto overflow-y-auto fill-height"
+      @click="handleHideProfile($event)"
+      style="margin-right: 0; margin-bottom: 0"
+      v-show="show"
   >
     <v-col cols="12" sm="4" md="3" class="pa-0 fill-height">
       <ChatList v-model="activeChatId"></ChatList>
@@ -157,7 +159,8 @@ const title = computed(() => {
           <p style="font-size: 20px; font-weight: 450">
             {{ title }}
           </p>
-          <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.has(selectedChatInfo.id)">mdi-bell-off
+          <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.has(selectedChatInfo.id)">
+            mdi-bell-off
           </v-icon>
           <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.has(selectedChatInfo.id)">
             mdi-account-off-outline
@@ -190,14 +193,15 @@ const title = computed(() => {
       <InputArea :chat="selectedChatInfo"/>
     </v-col>
   </v-row>
-  <v-divider vertical v-if="selectedChatInfo"/>
   <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
-    <ContactProfile class="overflow-y-auto"
-                    v-if="selectedChatInfo"
-                    source="chatPage"
+    <ContactProfile
+        class="overflow-y-auto"
+        v-if="selectedChatInfo"
+        source="chatPage"
     />
   </div>
   <SelectMember
+      v-if="show"
       :showDialog="selectMemberDialog"
       @update:showDialog="selectMemberDialog = $event"
       :source="category === 'user' ? 'personalFriend' : 'existingGroup'"
