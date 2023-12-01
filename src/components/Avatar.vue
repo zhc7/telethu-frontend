@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import {ContactsData} from "../utils/structs";
+import {ref, watch} from "vue";
 import {getUser} from "../core/data";
 import {cache} from "../globals";
 import axios from "axios";
@@ -11,8 +10,9 @@ const props = defineProps<{
   contactId: number,
 }>();
 
-const contact = ref<ContactsData>();
+const contact = getUser(props.contactId);
 const avatar = ref<string>();
+
 
 const avatarUrl = (md5: string) => {
   if (md5.startsWith("http")) return md5;
@@ -43,27 +43,17 @@ const getAvatar = async (hash: string): Promise<string> => {
   }
 }
 
-onBeforeMount(async () => {
-  if (props.contactId === 0) {
-    contact.value = {
-      id: 0,
-      name: 'Loading...',
-      avatar: '',
-      category: 'user',
-    }
-    avatar.value = '/Logo.png';
-    return;
-  }
-  contact.value = getUser(props.contactId);
-  avatar.value = await getAvatar(contact.value?.avatar);
-})
+watch(contact, () => {
+  getAvatar(contact.avatar).then((result) => {
+    avatar.value = result;
+  });
+}, {immediate: true});
 </script>
 
 <template>
   <v-avatar>
-    <v-img v-if="contact === undefined" src="/Logo.png"/>
     <v-img
-        v-else-if="contact.category === 'user'"
+        v-if="contact.category === 'user'"
         lazy-src="/Logo.png"
         :src="avatar"
         :cover="true"
