@@ -64,7 +64,7 @@ export const userAvatar = computed({
 export const isSocketConnected = ref(false);
 
 export const settingsUpdating = ref(false);
-export const settings = reactive({
+export const settings = ref({
     muted: [],
     pinned: [],
     blocked: [],
@@ -73,6 +73,8 @@ export const settings = reactive({
 watch(settings, () => {
     if (settingsUpdating.value) return;
     postSettings();
+}, {
+    deep: true,
 });
 
 export const messages = ref<{
