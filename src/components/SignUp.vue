@@ -12,12 +12,13 @@ const signupName = ref("");
 const signupAccount = ref("");
 const signupPassword = ref("");
 const confirmPassword = ref("");
+const currentPage = ref(1);
 
 const rules = {
-    signupAccount: { required, email },
-    signupPassword: { required }
+  signupAccount: {required, email},
+  signupPassword: {required}
 }
-const $v = useVuelidate(rules, { signupAccount, signupPassword });
+const $v = useVuelidate(rules, {signupAccount, signupPassword});
 
 
 const snackbar = ref(false);
@@ -39,6 +40,16 @@ const submitRegister = async () => {
   await router.push('/chat');
   dialog.value = false;
 };
+
+const next = () => {
+  if (currentPage.value === 1 && $v.value.signupAccount.$invalid) {
+    snackbarText.value = "Invalid email!";
+    snackbar.value = true;
+    return;
+  } else {
+    currentPage.value += 1;
+  }
+}
 </script>
 
 <template>
@@ -49,8 +60,48 @@ const submitRegister = async () => {
       <template v-slot:activator="{ props }">
         <a href="#" class="ref-text" v-bind="props"> Sign up right now! </a>
       </template>
+
       <v-card>
-        <v-card-text>
+        <div v-if="currentPage === 1">
+          <v-card-title>
+            <h3 class="ml-4 mt-4">Your email</h3>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+                label="Account*"
+                variant="outlined"
+                v-model="signupAccount"
+                color="primary"
+                @blur="$v.signupAccount.$touch()"
+                :error-messages="$v.signupAccount.$errors[0]? $v.signupAccount.$errors[0].$message : ''"
+                required
+                clearable
+                class="ma-4"
+            ></v-text-field>
+            <p class="ml-4">Alert: This email will be used as your unique account.</p>
+          </v-card-text>
+        </div>
+
+        <div v-if="currentPage === 2">
+          <v-card-title>
+            <h3 class="ml-4 mt-4">Your username</h3>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+                label="Name*"
+                variant="outlined"
+                v-model="signupName"
+                color="primary"
+                @blur="$v.signupAccount.$touch()"
+                required
+                clearable
+                class="ma-4"
+            ></v-text-field>
+            <p class="ml-4"></p>
+          </v-card-text>
+        </div>
+
+        <v-card-text v-if="currentPage === 3">
           <v-container>
             <v-row>
               <v-col cols="12">
@@ -58,48 +109,45 @@ const submitRegister = async () => {
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  label="Name*"
-                  variant="outlined"
-                  v-model="signupName"
-                  color="primary"
-                  required
-                  clearable
+                    label="Name*"
+                    variant="outlined"
+                    v-model="signupName"
+                    color="primary"
+                    readonly
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  label="Account*"
-                  variant="outlined"
-                  v-model="signupAccount"
-                  color="primary"
-                  @blur="$v.signupAccount.$touch()"
-                  :error-messages="$v.signupAccount.$errors[0]? $v.signupAccount.$errors[0].$message : ''"
-                  required
-                  clearable
+                    label="Account*"
+                    variant="outlined"
+                    v-model="signupAccount"
+                    color="primary"
+                    @blur="$v.signupAccount.$touch()"
+                    readonly
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  label="Password*"
-                  v-model="signupPassword"
-                  type="password"
-                  variant="outlined"
-                  color="primary"
-                  @blur="$v.signupPassword.$touch()"
-                  :error-messages="$v.signupPassword.$errors[0]? $v.signupPassword.$errors[0].$message : ''"
-                  required
-                  clearable
+                    label="Password*"
+                    v-model="signupPassword"
+                    type="password"
+                    variant="outlined"
+                    color="primary"
+                    @blur="$v.signupPassword.$touch()"
+                    :error-messages="$v.signupPassword.$errors[0]? $v.signupPassword.$errors[0].$message : ''"
+                    required
+                    clearable
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  label="Confirm Password*"
-                  v-model="confirmPassword"
-                  type="password"
-                  variant="outlined"
-                  color="primary"
-                  required
-                  clearable
+                    label="Confirm Password*"
+                    v-model="confirmPassword"
+                    type="password"
+                    variant="outlined"
+                    color="primary"
+                    required
+                    clearable
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -107,13 +155,17 @@ const submitRegister = async () => {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+          <v-btn color="blue-darken-1" variant="text" @click="() => {dialog = false; currentPage = 1}">
             Close
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="submitRegister">
+          <v-btn color="blue-darken-1" variant="text" @click="submitRegister" v-if="currentPage === 3">
             Sign up
           </v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="next" v-if="currentPage !== 3">
+            Next
+          </v-btn>
         </v-card-actions>
+
       </v-card>
     </v-dialog>
 
