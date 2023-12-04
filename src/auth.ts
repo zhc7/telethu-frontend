@@ -1,7 +1,7 @@
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "./constants"
 import {useLocalStorage} from "@vueuse/core"
-import {user} from "./globals";
+import {settings, user} from "./globals";
 import router from "./router.ts";
 
 const token = useLocalStorage("token", "");

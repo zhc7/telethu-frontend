@@ -171,6 +171,13 @@ const title = computed(() => {
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
+        <v-alert
+            type="warning"
+            title="We have send you a verification email, please check your email box."
+            variant="tonal"
+            style="max-height: 4vw"
+            v-if="!settings.accountVerified"
+        />
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
             <v-btn @click="handleGetMoreMessage" class="text-blue mt-2" variant="text">Get more message...</v-btn>
