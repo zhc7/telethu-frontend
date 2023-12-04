@@ -27,11 +27,11 @@ const displayHotMessage = (message: Message | undefined) => {
 const contact = getUser(props.contactId);
 
 const pin = computed(() => {
-  return settings.value.pinned.has(props.contactId);
+  return settings.value.pinned.includes(props.contactId);
 })
 
 const mute = computed(() => {
-  return settings.value.muted.has(props.contactId);
+  return settings.value.muted.includes(props.contactId);
 })
 
 const unread = computed<number>(() => {

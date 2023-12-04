@@ -72,9 +72,9 @@ export interface Users {
 }
 
 export interface Settings {
-    muted: Set<number>,
-    pinned: Set<number>,
-    blocked: Set<number>,
+    muted: Array<number>,
+    pinned: Array<number>,
+    blocked: Array<number>,
 }
 
 export interface ChatListItemData {

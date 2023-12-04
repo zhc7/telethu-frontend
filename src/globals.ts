@@ -1,6 +1,7 @@
-import {computed, ref, watch} from 'vue';
+import {computed, reactive, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
 import {ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
+import {postSettings} from "./core/data.ts";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -62,32 +63,16 @@ export const userAvatar = computed({
 })
 export const isSocketConnected = ref(false);
 
-export const settings = useLocalStorage<Settings>("settings", {
-    pinned: new Set(),
-    muted: new Set(),
-    blocked: new Set(),
-}, {
-    serializer: {
-        read(raw: string): Settings {
-            const data = JSON.parse(raw);
-            console.log(data);
-            for (const key in data) {
-                data[key] = new Set(Object.keys(data[key]));
-            }
-            return data;
-        },
-        write(value: Settings): string {
-            const data: { [key: string]: any } = {};
-            for (const key in value) {
-                const row: { [id: number]: number } = {};
-                for (const item in value[key as keyof Settings]) {
-                    row[+item] = 1;
-                }
-                data[key] = row;
-            }
-            return JSON.stringify(data);
-        }
-    }
+export const settingsUpdating = ref(false);
+export const settings = reactive({
+    muted: [],
+    pinned: [],
+    blocked: [],
+});
+
+watch(settings, () => {
+    if (settingsUpdating.value) return;
+    postSettings();
 });
 
 export const messages = ref<{

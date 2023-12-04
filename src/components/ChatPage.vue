@@ -159,10 +159,10 @@ const title = computed(() => {
           <p style="font-size: 20px; font-weight: 450; display: inline">
             {{ title }}
           </p>
-          <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.has(selectedChatInfo.id)">
+          <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.includes(selectedChatInfo.id)">
             mdi-bell-off
           </v-icon>
-          <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.has(selectedChatInfo.id)">
+          <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.includes(selectedChatInfo.id)">
             mdi-account-off-outline
           </v-icon>
         </v-toolbar-title>

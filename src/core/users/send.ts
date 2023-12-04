@@ -212,6 +212,7 @@ const readMessage = (mid: number) => {
     }
     chatManager.sendMessage(message);
 }
+
 export {readMessage};
 export {sendFiles};
 export {unblockFriend};

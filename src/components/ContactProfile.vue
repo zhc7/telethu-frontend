@@ -32,50 +32,50 @@ const deleteConfirmDialog = ref(false);
 
 const switchValueMute = computed<boolean>({
   get: () => {
-    return settings.value.muted.has(displayContactInfo.value.id);
+    return settings.value.muted.includes(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.muted.add(displayContactInfo.value.id);
+      settings.value.muted.push(displayContactInfo.value.id);
     } else {
       const selId = displayContactInfo.value.id;
-      settings.value.muted.delete(selId);
+      settings.value.muted = settings.value.muted.filter(id => id !== selId);
     }
   },
 })
 
 const switchValuePin = computed<boolean>({
   get: () => {
-    return settings.value.pinned.has(displayContactInfo.value.id);
+    return settings.value.pinned.includes(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.pinned.add(displayContactInfo.value.id);
+      settings.value.pinned.push(displayContactInfo.value.id);
     } else {
-      settings.value.pinned.delete(displayContactInfo.value.id);
+      settings.value.pinned = settings.value.pinned.filter(id => id !== displayContactInfo.value.id);
     }
   },
 })
 
 const switchValueBlock = computed<boolean>({
   get: () => {
-    return settings.value.blocked.has(displayContactInfo.value.id);
+    return settings.value.blocked.includes(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
       return;
     }
     if (value) {
-      settings.value.blocked.add(displayContactInfo.value.id);
+      settings.value.blocked.push(displayContactInfo.value.id);
       blockFriend(displayContactInfo.value.id);
     } else {
-      settings.value.blocked.delete(displayContactInfo.value.id);
+      settings.value.blocked = settings.value.blocked.filter(id => id !== displayContactInfo.value.id);
       unblockFriend(displayContactInfo.value.id);
     }
   },

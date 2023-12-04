@@ -12,8 +12,8 @@ const chatList = computed(() => {
   return contacts.value.sort((aId, bId) => {
     const a = getUser(aId);
     const b = getUser(bId);
-    const aPinned = settings.value.pinned.has(aId);
-    const bPinned = settings.value.pinned.has(bId);
+    const aPinned = settings.value.pinned.includes(aId);
+    const bPinned = settings.value.pinned.includes(bId);
     if (aPinned === bPinned) {
       const hot_a = hotMessages.value[a.id];
       const hot_b = hotMessages.value[b.id];

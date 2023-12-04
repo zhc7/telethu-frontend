@@ -1,9 +1,10 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected} from "../globals";
+import {contacts, isSocketConnected, settings, settingsUpdating} from "../globals";
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
 import {applyList} from "./users/send.ts";
+import {getSettings} from "./data.ts";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -26,6 +27,10 @@ const createSocket = () => {
         if (first) {
             console.log("receiving meta data", _message);
             const idList: Array<number> = _message as Array<number>;
+            settingsUpdating.value = true;
+            getSettings().then(() => {
+                settingsUpdating.value = false;
+            });
             applyList();
             contacts.value = idList;
             first = false;
