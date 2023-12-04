@@ -156,7 +156,7 @@ const title = computed(() => {
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
-          <p style="font-size: 20px; font-weight: 450">
+          <p style="font-size: 20px; font-weight: 450; display: inline">
             {{ title }}
           </p>
           <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.has(selectedChatInfo.id)">
