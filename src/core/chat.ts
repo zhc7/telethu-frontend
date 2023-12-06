@@ -135,7 +135,7 @@ const chatManager: {
                 unreadCounter.value[target] += 1;
             }
             messages.value[target].push(message);
-            if (message.sender !== user.value.id && !settings.value.muted.has(target)) {
+            if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
             }
         } else if (existing.status === 'sending') {

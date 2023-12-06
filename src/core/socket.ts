@@ -1,6 +1,6 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, settings, settingsUpdating} from "../globals";
+import {contacts, isSocketConnected, settingsUpdating} from "../globals";
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
 import {applyList} from "./users/send.ts";
@@ -31,7 +31,7 @@ const createSocket = () => {
             getSettings().then(() => {
                 settingsUpdating.value = false;
             });
-            applyList();
+            applyList().then();
             contacts.value = idList;
             first = false;
             return;

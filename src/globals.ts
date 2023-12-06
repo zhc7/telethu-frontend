@@ -1,4 +1,4 @@
-import {computed, reactive, ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
 import {ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
 import {postSettings} from "./core/data.ts";
@@ -64,7 +64,7 @@ export const userAvatar = computed({
 export const isSocketConnected = ref(false);
 
 export const settingsUpdating = ref(false);
-export const settings = ref({
+export const settings = ref<Settings>({
     muted: [],
     pinned: [],
     blocked: [],
@@ -72,7 +72,7 @@ export const settings = ref({
 
 watch(settings, () => {
     if (settingsUpdating.value) return;
-    postSettings();
+    postSettings().then();
 }, {
     deep: true,
 });
