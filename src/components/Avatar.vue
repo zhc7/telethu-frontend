@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {getUser} from "../core/data";
 import {cache} from "../globals";
 import axios from "axios";
@@ -10,9 +10,8 @@ const props = defineProps<{
   contactId: number,
 }>();
 
-const contact = getUser(props.contactId);
+let contact = computed(() => getUser(props.contactId));
 const avatar = ref<string>();
-
 
 const avatarUrl = (md5: string) => {
   if (md5.startsWith("http")) return md5;
@@ -44,7 +43,7 @@ const getAvatar = async (hash: string): Promise<string> => {
 }
 
 watch(contact, () => {
-  getAvatar(contact.avatar).then((result) => {
+  getAvatar(contact.value.avatar).then((result) => {
     avatar.value = result;
   });
 }, {immediate: true});
