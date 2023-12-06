@@ -2,7 +2,7 @@ import {nowRef} from '../globals'
 
 const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-export const FormatTimeDifference = (timestamp: string) => {
+export const formatTimeDifference = (timestamp: string) => {
     const timestampParsed = parseFloat(timestamp);
     const diff = nowRef.value - timestampParsed;
     if (diff < 10000) {

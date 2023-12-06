@@ -98,3 +98,16 @@ export interface RequestListItem {
     email: string,
     time: number,
 }
+
+export type ContextMenuSubject = Message | Array<Message>;
+
+export enum ArrayMenuItems {
+    GroupShare = 'Group Share',
+}
+
+export enum MessageMenuItems {
+    Copy = 'Copy',
+    Share = 'Share',
+    Delete = 'Delete',
+    Withdraw = 'Withdraw',
+}

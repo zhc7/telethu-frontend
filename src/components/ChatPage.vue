@@ -2,7 +2,7 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, onMounted, provide, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
@@ -10,8 +10,9 @@ import {formatChatMessageTime} from "../utils/datetime.ts";
 import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
-import {Message, TargetType} from "../utils/structs";
+import {ArrayMenuItems, ContextMenuSubject, Message, MessageMenuItems, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
+import MessageContextMenu from "./MessageContextMenu.vue";
 
 const debug = () => {
   console.log('selectMemberSource: ', selectMemberSource.value);
@@ -24,11 +25,25 @@ defineEmits(['update:modelValue']);
 const displayProfile = ref<boolean>(false);
 const showProfileDetail = ref(false);
 
+const showContextMenu = ref(false);
+const contextMenuX = ref(0);
+const contextMenuY = ref(0);
+const contextMenuSubject = ref<ContextMenuSubject>();
+
+const openContextMenu = (x: number, y: number, subject: ContextMenuSubject) => {
+  contextMenuX.value = x;
+  contextMenuY.value = y;
+  contextMenuSubject.value = subject;
+  showContextMenu.value = true;
+}
+
+const closeContextMenu = () => {
+  showContextMenu.value = false;
+}
+
 const selectMemberDialog = ref(false);
-const selectMemberSource = ref('contact');
-const sharedMessages = ref([]);
-provide('selectMemberSource', selectMemberSource);
-provide('sharedMessages', sharedMessages);
+const selectMemberSource = ref<string>('contact');
+const sharedMessages = ref<Array<Message>>([]);
 const selectMemberTitle = ref('Create Group from Contact');
 watch(selectMemberSource, () => {
   selectMemberDialog.value = true;
@@ -121,8 +136,13 @@ onMounted(() => {
   if (DEBUG) {
     console.log('contacts value here', users.value);
   }
-  console.log('in chatpage', users.value)
-})
+  console.log('in chat page', users.value);
+  document.addEventListener("click", closeContextMenu);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", closeContextMenu);
+});
 
 const category = computed(() => {
   if (!selectedChatInfo.value) {
@@ -138,6 +158,44 @@ const title = computed(() => {
   return selectedChatInfo.value.name;
 })
 
+const shareMessage = (msg: Message) => {
+  selectMemberSource.value = 'share';
+  sharedMessages.value.push(msg);
+  console.log('share', sharedMessages.value);
+};
+
+const deleteMessage = () => {
+  alert('delete');
+};
+
+const withdrawMessage = () => {
+  alert('withdraw');
+};
+
+const shareGroupMessage = (msgs: Array<Message>) => {
+  alert("share group message");
+}
+
+const arrayItemDispatcher: { [key in ArrayMenuItems]: (msgs: Array<Message>) => void } = {
+  [ArrayMenuItems.GroupShare]: shareGroupMessage,
+};
+
+const messageItemDispatcher: { [key in MessageMenuItems]: (msg: Message) => void } = {
+  [MessageMenuItems.Copy]: (msg: Message) => {
+    navigator.clipboard.writeText(msg.content as string)
+  },
+  [MessageMenuItems.Share]: shareMessage,
+  [MessageMenuItems.Delete]: deleteMessage,
+  [MessageMenuItems.Withdraw]: withdrawMessage,
+};
+
+const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
+  if (contextMenuSubject.value!.constructor === Array) {
+    arrayItemDispatcher[item as ArrayMenuItems](contextMenuSubject.value as Array<Message>);
+  } else {
+    messageItemDispatcher[item as MessageMenuItems](contextMenuSubject.value as Message);
+  }
+}
 </script>
 
 <template>
@@ -192,7 +250,15 @@ const title = computed(() => {
                 :message="message"
                 :final="mIndex === group.messages.length - 1"
                 @finished="ScrollToBottom"
-                @showProfile="handleDisplayProfile"
+                @show-profile="handleDisplayProfile"
+                @show-context-menu="openContextMenu"
+            />
+            <MessageContextMenu
+                v-if="showContextMenu"
+                :x="contextMenuX"
+                :y="contextMenuY"
+                :type="contextMenuSubject!.constructor === Array ? 'Array' : 'Message'"
+                @choose="dispatchFunction"
             />
           </div>
         </div>

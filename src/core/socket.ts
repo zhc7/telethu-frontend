@@ -28,9 +28,9 @@ const createSocket = () => {
             console.log("receiving meta data", _message);
             const idList: Array<number> = _message as Array<number>;
             settingsUpdating.value = true;
-            getSettings().then(() => {
-                settingsUpdating.value = false;
-            });
+            // getSettings().then(() => {
+            //     settingsUpdating.value = false;
+            // });
             applyList().then();
             contacts.value = idList;
             first = false;

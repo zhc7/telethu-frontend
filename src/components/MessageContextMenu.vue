@@ -2,39 +2,20 @@
 
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import {inject, Ref} from "vue";
+import {ArrayMenuItems, MessageMenuItems} from "../utils/structs.ts";
 
-const props = defineProps(['x', 'y', 'message'])
-const selectMemberSource : Ref<string> = inject('selectMemberSource') as Ref<string>;
-const sharedMessages : Ref<Array<number>> = inject('sharedMessages') as Ref<Array<number>>;
+const props = defineProps<{
+  x: number,
+  y: number,
+  type: "Array" | "Message",
+}>();
 
-const menuItems = ['Copy', 'Share', 'Delete', 'Withdraw'];
+defineEmits<{
+  choose: [item: ArrayMenuItems | MessageMenuItems],
+}>();
 
-const shareMessage = () => {
-  selectMemberSource.value = 'share';
-  sharedMessages.value.push(props.message);
-  console.log('share', sharedMessages.value);
-};
+const menuItems = props.type === "Array" ? ArrayMenuItems : MessageMenuItems;
 
-const deleteMessage = () => {
-  alert('delete');
-};
-
-const withdrawMessage = () => {
-  alert('withdraw');
-};
-
-const dispatchFunction = (item: string) => {
-  if (item === 'Copy') {
-    navigator.clipboard.writeText(props.message.content);
-  } else if (item === 'Share') {
-    shareMessage();
-  } else if (item === 'Delete') {
-    deleteMessage();
-  } else if (item === 'Withdraw') {
-    withdrawMessage();
-  }
-}
 </script>
 
 <template>
@@ -43,7 +24,7 @@ const dispatchFunction = (item: string) => {
         v-for="item in menuItems"
         :key="item"
         :k="item"
-        @click="dispatchFunction(item)"
+        @click="$emit('choose', item)"
         class="context-menu-item"
     >{{ item }}
     </ListItem>
@@ -56,6 +37,7 @@ const dispatchFunction = (item: string) => {
   background-color: white;
   z-index: 10000;
 }
+
 .context-menu-item:hover {
   background-color: #eee;
 }

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
-import {markdown2Html, emojisLoaded} from "../markdown.ts"
+import {emojisLoaded, markdown2Html} from "../markdown.ts"
 import {user, userId} from "../globals.ts";
 import {Message} from "../utils/structs.ts";
-import MessageContextMenu from "./MessageContextMenu.vue";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 
@@ -15,7 +14,11 @@ const props = defineProps<{
   message: Message,
   final: boolean,
 }>();
-const emits = defineEmits((['finished', 'showProfile']));
+const emits = defineEmits<{
+  finished: [],
+  showProfile: [],
+  showContextMenu: [x: number, y: number, subject: Message],
+}>();
 
 const messagePop = ref();
 const blobSrc = ref("");
@@ -56,20 +59,9 @@ const download = (retry: number) => {
   })
 }
 
-
-const showContextMenu = ref(false);
-const contextMenuX = ref(0);
-const contextMenuY = ref(0);
-
 const openContextMenu = (event: MouseEvent) => {
   event.preventDefault();
-  contextMenuX.value = event.clientX;
-  contextMenuY.value = event.clientY;
-  showContextMenu.value = true;
-}
-
-const closeContextMenu = () => {
-  showContextMenu.value = false;
+  emits('showContextMenu', event.clientX, event.clientY, props.message);
 }
 
 onMounted(() => {
@@ -77,11 +69,6 @@ onMounted(() => {
     emits('finished');
   }
   if (props.message.m_type > 0) download(0);
-  document.addEventListener("click", closeContextMenu);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", closeContextMenu);
 });
 
 console.log("message", props.message);
@@ -111,12 +98,6 @@ console.log("message", props.message);
            :class="message.sender !== userId ? 'justify-start' : 'justify-end'"
            @contextmenu="openContextMenu"
       >
-        <MessageContextMenu
-            v-if="showContextMenu"
-            :x="contextMenuX"
-            :y="contextMenuY"
-            :message="message"
-        />
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
             class="mr-3 spin"
