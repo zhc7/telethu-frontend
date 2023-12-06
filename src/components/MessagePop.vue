@@ -75,9 +75,9 @@ console.log("message", props.message);
 </script>
 
 <template>
-  <div class="d-flex mt-1"
+  <div class="d-flex pa-1"
        :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}"
-       :class="([message.sender === userId ? 'mr-6':'ml-6', message.t_type === 0 ? 'ma-4': ''])">
+       :class="([message.sender === userId ? 'mr-6':'ml-6', message.t_type === 0 ? 'pa-4': ''])">
     <Avatar
         :contact-id="message.sender"
         v-if="userId !== message.sender"
@@ -96,7 +96,6 @@ console.log("message", props.message);
       <!-- body row -->
       <div class="d-flex align-center" style="max-width: 100%"
            :class="message.sender !== userId ? 'justify-start' : 'justify-end'"
-           @contextmenu="openContextMenu"
       >
         <v-icon
             v-if="message.status === 'sending' && message.sender === userId"
@@ -110,57 +109,59 @@ console.log("message", props.message);
         >
           mdi-close-circle-outline
         </v-icon>
-        <div
-            v-if="message.m_type === 0"
-            ref="messagePop"
-            class="pa-2 rounded-lg text-left message-pop"
-            :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
-            style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
-        >
-          <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string)"></div>
+        <div @contextmenu="openContextMenu">
+          <div
+              v-if="message.m_type === 0"
+              ref="messagePop"
+              class="pa-2 rounded-lg text-left message-pop"
+              :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
+              style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
+          >
+            <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string)"></div>
+          </div>
+          <v-img
+              v-else-if="message.m_type === 1"
+              :src="blobSrc"
+              style="max-width: 18vw; max-height: 20vh; min-height: 12vw"
+              class="border rounded-lg"
+          >
+            <template v-slot:error>
+              <div class="d-flex justify-center align-center" style="height: 100%; width: 100%;">
+                <v-icon size="70px" color="grey">mdi-image-off-outline</v-icon>
+              </div>
+            </template>
+          </v-img>
+          <audio
+              v-else-if="message.m_type === 2"
+              :src="blobSrc"
+              style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+          />
+          <video
+              v-else-if="message.m_type === 3"
+              controls
+              :src="blobSrc"
+              style="max-width: 20vw; max-height: 20vh; border: 1px solid darkgrey; border-radius: 7px"
+          ></video>
+          <v-list-item
+              v-else
+              ref="messagePop"
+              class="pa-3 rounded-lg border"
+              style="white-space: pre-wrap; overflow-wrap: break-word; width: 200px; background-color: rgba(243,243,243,0.5)"
+              @click="triggerDownload(message.content as string, (message.info as string).split('/')[0])"
+          >
+            <template #prepend>
+              <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover
+                     class="rounded ma-1 mr-2"/>
+            </template>
+            <v-list-item-title style="font-weight: 600; font-size: 16px;">
+              {{ getFileInformation(message).file_name }}
+            </v-list-item-title>
+            <v-list-item-subtitle style="color: #888888">{{
+                getFileInformation(message).file_size
+              }}
+            </v-list-item-subtitle>
+          </v-list-item>
         </div>
-        <v-img
-            v-else-if="message.m_type === 1"
-            :src="blobSrc"
-            style="max-width: 18vw; max-height: 20vh; min-height: 12vw"
-            class="border rounded-lg"
-        >
-          <template v-slot:error>
-            <div class="d-flex justify-center align-center" style="height: 100%; width: 100%;">
-              <v-icon size="70px" color="grey">mdi-image-off-outline</v-icon>
-            </div>
-          </template>
-        </v-img>
-        <audio
-            v-else-if="message.m_type === 2"
-            :src="blobSrc"
-            style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
-        />
-        <video
-            v-else-if="message.m_type === 3"
-            controls
-            :src="blobSrc"
-            style="max-width: 20vw; max-height: 20vh; border: 1px solid darkgrey; border-radius: 7px"
-        ></video>
-        <v-list-item
-            v-else
-            ref="messagePop"
-            class="pa-3 rounded-lg border"
-            style="white-space: pre-wrap; overflow-wrap: break-word; width: 200px; background-color: rgba(243,243,243,0.5)"
-            @click="triggerDownload(message.content as string, (message.info as string).split('/')[0])"
-        >
-          <template #prepend>
-            <v-img width="40" :aspect-ratio="1" :src="getFileInformation(message).icon" cover
-                   class="rounded ma-1 mr-2"/>
-          </template>
-          <v-list-item-title style="font-weight: 600; font-size: 16px;">
-            {{ getFileInformation(message).file_name }}
-          </v-list-item-title>
-          <v-list-item-subtitle style="color: #888888">{{
-              getFileInformation(message).file_size
-            }}
-          </v-list-item-subtitle>
-        </v-list-item>
       </div>
 
       <!-- bottom icon row -->

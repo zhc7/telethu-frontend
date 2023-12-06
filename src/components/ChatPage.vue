@@ -41,6 +41,14 @@ const closeContextMenu = () => {
   showContextMenu.value = false;
 }
 
+const messageSelected = (msg: Message) => {
+  if (contextMenuSubject.value?.constructor === Array) {
+    return contextMenuSubject.value!.includes(msg);
+  } else {
+    return showContextMenu.value && contextMenuSubject.value === msg;
+  }
+}
+
 const selectMemberDialog = ref(false);
 const selectMemberSource = ref<string>('contact');
 const sharedMessages = ref<Array<Message>>([]);
@@ -229,13 +237,6 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
-        <v-alert
-            type="warning"
-            title="We have send you a verification email, please check your email box."
-            variant="tonal"
-            style="max-height: 4vw"
-            v-if="!settings.accountVerified"
-        />
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
             <v-btn @click="handleGetMoreMessage" class="text-blue mt-2" variant="text">Get more message...</v-btn>
@@ -249,17 +250,20 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
                 :key="mIndex"
                 :message="message"
                 :final="mIndex === group.messages.length - 1"
+                :class="{'bg-blue': messageSelected(message)}"
                 @finished="ScrollToBottom"
                 @show-profile="handleDisplayProfile"
                 @show-context-menu="openContextMenu"
             />
-            <MessageContextMenu
-                v-if="showContextMenu"
-                :x="contextMenuX"
-                :y="contextMenuY"
-                :type="contextMenuSubject!.constructor === Array ? 'Array' : 'Message'"
-                @choose="dispatchFunction"
-            />
+            <v-fade-transition>
+              <MessageContextMenu
+                  v-if="showContextMenu"
+                  :x="contextMenuX"
+                  :y="contextMenuY"
+                  :type="contextMenuSubject!.constructor === Array ? 'Array' : 'Message'"
+                  @choose="dispatchFunction"
+              />
+            </v-fade-transition>
           </div>
         </div>
       </v-row>
