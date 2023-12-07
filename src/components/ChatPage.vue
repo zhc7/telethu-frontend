@@ -7,12 +7,13 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, userId, users} from "../globals.ts";
+import {activeChatId, contacts, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
 import {ArrayMenuItems, ContextMenuSubject, Message, MessageMenuItems, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
+import {sendMessage} from "../core/users/send.ts";
 
 const debug = () => {
   console.log('selectMemberSource: ', selectMemberSource.value);
@@ -45,7 +46,7 @@ const closeContextMenu = () => {
 }
 
 const messageSelected = (msg: Message) => {
-  if (selectionMode.value) return selected.value.includes(msg);
+  if (selectionMode.value) return sharedMessages.value.includes(msg);
   if (contextMenuSubject.value?.constructor === Array) {
     return contextMenuSubject.value!.includes(msg);
   } else {
@@ -54,21 +55,9 @@ const messageSelected = (msg: Message) => {
 }
 
 const createGroupDialog = ref(false);
-const selectMemberSource = ref<string>('contact');
+const shareMessageDialog = ref(false);
 const sharedMessages = ref<Array<Message>>([]);
-const selectMemberTitle = ref('Create Group from Contact');
 
-watch(selectMemberSource, () => {
-  createGroupDialog.value = true;
-  selectMemberTitle.value = 'Share to Contact';
-})
-
-watch(createGroupDialog, () => {
-  if (!createGroupDialog.value && selectMemberSource.value === 'share') {
-    selectMemberSource.value = 'contact';
-    sharedMessages.value = [];
-  }
-})
 
 const groupedMessages = computed(() => {
   const grouped: Array<{
@@ -105,6 +94,12 @@ watch(activeChatId, (id) => {
   }
   selectedChatInfo.value = getUser(id);
 }, {immediate: true});
+
+watch(shareMessageDialog, (value) => {
+  if (!value) {
+    sharedMessages.value = [];
+  }
+});
 
 const ScrollToBottom = () => {
   const container = document.getElementById('message-flow')!;
@@ -173,24 +168,33 @@ const title = computed(() => {
 })
 
 const shareMessage = (msg: Message) => {
-  selectMemberSource.value = 'share';
   sharedMessages.value.push(msg);
+  console.log('shared messsages: ', sharedMessages.value);
+  shareMessageDialog.value = true;
   console.log('share', sharedMessages.value);
 };
 
+const handleShareMessages = (target) => {
+  for (const member of target) {
+    for (const message of sharedMessages.value) {
+      sendMessage(member, message.content, message.t_type);
+    }
+  }
+  shareMessageDialog.value = false;
+}
+
 const selectionMode = ref<boolean>(false);
-const selected = ref<Array<Message>>([]);
 const selectMessage = (msg: Message) => {
-  selected.value.push(msg);
+  sharedMessages.value.push(msg);
   selectionMode.value = true;
 }
 
 const handleSelectMessage = (msg: Message) => {
   if (selectionMode.value) {
-    if (selected.value.includes(msg)) {
-      selected.value.splice(selected.value.indexOf(msg), 1);
+    if (sharedMessages.value.includes(msg)) {
+      sharedMessages.value.splice(selected.value.indexOf(msg), 1);
     } else {
-      selected.value.push(msg);
+      sharedMessages.value.push(msg);
     }
   }
 }
@@ -208,7 +212,7 @@ const shareGroupMessage = (msgs: Array<Message>) => {
 }
 
 const handleForwardGroupMessage = () => {
-  alert("forwarding " + selected.value.length + " messages");
+  shareMessageDialog.value = true;
 }
 
 const arrayItemDispatcher: { [key in ArrayMenuItems]: (msgs: Array<Message>) => void } = {
@@ -233,9 +237,6 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
   }
 }
 
-const createGroupSelected = ref<Array<number>>([]);
-const createGroupPinned = ref<Array<number>>([]);
-
 </script>
 
 <template>
@@ -259,12 +260,12 @@ const createGroupPinned = ref<Array<number>>([]);
                 color="blue"
                 @click="handleForwardGroupMessage"
             >
-              Forward {{ selected.length }}
+              Forward {{ sharedMessages.length }}
             </v-btn>
             <v-spacer/>
             <v-btn
                 color="red"
-                @click="selectionMode=false; selected=[]"
+                @click="selectionMode=false; sharedMessages=[]"
             >
               Cancel
             </v-btn>
@@ -337,6 +338,15 @@ const createGroupPinned = ref<Array<number>>([]);
       title="Create a New Group"
       :sharedMessages="sharedMessages"
   />
+  <SelectMember
+      v-model:show-dialog="shareMessageDialog"
+      :shared-messages="sharedMessages"
+      :pinned="[]"
+      title="Share Messages"
+      :possible="contacts"
+      @confirm="(target, _) => handleShareMessages(target)"
+  />
+
 
 </template>
 

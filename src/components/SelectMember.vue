@@ -38,6 +38,10 @@ const dialog = computed({
   }
 });
 
+watch(props.showDialog, () => {
+  selectedStuff.value = props.single ? 0 : [];
+});
+
 const dispatchedMention = (names: Array<number>) => {
   emit('membersSelected', names);
   dialog.value = false;
@@ -81,14 +85,7 @@ const dispatchedCreateGroupFromContact = () => {
   dialog.value = false;
 }
 
-const dispatchedShare = (list: Array<number>) => {
-  for (const member of list) {
-    for (const message of props.sharedMessages) {
-      sendMessage(member, message.content, message.t_type);
-    }
-  }
-  dialog.value = false;
-}
+
 
 const positiveButtonText = computed(() => {
   if (props.source === 'personalFriend') {
