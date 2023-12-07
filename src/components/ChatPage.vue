@@ -45,6 +45,7 @@ const closeContextMenu = () => {
 }
 
 const messageSelected = (msg: Message) => {
+  if (selectionMode.value) return selected.value.includes(msg);
   if (contextMenuSubject.value?.constructor === Array) {
     return contextMenuSubject.value!.includes(msg);
   } else {
@@ -56,10 +57,12 @@ const selectMemberDialog = ref(false);
 const selectMemberSource = ref<string>('contact');
 const sharedMessages = ref<Array<Message>>([]);
 const selectMemberTitle = ref('Create Group from Contact');
+
 watch(selectMemberSource, () => {
   selectMemberDialog.value = true;
   selectMemberTitle.value = 'Share to Contact';
 })
+
 watch(selectMemberDialog, () => {
   if (!selectMemberDialog.value && selectMemberSource.value === 'share') {
     selectMemberSource.value = 'contact';
@@ -175,6 +178,23 @@ const shareMessage = (msg: Message) => {
   console.log('share', sharedMessages.value);
 };
 
+const selectionMode = ref<boolean>(false);
+const selected = ref<Array<Message>>([]);
+const selectMessage = (msg: Message) => {
+  selected.value.push(msg);
+  selectionMode.value = true;
+}
+
+const handleSelectMessage = (msg: Message) => {
+  if (selectionMode.value) {
+    if (selected.value.includes(msg)) {
+      selected.value.splice(selected.value.indexOf(msg), 1);
+    } else {
+      selected.value.push(msg);
+    }
+  }
+}
+
 const deleteMessage = () => {
   alert('delete');
 };
@@ -187,6 +207,10 @@ const shareGroupMessage = (msgs: Array<Message>) => {
   alert("share group message");
 }
 
+const handleForwardGroupMessage = () => {
+  alert("forwarding " + selected.value.length + " messages");
+}
+
 const arrayItemDispatcher: { [key in ArrayMenuItems]: (msgs: Array<Message>) => void } = {
   [ArrayMenuItems.GroupShare]: shareGroupMessage,
 };
@@ -196,6 +220,7 @@ const messageItemDispatcher: { [key in MessageMenuItems]: (msg: Message) => void
     navigator.clipboard.writeText(msg.content as string)
   },
   [MessageMenuItems.Share]: shareMessage,
+  [MessageMenuItems.Select]: selectMessage,
   [MessageMenuItems.Delete]: deleteMessage,
   [MessageMenuItems.Withdraw]: withdrawMessage,
 };
@@ -225,21 +250,38 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
-          <p style="font-size: 20px; font-weight: 450; display: inline">
-            {{ title }}
-          </p>
-          <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.includes(selectedChatInfo.id)">
-            mdi-bell-off
-          </v-icon>
-          <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.includes(selectedChatInfo.id)">
-            mdi-account-off-outline
-          </v-icon>
+          <div v-if="selectionMode" class="d-flex">
+            <v-btn
+                color="blue"
+                @click="handleForwardGroupMessage"
+            >
+              Forward {{ selected.length }}
+            </v-btn>
+            <v-spacer/>
+            <v-btn
+                color="red"
+                @click="selectionMode=false; selected=[]"
+            >
+              Cancel
+            </v-btn>
+          </div>
+          <div v-else>
+            <p style="font-size: 20px; font-weight: 450; display: inline">
+              {{ title }}
+            </p>
+            <v-icon size="x-small" v-if="selectedChatInfo && settings.muted.includes(selectedChatInfo.id)">
+              mdi-bell-off
+            </v-icon>
+            <v-icon size="x-small" v-if="selectedChatInfo && settings.pinned.includes(selectedChatInfo.id)">
+              mdi-pin
+            </v-icon>
+          </div>
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
         <v-btn icon="mdi-plus" @click="selectMemberDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
-      <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height">
+      <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height" @contextmenu="">
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
             <v-btn @click="handleGetMoreMessage" class="text-blue mt-2" variant="text">Get more message...</v-btn>
@@ -257,6 +299,7 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
                 @finished="ScrollToBottom"
                 @show-profile="handleDisplayProfile"
                 @show-context-menu="openContextMenu"
+                @click="handleSelectMessage(message)"
             />
             <v-scale-transition origin="top left">
               <MessageContextMenu

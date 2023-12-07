@@ -77,7 +77,7 @@ console.log("message", props.message);
 <template>
   <div class="d-flex pa-1"
        :style="{alignSelf: message.sender !== userId ? 'flex-start' : 'flex-end'}"
-       :class="([message.sender === userId ? 'mr-6':'ml-6', message.t_type === 0 ? 'pa-4': ''])">
+       :class="([message.sender === userId ? 'pr-6':'pl-6', message.t_type === 0 ? 'pa-4': ''])">
     <Avatar
         :contact-id="message.sender"
         v-if="userId !== message.sender"

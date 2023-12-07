@@ -108,6 +108,7 @@ export enum ArrayMenuItems {
 export enum MessageMenuItems {
     Copy = 'Copy',
     Share = 'Share',
+    Select = 'Select',
     Delete = 'Delete',
     Withdraw = 'Withdraw',
 }
