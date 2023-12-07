@@ -12,7 +12,7 @@ import {getUser} from "../core/data.ts";
  *
  */
 const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup']);
-const emit = defineEmits(['update:showDialog']);
+const emit = defineEmits(['update:showDialog', 'membersSelected']);
 const createGroupName = ref('');
 
 const pinedList = ref<Array<number>>([]);
@@ -76,6 +76,11 @@ watch(dialog, (newValue) => {
   }
 });
 
+const dispatchedMention = (names: Array<number>) => {
+  emit('membersSelected', names);
+  dialog.value = false;
+}
+
 const dispatchFunction = () => {
   console.log('source', props.source);
   const list = [];
@@ -93,6 +98,8 @@ const dispatchFunction = () => {
     dispatchedCreateGroupFromContact();
   } else if (props.source === 'share') {
     dispatchedShare(list);
+  } else if (props.source === 'input@mention') {
+    dispatchedMention(list);
   }
 }
 

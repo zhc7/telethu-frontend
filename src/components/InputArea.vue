@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, vModelText, watch} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
-import {activeChatId, messages, unreadCounter, user} from "../globals.ts";
+import {activeChatId, messages, unreadCounter, user, users} from "../globals.ts";
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
+import SelectMember from "./SelectMember.vue";
 
 const props = defineProps(['chat'])
 
@@ -114,6 +115,30 @@ const handleTextareaKeydown = (e: KeyboardEvent) => {
   }
 };
 
+const encounterAt = ref(false);
+const selectMemberDialog = ref(false);
+const handleInput = () => {
+  const currentMessage = message.value;
+  const lastChar = currentMessage.charAt(currentMessage.length - 1);
+
+  if (lastChar === '@') {
+    encounterAt.value = true;
+    selectMemberDialog.value = true;
+  } else {
+    encounterAt.value = false;
+  }
+};
+
+const handleMembersSelected = (selectedMembers: Array<number>) => {
+  if (selectedMembers.length === 0) return;
+  if (selectedMembers.length > 0) {
+    message.value = message.value.slice(0, -1);
+  }
+  for (const member of selectedMembers) {
+    message.value += `@${users.value[member].name} `;
+  }
+};
+
 const handleFocus = () => {
   // read message
   const chatMessages = messages.value[activeChatId.value];
@@ -147,6 +172,7 @@ const handleFocus = () => {
         :append-inner-icon="'mdi-emoticon-kiss-outline'"
         @click:append-inner="showStickers = !showStickers"
         @paste="handlePaste"
+        @input="handleInput"
     >
       <template #prepend-inner>
         <v-icon @click="triggerFileInput">mdi-paperclip</v-icon>
@@ -200,6 +226,15 @@ const handleFocus = () => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <selectMember
+      v-if="encounterAt"
+      :showDialog="selectMemberDialog"
+      title="Select member to mention"
+      source="input@mention"
+      @membersSelected="handleMembersSelected"
+      @update:showDialog="selectMemberDialog = $event"
+  />
 </template>
 
 <style scoped>
