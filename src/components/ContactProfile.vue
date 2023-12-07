@@ -266,9 +266,8 @@ const handleRemoveAdmin = (memberId: number) => {
     />
     <SelectMember
         v-model:show-dialog="changeOwnerDialog"
-        single="true"
+        :single="true"
         title="Change Ownership"
-        :sharedMessages="sharedMessages"
         :possible="displayContactInfo.members"
         :pinned="[]"
         @confirm="(target, _) => {

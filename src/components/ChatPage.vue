@@ -10,7 +10,7 @@ import {formatChatMessageTime} from "../utils/datetime.ts";
 import {activeChatId, contacts, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
-import {ArrayMenuItems, ContextMenuSubject, Message, MessageMenuItems, TargetType} from "../utils/structs";
+import {ArrayMenuItems, ContextMenuSubject, GroupData, Message, MessageMenuItems, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {sendMessage} from "../core/users/send.ts";
@@ -334,7 +334,7 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
   </div>
   <SelectMember
       v-model:show-dialog="createGroupDialog"
-      :pinned="category === 'user' ? [user.id, activeChatId] : selectedChatInfo.members"
+      :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
       title="Create a New Group"
       :sharedMessages="sharedMessages"
   />
