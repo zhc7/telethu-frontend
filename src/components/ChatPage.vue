@@ -2,7 +2,7 @@
 
 import ChatList from "./ChatList.vue";
 import MessagePop from "./MessagePop.vue";
-import {computed, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
@@ -31,10 +31,13 @@ const contextMenuY = ref(0);
 const contextMenuSubject = ref<ContextMenuSubject>();
 
 const openContextMenu = (x: number, y: number, subject: ContextMenuSubject) => {
-  contextMenuX.value = x;
-  contextMenuY.value = y;
-  contextMenuSubject.value = subject;
-  showContextMenu.value = true;
+  showContextMenu.value = false;
+  nextTick().then(() => {
+    contextMenuX.value = x;
+    contextMenuY.value = y;
+    contextMenuSubject.value = subject;
+    showContextMenu.value = true;
+  });
 }
 
 const closeContextMenu = () => {
@@ -255,7 +258,7 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
                 @show-profile="handleDisplayProfile"
                 @show-context-menu="openContextMenu"
             />
-            <v-fade-transition>
+            <v-scale-transition origin="top left">
               <MessageContextMenu
                   v-if="showContextMenu"
                   :x="contextMenuX"
@@ -263,7 +266,7 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
                   :type="contextMenuSubject!.constructor === Array ? 'Array' : 'Message'"
                   @choose="dispatchFunction"
               />
-            </v-fade-transition>
+            </v-scale-transition>
           </div>
         </div>
       </v-row>
