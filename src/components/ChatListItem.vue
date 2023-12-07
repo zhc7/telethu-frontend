@@ -36,7 +36,7 @@ const mute = computed(() => {
 
 const unread = computed<number>(() => {
   return unreadCounter.value[props.contactId] || 0;
-})
+});
 </script>
 
 <template>
@@ -54,9 +54,11 @@ const unread = computed<number>(() => {
       <p>{{ hotMessages[contactId] ? formatChatMessageTime(nowRef, hotMessages[contactId]?.time) : '' }}</p>
     </div>
     <template #append>
-      <v-icon v-show="pin">mdi-pin</v-icon>
-      <v-icon v-show="mute">mdi-bell-off</v-icon>
-      <v-badge class="unread-counter-badge" v-if="!mute && unread" color="red" :content="unread" inline></v-badge>
+      <v-icon v-if="pin" size="xs">mdi-pin</v-icon>
+      <v-icon v-else size="xs"></v-icon>
+      <v-icon v-if="mute" size="xs">mdi-bell-off</v-icon>
+      <v-badge class="unread-counter-badge" v-else-if="!mute && unread" color="red" :content="unread" inline></v-badge>
+      <v-icon v-else size="xs"></v-icon>
     </template>
   </ListItem>
 </template>
