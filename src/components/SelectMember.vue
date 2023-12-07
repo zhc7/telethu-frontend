@@ -1,34 +1,22 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
+import {createGroup} from "../core/users/send.ts";
+import {groupAddMember} from "../core/groups/send.ts";
 import Avatar from "./Avatar.vue";
 import {getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {contacts} from "../globals.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
  *
  */
-const props = withDefaults(defineProps<{
-  showDialog: boolean,
-  title?: string,
-  pinned?: Array<number>,
-  possible?: Array<number>,
-  single?: boolean,
-  positiveButtonText?: string,
-}>(), {
-  title: 'Select Member',
-  pinned: () => [],
-  possible: () => contacts.value,
-  single: false,
-  positiveButtonText: 'Confirm',
-});
+const props = defineProps(['showDialog', 'title', 'contactId', 'sharedMessages', 'pinned', 'possible', 'single']);
 const emit = defineEmits(['update:showDialog', 'confirm', 'cancel']);
 const inputText = ref('');
 
-const selectedStuff = ref<number | Array<number>>([]);
+const selectedStuff = ref([]);
 
 const actUnselect = (id: number) => {
   if (props.single) {
@@ -36,7 +24,7 @@ const actUnselect = (id: number) => {
     return;
   }
   console.log(selectedStuff.value);
-  selectedStuff.value = (selectedStuff.value as Array<number>).filter((i) => {
+  selectedStuff.value = selectedStuff.value.filter((i) => {
     return id !== i;
   });
 };
@@ -49,8 +37,10 @@ const dialog = computed({
   }
 });
 
-watch(props.showDialog, () => {
-  selectedStuff.value = props.single ? 0 : [];
+watch(props.showDialog, (newValue) => {
+  if (!newValue) {
+    selectedStuff.value = props.single ? 0 : [];
+  }
 });
 
 const dispatchedMention = (names: Array<number>) => {
@@ -58,75 +48,67 @@ const dispatchedMention = (names: Array<number>) => {
   dialog.value = false;
 }
 
-// const dispatchFunction = () => {
-//   const list = [];
-//   for (const member of props.pinned) {
-//     list.push(member);
-//   }
-//   for (const member of selectedStuff.value) {
-//     list.push(member);
-//   }
-//   if (props.source === 'chatList') {
-//     dispatchedCreateGroup(list);
-//   } else if (props.source === 'existingGroup') {
-//     dispatchedGroupAddMember();
-//   } else if (props.source === 'personalFriend') {
-//     dispatchedCreateGroupFromContact();
-//   } else if (props.source === 'share') {
-//     dispatchedShare(list);
-//   } else if (props.source === 'input@mention') {
-//     dispatchedMention(list);
-//   }
-// }
+const dispatchFunction = () => {
+  const list = [];
+  for (const member of props.pinned) {
+    list.push(member);
+  }
+  for (const member of selectedStuff.value) {
+    list.push(member);
+  }
+  if (props.source === 'chatList') {
+    dispatchedCreateGroup(list);
+  } else if (props.source === 'existingGroup') {
+    dispatchedGroupAddMember();
+  } else if (props.source === 'personalFriend') {
+    dispatchedCreateGroupFromContact();
+  } else if (props.source === 'share') {
+    dispatchedShare(list);
+  } else if (props.source === 'input@mention') {
+    dispatchedMention(list);
+  }
+}
 
-// const dispatchedCreateGroup = (list: Array<number>) => {
-//   createGroup(inputText.value, list);
-//   dialog.value = false;
-// }
+const dispatchedCreateGroup = (list: Array<number>) => {
+  createGroup(inputText.value, list);
+  dialog.value = false;
+}
 
-// const dispatchedGroupAddMember = () => {
-//   groupAddMember(props.baseGroup.id, selectedStuff.value);
-//   dialog.value = false;
-// }
+const dispatchedGroupAddMember = () => {
+  groupAddMember(props.baseGroup.id, selectedStuff.value);
+  dialog.value = false;
+}
 
-// const dispatchedCreateGroupFromContact = () => {
-//   console.log("create group from contact", inputText.value, selectedStuff.value);
-//   createGroup(inputText.value, selectedStuff.value);
-//   selectedStuff.value = [];
-//   dialog.value = false;
-// }
+const dispatchedCreateGroupFromContact = () => {
+  console.log("create group from contact", inputText.value, selectedStuff.value);
+  createGroup(inputText.value, selectedStuff.value);
+  selectedStuff.value = [];
+  dialog.value = false;
+}
 
-// const dispatchedShare = (list: Array<number>) => {
-//   for (const member of list) {
-//     for (const message of props.sharedMessages) {
-//       sendMessage(member, message.content, message.t_type);
-//     }
-//   }
-//   dialog.value = false;
-// }
 
-// const positiveButtonText = computed(() => {
-//   if (props.source === 'personalFriend') {
-//     return 'Create';
-//   } else if (props.source === 'existingGroup') {
-//     return 'Add';
-//   } else if (props.source === 'chatList') {
-//     return 'Create';
-//   } else {
-//     return 'Confirm';
-//   }
-// });
+const positiveButtonText = computed(() => {
+  if (props.source === 'personalFriend') {
+    return 'Create';
+  } else if (props.source === 'existingGroup') {
+    return 'Add';
+  } else if (props.source === 'chatList') {
+    return 'Create';
+  } else {
+    return 'Confirm';
+  }
+});
 
 const negativeButtonText = computed(() => {
   return 'Cancel';
 })
 
-const fullList = computed(() => {
+const emitValue = computed(() => {
   if (props.single) {
     return selectedStuff.value;
   }
   const l = [];
-  for (const id of selectedStuff.value as Array<number>) {
+  for (const id of selectedStuff.value) {
     l.push(id);
   }
   for (const id of props.pinned) {
@@ -167,7 +149,7 @@ const fullList = computed(() => {
           </div>
           <div
               v-if="!single"
-              v-for="member in selectedStuff as Array<number>"
+              v-for="member in selectedStuff"
               :key="member"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               @click="actUnselect(member)"
@@ -178,7 +160,7 @@ const fullList = computed(() => {
             <p>{{ getUser(member).name }}</p>
           </div>
         </div>
-        <List class="overflow-y-auto flex-1-1" :mode="single ? 'single' : 'multi'" v-model="selectedStuff" >
+        <List class="overflow-y-auto flex-1-1" :mode="single ? 'single' : 'multi'" v-model="selectedStuff">
           <ListItem
               v-for="member in possible"
               :title="getUser(member).name"
@@ -196,7 +178,7 @@ const fullList = computed(() => {
         <v-btn @click="dialog=false">
           {{ negativeButtonText }}
         </v-btn>
-        <v-btn @click="$emit('confirm', fullList, inputText)">{{ positiveButtonText }}</v-btn>
+        <v-btn @click="$emit('confirm', emitValue, inputText)">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

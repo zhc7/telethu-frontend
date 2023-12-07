@@ -175,8 +175,10 @@ const shareMessage = (msg: Message) => {
 };
 
 const handleShareMessages = (target) => {
+  console.log('sharing messages', sharedMessages.value);
   for (const member of target) {
     for (const message of sharedMessages.value) {
+      alert(member);
       sendMessage(member, message.content, message.t_type);
     }
   }
