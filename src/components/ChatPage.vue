@@ -13,7 +13,7 @@ import {getUser} from "../core/data";
 import {ArrayMenuItems, ContextMenuSubject, GroupData, Message, MessageMenuItems, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
-import {forwardMessage} from "../core/messages/send.ts";
+import {forwardMessage, recallMessage} from "../core/messages/send.ts";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -211,8 +211,11 @@ const deleteMessage = () => {
   alert('delete');
 };
 
-const withdrawMessage = () => {
-  alert('withdraw');
+const withdrawMessage = (message: Message) => {
+  if (typeof message.message_id !== 'number') {
+    return;
+  }
+  recallMessage(message.message_id, activeChatId.value, category.value === 'group' ? TargetType.GROUP : TargetType.FRIEND);
 };
 
 const handleForwardGroupMessage = () => {

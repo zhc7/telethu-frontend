@@ -21,6 +21,7 @@ import {
 } from "./users/receive.ts";
 import axios from "axios";
 import {token} from "../auth.ts";
+import {handleRecallMessage} from "./messages/receive.ts";
 
 
 const searchResult = ref();
@@ -196,8 +197,7 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
 const dispatcher: { [key in MessageType]?: (arg0: Message) => void } = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
-dispatcher[MessageType.FUNC_CALLBACK_SELF_MESSAGE] = () => {
-};
+dispatcher[MessageType.FUNC_RECALL_SELF_MESSAGE] = handleRecallMessage;
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted;
 dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {

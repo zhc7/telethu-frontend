@@ -2,6 +2,7 @@ import {Message} from "../../utils/structs";
 import {getUser} from "../data.ts";
 import axios from "axios";
 import {reactive} from "vue";
+import {messages, user} from "../../globals.ts";
 
 const getMessage = (messageId: number): Message => {
     const message = reactive({
@@ -22,4 +23,13 @@ const getMessage = (messageId: number): Message => {
 
 export const handleForwardedMessage = (message: Message) => {
     // TODO
+}
+
+export const handleRecallMessage = (message: Message) => {
+    const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
+    let targetMessage = messages.value[target].find((m: Message) => m.message_id === message.content);
+    if (targetMessage === undefined) {
+        return;
+    }
+    targetMessage.content = "*message recalled*";
 }
