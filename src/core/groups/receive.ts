@@ -1,4 +1,4 @@
-import {GroupData, Message} from "../../utils/structs.ts";
+import {Message} from "../../utils/structs.ts";
 import {contacts, userId} from "../../globals.ts";
 import {getUser} from "../data.ts";
 
@@ -21,17 +21,35 @@ export const handleGroupOwnerChanged = (message: Message) => {
     getUser(groupId, true);
 }
 export const handleGroupAdminAdded = (message: Message) => {
-    getUser(message.content as number, true);
+    const content = message.content;
+    if (content === +content) {
+        getUser(content as number, true);
+    } else {
+        alert(content);
+        console.log('in group add admin', message);
+    }
 }
 export const handleGroupAdminRemoved = (message: Message) => {
-    const groupId = message.content as number;
-    getUser(groupId, true);
+    const content = message.content;
+    if (content === +content) {
+        getUser(content, true);
+    } else {
+        alert(content);
+    }
 }
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
-    const groupId = message.receiver as number;
-    getUser(groupId, true);
+    const content = message.content;
+    if (content === +content) {
+        getUser(content, true);
+    } else {
+        alert(content);
+    }
 }
 export const handleCreateGroup = (message: Message) => {
-    alert(message.content);
-    contacts.value.push(message.content);
+    const content = message.content;
+    if (content === +content) {
+        contacts.value.push(content);
+    } else {
+        alert(content);
+    }
 };

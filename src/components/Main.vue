@@ -11,7 +11,7 @@ import {
   activeChatId,
   currentPage,
   isSocketConnected,
-  rawRequestList,
+  rawRequestList, requests,
   unreadCounter,
   userAvatar,
   userName
@@ -64,11 +64,11 @@ const unreadTotal = computed(() => {
                      @click="activePage = 'profile'"
         >
         </v-list-item>
-        <v-list-item class="text-left" @click="debugAction">
-        </v-list-item>
+<!--        <v-list-item class="text-left" @click="debugAction">-->
+<!--        </v-list-item>-->
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
-        <ListItem prepend-icon="mdi-account-multiple" :badge-value="rawRequestList.length" title="Contacts" k="contacts"></ListItem>
+        <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts" k="contacts"></ListItem>
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>

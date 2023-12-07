@@ -90,7 +90,6 @@ export const groupAddMember = (groupId: number, memberList: number []) => {
     chatManager.sendMessage(message);
 }
 export const removeGroupMember = (groupId: number, memberId: number) => {
-    alert('yesyes');
     const message = {
         time: Date.now(),
         m_type: MessageType.FUNC_REMOVE_GROUP_MEMBER,

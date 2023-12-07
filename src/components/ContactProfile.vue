@@ -2,10 +2,10 @@
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {selectedChatInfo, settings, user, userContacts, userId} from "../globals.ts";
+import {settings, user, userContacts, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
-import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
+import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, createGroup, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 
@@ -16,6 +16,7 @@ defineEmits(["accept", "reject", "apply"]);
 const groupAddMemberDialog = ref(false);
 
 const deleteConfirmDialog = ref(false);
+const changeOwnerDialog = ref(false);
 
 const switchValueMute = computed<boolean>({
   get: () => {
@@ -169,8 +170,8 @@ const handleRemoveAdmin = (memberId: number) => {
                   :style="displayContactInfo.owner === member ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member) ? 'border: #008eff 2px solid' : '' "
               />
               <div class="badge-kick"
-                   v-if="displayContactInfo.owner === userId && member !== userId || displayContactInfo.admin.includes(userId) && member !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member)"
-                   @click="handleKickMember(member.id)">——
+                   v-if="displayContactInfo.owner === userId && member !== userId || displayContactInfo.admin.includes(userId) && member !== userId && member !== displayContactInfo.owner && !displayContactInfo.admin.includes(member)"
+                   @click="handleKickMember(member)">——
               </div>
               <p>{{
                   (() => {
@@ -179,12 +180,12 @@ const handleRemoveAdmin = (memberId: number) => {
                   })()
                 }}</p>
               <div class="badge-lift"
-                   v-if="displayContactInfo.owner === userId && member.id !== userId && !displayContactInfo.admin.includes(member.id)"
-                   @click="handleAddAdmin(member.id)">|
+                   v-if="displayContactInfo.owner === userId && member !== userId && !displayContactInfo.admin.includes(member)"
+                   @click="handleAddAdmin(member)">|
               </div>
               <div class="badge-fire"
-                   v-if="displayContactInfo.owner === userId && member.id !== userId && displayContactInfo.admin.includes(member.id)"
-                   @click="handleRemoveAdmin(member.id)">*
+                   v-if="displayContactInfo.owner === userId && member !== userId && displayContactInfo.admin.includes(member)"
+                   @click="handleRemoveAdmin(member)">*
               </div>
             </div>
             <div class="d-flex flex-column align-center ma-auto mb-5">
@@ -231,6 +232,12 @@ const handleRemoveAdmin = (memberId: number) => {
       </v-col>
       <v-card-actions class="justify-center">
         <div class="d-flex flex-column">
+          <v-btn
+              v-if="displayContactInfo.category === 'group' && displayContactInfo.owner === user.id"
+              color="green"
+              @click="changeOwnerDialog=true"
+          >Change Ownership
+          </v-btn>
           <slot name="buttons"/>
           <v-btn color="error" @click="handleDelete">Delete</v-btn>
         </div>
@@ -260,6 +267,18 @@ const handleRemoveAdmin = (memberId: number) => {
         @confirm="(list, name) => {
           groupAddMemberDialog=false;
           createGroup(name, list);
+        }"
+    />
+    <SelectMember
+        v-model:show-dialog="changeOwnerDialog"
+        single="true"
+        title="Change Ownership"
+        :sharedMessages="sharedMessages"
+        :possible="displayContactInfo.members"
+        :pinned="[]"
+        @confirm="(target, _) => {
+          changeOwnerDialog=false;
+          groupChangeOwner(displayContactInfo.id, target);
         }"
     />
   </v-card>

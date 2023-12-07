@@ -8,7 +8,7 @@ import {
     handleAddGroupMember,
     handleCreateGroup,
     handleGroupAdminAdded,
-    handleGroupAdminRemoved,
+    handleGroupAdminRemoved, handleGroupOwnerChanged,
     handleSomebodyExitGroup,
     handleSomebodyRemovedFromGroup
 } from "./groups/receive.ts";
@@ -205,7 +205,7 @@ dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {
 dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {
 }; // TODO
 dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
-
+dispatcher[MessageType.FUNC_CHANGE_GROUP_OWNER] = handleGroupOwnerChanged;
 dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {
 }; // TODO
 dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {

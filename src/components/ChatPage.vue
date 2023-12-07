@@ -53,18 +53,18 @@ const messageSelected = (msg: Message) => {
   }
 }
 
-const selectMemberDialog = ref(false);
+const createGroupDialog = ref(false);
 const selectMemberSource = ref<string>('contact');
 const sharedMessages = ref<Array<Message>>([]);
 const selectMemberTitle = ref('Create Group from Contact');
 
 watch(selectMemberSource, () => {
-  selectMemberDialog.value = true;
+  createGroupDialog.value = true;
   selectMemberTitle.value = 'Share to Contact';
 })
 
-watch(selectMemberDialog, () => {
-  if (!selectMemberDialog.value && selectMemberSource.value === 'share') {
+watch(createGroupDialog, () => {
+  if (!createGroupDialog.value && selectMemberSource.value === 'share') {
     selectMemberSource.value = 'contact';
     sharedMessages.value = [];
   }
@@ -282,7 +282,7 @@ const createGroupPinned = ref<Array<number>>([]);
           </div>
         </v-toolbar-title>
         <v-btn icon="mdi-bug" @click="debug"/>
-        <v-btn icon="mdi-plus" @click="selectMemberDialog = true;" v-if="category === 'user'"/>
+        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
       <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height" @contextmenu="">
@@ -332,12 +332,12 @@ const createGroupPinned = ref<Array<number>>([]);
     </ContactProfile>
   </div>
   <SelectMember
-      v-if="show"
-      v-model:show-dialog="selectMemberDialog"
+      v-model:show-dialog="createGroupDialog"
       :pinned="category === 'user' ? [user.id, activeChatId] : selectedChatInfo.members"
-      :title="selectMemberTitle"
+      title="Create a New Group"
       :sharedMessages="sharedMessages"
   />
+
 </template>
 
 <style scoped>

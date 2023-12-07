@@ -14,7 +14,9 @@ const handleClick = () => {
         return i !== props.k;
       });
     } else {
-      selected.value.push(props.k);
+      if (!selected.value.includes(props.k)) {
+        selected.value.push(props.k);
+      }
     }
   } else {
     selected.value = props.k;

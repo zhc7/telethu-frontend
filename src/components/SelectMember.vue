@@ -13,14 +13,19 @@ import List from "./List.vue";
  * source: chatList, personalFriend, existingGroup, share
  *
  */
-const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup', 'pinned', 'possible']);
+const props = defineProps(['showDialog', 'title', 'contactId', 'sharedMessages', 'pinned', 'possible', 'single']);
 const emit = defineEmits(['update:showDialog', 'confirm', 'cancel']);
-const createGroupName = ref('');
+const inputText = ref('');
 
-const selectedList = ref([]);
+const selectedStuff = ref([]);
 
 const actUnselect = (id: number) => {
-  selectedList.value = selectedList.value.filter((i) => {
+  if (props.single) {
+    selectedStuff.value = 0;
+    return;
+  }
+  console.log(selectedStuff.value);
+  selectedStuff.value = selectedStuff.value.filter((i) => {
     return id !== i;
   });
 };
@@ -28,12 +33,9 @@ const actUnselect = (id: number) => {
 const dialog = computed({
   get: () => props.showDialog,
   set: (value) => {
+    selectedStuff.value = props.single ? 0 : [];
     emit('update:showDialog', value)
   }
-});
-
-watch(dialog, (newValue) => {
-
 });
 
 const dispatchedMention = (names: Array<number>) => {
@@ -42,12 +44,11 @@ const dispatchedMention = (names: Array<number>) => {
 }
 
 const dispatchFunction = () => {
-  console.log('source', props.source);
   const list = [];
   for (const member of props.pinned) {
     list.push(member);
   }
-  for (const member of selectedList.value) {
+  for (const member of selectedStuff.value) {
     list.push(member);
   }
   if (props.source === 'chatList') {
@@ -64,19 +65,19 @@ const dispatchFunction = () => {
 }
 
 const dispatchedCreateGroup = (list: Array<number>) => {
-  createGroup(createGroupName.value, list);
+  createGroup(inputText.value, list);
   dialog.value = false;
 }
 
 const dispatchedGroupAddMember = () => {
-  groupAddMember(props.baseGroup.id, selectedList.value);
+  groupAddMember(props.baseGroup.id, selectedStuff.value);
   dialog.value = false;
 }
 
 const dispatchedCreateGroupFromContact = () => {
-  console.log("create group from contact", createGroupName.value, selectedList.value);
-  createGroup(createGroupName.value, selectedList.value);
-  selectedList.value = [];
+  console.log("create group from contact", inputText.value, selectedStuff.value);
+  createGroup(inputText.value, selectedStuff.value);
+  selectedStuff.value = [];
   dialog.value = false;
 }
 
@@ -106,8 +107,11 @@ const negativeButtonText = computed(() => {
 })
 
 const fullList = computed(() => {
+  if (props.single) {
+    return selectedStuff.value;
+  }
   const l = [];
-  for (const id of selectedList.value) {
+  for (const id of selectedStuff.value) {
     l.push(id);
   }
   for (const id of props.pinned) {
@@ -128,7 +132,7 @@ const fullList = computed(() => {
         <v-text-field
             density="compact"
             label="group name"
-            v-model="createGroupName"
+            v-model="inputText"
             variant="outlined"
         />
         <v-text-field
@@ -147,7 +151,8 @@ const fullList = computed(() => {
             <p>{{ getUser(member).name }}</p>
           </div>
           <div
-              v-for="member in selectedList"
+              v-if="!single"
+              v-for="member in selectedStuff"
               :key="member"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               @click="actUnselect(member)"
@@ -158,7 +163,7 @@ const fullList = computed(() => {
             <p>{{ getUser(member).name }}</p>
           </div>
         </div>
-        <List class="overflow-y-auto flex-1-1" mode="multi" v-model="selectedList">
+        <List class="overflow-y-auto flex-1-1" :mode="single ? 'single' : 'multi'" v-model="selectedStuff" >
           <ListItem
               v-for="member in possible"
               :title="getUser(member).name"
@@ -176,7 +181,7 @@ const fullList = computed(() => {
         <v-btn @click="dialog=false">
           {{ negativeButtonText }}
         </v-btn>
-        <v-btn @click="$emit('confirm', fullList, createGroupName)">{{ positiveButtonText }}</v-btn>
+        <v-btn @click="$emit('confirm', fullList, inputText)">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
