@@ -1,9 +1,34 @@
 <script setup lang="ts">
-import {inject} from 'vue'
+import {computed, inject} from 'vue'
 
-const props = defineProps(['k', 'prependIcon', 'prependAvatar', 'title', 'subtitle', 'badgeValue']);
+const props = defineProps(['k', 'prependIcon', 'prependAvatar', 'title', 'subtitle', 'badgeValue', 'pin']);
 const {selected} = inject<any>("selected");
+const {mode} = inject<{mode: string | undefined}>("mode", {mode: "single"});
 const activated = inject("activated", undefined);
+
+const handleClick = () => {
+  if (props.pin) return;
+  if (mode === "multi") {
+    if (selected.value.includes(props.k)) {
+      selected.value = selected.value.filter((i: number) => {
+        return i !== props.k;
+      })
+    } else {
+      selected.value.push(props.k);
+    }
+  } else {
+    selected.value = props.k;
+  }
+}
+
+const active = computed(() => {
+  if (props.pin) return true;
+  if (mode === "multi") {
+    return selected.value.includes(props.k);
+  } else {
+    return selected.value === props.k;
+  }
+})
 
 </script>
 
@@ -11,9 +36,9 @@ const activated = inject("activated", undefined);
   <div
       v-ripple
       v-bind="$attrs"
-      @click="selected = props.k"
+      @click="handleClick"
       class="pa-3 d-flex flex-row justify-start align-center rounded-lg"
-      :class="{'v-list-item--active': selected === props.k, 'dark-ocean': selected === props.k}"
+      :class="{'v-list-item--active': active, 'dark-ocean': active}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" cover/>

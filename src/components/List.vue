@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, provide} from "vue";
 
-const props = defineProps(["modelValue"])
+const props = defineProps(["modelValue", "mode"])
 const emit = defineEmits(["update:modelValue"])
 
 const selected = computed({
@@ -12,6 +12,7 @@ const selected = computed({
 });
 
 provide("selected", {selected});
+provide("mode", {mode: props.mode || "single"});
 
 </script>
 
