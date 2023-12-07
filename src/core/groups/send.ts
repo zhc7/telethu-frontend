@@ -87,6 +87,7 @@ export const groupAddMember = (groupId: number, memberList: number []) => {
     socket.send(JSON.stringify(message));
 }
 export const removeGroupMember = (groupId: number, memberId: number) => {
+    alert('yesyes');
     const message = {
         time: Date.now(),
         m_type: MessageType.FUNC_SB_REMOVED_FROM_GROUP,

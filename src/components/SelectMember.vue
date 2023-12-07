@@ -13,43 +13,17 @@ import List from "./List.vue";
  * source: chatList, personalFriend, existingGroup, share
  *
  */
-const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup', 'selected', 'pinned', 'possible']);
-const emit = defineEmits(['update:showDialog', 'update:selected', 'update:pinned']);
+const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup', 'pinned', 'possible']);
+const emit = defineEmits(['update:showDialog', 'confirm', 'cancel']);
 const createGroupName = ref('');
 
-
-
-const pinnedList = computed({
-  get() {
-    if (!props.pinned) {
-      return [];
-    }
-    return props.pinned;
-  },
-  set(newValue) {
-    emit('update:pinned', newValue);
-  }
-});
-const selectedList = computed({
-  get() {
-    return props.selected;
-  },
-  set(newValue) {
-    emit('update:selected', newValue);
-  }
-});
+const selectedList = ref([]);
 
 const actUnselect = (id: number) => {
   selectedList.value = selectedList.value.filter((i) => {
     return id !== i;
   });
-}
-
-const possibleMembers = computed(() => {
-  return contacts.value.filter((id) => {
-    return getUser(id).category === "user";
-  });
-});
+};
 
 const dialog = computed({
   get: () => props.showDialog,
@@ -70,7 +44,7 @@ const dispatchedMention = (names: Array<number>) => {
 const dispatchFunction = () => {
   console.log('source', props.source);
   const list = [];
-  for (const member of pinnedList.value) {
+  for (const member of props.pinned) {
     list.push(member);
   }
   for (const member of selectedList.value) {
@@ -131,6 +105,17 @@ const negativeButtonText = computed(() => {
   return 'Cancel';
 })
 
+const fullList = computed(() => {
+  const l = [];
+  for (const id of selectedList.value) {
+    l.push(id);
+  }
+  for (const id of props.pinned) {
+    l.push(id);
+  }
+  return l;
+});
+
 </script>
 
 <template>
@@ -152,7 +137,7 @@ const negativeButtonText = computed(() => {
         />
         <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
-              v-for="member in pinedInfo"
+              v-for="member in pinned"
               :key="member"
               class="d-flex flex-column align-center bg-indigo rounded-lg pa-1 ma-1"
               v-ripple
@@ -162,12 +147,12 @@ const negativeButtonText = computed(() => {
             <p>{{ getUser(member).name }}</p>
           </div>
           <div
-              v-for="member in selectedInfo"
+              v-for="member in selectedList"
               :key="member"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
               @click="actUnselect(member)"
               v-ripple
-              style="max-width: 40px"
+              :style="'max-width: 40px'"
           >
             <Avatar :contact-id="member"/>
             <p>{{ getUser(member).name }}</p>
@@ -175,10 +160,10 @@ const negativeButtonText = computed(() => {
         </div>
         <List class="overflow-y-auto flex-1-1" mode="multi" v-model="selectedList">
           <ListItem
-              v-for="member in possibleMembers"
+              v-for="member in possible"
               :title="getUser(member).name"
               :k="member"
-              :pin="pinnedList.includes(member)"
+              :pin="props.pinned.includes(member)"
           >
             <template #prepend>
               <Avatar :contact-id="member"/>
@@ -191,7 +176,7 @@ const negativeButtonText = computed(() => {
         <v-btn @click="dialog=false">
           {{ negativeButtonText }}
         </v-btn>
-        <v-btn @click="dispatchFunction">{{ positiveButtonText }}</v-btn>
+        <v-btn @click="$emit('confirm', fullList, createGroupName)">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

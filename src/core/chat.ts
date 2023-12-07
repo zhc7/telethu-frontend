@@ -199,7 +199,7 @@ dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
 dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {
 };
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
-dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted; // TODO
+dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted;
 dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {
 }; // TODO
 dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {

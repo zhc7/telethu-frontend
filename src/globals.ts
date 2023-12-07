@@ -1,7 +1,7 @@
 import {computed, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
 import {ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
-import {postSettings} from "./core/data.ts";
+import {getUser, postSettings} from "./core/data.ts";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -105,3 +105,9 @@ export const hotMessages = ref<{
 export const rawRequestList = ref<Array<RequestListItem>>([]);
 
 export const unreadCounter = ref<{ [id: number]: number }>({});
+
+export const userContacts = computed(() => {
+    return contacts.value.filter(i => (
+        getUser(i).category === 'user'
+    ))
+})

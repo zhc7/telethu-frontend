@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {activeChatId, contacts, hotMessages, selectedChatInfo, settings} from "../globals.ts";
+import {activeChatId, contacts, hotMessages, selectedChatInfo, settings, user, userContacts} from "../globals.ts";
 import List from "./List.vue";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
+import {handleCreateGroup} from "../core/groups/receive.ts";
+import {createGroup} from "../core/users/send.ts";
 
 const createGroupDialog = ref(false);
 
@@ -32,17 +34,26 @@ const chatList = computed(() => {
 const searchFriendInput = ref(false);
 const friendName = ref('');
 
+const testFunc = (a, b) => {
+  alert(a);
+  alert(b);
+}
 
 </script>
 
 <template>
   <div class="fill-height d-flex flex-column">
     <SelectMember
-        :showDialog="createGroupDialog"
-        @update:showDialog="createGroupDialog = $event"
-        source="chatList"
+        v-model:show-dialog="createGroupDialog"
+        :pinned="[user.id]"
+        :possible="userContacts"
         title="Create Group"
+        @confirm="(list, name) => {
+          createGroupDialog=false;
+          return createGroup(name, list);
+        }"
     />
+
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
       <a v-if="!searchFriendInput" class="ma-3"

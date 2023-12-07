@@ -119,6 +119,7 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
     chatManager.sendMessage(message);
 };
 const createGroup = (groupName: string, members: Array<number>) => {
+    alert('creating group');
     const message: Message = {
         time: Date.now(),
         m_type: 7,
@@ -128,7 +129,7 @@ const createGroup = (groupName: string, members: Array<number>) => {
             category: "group",
             name: groupName,
             avatar: "",
-            id: 0,  // place holder
+            id: 0,  // placeholder
             owner: user.value.id,
             admin: [],
         },

@@ -2,11 +2,11 @@
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {settings, user, userId} from "../globals.ts";
+import {selectedChatInfo, settings, user, userContacts, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
-import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
+import {blockFriend, createGroup, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 
 
@@ -252,11 +252,15 @@ const handleRemoveAdmin = (memberId: number) => {
     </v-dialog>
 
     <SelectMember
-        :showDialog="groupAddMemberDialog"
-        @update:showDialog="groupAddMemberDialog = $event"
-        source="existingGroup"
+        v-model:show-dialog="groupAddMemberDialog"
+        :pinned="displayContactInfo.members"
+        :possible="userContacts"
         :title="'Add Member'"
         :base-group="displayContactInfo"
+        @confirm="(list, name) => {
+          groupAddMemberDialog=false;
+          createGroup(name, list);
+        }"
     />
   </v-card>
 </template>

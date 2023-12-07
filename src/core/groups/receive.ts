@@ -28,9 +28,10 @@ export const handleGroupAdminRemoved = (message: Message) => {
     getUser(groupId, true);
 }
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
-    const groupId = message.content as number;
+    const groupId = message.receiver as number;
     getUser(groupId, true);
 }
 export const handleCreateGroup = (message: Message) => {
-    contacts.value.push((message.content as GroupData).id);
+    alert(message.content);
+    contacts.value.push(message.content);
 };

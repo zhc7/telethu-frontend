@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, inject} from 'vue'
+import {computed, inject, ref, watch} from 'vue'
 
 const props = defineProps(['k', 'prependIcon', 'prependAvatar', 'title', 'subtitle', 'badgeValue', 'pin']);
 const {selected} = inject<any>("selected");
@@ -12,12 +12,17 @@ const handleClick = () => {
     if (selected.value.includes(props.k)) {
       selected.value = selected.value.filter((i: number) => {
         return i !== props.k;
-      })
+      });
     } else {
       selected.value.push(props.k);
     }
   } else {
     selected.value = props.k;
+  }
+  if (mode === "multi") {
+    active.value = selected.value.includes(props.k);
+  } else {
+    active.value = selected.value === props.k;
   }
 }
 
@@ -28,7 +33,8 @@ const active = computed(() => {
   } else {
     return selected.value === props.k;
   }
-})
+});
+
 
 </script>
 

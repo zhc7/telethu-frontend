@@ -232,6 +232,10 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
     messageItemDispatcher[item as MessageMenuItems](contextMenuSubject.value as Message);
   }
 }
+
+const createGroupSelected = ref<Array<number>>([]);
+const createGroupPinned = ref<Array<number>>([]);
+
 </script>
 
 <template>
@@ -329,10 +333,8 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
   </div>
   <SelectMember
       v-if="show"
-      :pinned="[userId]"
-      :showDialog="selectMemberDialog"
-      @update:showDialog="selectMemberDialog = $event"
-      :source="category === 'user' ? 'personalFriend' : 'existingGroup'"
+      v-model:show-dialog="selectMemberDialog"
+      :pinned="category === 'user' ? [user.id, activeChatId] : selectedChatInfo.members"
       :title="selectMemberTitle"
       :sharedMessages="sharedMessages"
   />
