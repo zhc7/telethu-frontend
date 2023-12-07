@@ -109,7 +109,7 @@ console.log("message", props.message);
         >
           mdi-close-circle-outline
         </v-icon>
-        <div @contextmenu="openContextMenu">
+        <div @contextmenu.stop="openContextMenu">
           <div
               v-if="message.m_type === 0"
               ref="messagePop"

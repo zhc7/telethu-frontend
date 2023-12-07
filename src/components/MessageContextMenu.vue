@@ -2,19 +2,16 @@
 
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
-import {ArrayMenuItems, MessageMenuItems} from "../utils/structs.ts";
 
-const props = defineProps<{
+defineProps<{
   x: number,
   y: number,
-  type: "Array" | "Message",
+  choices: Array<string>,
 }>();
 
 defineEmits<{
-  choose: [item: ArrayMenuItems | MessageMenuItems],
+  choose: [item: string],
 }>();
-
-const menuItems = props.type === "Array" ? ArrayMenuItems : MessageMenuItems;
 
 </script>
 
@@ -24,7 +21,7 @@ const menuItems = props.type === "Array" ? ArrayMenuItems : MessageMenuItems;
       :style="{'top': y + 'px', 'left': x + 'px'}"
   >
     <ListItem
-        v-for="item in menuItems"
+        v-for="item in choices"
         :key="item"
         :k="item"
         @click="$emit('choose', item)"

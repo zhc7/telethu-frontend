@@ -10,7 +10,7 @@ import {formatChatMessageTime} from "../utils/datetime.ts";
 import {activeChatId, contacts, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
-import {ArrayMenuItems, ContextMenuSubject, GroupData, Message, MessageMenuItems, TargetType} from "../utils/structs";
+import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, recallMessage} from "../core/messages/send.ts";
@@ -25,7 +25,34 @@ const showProfileDetail = ref(false);
 const showContextMenu = ref(false);
 const contextMenuX = ref(0);
 const contextMenuY = ref(0);
-const contextMenuSubject = ref<ContextMenuSubject>();
+const contextMenuSubject = ref<ContextMenuSubject>("blank");
+
+const openBlankContextMenu = (event: MouseEvent) => {
+  openContextMenu(event.clientX, event.clientY, "blank");
+}
+
+const contextMenuChoices = computed(() => {
+  if (contextMenuSubject.value === "blank") {
+    return [
+      "Select",
+    ]
+  }
+  if (contextMenuSubject.value.sender === user.value.id) {
+    return [
+      "Copy",
+      "Share",
+      "Select",
+      "Delete",
+      "Withdraw",
+    ]
+  } else {
+    return [
+      "Copy",
+      "Share",
+      "Select",
+    ]
+  }
+});
 
 const openContextMenu = (x: number, y: number, subject: ContextMenuSubject) => {
   showContextMenu.value = false;
@@ -46,11 +73,7 @@ const messageSelected = (msg: Message) => {
     return false;
   }
   if (selectionMode.value) return selected.value.includes(msg.message_id);
-  if (contextMenuSubject.value?.constructor === Array) {
-    return contextMenuSubject.value!.includes(msg);
-  } else {
-    return showContextMenu.value && contextMenuSubject.value === msg;
-  }
+  return showContextMenu.value && contextMenuSubject.value === msg;
 }
 
 const createGroupDialog = ref(false);
@@ -225,18 +248,22 @@ const handleForwardGroupMessage = () => {
   shareMessageDialog.value = true;
 }
 
-const messageItemDispatcher: { [key in MessageMenuItems]: (msg: Message) => void } = {
-  [MessageMenuItems.Copy]: (msg: Message) => {
+const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
+  "Copy": (msg: Message) => {
     navigator.clipboard.writeText(msg.content as string)
   },
-  [MessageMenuItems.Share]: shareMessage,
-  [MessageMenuItems.Select]: selectMessage,
-  [MessageMenuItems.Delete]: delMessage,
-  [MessageMenuItems.Withdraw]: withdrawMessage,
+  "Share": shareMessage,
+  "Select": selectMessage,
+  "Delete": delMessage,
+  "Withdraw": withdrawMessage,
 };
 
-const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
-  messageItemDispatcher[item as MessageMenuItems](contextMenuSubject.value as Message);
+const dispatchFunction = (item: string) => {
+  if (contextMenuSubject.value === "blank") {
+    selectionMode.value = true;
+    return;
+  }
+  messageItemDispatcher[item](contextMenuSubject.value);
 }
 
 </script>
@@ -288,7 +315,11 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
       </v-toolbar>
-      <v-row no-gutters class="d-flex flex-column flex-1-1 overflow-y-auto fill-height" @contextmenu="">
+      <v-row
+          no-gutters
+          class="d-flex flex-column flex-1-1 overflow-y-auto fill-height"
+          @contextmenu.prevent="openBlankContextMenu"
+      >
         <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
           <div>
             <v-btn @click="handleGetMoreMessage" class="text-blue mt-2" variant="text">Get more message...</v-btn>
@@ -313,7 +344,7 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
                   v-if="showContextMenu"
                   :x="contextMenuX"
                   :y="contextMenuY"
-                  :type="contextMenuSubject!.constructor === Array ? 'Array' : 'Message'"
+                  :choices="contextMenuChoices"
                   @choose="dispatchFunction"
               />
             </v-scale-transition>
@@ -346,8 +377,6 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
       :possible="contacts"
       @confirm="handleShareMessages"
   />
-
-
 </template>
 
 <style scoped>

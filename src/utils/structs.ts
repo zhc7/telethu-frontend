@@ -105,7 +105,7 @@ export interface RequestListItem {
     time: number,
 }
 
-export type ContextMenuSubject = Message | Array<Message>;
+export type ContextMenuSubject = Message | "blank";
 
 export enum ArrayMenuItems {
     GroupShare = 'Group Share',
