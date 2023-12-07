@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {activeChatId, contacts, user, userId} from "../globals.ts";
+import {activeChatId, contacts, user, userId, users} from "../globals.ts";
 import {createGroup, sendMessage} from "../core/users/send.ts";
 import {groupAddMember} from "../core/groups/send.ts";
 import Avatar from "./Avatar.vue";
@@ -107,13 +107,13 @@ const dispatchedGroupAddMember = () => {
 }
 
 const dispatchedCreateGroupFromContact = () => {
-  console.log("create group from contact", createGroupName.value, selected.value);
-  createGroup(createGroupName.value, selected.value);
-  selected.value = [];
+  console.log("create group from contact", createGroupName.value, selectedList.value);
+  createGroup(createGroupName.value, selectedList.value);
+  selectedList.value = [];
   dialog.value = false;
 }
 
-const dispatchedShare = () => {
+const dispatchedShare = (list) => {
   for (const receiverId of selectedList.value) {
     for (const message of props.sharedMessages) {
       sendMessage(receiverId, message.content, message.t_type);
@@ -160,47 +160,47 @@ const negativeButtonText = computed(() => {
         <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
               v-for="member in pinedInfo"
-              :key="member.id"
+              :key="users[member].id"
               class="d-flex flex-column align-center bg-indigo rounded-lg pa-1 ma-1"
               v-ripple
               style="max-width: 40px"
           >
-            <Avatar :contact-id="member.id"/>
-            <p>{{ member.name }}</p>
+            <Avatar :contact-id="users[member].id"/>
+            <p>{{ users[member].name }}</p>
           </div>
           <div
               v-for="member in selectedInfo"
-              :key="member.id"
+              :key="users[member].id"
               class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
-              @click="actUnselect(member.id)"
+              @click="actUnselect(users[member].id)"
               v-ripple
               style="max-width: 40px"
           >
-            <Avatar :contact-id="member.id"/>
-            <p>{{ member.name }}</p>
+            <Avatar :contact-id="users[member].id"/>
+            <p>{{ users[member].name }}</p>
           </div>
         </div>
         <v-list class="overflow-y-auto flex-1-1">
           <v-list-item v-for="member in possibleMembers">
             <template #prepend>
-              <Avatar :contact-id="member.id"/>
+              <Avatar :contact-id="users[member].id"/>
             </template>
             <v-list-item-title>
-              {{ member.name }}
+              {{ users[member].name }}
             </v-list-item-title>
             <template #append>
               <v-btn
-                  v-if="!selectedList.includes(member.id) && !pinedList.includes(member.id)"
-                  @click="actSelect(member.id)"
+                  v-if="!selectedList.includes(users[member].id) && !pinedList.includes(users[member].id)"
+                  @click="actSelect(users[member].id)"
                   color="blue"
               >
                 APPEND
               </v-btn>
               <v-btn
                   v-else
-                  @click="actUnselect(member.id)"
+                  @click="actUnselect(users[member].id)"
                   color="red"
-                  :disabled="pinedList.includes(member.id)"
+                  :disabled="pinedList.includes(users[member].id)"
               >REMOVE
               </v-btn>
             </template>
