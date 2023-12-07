@@ -117,10 +117,10 @@ const dispatchedCreateGroupFromContact = () => {
   dialog.value = false;
 }
 
-const dispatchedShare = (list) => {
-  for (const receiverId of selectedList.value) {
+const dispatchedShare = (list: Array<number>) => {
+  for (const member of list) {
     for (const message of props.sharedMessages) {
-      sendMessage(receiverId, message.content, message.t_type);
+      sendMessage(member, message.content, message.t_type);
     }
   }
   dialog.value = false;
