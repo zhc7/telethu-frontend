@@ -52,10 +52,10 @@ const unread = computed<number>(() => {
     </template>
     <div class="chat-time fill-height">
       <p>{{ hotMessages[contactId] ? formatChatMessageTime(nowRef, hotMessages[contactId]?.time) : '' }}</p>
-      <v-icon v-show="pin">mdi-pin</v-icon>
-      <v-icon v-show="mute">mdi-bell-off</v-icon>
     </div>
     <template #append>
+      <v-icon v-show="pin">mdi-pin</v-icon>
+      <v-icon v-show="mute">mdi-bell-off</v-icon>
       <v-badge class="unread-counter-badge" v-if="!mute && unread" color="red" :content="unread" inline></v-badge>
     </template>
   </ListItem>
