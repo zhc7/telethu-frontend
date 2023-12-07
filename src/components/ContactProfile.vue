@@ -1,29 +1,16 @@
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {
-  activeChatId,
-  activeContactId,
-  requests,
-  selectedChatInfo,
-  selectedContactInfo,
-  settings,
-  user,
-  userAvatar,
-  userEmail,
-  userId,
-  userName
-} from "../globals.ts";
+import {settings, user, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
-import {GroupData} from "../utils/structs.ts";
 import {exitGroup, groupAddAdmin, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
 import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 
 
-const props = defineProps(['source']);
+const props = defineProps(['contactId']);
 defineEmits(["accept", "reject", "apply"]);
 
 const groupAddMemberDialog = ref(false);
@@ -88,19 +75,14 @@ const friendCircle = ref(["THU", "PKU", "CMU", "MIT"]);
 const friendCircleSelect = ref([]);
 const newName = ref("");
 
-const ifGroup = computed(() => {
-  return displayContactInfo.value && displayContactInfo.value.category === "group";
-});
-
-const memberInfoTable = ref<Array<{
-  id: number,
-  name: string,
-  time: number,
-  avatar: string,
-  role: number,
-}>>([]);
+const memberInfoTable = computed(() => {
+  return displayContactInfo.value.members;
+})
 
 const handleDelete = () => {
+  if (!displayContactInfo.value) {
+    return;
+  }
   deleteConfirmDialog.value = false;
   if (displayContactInfo.value.category === 'user') {
     deleteFriend(displayContactInfo.value.id);
@@ -113,10 +95,6 @@ const handleDelete = () => {
   }
 };
 
-const handleChat = async () => {
-  activeChatId.value = activeContactId.value;
-  router.replace('chat');
-}
 
 const handleChangeOwner = () => {
   alert('change owner');
@@ -126,64 +104,7 @@ const editName = () => {
   console.log("editName");
 };
 
-const displayContactInfo = computed(() => {
-  if (props.source === 'chatPage') {
-    if (selectedChatInfo.value !== undefined) {
-      return selectedChatInfo.value;
-    }
-    return {
-      id: 0,
-      name: 'Loading...',
-      email: 'Loading...',
-      avatar: '/Logo.png',
-      category: 'temp',
-    }
-  } else if (props.source === 'contactList' || props.source === 'requestList' || props.source === 'searchResult') {
-    if (selectedContactInfo.value !== undefined) {
-      return selectedContactInfo.value;
-    }
-    return {
-      id: 0,
-      name: 'Loading...',
-      email: 'Loading...',
-      avatar: '/Logo.png',
-      category: 'temp',
-    }
-  }
-  return {
-    id: userId.value,
-    name: userName.value,
-    email: userEmail.value,
-    avatar: userAvatar.value,
-    category: 'self',
-  }
-});
-
-watch(displayContactInfo, (newInfo: GroupData) => {
-  if (!newInfo || !newInfo || newInfo.category !== 'group') return;
-  const members = newInfo.members;
-  memberInfoTable.value = [];
-  for (const id of members) {
-    const index = memberInfoTable.value.length;
-    const owner = newInfo.owner;
-    const admin = newInfo.admin;
-    memberInfoTable.value.push({
-      id: id,
-      name: 'Loading...',
-      avatar: '',
-      time: Date.now(),
-      role: 0,
-    });
-    const info = getUser(id);
-    memberInfoTable.value[index] ={
-      id: info.id,
-      name: info.name,
-      avatar: info.avatar,
-      time: Date.now(),
-      role: 0,
-    }
-  }
-}, {immediate: true});
+const displayContactInfo = computed(() => getUser(props.contactId));
 
 const handleKickMember = (memberId: number) => {
   removeGroupMember(displayContactInfo.value.id, memberId);
@@ -237,21 +158,21 @@ const handleRemoveAdmin = (memberId: number) => {
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
                 v-for="member in memberInfoTable"
-                :key="member.id"
+                :key="member"
                 class="d-flex flex-column align-center ma-auto mb-5 pt-4 member-pop"
             >
 
               <Avatar
-                  :contact-id="member.id"
+                  :contact-id="member"
                   size="60"
                   style="position: relative"
-                  :style="displayContactInfo.owner === member.id ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member.id) ? 'border: #008eff 2px solid' : '' "
+                  :style="displayContactInfo.owner === member ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member) ? 'border: #008eff 2px solid' : '' "
               />
               <div class="badge-kick"
-                   v-if="displayContactInfo.owner === userId && member.id !== userId || displayContactInfo.admin.includes(userId) && member.id !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member.id)"
+                   v-if="displayContactInfo.owner === userId && member !== userId || displayContactInfo.admin.includes(userId) && member !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member)"
                    @click="handleKickMember(member.id)">——
               </div>
-              <p>{{ member.name }}</p>
+              <p>{{ (() => {member; return getUser(member).name;})() }}</p>
               <div class="badge-lift"
                    v-if="displayContactInfo.owner === userId && member.id !== userId && !displayContactInfo.admin.includes(member.id)"
                    @click="handleAddAdmin(member.id)">|
@@ -303,138 +224,11 @@ const handleRemoveAdmin = (memberId: number) => {
           ></v-switch>
         </v-row>
       </v-col>
-      <!--      <v-col v-if="displayContactInfo.id !== user.id">-->
-      <!--&lt;!&ndash;        <v-row style="display: flex; align-items: center;" class="ma-3">&ndash;&gt;-->
-      <!--&lt;!&ndash;          &lt;!&ndash; TODO: add rename function &ndash;&gt;&ndash;&gt;-->
-      <!--&lt;!&ndash;          <p style="flex: 1" class="text-right pr-4">Rename:</p>&ndash;&gt;-->
-      <!--&lt;!&ndash;          <v-text-field&ndash;&gt;-->
-      <!--&lt;!&ndash;              variant="outlined"&ndash;&gt;-->
-      <!--&lt;!&ndash;              label="New name"&ndash;&gt;-->
-      <!--&lt;!&ndash;              density="compact"&ndash;&gt;-->
-      <!--&lt;!&ndash;              style="flex: 2"&ndash;&gt;-->
-      <!--&lt;!&ndash;              hide-details&ndash;&gt;-->
-      <!--&lt;!&ndash;              append-inner-icon="mdi-pencil"&ndash;&gt;-->
-      <!--&lt;!&ndash;          />&ndash;&gt;-->
-      <!--&lt;!&ndash;          v-model="newName"&ndash;&gt;-->
-      <!--&lt;!&ndash;          @click:append-inner="editName"&ndash;&gt;-->
-      <!--&lt;!&ndash;        </v-row>&ndash;&gt;-->
-      <!--&lt;!&ndash;        <v-row&ndash;&gt;-->
-      <!--&lt;!&ndash;            style="display: flex; align-items: center"&ndash;&gt;-->
-      <!--&lt;!&ndash;            class="ma-3 text-right"&ndash;&gt;-->
-      <!--&lt;!&ndash;        >&ndash;&gt;-->
-      <!--          &lt;!&ndash; TODO: add friend circle function &ndash;&gt;-->
-      <!--&lt;!&ndash;          <p style="flex: 1" class="pr-4">Label:</p>&ndash;&gt;-->
-      <!--&lt;!&ndash;          <v-combobox&ndash;&gt;-->
-      <!--&lt;!&ndash;              v-model="friendCircleSelect"&ndash;&gt;-->
-      <!--&lt;!&ndash;              chips&ndash;&gt;-->
-      <!--&lt;!&ndash;              :items="friendCircle"&ndash;&gt;-->
-      <!--&lt;!&ndash;              multiple&ndash;&gt;-->
-      <!--&lt;!&ndash;              variant="outlined"&ndash;&gt;-->
-      <!--&lt;!&ndash;              density="compact"&ndash;&gt;-->
-      <!--&lt;!&ndash;              hide-details&ndash;&gt;-->
-      <!--&lt;!&ndash;              style="flex: 2"&ndash;&gt;-->
-      <!--&lt;!&ndash;          ></v-combobox>&ndash;&gt;-->
-      <!--&lt;!&ndash;        </v-row>&ndash;&gt;-->
-      <!--&lt;!&ndash;        <v-row&ndash;&gt;-->
-      <!--&lt;!&ndash;            style="display: flex; align-items: center"&ndash;&gt;-->
-      <!--&lt;!&ndash;            class="ma-1 text-right"&ndash;&gt;-->
-      <!--&lt;!&ndash;        >&ndash;&gt;-->
-      <v-card-actions>
-        <v-col v-if="source === 'contactList'">
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'user'"
-                 style="display: flex; justify-content: center">
-            <v-btn
-                color="green"
-                style="font-size: 15px; font-weight: bold"
-                @click="handleChat"
-            >Chat
-            </v-btn>
-          </v-row>
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'user'"
-                 style="display: flex; justify-content: center">
-            <v-btn color="indigo" style="font-size: 15px; font-weight: bold"
-            >Recommend
-            </v-btn>
-          </v-row>
-          <v-row v-if="displayContactInfo.info && displayContactInfo.category === 'user'"
-                 style="display: flex; justify-content: center">
-            <v-btn
-                color="error"
-                style="font-size: 15px; font-weight: bold"
-                @click="deleteConfirmDialog = true"
-            >Delete Friend
-            </v-btn>
-          </v-row>
-          <v-row
-              v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
-              style="display: flex; justify-content: center">
-            <v-btn
-                color="info"
-                style="font-size: 15px; font-weight: bold"
-                @click="alert('change')"
-            >Change Owner
-            </v-btn>
-          </v-row>
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'group'"
-                 style="display: flex; justify-content: center">
-            <v-btn
-                color="error"
-                style="font-size: 15px; font-weight: bold"
-                @click="deleteConfirmDialog = true"
-            >Quit Group
-            </v-btn>
-          </v-row>
-        </v-col>
-        <v-col v-if="source === 'requestList' && requests.includes(displayContactInfo.id)">
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('accept', displayContactInfo.id)">Accept
-          </v-btn>
-          <v-btn color="error" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('reject', displayContactInfo.id)">Reject
-          </v-btn>
-        </v-col>
-        <v-col v-if="source === 'searchResult'">
-          <v-btn color="blue" style="font-size: 15px; font-weight: bold"
-                 @click="$emit('apply', displayContactInfo.id)">Apply
-          </v-btn>
-        </v-col>
-        <v-col v-if="source === 'chatPage'">
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'user'"
-                 style="display: flex; justify-content: center">
-            <v-btn
-                color="indigo" style="font-size: 15px; font-weight: bold"
-            >Recommend
-            </v-btn>
-          </v-row>
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'user'"
-                 style="display: flex; justify-content: center">
-            <v-btn
-                color="error"
-                style="font-size: 15px; font-weight: bold"
-                @click="deleteConfirmDialog = true"
-            >Delete Friend
-            </v-btn>
-          </v-row>
-          <v-row
-              v-if="displayContactInfo && displayContactInfo.category === 'group' && displayContactInfo.owner === userId"
-              style="display: flex; justify-content: center">
-            <v-btn
-                color="info"
-                style="font-size: 15px; font-weight: bold"
-                @click="handleChangeOwner"
-            >Change Owner
-            </v-btn>
-          </v-row>
-          <v-row v-if="displayContactInfo && displayContactInfo.category === 'group'"
-                 style="display: flex; justify-content: center">
-            <v-btn
-                color="error"
-                style="font-size: 15px; font-weight: bold"
-                @click="deleteConfirmDialog = true"
-            >Quit Group
-            </v-btn>
-          </v-row>
-        </v-col>
+      <v-card-actions class="justify-center">
+        <div class="d-flex flex-column">
+          <slot name="buttons"/>
+          <v-btn color="error" @click="handleDelete">Delete</v-btn>
+        </div>
       </v-card-actions>
     </v-card-item>
 
@@ -447,7 +241,7 @@ const handleRemoveAdmin = (memberId: number) => {
         ></v-alert>
         <v-card-actions class="justify-end">
           <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
-          <v-btn @click="handleDelete">delete</v-btn>
+          <v-btn @click="handleDelete">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -508,6 +302,11 @@ const handleRemoveAdmin = (memberId: number) => {
   font-size: 12px;
   color: white;
   background-color: grey;
+}
+
+.v-btn {
+  font-size: 15px;
+  font-weight: bold;
 }
 
 

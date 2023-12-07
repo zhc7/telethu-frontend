@@ -5,6 +5,7 @@ import ContactList from "./ContactList.vue";
 import {friendRequests,} from "../core/chat.ts";
 
 import {
+  activeChatId,
   activeContactId,
   activeRequestId,
   contactPageContentLeft,
@@ -17,6 +18,7 @@ import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
 import {acceptFriend, addFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
+import router from "../router.ts";
 
 
 defineEmits(["chat"]);
@@ -48,6 +50,11 @@ const handleApplyFriend = (friendId: number) => {
   addFriend(friendId);
   alert("喜报：你发送了申请！\nGood news! You sent an application! ");
 }
+
+const handleChat = async () => {
+  activeChatId.value = activeContactId.value;
+  router.replace('chat');
+};
 
 const handleContactList = () => {
   contactPageContentLeft.value = 0;
@@ -157,11 +164,19 @@ watch(activeRequestId, selectRequest);
         class="d-flex flex-column flex-1-1 justify-center offset-sm-1"
     >
       <FriendProfile
+          v-show="contactPageContentLeft === 0"
           class="overflow-y-auto"
-          @accept="(acceptId) => handleRequestPass(acceptId)"
-          @reject="(rejectId) => handleRequestReject(rejectId)"
-          @apply="(applyId) => handleApplyFriend(applyId)"
-          :source="contactPageProfileSource"
+          :contact-id="activeContactId"
+      >
+        <template #buttons>
+            <v-btn color="green" @click="handleChat">Chat</v-btn>
+            <v-btn color="info">Recommend</v-btn>
+        </template>
+      </FriendProfile>
+      <FriendProfile
+          v-show="contactPageContentLeft === 1"
+          class="overflow-y-auto"
+          :contact-id="activeRequestId"
       >
       </FriendProfile>
     </v-col>
@@ -188,4 +203,10 @@ watch(activeRequestId, selectRequest);
   right: 0.7em;
   top: 0.6em;
 }
+
+.v-btn {
+  font-size: 15px;
+  font-weight: bold;
+}
+
 </style>

@@ -320,8 +320,12 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
     <ContactProfile
         class="overflow-y-auto"
         v-if="selectedChatInfo"
-        source="chatPage"
-    />
+        :contact-id="activeChatId"
+    >
+      <template #buttons>
+        <v-btn color="info">Recommend</v-btn>
+      </template>
+    </ContactProfile>
   </div>
   <SelectMember
       v-if="show"
@@ -344,5 +348,10 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
 
 .profile-area--active {
   width: 23vw;
+}
+
+.v-btn {
+  font-size: 15px;
+  font-weight: bold;
 }
 </style>
