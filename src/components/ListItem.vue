@@ -21,11 +21,6 @@ const handleClick = () => {
   } else {
     selected.value = props.k;
   }
-  if (mode === "multi") {
-    active.value = selected.value.includes(props.k);
-  } else {
-    active.value = selected.value === props.k;
-  }
 }
 
 const active = computed(() => {
