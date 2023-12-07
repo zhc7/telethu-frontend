@@ -10,12 +10,12 @@ import {
   activeRequestId,
   contactPageContentLeft,
   contactPageProfileSource,
-  rawRequestList,
+  rawRequestList, searchedId,
   selectedContactInfo
 } from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
-import FriendProfile from "./ContactProfile.vue";
+import ContactProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
 import {acceptFriend, applyFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 import router from "../router.ts";
@@ -27,19 +27,11 @@ const searchFriendMode = ref("id");
 const displayGroup = ref(false);
 
 const selectContact = async (newContactId: number) => {
-  selectedContactInfo.value = undefined;
   contactPageProfileSource.value = 'contactList'
-  if (newContactId > 0) {
-    selectedContactInfo.value = getUser(newContactId);
-  }
 };
 
 const selectRequest = async (newRequestId: number) => {
-  selectedContactInfo.value = undefined;
   contactPageProfileSource.value = 'requestList';
-  if (newRequestId > 0) {
-    selectedContactInfo.value = getUser(newRequestId);
-  }
 };
 
 const search = () => {
@@ -130,14 +122,8 @@ watch(activeRequestId, selectRequest);
               class="mt-3"
           >
             <template #prepend>
-              <v-icon v-if="!displayGroup" @click="displayGroup = !displayGroup"
-              >mdi-account
-              </v-icon
-              >
-              <v-icon v-else @click="displayGroup = !displayGroup"
-              >mdi-account-group
-              </v-icon
-              >
+              <v-icon v-if="!displayGroup" @click="displayGroup = !displayGroup">mdi-account</v-icon>
+              <v-icon v-else @click="displayGroup = !displayGroup">mdi-account-group</v-icon>
             </template>
             <template #append>
               <v-icon @click="search">mdi-magnify</v-icon>
@@ -163,18 +149,18 @@ watch(activeRequestId, selectRequest);
         sm="6"
         class="d-flex flex-column flex-1-1 justify-center offset-sm-1"
     >
-      <FriendProfile
-          v-show="contactPageContentLeft === 0"
+      <ContactProfile
+          v-show="contactPageProfileSource === 'contactList'"
           class="overflow-y-auto"
           :contact-id="activeContactId"
       >
         <template #buttons>
-            <v-btn color="green" @click="handleChat">Chat</v-btn>
-            <v-btn color="info">Recommend</v-btn>
+          <v-btn color="green" @click="handleChat">Chat</v-btn>
+          <v-btn color="info">Recommend</v-btn>
         </template>
-      </FriendProfile>
-      <FriendProfile
-          v-show="contactPageContentLeft === 1"
+      </ContactProfile>
+      <ContactProfile
+          v-show="contactPageProfileSource === 'requestList'"
           class="overflow-y-auto"
           :contact-id="activeRequestId"
       >
@@ -182,7 +168,16 @@ watch(activeRequestId, selectRequest);
           <v-btn color="green" @click="acceptFriend(activeRequestId)">Accept</v-btn>
           <v-btn color="error" @click="rejectFriend(activeRequestId)">Reject</v-btn>
         </template>
-      </FriendProfile>
+      </ContactProfile>
+      <ContactProfile
+        v-show="contactPageProfileSource === 'searchResult'"
+        class="overflow-y-auto"
+        :contact-id="searchedId"
+      >
+        <template #buttons>
+          <v-btn color="blue" @click="handleApplyFriend(activeRequestId)">Apply</v-btn>
+        </template>
+      </ContactProfile>
     </v-col>
   </v-row>
 </template>

@@ -2,7 +2,7 @@
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {settings, user, userContacts, userId} from "../globals.ts";
+import {contacts, settings, user, userContacts, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
@@ -81,7 +81,7 @@ const memberInfoTable = computed(() => {
 })
 
 const handleDelete = () => {
-  if (!displayContactInfo.value) {
+  if (!displayContactInfo.value || displayContactInfo.value.category === '') {
     return;
   }
   deleteConfirmDialog.value = false;
@@ -95,11 +95,6 @@ const handleDelete = () => {
     }
   }
 };
-
-
-const handleChangeOwner = () => {
-  alert('change owner');
-}
 
 const editName = () => {
   console.log("editName");
@@ -234,12 +229,12 @@ const handleRemoveAdmin = (memberId: number) => {
         <div class="d-flex flex-column">
           <v-btn
               v-if="displayContactInfo.category === 'group' && displayContactInfo.owner === user.id"
-              color="green"
+              color="primary"
               @click="changeOwnerDialog=true"
           >Change Ownership
           </v-btn>
           <slot name="buttons"/>
-          <v-btn color="error" @click="handleDelete">Delete</v-btn>
+          <v-btn color="error" @click="deleteConfirmDialog=true">Delete</v-btn>
         </div>
       </v-card-actions>
     </v-card-item>
@@ -253,7 +248,7 @@ const handleRemoveAdmin = (memberId: number) => {
         ></v-alert>
         <v-card-actions class="justify-end">
           <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
-          <v-btn @click="handleDelete">Delete</v-btn>
+          <v-btn v-if="contacts.includes(displayContactInfo.id)" @click="handleDelete">{{ displayContactInfo.category === 'group' ? 'Quit Group' : 'Delete' }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

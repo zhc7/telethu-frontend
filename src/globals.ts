@@ -12,10 +12,11 @@ export const currentPage = ref<string>('chat');
 export const activeChatId = ref<number>(-1);
 export const activeContactId = ref<number>(-1);
 export const activeRequestId = ref<number>(-1);
+export const searchedId = ref<number>(-1);
 export const contactPageContentLeft = ref<number>(0);
 
 export const selectedContactInfo = ref<ContactsData | undefined>(undefined);
-export const contactPageProfileSource = ref('contactList');
+export const contactPageProfileSource = ref('');
 
 export const selectedChatInfo = ref<ContactsData | undefined>(undefined);
 export const users = useLocalStorage<Users>("users", {});

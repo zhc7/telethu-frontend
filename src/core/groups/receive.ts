@@ -17,8 +17,13 @@ export const handleSomebodyExitGroup = (message: Message) => {
     }
 }
 export const handleGroupOwnerChanged = (message: Message) => {
-    const groupId = message.content as number;
-    getUser(groupId, true);
+    const content = message.content;
+    if (content === +content) {
+        getUser(content as number, true);
+    } else {
+        alert(content);
+        console.log('in group add admin', message);
+    }
 }
 export const handleGroupAdminAdded = (message: Message) => {
     const content = message.content;

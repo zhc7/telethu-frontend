@@ -3,7 +3,7 @@ import {
     activeRequestId,
     contactPageProfileSource,
     contacts,
-    requests,
+    requests, searchedId,
     selectedContactInfo,
     user,
     userId
@@ -153,7 +153,7 @@ const searchForFriend = async (friendId: number) => {
             Authorization: token.value,
         }
     });
-    selectedContactInfo.value = result.data.users[0];
+    searchedId.value = result.data.users[0].id;
     contactPageProfileSource.value = 'searchResult';
 }
 const blockFriend = (friendId: number) => {
