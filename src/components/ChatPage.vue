@@ -339,15 +339,13 @@ const dispatchFunction = (item: string) => {
                 @show-context-menu="openContextMenu"
                 @click="handleSelectMessage(message)"
             />
-            <v-scale-transition origin="top left">
-              <MessageContextMenu
-                  v-if="showContextMenu"
-                  :x="contextMenuX"
-                  :y="contextMenuY"
-                  :choices="contextMenuChoices"
-                  @choose="dispatchFunction"
-              />
-            </v-scale-transition>
+            <MessageContextMenu
+                v-if="showContextMenu"
+                :x="contextMenuX"
+                :y="contextMenuY"
+                :choices="contextMenuChoices"
+                @choose="dispatchFunction"
+            />
           </div>
         </div>
       </v-row>
