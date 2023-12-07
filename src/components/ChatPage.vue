@@ -313,7 +313,7 @@ const dispatchFunction = (item: string) => {
         </v-toolbar-title>
         <v-btn icon="mdi-bug"/>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
-        <v-btn icon="mdi-account-cog-outline" @click="handleDisplayProfile"/>
+        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
       </v-toolbar>
       <v-row
           no-gutters
