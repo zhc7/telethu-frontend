@@ -33,3 +33,8 @@ export const handleRecallMessage = (message: Message) => {
     }
     targetMessage.content = "*message recalled*";
 }
+
+export const handleDeleteMessage = (message: Message) => {
+    const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
+    messages.value[target] = messages.value[target].filter((m: Message) => m.message_id !== message.content);
+}

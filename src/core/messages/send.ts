@@ -29,3 +29,16 @@ export const recallMessage = (messageId: number, receiver: number, t_type: Targe
     };
     chatManager.sendMessage(newMessage);
 }
+
+export const deleteMessage = (messageId: number, receiver: number, t_type: TargetType) => {
+    const newMessage: Message = {
+        message_id: generateMessageId(messageId, user.value.id, Date.now()),
+        m_type: MessageType.FUNC_DELETE_MESSAGE,
+        t_type,
+        content: messageId,
+        receiver,
+        sender: user.value.id,
+        time: Date.now(),
+    };
+    chatManager.sendMessage(newMessage);
+}

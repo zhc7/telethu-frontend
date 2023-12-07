@@ -21,7 +21,7 @@ import {
 } from "./users/receive.ts";
 import axios from "axios";
 import {token} from "../auth.ts";
-import {handleRecallMessage} from "./messages/receive.ts";
+import {handleDeleteMessage, handleRecallMessage} from "./messages/receive.ts";
 
 
 const searchResult = ref();
@@ -216,6 +216,7 @@ dispatcher[MessageType.FUNC_LEAVE_GROUP] = handleSomebodyExitGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_ADMIN] = handleGroupAdminAdded;
 dispatcher[MessageType.FUNC_REMOVE_GROUP_ADMIN] = handleGroupAdminRemoved;
 dispatcher[MessageType.FUNC_REMOVE_GROUP_MEMBER] = handleSomebodyRemovedFromGroup;
+dispatcher[MessageType.FUNC_DELETE_MESSAGE] = handleDeleteMessage;
 
 
 export {

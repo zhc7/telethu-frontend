@@ -13,7 +13,7 @@ import {getUser} from "../core/data";
 import {ArrayMenuItems, ContextMenuSubject, GroupData, Message, MessageMenuItems, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
-import {forwardMessage, recallMessage} from "../core/messages/send.ts";
+import {deleteMessage, forwardMessage, recallMessage} from "../core/messages/send.ts";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -207,8 +207,11 @@ const handleSelectMessage = (msg: Message) => {
   }
 }
 
-const deleteMessage = () => {
-  alert('delete');
+const delMessage = (message: Message) => {
+  if (typeof message.message_id !== 'number') {
+    return;
+  }
+  deleteMessage(message.message_id, activeChatId.value, category.value === 'group' ? TargetType.GROUP : TargetType.FRIEND);
 };
 
 const withdrawMessage = (message: Message) => {
@@ -228,7 +231,7 @@ const messageItemDispatcher: { [key in MessageMenuItems]: (msg: Message) => void
   },
   [MessageMenuItems.Share]: shareMessage,
   [MessageMenuItems.Select]: selectMessage,
-  [MessageMenuItems.Delete]: deleteMessage,
+  [MessageMenuItems.Delete]: delMessage,
   [MessageMenuItems.Withdraw]: withdrawMessage,
 };
 
