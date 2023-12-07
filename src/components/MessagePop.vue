@@ -122,9 +122,10 @@ console.log("message", props.message);
           <v-img
               v-else-if="message.m_type === 1"
               :src="blobSrc"
-              style="max-width: 18vw; max-height: 20vh; min-height: 12vw"
+              style="max-width: 18vw; max-height: 20vh; min-height: 12vw; min-width: 18vw;"
               class="border rounded-lg"
           >
+            <!-- TODO: setting min-width here is inelegant, fix this later -->
             <template v-slot:error>
               <div class="d-flex justify-center align-center" style="height: 100%; width: 100%;">
                 <v-icon size="70px" color="grey">mdi-image-off-outline</v-icon>
