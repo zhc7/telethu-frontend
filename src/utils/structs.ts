@@ -64,7 +64,7 @@ export interface Message {
     content: string | Array<any> | number | GroupData | UserData,
     sender: number,
     receiver: number,
-    info?: string | Array<any>,
+    info?: string | number | Array<any>,
     status?: string; // pure frontend
 }
 
