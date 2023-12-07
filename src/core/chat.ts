@@ -196,7 +196,7 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
 const dispatcher: { [key in MessageType]?: (arg0: Message) => void } = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
-dispatcher[MessageType.FUNC_EXIT_GROUP] = () => {
+dispatcher[MessageType.FUNC_CALLBACK_SELF_MESSAGE] = () => {
 };
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted;
@@ -212,10 +212,10 @@ dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {
 }; // TODO
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = handleReceiveMessageRead;
-dispatcher[MessageType.FUNC_SB_EXIT_GROUP] = handleSomebodyExitGroup;
-dispatcher[MessageType.FUNC_GROUP_ADDED_ADMIN] = handleGroupAdminAdded;
-dispatcher[MessageType.FUNC_GROUP_REMOVED_ADMIN] = handleGroupAdminRemoved;
-dispatcher[MessageType.FUNC_SB_REMOVED_FROM_GROUP] = handleSomebodyRemovedFromGroup;
+dispatcher[MessageType.FUNC_LEAVE_GROUP] = handleSomebodyExitGroup;
+dispatcher[MessageType.FUNC_ADD_GROUP_ADMIN] = handleGroupAdminAdded;
+dispatcher[MessageType.FUNC_REMOVE_GROUP_ADMIN] = handleGroupAdminRemoved;
+dispatcher[MessageType.FUNC_REMOVE_GROUP_MEMBER] = handleSomebodyRemovedFromGroup;
 
 
 export {

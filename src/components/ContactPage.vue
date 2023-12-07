@@ -17,7 +17,7 @@ import {
 import RequestList from "./RequestList.vue";
 import FriendProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
-import {acceptFriend, addFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
+import {acceptFriend, applyFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 import router from "../router.ts";
 
 
@@ -47,7 +47,7 @@ const search = () => {
 };
 
 const handleApplyFriend = (friendId: number) => {
-  addFriend(friendId);
+  applyFriend(friendId);
   alert("喜报：你发送了申请！\nGood news! You sent an application! ");
 }
 

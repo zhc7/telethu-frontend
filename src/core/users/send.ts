@@ -1,4 +1,4 @@
-import {Message, MessageType, TargetType} from "../../utils/structs.ts";
+import {Message, MessageType, TargetType} from "../../utils/structs";
 import {
     activeRequestId,
     contactPageProfileSource,
@@ -7,21 +7,20 @@ import {
     selectedContactInfo,
     user,
     userId
-} from "../../globals.ts";
-import {generateMD5, generateMessageId} from "../../utils/hash.ts";
-import {socket} from "../socket.ts";
+} from "../../globals";
+import {generateMD5, generateMessageId} from "../../utils/hash";
 import axios from "axios";
-import {BASE_API_URL, DEBUG} from "../../constants.ts";
-import {token} from "../../auth.ts";
-import {requestInsert, requestRemove} from "../data.ts";
-import {formatFileSize, getFileType} from "../files.ts";
-import {chatManager} from "../chat.ts";
+import {BASE_API_URL, DEBUG} from "../../constants";
+import {token} from "../../auth";
+import {requestInsert, requestRemove} from "../data";
+import {formatFileSize, getFileType} from "../files";
+import {chatManager} from "../chat";
 
-const addFriend = (friendId: number) => {
+const applyFriend = (friendId: number) => {
     const message = {
         time: Date.now(),
-        m_type: 10,
-        t_type: 1,
+        m_type: MessageType.FUNC_APPLY_FRIEND,
+        t_type: TargetType.FRIEND,
         content: "",
         sender: userId.value,
         receiver: friendId,
@@ -29,13 +28,14 @@ const addFriend = (friendId: number) => {
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     }
     console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
 };
+
 const acceptFriend = async (friendId: number) => {
     const message: Message = {
         time: Date.now(),
-        m_type: 11,
-        t_type: 1,
+        m_type: MessageType.FUNC_ACCEPT_FRIEND,
+        t_type: TargetType.FRIEND,
         content: "",
         sender: userId.value,
         receiver: friendId,
@@ -43,15 +43,16 @@ const acceptFriend = async (friendId: number) => {
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
     console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
     contacts.value.push(friendId);
     requestRemove(friendId);
 };
+
 const rejectFriend = (friendId: number) => {
     const message: Message = {
         time: Date.now(),
-        m_type: 12,
-        t_type: 1,
+        m_type: MessageType.FUNC_REJECT_FRIEND,
+        t_type: TargetType.FRIEND,
         content: "",
         sender: userId.value,
         receiver: friendId,
@@ -64,37 +65,38 @@ const rejectFriend = (friendId: number) => {
     }
     requestRemove(friendId);
     console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
 };
+
 const applyList = async () => {
     await axios.get(BASE_API_URL + "users/friends/apply_list", {
         headers: {
             Authorization: token.value,
         }
-    })
-        .then((response) => {
-            if (DEBUG) {
-                console.log(response.data);
-            }
-            const idList = response.data['friends'];
+    }).then((response) => {
+        if (DEBUG) {
             console.log(response.data);
-            for (const request of idList) {
-                requestInsert(request.id, {
-                    id: request.id,
-                    name: request.name,
-                    email: request.email,
-                    avatar: request.avatar,
-                    time: request.time,
-                });
-            }
-            console.log('requests', requests.value);
-        });
+        }
+        const idList = response.data['friends'];
+        console.log(response.data);
+        for (const request of idList) {
+            requestInsert(request.id, {
+                id: request.id,
+                name: request.name,
+                email: request.email,
+                avatar: request.avatar,
+                time: request.time,
+            });
+        }
+        console.log('requests', requests.value);
+    });
 }
+
 const deleteFriend = (id: number) => {
     const message = {
         time: Date.now(),
-        m_type: 14,
-        t_type: 1,
+        m_type: MessageType.FUNC_DEL_FRIEND,
+        t_type: TargetType.FRIEND,
         content: "",
         sender: userId.value,
         receiver: id,
@@ -102,7 +104,7 @@ const deleteFriend = (id: number) => {
         message_id: generateMessageId(id, userId.value, Date.now()),
     };
     console.log('deleting friend', JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
 }
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
     const message: Message = {
@@ -122,8 +124,8 @@ const createGroup = (groupName: string, members: Array<number>) => {
     alert('creating group');
     const message: Message = {
         time: Date.now(),
-        m_type: 7,
-        t_type: 1,
+        m_type: MessageType.FUNC_CREATE_GROUP,
+        t_type: TargetType.FRIEND,
         content: {
             members,
             category: "group",
@@ -140,7 +142,7 @@ const createGroup = (groupName: string, members: Array<number>) => {
         status: 'sending',
     };
     console.log('create message sending: ', JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
 }
 const searchForFriend = async (friendId: number) => {
     const result = await axios.post(BASE_API_URL + 'users/user_search', {
@@ -157,8 +159,8 @@ const searchForFriend = async (friendId: number) => {
 const blockFriend = (friendId: number) => {
     const message: Message = {
         time: Date.now(),
-        m_type: 13,
-        t_type: 1,
+        m_type: MessageType.FUNC_BlOCK_FRIEND,
+        t_type: TargetType.FRIEND,
         content: "",
         sender: userId.value,
         receiver: friendId,
@@ -167,13 +169,13 @@ const blockFriend = (friendId: number) => {
         status: 'sending',
     }
     console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
 }
 const unblockFriend = (friendId: number) => {
     const message: Message = {
         time: Date.now(),
-        m_type: 17,
-        t_type: 1,
+        m_type: MessageType.FUNC_UNBLOCK_FRIEND,
+        t_type: TargetType.FRIEND,
         content: "",
         sender: userId.value,
         receiver: friendId,
@@ -182,7 +184,7 @@ const unblockFriend = (friendId: number) => {
         status: 'sending',
     }
     console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
+    chatManager.sendMessage(message);
 }
 const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_type: MessageType) => {
     const md5 = await generateMD5(file);
@@ -205,8 +207,8 @@ const readMessage = (mid: number) => {
     const message: Message = {
         message_id: generateMessageId('' + mid, userId.value, Date.now()),
         time: Date.now(),
-        m_type: 19,
-        t_type: 1,
+        m_type: MessageType.FUNC_READ_MESSAGE,
+        t_type: TargetType.FRIEND,
         content: mid,
         sender: -1,
         receiver: -1,
@@ -225,4 +227,4 @@ export {deleteFriend};
 export {applyList};
 export {rejectFriend};
 export {acceptFriend};
-export {addFriend};
+export {applyFriend};
