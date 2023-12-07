@@ -1,6 +1,6 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, settingsUpdating} from "../globals";
+import {contacts, isSocketConnected, settingsUpdating, unreadCounter} from "../globals";
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
 import {applyList} from "./users/send.ts";
@@ -33,10 +33,19 @@ const createSocket = () => {
             });
             applyList().then();
             contacts.value = idList;
+
             first = false;
             return;
         }
         const message = _message as Message;
+        for (const id of contacts.value) {
+            if (!message[id]) {
+                message[id] = [];
+            }
+            if (!unreadCounter.value[id]) {
+                unreadCounter.value[id] = 0;
+            }
+        }
         chatManager.handleMessage(message);
     };
 
