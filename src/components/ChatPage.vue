@@ -182,6 +182,7 @@ const handleShareMessages = (target: Array<number>) => {
     forwardMessage(selected.value, member);
   }
   shareMessageDialog.value = false;
+  selectionMode.value = false;
 }
 
 const selectionMode = ref<boolean>(false);
