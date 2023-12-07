@@ -7,7 +7,7 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
+import {activeChatId, messages, nowRef, selectedChatInfo, settings, user, userId, users} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
 import {ArrayMenuItems, ContextMenuSubject, Message, MessageMenuItems, TargetType} from "../utils/structs";
@@ -329,6 +329,7 @@ const dispatchFunction = (item: ArrayMenuItems | MessageMenuItems) => {
   </div>
   <SelectMember
       v-if="show"
+      :pinned="[userId]"
       :showDialog="selectMemberDialog"
       @update:showDialog="selectMemberDialog = $event"
       :source="category === 'user' ? 'personalFriend' : 'existingGroup'"

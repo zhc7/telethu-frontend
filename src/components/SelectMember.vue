@@ -13,37 +13,42 @@ import List from "./List.vue";
  * source: chatList, personalFriend, existingGroup, share
  *
  */
-const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup']);
-const emit = defineEmits(['update:showDialog', 'membersSelected']);
+const props = defineProps(['showDialog', 'title', 'contactId', 'source', 'sharedMessages', 'baseGroup', 'selected', 'pinned', 'possible']);
+const emit = defineEmits(['update:showDialog', 'update:selected', 'update:pinned']);
 const createGroupName = ref('');
 
-const pinedList = ref<Array<number>>([]);
-const selectedList = ref<Array<number>>([]);
 
-const pinedInfo = computed(() => {
-  const retList = contacts.value.filter(id => pinedList.value.includes(id));
-  if (pinedList.value.includes(user.value.id)) {
-    retList.unshift(user.value.id);
+
+const pinnedList = computed({
+  get() {
+    if (!props.pinned) {
+      return [];
+    }
+    return props.pinned;
+  },
+  set(newValue) {
+    emit('update:pinned', newValue);
   }
-  return retList;
 });
-
-const selectedInfo = computed(() => {
-  return contacts.value.filter((id) => {
-    return selectedList.value.includes(id);
-  })
-})
+const selectedList = computed({
+  get() {
+    return props.selected;
+  },
+  set(newValue) {
+    emit('update:selected', newValue);
+  }
+});
 
 const actUnselect = (id: number) => {
   selectedList.value = selectedList.value.filter((i) => {
     return id !== i;
-  })
+  });
 }
 
 const possibleMembers = computed(() => {
   return contacts.value.filter((id) => {
     return getUser(id).category === "user";
-  })
+  });
 });
 
 const dialog = computed({
@@ -54,23 +59,7 @@ const dialog = computed({
 });
 
 watch(dialog, (newValue) => {
-  if (newValue === false) {
-    setTimeout(() => {
-      pinedList.value = [];
-      selectedList.value = [];
-    }, 200);
-    return;
-  }
-  if (props.source === 'personalFriend') {
-    pinedList.value.push(activeChatId.value);
-    pinedList.value.push(userId.value);
-  } else if (props.source === 'existingGroup') {
-    pinedList.value = props.baseGroup.members;
-  } else if (props.source === 'chatList') {
-    if (!pinedList.value.includes(userId.value)) {
-      pinedList.value.push(userId.value);
-    }
-  }
+
 });
 
 const dispatchedMention = (names: Array<number>) => {
@@ -81,7 +70,7 @@ const dispatchedMention = (names: Array<number>) => {
 const dispatchFunction = () => {
   console.log('source', props.source);
   const list = [];
-  for (const member of pinedList.value) {
+  for (const member of pinnedList.value) {
     list.push(member);
   }
   for (const member of selectedList.value) {
@@ -189,7 +178,7 @@ const negativeButtonText = computed(() => {
               v-for="member in possibleMembers"
               :title="getUser(member).name"
               :k="member"
-              :pin="pinedList.includes(member)"
+              :pin="pinnedList.includes(member)"
           >
             <template #prepend>
               <Avatar :contact-id="member"/>

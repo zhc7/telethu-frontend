@@ -154,7 +154,7 @@ const handleRemoveAdmin = (memberId: number) => {
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
-          <v-card-title class="ma-7"> Members</v-card-title>
+          <v-card-title class="ma-7"> {{ displayContactInfo.owner }}</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
                 v-for="member in memberInfoTable"
@@ -172,7 +172,12 @@ const handleRemoveAdmin = (memberId: number) => {
                    v-if="displayContactInfo.owner === userId && member !== userId || displayContactInfo.admin.includes(userId) && member !== userId && member.id !== displayContactInfo.owner && !displayContactInfo.admin.includes(member)"
                    @click="handleKickMember(member.id)">——
               </div>
-              <p>{{ (() => {member; return getUser(member).name;})() }}</p>
+              <p>{{
+                  (() => {
+                    member;
+                    return getUser(member).name;
+                  })()
+                }}</p>
               <div class="badge-lift"
                    v-if="displayContactInfo.owner === userId && member.id !== userId && !displayContactInfo.admin.includes(member.id)"
                    @click="handleAddAdmin(member.id)">|

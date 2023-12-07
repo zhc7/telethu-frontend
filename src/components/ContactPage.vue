@@ -178,6 +178,10 @@ watch(activeRequestId, selectRequest);
           class="overflow-y-auto"
           :contact-id="activeRequestId"
       >
+        <template #buttons>
+          <v-btn color="green" @click="acceptFriend(activeRequestId)">Accept</v-btn>
+          <v-btn color="error" @click="rejectFriend(activeRequestId)">Reject</v-btn>
+        </template>
       </FriendProfile>
     </v-col>
   </v-row>
