@@ -354,7 +354,11 @@ const dispatchFunction = (item: string) => {
       <InputArea :chat="selectedChatInfo"/>
     </v-col>
   </v-row>
-  <div class="profile-area overflow-y-auto" :class="{'profile-area--active': displayProfile}">
+  <div
+      v-show="show"
+      class="profile-area overflow-y-auto"
+      :class="{'profile-area--active': displayProfile}"
+  >
     <ContactProfile
         class="overflow-y-auto"
         v-if="selectedChatInfo"
