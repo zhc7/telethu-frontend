@@ -1,6 +1,6 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, settingsUpdating, unreadCounter} from "../globals";
+import {contacts, isSocketConnected, messages, settingsUpdating, unreadCounter} from "../globals";
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
 import {applyList} from "./users/send.ts";
@@ -39,8 +39,8 @@ const createSocket = () => {
         }
         const message = _message as Message;
         for (const id of contacts.value) {
-            if (!message[id]) {
-                message[id] = [];
+            if (messages.value[id] === undefined) {
+                messages.value[id] = [];
             }
             if (!unreadCounter.value[id]) {
                 unreadCounter.value[id] = 0;
