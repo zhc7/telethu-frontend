@@ -48,7 +48,11 @@ const unread = computed<number>(() => {
       :subtitle="displayHotMessage(hotMessages[contactId]?.content)"
   >
     <template #prepend>
-      <Avatar :contact-id="contactId"/>
+      <div style="position: relative">
+        <div class="badge" v-if="unreadCounter[contactId]">{{ unreadCounter[contactId] }}</div>
+        <Avatar :contact-id="contactId"/>
+      </div>
+
     </template>
     <div class="chat-time fill-height">
       <p>{{ hotMessages[contactId] ? formatChatMessageTime(nowRef, hotMessages[contactId]?.time) : '' }}</p>
@@ -57,7 +61,6 @@ const unread = computed<number>(() => {
       <v-icon v-if="pin" size="xs">mdi-pin</v-icon>
       <v-icon v-else size="xs"></v-icon>
       <v-icon v-if="mute" size="xs">mdi-bell-off</v-icon>
-      <v-badge class="unread-counter-badge" v-else-if="!mute && unread" color="red" :content="unread" inline></v-badge>
       <v-icon v-else size="xs"></v-icon>
     </template>
   </ListItem>
@@ -76,17 +79,19 @@ const unread = computed<number>(() => {
   color: #888
 }
 
-.unread-counter-badge {
+.badge {
   position: absolute;
-  overflow: visible;
-  right: -10px;
-  width: 16px;
   height: 16px;
-  border-radius: 8px;
-  background-color: red;
-  color: white;
+  width: 16px;
   line-height: 16px;
-  font-size: 14px;
-  z-index: 100000;
+  right: -0.36em;
+  top: -0.4em;
+  font-size: 0.56em;
+  z-index: 10000;
+  background-color: red;
+  border-radius: 7px;
+  color: white;
+  text-align: center;
+  font-weight: 700;
 }
 </style>
