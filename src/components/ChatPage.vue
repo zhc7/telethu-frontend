@@ -177,7 +177,7 @@ const shareMessage = (msg: Message) => {
 };
 
 const handleShareMessages = (target: Array<number>) => {
-  console.log('sharing messages', sharedMessages.value);
+  console.log('sharing messages', selected.value);
   for (const member of target) {
     forwardMessage(selected.value, member);
   }
