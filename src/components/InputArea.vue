@@ -229,6 +229,7 @@ const handleFocus = () => {
   </v-dialog>
 
   <selectMember
+      v-if="chat.category === 'group'"
       v-model:showDialog="selectMemberDialog"
       :pinned="[]"
       title="Select member to mention"

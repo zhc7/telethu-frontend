@@ -6,7 +6,6 @@ import {getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../globals.ts";
-import {applyFriend} from "../core/users/send.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -133,7 +132,7 @@ const emitValue = computed(() => {
         <v-btn @click="dialog=false">
           {{ negativeButtonText }}
         </v-btn>
-        <v-btn @click="$emit('confirm', emitValue, inputText)">{{ positiveButtonText }}</v-btn>
+        <v-btn @click="$emit('confirm', emitValue, groupName)">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

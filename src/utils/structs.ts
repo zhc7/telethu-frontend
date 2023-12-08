@@ -67,6 +67,7 @@ export interface Message {
     receiver: number,
     info?: string | number | Array<any>,
     status?: string; // pure frontend
+    who_read?: Array<number> | boolean, // group array, user boolean
 }
 
 export interface Ack {

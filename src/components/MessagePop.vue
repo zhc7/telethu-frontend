@@ -3,8 +3,8 @@ import {computed, onMounted, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
-import {user, userId} from "../globals.ts";
-import {Message, MessageType} from "../utils/structs.ts";
+import {contacts, user, userId} from "../globals.ts";
+import {GroupData, Message, MessageType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 
@@ -25,6 +25,13 @@ const messagePop = ref();
 const blobSrc = ref("");
 const sender = getUser(props.message.sender);
 const name = computed(() => sender.name); // maintain reactivity
+const readPercent = computed(() => {
+  if (props.message.who_read) {
+    return (props.message.who_read as Array<number>).length / (getUser(props.message.receiver) as GroupData).members.length;
+  } else {
+    return 0;
+  }
+});
 
 const previewIconUrl = (extension: string) => {
   if (extension === "pdf") {
@@ -191,7 +198,8 @@ console.log("message", props.message);
       <!-- bottom icon row -->
       <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'" v-if="!forward">
         <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
-        <v-icon v-else-if="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
+        <v-icon v-else-if="message.who_read && message.sender === userId" size="12px">mdi-check-all</v-icon>
+        <v-progress-circular v-if="message.t_type === 1 && message.sender === userId" :model-value="readPercent" size="12" width="2"/>
       </div>
 
       <!-- end message column -->
