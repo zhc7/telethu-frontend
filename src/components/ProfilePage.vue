@@ -4,7 +4,16 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {activeChatId, selectedChatInfo, user, userContacts, userEmail, userId, userName} from "../globals.ts";
+import {
+  activeChatId,
+  currentPage,
+  selectedChatInfo,
+  user,
+  userContacts,
+  userEmail,
+  userId,
+  userName
+} from "../globals.ts";
 import {GroupData} from "../utils/structs.ts";
 import SelectMember from "./SelectMember.vue";
 
@@ -104,7 +113,7 @@ const blackListDialog = ref(false);
 </script>
 
 <template>
-  <v-row no-gutters>
+  <v-row no-gutters v-show="currentPage === 'profile'">
     <v-dialog v-model="dialog" max-width="30vw" max-height="80vh">
       <v-card class="fill-height overflow-y-auto">
         <v-card-title>{{ editingTitle }}</v-card-title>
