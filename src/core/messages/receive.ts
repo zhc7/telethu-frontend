@@ -1,24 +1,14 @@
 import {Message} from "../../utils/structs";
-import {getUser} from "../data.ts";
 import axios from "axios";
-import {reactive} from "vue";
 import {messages, user} from "../../globals.ts";
+import {token} from "../../auth.ts";
 
-const getMessage = (messageId: number): Message => {
-    const message = reactive({
-        message_id: messageId,
-        m_type: 0,
-        t_type: 0,
-        content: "",
-        info: "",
-        receiver: 0,
-        sender: 0,
-        time: 0,
-    });
-    axios.get(`/api/messages/${messageId}`).then(res => {
-        Object.assign(message, res.data);
-    });
-    return message;
+const getMessage = (messageId: number): Promise<Message> => {
+    return axios.get(`/messages/${messageId}`, {
+        headers: {
+            Authorization: `Bearer ${token.value}`
+        }
+    }).then(res => res.data);
 }
 
 export const handleForwardedMessage = (message: Message) => {

@@ -4,7 +4,7 @@ import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
 import {user, userId} from "../globals.ts";
-import {Message} from "../utils/structs.ts";
+import {Message, MessageType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 
@@ -111,7 +111,7 @@ console.log("message", props.message);
         </v-icon>
         <div @contextmenu.stop="openContextMenu">
           <div
-              v-if="message.m_type === 0"
+              v-if="message.m_type === MessageType.TEXT && typeof message.content === 'string'"
               ref="messagePop"
               class="pa-2 rounded-lg text-left message-pop"
               :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
@@ -119,8 +119,14 @@ console.log("message", props.message);
           >
             <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string)"></div>
           </div>
+          <div
+              v-else-if="message.m_type === MessageType.TEXT"
+          >
+            <p>chat history here</p>
+<!--            TODO: chat history here-->
+          </div>
           <v-img
-              v-else-if="message.m_type === 1"
+              v-else-if="message.m_type === MessageType.IMAGE"
               :src="blobSrc"
               style="max-width: 18vw; max-height: 20vh; min-height: 12vw; min-width: 18vw;"
               class="border rounded-lg"
@@ -133,12 +139,12 @@ console.log("message", props.message);
             </template>
           </v-img>
           <audio
-              v-else-if="message.m_type === 2"
+              v-else-if="message.m_type === MessageType.AUDIO"
               :src="blobSrc"
               style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
           />
           <video
-              v-else-if="message.m_type === 3"
+              v-else-if="message.m_type === MessageType.VIDEO"
               controls
               :src="blobSrc"
               style="max-width: 20vw; max-height: 20vh; border: 1px solid darkgrey; border-radius: 7px"

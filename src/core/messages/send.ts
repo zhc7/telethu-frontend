@@ -2,18 +2,23 @@ import {Message, MessageType, TargetType} from "../../utils/structs";
 import {chatManager} from "../chat";
 import {generateMessageId} from "../../utils/hash";
 import {user} from "../../globals";
+import {getUser} from "../data.ts";
 
-export const forwardMessage = (messageId: number | Array<number>, receiver: number) => {
+export const forwardMessage = (msg: Message | Array<Message>, receiver: number) => {
     const newMessage: Message = {
-        message_id: generateMessageId(messageId, receiver, Date.now()),
-        m_type: MessageType.TEXT,
-        t_type: TargetType.FRIEND,
-        content: "forward",
-        info: messageId,
+        message_id: generateMessageId(msg, receiver, Date.now()),
+        m_type: msg.constructor === Array ? MessageType.TEXT : (msg as Message).m_type,
+        t_type: getUser(receiver).category === "user" ? TargetType.FRIEND : TargetType.GROUP,
+        content: msg.constructor === Array ? msg : (msg as Message).content,
         receiver,
         sender: user.value.id,
         time: Date.now(),
     };
+    if (msg.constructor !== Array && (msg as Message).m_type === MessageType.TEXT) {
+        // change to md quote by line
+        newMessage.content = "*Forwarded from " + user.value.name + "@" + user.value.id + "*\n\n"
+        newMessage.content += ((msg as Message).content as string).split("\n").map((line: string) => "> " + line).join("\n");
+    }
     chatManager.sendMessage(newMessage);
 }
 

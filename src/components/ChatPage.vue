@@ -201,8 +201,17 @@ const shareMessage = (msg: Message) => {
 
 const handleShareMessages = (target: Array<number>) => {
   console.log('sharing messages', selected.value);
+  let forwardContent;
+  if (selectionMode.value) {
+    forwardContent = [];
+    for (const id of selected.value) {
+      forwardContent.push(messages.value[activeChatId.value].find(m => m.message_id === id)!);
+    }
+  } else {
+    forwardContent = messages.value[activeChatId.value].find(m => m.message_id === selected.value[0])!;
+  }
   for (const member of target) {
-    forwardMessage(selected.value, member);
+    forwardMessage(forwardContent, member);
   }
   shareMessageDialog.value = false;
   selectionMode.value = false;
