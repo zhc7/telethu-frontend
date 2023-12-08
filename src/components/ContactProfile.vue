@@ -5,8 +5,15 @@ import SelectMember from "./SelectMember.vue";
 import {contacts, settings, user, userContacts, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
-import {exitGroup, groupAddAdmin, groupChangeOwner, groupRemoveAdmin, removeGroupMember} from "../core/groups/send.ts";
-import {blockFriend, createGroup, deleteFriend, unblockFriend} from "../core/users/send.ts";
+import {
+  createGroup,
+  exitGroup,
+  groupAddAdmin,
+  groupChangeOwner,
+  groupRemoveAdmin,
+  removeGroupMember
+} from "../core/groups/send.ts";
+import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 
 

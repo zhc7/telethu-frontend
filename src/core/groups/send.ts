@@ -1,5 +1,5 @@
 import {Message, MessageType, TargetType} from "../../utils/structs";
-import {userId} from "../../globals";
+import {user, userId} from "../../globals";
 import {generateMessageId} from "../../utils/hash";
 import {chatManager} from "../chat";
 
@@ -103,3 +103,27 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
     console.log('kicking member', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
+const createGroup = (groupName: string, members: Array<number>) => {
+    const message: Message = {
+        time: Date.now(),
+        m_type: MessageType.FUNC_CREATE_GROUP,
+        t_type: TargetType.FRIEND,
+        content: {
+            members,
+            category: "group",
+            name: groupName,
+            avatar: "",
+            id: 0,  // placeholder
+            owner: user.value.id,
+            admin: [],
+        },
+        receiver: userId.value,
+        sender: userId.value,
+        info: groupName,
+        message_id: generateMessageId(members.toString(), userId.value, Date.now()),
+        status: 'sending',
+    };
+    console.log('create message sending: ', JSON.stringify(message));
+    chatManager.sendMessage(message);
+}
+export {createGroup};

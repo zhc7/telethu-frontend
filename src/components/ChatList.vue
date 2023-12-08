@@ -6,7 +6,8 @@ import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
 import {handleCreateGroup} from "../core/groups/receive.ts";
-import {createGroup} from "../core/users/send.ts";
+
+import {createGroup} from "../core/groups/send.ts";
 
 const createGroupDialog = ref(false);
 

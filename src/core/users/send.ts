@@ -3,9 +3,9 @@ import {
     activeRequestId,
     contactPageProfileSource,
     contacts,
-    requests, searchedId,
+    requests,
+    searchedId,
     selectedContactInfo,
-    user,
     userId
 } from "../../globals";
 import {generateMD5, generateMessageId} from "../../utils/hash";
@@ -120,30 +120,6 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
     };
     chatManager.sendMessage(message);
 };
-const createGroup = (groupName: string, members: Array<number>) => {
-    alert('creating group');
-    const message: Message = {
-        time: Date.now(),
-        m_type: MessageType.FUNC_CREATE_GROUP,
-        t_type: TargetType.FRIEND,
-        content: {
-            members,
-            category: "group",
-            name: groupName,
-            avatar: "",
-            id: 0,  // placeholder
-            owner: user.value.id,
-            admin: [],
-        },
-        receiver: userId.value,
-        sender: userId.value,
-        info: groupName,
-        message_id: generateMessageId(members.toString(), userId.value, Date.now()),
-        status: 'sending',
-    };
-    console.log('create message sending: ', JSON.stringify(message));
-    chatManager.sendMessage(message);
-}
 const searchForFriend = async (friendId: number) => {
     const result = await axios.post(BASE_API_URL + 'users/user_search', {
         type: 0,
@@ -221,7 +197,6 @@ export {sendFiles};
 export {unblockFriend};
 export {blockFriend};
 export {searchForFriend};
-export {createGroup};
 export {sendMessage};
 export {deleteFriend};
 export {applyList};
