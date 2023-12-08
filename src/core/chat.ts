@@ -190,6 +190,11 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
         }
         console.log(new_msg);
         messages.value[id] = new_msg;
+        hotMessages.value[id] = {
+            sender: id,
+            time: messages.value[id][messages.value[id].length - 1].time,
+            content: messages.value[id][messages.value[id].length - 1],
+        };
     })
 }
 
