@@ -38,11 +38,6 @@ const search = () => {
   searchForFriend(+searchInput.value);
 };
 
-const handleApplyFriend = (friendId: number) => {
-  applyFriend(friendId);
-  alert("喜报：你发送了申请！\nGood news! You sent an application! ");
-}
-
 const handleChat = async () => {
   activeChatId.value = activeContactId.value;
   router.replace('chat');
@@ -174,9 +169,6 @@ watch(activeRequestId, selectRequest);
         class="overflow-y-auto"
         :contact-id="searchedId"
       >
-        <template #buttons>
-          <v-btn color="blue" @click="handleApplyFriend(activeRequestId)">Apply</v-btn>
-        </template>
       </ContactProfile>
     </v-col>
   </v-row>

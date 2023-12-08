@@ -6,6 +6,7 @@ import {getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../globals.ts";
+import {applyFriend} from "../core/users/send.ts";
 
 /**
  * source: chatList, personalFriend, existingGroup, share
@@ -48,70 +49,6 @@ const dialog = computed({
     emit('update:showDialog', value)
   }
 });
-
-// const dispatchedMention = (names: Array<number>) => {
-//   emit('membersSelected', names);
-//   dialog.value = false;
-// }
-
-// const dispatchFunction = () => {
-//   const list = [];
-//   for (const member of props.pinned) {
-//     list.push(member);
-//   }
-//   for (const member of selectedStuff.value) {
-//     list.push(member);
-//   }
-//   if (props.source === 'chatList') {
-//     dispatchedCreateGroup(list);
-//   } else if (props.source === 'existingGroup') {
-//     dispatchedGroupAddMember();
-//   } else if (props.source === 'personalFriend') {
-//     dispatchedCreateGroupFromContact();
-//   } else if (props.source === 'share') {
-//     dispatchedShare(list);
-//   } else if (props.source === 'input@mention') {
-//     dispatchedMention(list);
-//   }
-// }
-
-// const dispatchedCreateGroup = (list: Array<number>) => {
-//   createGroup(inputText.value, list);
-//   dialog.value = false;
-// }
-
-// const dispatchedGroupAddMember = () => {
-//   groupAddMember(props.baseGroup.id, selectedStuff.value);
-//   dialog.value = false;
-// }
-
-// const dispatchedCreateGroupFromContact = () => {
-//   console.log("create group from contact", inputText.value, selectedStuff.value);
-//   createGroup(inputText.value, selectedStuff.value);
-//   selectedStuff.value = [];
-//   dialog.value = false;
-// }
-
-// const dispatchedShare = (list: Array<number>) => {
-//   for (const member of list) {
-//     for (const message of props.sharedMessages) {
-//       sendMessage(member, message.content, message.t_type);
-//     }
-//   }
-//   dialog.value = false;
-// }
-
-// const positiveButtonText = computed(() => {
-//   if (props.source === 'personalFriend') {
-//     return 'Create';
-//   } else if (props.source === 'existingGroup') {
-//     return 'Add';
-//   } else if (props.source === 'chatList') {
-//     return 'Create';
-//   } else {
-//     return 'Confirm';
-//   }
-// });
 
 const negativeButtonText = computed(() => {
   return 'Cancel';

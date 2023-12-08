@@ -2,7 +2,7 @@
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {contacts, settings, user, userContacts, userId} from "../globals.ts";
+import {activeRequestId, contacts, settings, user, userContacts, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
@@ -13,8 +13,9 @@ import {
   groupRemoveAdmin,
   removeGroupMember
 } from "../core/groups/send.ts";
-import {blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
+import {applyFriend, blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
+import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
 
 
 const props = defineProps(['contactId']);
@@ -103,6 +104,11 @@ const handleDelete = () => {
   }
 };
 
+const handleApplyFriend = (friendId: number) => {
+  applyFriend(friendId);
+  alert("喜报：你发送了申请！\nGood news! You sent an application! ");
+};
+
 const editName = () => {
   console.log("editName");
 };
@@ -148,7 +154,7 @@ const handleRemoveAdmin = (memberId: number) => {
             </ProfileRow>
             <ProfileRow v-show="displayContactInfo && displayContactInfo.category === 'user'">
               <template #title> Email:</template>
-              <template #content> {{ displayContactInfo.email ? displayContactInfo.email : '' }}</template>
+              <template #content> {{ (displayContactInfo as UserData).email ? (displayContactInfo as UserData).email : '' }}</template>
             </ProfileRow>
           </div>
         </v-list-item>
@@ -157,7 +163,7 @@ const handleRemoveAdmin = (memberId: number) => {
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
-          <v-card-title class="ma-7"> {{ displayContactInfo.owner }}</v-card-title>
+          <v-card-title class="ma-7"> {{ (displayContactInfo as GroupData).owner }}</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
                 v-for="member in memberInfoTable"
@@ -240,6 +246,8 @@ const handleRemoveAdmin = (memberId: number) => {
               @click="changeOwnerDialog=true"
           >Change Ownership
           </v-btn>
+          <v-btn v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id" color="blue" @click="handleApplyFriend(activeRequestId)">Apply</v-btn>
+          <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="router.push('/profile')">Goto Profile</v-btn>
           <slot name="buttons"/>
           <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id" @click="deleteConfirmDialog=true">Delete</v-btn>
         </div>
