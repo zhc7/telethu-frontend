@@ -19,6 +19,7 @@ const emits = defineEmits<{
   finished: [],
   showProfile: [],
   showContextMenu: [x: number, y: number, subject: Message],
+  showWhoRead: [],
 }>();
 
 const messagePop = ref();
@@ -199,7 +200,13 @@ console.log("message", props.message);
       <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'" v-if="!forward">
         <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-else-if="message.who_read && message.sender === userId" size="12px">mdi-check-all</v-icon>
-        <v-progress-circular v-if="message.t_type === 1 && message.sender === userId" :model-value="readPercent" size="12" width="2"/>
+        <v-progress-circular
+            v-if="message.t_type === 1 && message.sender === userId"
+            :model-value="readPercent"
+            size="12" width="2"
+            @click="$emit('showWhoRead')"
+            style="cursor: pointer"
+        />
       </div>
 
       <!-- end message column -->

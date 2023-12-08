@@ -28,6 +28,13 @@ const contextMenuX = ref(0);
 const contextMenuY = ref(0);
 const contextMenuSubject = ref<ContextMenuSubject>("blank");
 
+const showWhoReadDialog = ref(false);
+const showWhoReadMessage = ref<Message>();
+const showWhoRead = (message: Message) => {
+    showWhoReadDialog.value = true;
+    showWhoReadMessage.value = message;
+}
+
 const openBlankContextMenu = (event: MouseEvent) => {
   openContextMenu(event.clientX, event.clientY, "blank");
 }
@@ -389,6 +396,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
               @show-context-menu="openContextMenu"
               @click="handleSelectMessage(message)"
               :forward="false"
+              @show-who-read="showWhoRead(message)"
           />
           <MessageContextMenu
               v-if="showContextMenu"
@@ -429,6 +437,38 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
       :possible="contacts"
       @confirm="handleShareMessages"
   />
+  <v-dialog v-model="showWhoReadDialog" width="20vw">
+    <v-card>
+      <v-card-title class="font-weight-bold text-center">Who Read</v-card-title>
+      <v-card-text>
+        <v-list-item>
+          <v-list-item-title class="font-weight-bold text-center">
+            ----Read by {{ (showWhoReadMessage?.who_read as number[])?.length??0 }} people----
+          </v-list-item-title>
+        </v-list-item>
+        <v-list class="text-center">
+          <v-list-item v-for="id in showWhoReadMessage?.who_read" :key="id">
+            <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-list-item>
+          <v-list-item-title class="font-weight-bold text-center">
+            ----Unread by {{ (selectedChatInfo as GroupData).members.length - (showWhoReadMessage?.who_read as number[])?.length??0 }} people----
+          </v-list-item-title>
+        </v-list-item>
+        <v-list class="text-center">
+          <v-list-item
+              v-for="id in (selectedChatInfo as GroupData).members.filter((_id) => !(showWhoReadMessage?.who_read as number[]).includes(_id))"
+              :key="id">
+            <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn @click="showWhoReadDialog = false">close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>

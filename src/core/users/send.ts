@@ -117,6 +117,7 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
         info: "",
         message_id: generateMessageId(inputMessage, userId.value, Date.now()),
         status: 'sending',
+        who_read: t_type === TargetType.FRIEND ? false : [],
     };
     chatManager.sendMessage(message);
 };
