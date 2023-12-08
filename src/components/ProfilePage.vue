@@ -16,6 +16,7 @@ import {
 } from "../globals.ts";
 import {GroupData} from "../utils/structs.ts";
 import SelectMember from "./SelectMember.vue";
+import {unblockFriend} from "../core/users/send.ts";
 
 const router = useRouter();
 
@@ -209,13 +210,17 @@ const blackListDialog = ref(false);
         </v-card-item>
       </v-card>
     </v-col>
+    <SelectMember
+        v-model:show-dialog="blackListDialog"
+        :pinned="[]"
+        :title="`${user.name}'s Black List`"
+        :possible="userContacts"
+        single="true"
+        @confirm="(target, _) => {
+        unblockFriend(target);
+      }"
+    />
   </v-row>
-  <SelectMember
-      v-model:show-dialog="blackListDialog"
-      :pinned="[]"
-      :title="`${user.name}'s Black List`"
-      :possible="userContacts"
-  />
 </template>
 
 <style scoped>
