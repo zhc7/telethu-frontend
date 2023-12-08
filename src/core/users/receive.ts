@@ -10,13 +10,16 @@ export const handleReceiveRequest = async (_: Message) => {
 }
 export const handleApplicationAccepted = (message: Message) => {
     if (message.sender === user.value.id) {
-        contacts.value.push(message.receiver);
+        if (!contacts.value.includes(message.receiver)) {
+            contacts.value.push(message.receiver);
+        }
     } else {
-        contacts.value.push(message.sender);
+        if (!contacts.value.includes(message.sender)) {
+            contacts.value.push(message.sender);
+        }
     }
 }
 export const handleSearchResult = (message: Message) => {
-    // message.content.mute = false;
     console.log(message.content);
     selectedContactInfo.value = message.content as ContactsData;
     contactPageProfileSource.value = "searchResult";
