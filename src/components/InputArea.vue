@@ -232,7 +232,7 @@ const handleFocus = () => {
       v-model:showDialog="selectMemberDialog"
       :pinned="[]"
       title="Select member to mention"
-      :possible="selectedChatInfo.members"
+      :possible="chat.members.filter((id: number) => id !== user.id)"
       @confirm="(target, _) => handleMembersSelected(target)"
   />
 </template>

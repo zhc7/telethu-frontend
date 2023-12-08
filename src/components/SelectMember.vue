@@ -27,7 +27,9 @@ const props = withDefaults(defineProps<{
   positiveButtonText: 'Confirm',
 });
 const emit = defineEmits(['update:showDialog', 'confirm', 'cancel']);
-const inputText = ref('');
+const groupName = ref('');
+const searchFriend = ref('');
+
 
 const selectedStuff = ref<number | Array<number>>([]);
 
@@ -80,12 +82,14 @@ const emitValue = computed(() => {
         <v-text-field
             density="compact"
             label="group name"
-            v-model="inputText"
+            v-model="groupName"
             variant="outlined"
+            v-if="title === 'Create Group'"
         />
         <v-text-field
             density="compact"
             label="Search"
+            v-model="searchFriend"
         />
         <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
@@ -113,7 +117,7 @@ const emitValue = computed(() => {
         </div>
         <List class="overflow-y-auto flex-1-1" :mode="single ? 'single' : 'multi'" v-model="selectedStuff">
           <ListItem
-              v-for="member in possible"
+              v-for="member in possible.filter((m) => getUser(m).name.includes(searchFriend) && !pinned.includes(m))"
               :title="getUser(member).name"
               :k="member"
               :pin="props.pinned.includes(member)"
