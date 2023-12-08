@@ -388,6 +388,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
               @show-profile="handleDisplayProfile"
               @show-context-menu="openContextMenu"
               @click="handleSelectMessage(message)"
+              :forward="false"
           />
           <MessageContextMenu
               v-if="showContextMenu"

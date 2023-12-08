@@ -13,6 +13,7 @@ import Avatar from "./Avatar.vue";
 const props = defineProps<{
   message: Message,
   final: boolean,
+  forward: boolean,
 }>();
 const emits = defineEmits<{
   finished: [],
@@ -122,8 +123,24 @@ console.log("message", props.message);
           <div
               v-else-if="message.m_type === MessageType.TEXT"
           >
-            <p>chat history here</p>
-<!--            TODO: chat history here-->
+            <v-list style="background-color: #DCEDC8" rounded>
+              <v-list-group value="chat history">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                      v-bind="props"
+                      title="Chat History"
+                      prepend-icon="chat_bubble_outline"
+                  ></v-list-item>
+                </template>
+
+                <MessagePop
+                    v-for="msg in message.content"
+                    :message="msg"
+                    :final="false"
+                    :forward="true"
+                    />
+              </v-list-group>
+            </v-list>
           </div>
           <v-img
               v-else-if="message.m_type === MessageType.IMAGE"
@@ -172,7 +189,7 @@ console.log("message", props.message);
       </div>
 
       <!-- bottom icon row -->
-      <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'">
+      <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'" v-if="!forward">
         <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-else-if="message.status === 'read' && message.sender === userId" size="12px">mdi-check-all</v-icon>
       </div>
