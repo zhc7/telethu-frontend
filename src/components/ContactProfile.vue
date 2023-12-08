@@ -241,7 +241,7 @@ const handleRemoveAdmin = (memberId: number) => {
           >Change Ownership
           </v-btn>
           <slot name="buttons"/>
-          <v-btn color="error" @click="deleteConfirmDialog=true">Delete</v-btn>
+          <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id" @click="deleteConfirmDialog=true">Delete</v-btn>
         </div>
       </v-card-actions>
     </v-card-item>
@@ -255,7 +255,7 @@ const handleRemoveAdmin = (memberId: number) => {
         ></v-alert>
         <v-card-actions class="justify-end">
           <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
-          <v-btn v-if="contacts.includes(displayContactInfo.id)" @click="handleDelete">{{ displayContactInfo.category === 'group' ? 'Quit Group' : 'Delete' }}</v-btn>
+          <v-btn @click="handleDelete">{{ displayContactInfo.category === 'group' ? 'Quit Group' : 'Delete' }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

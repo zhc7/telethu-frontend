@@ -58,7 +58,7 @@ const testFunc = (a, b) => {
     <div class="d-flex mt-3" style="justify-content: space-between">
       <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
       <a v-if="!searchFriendInput" class="ma-3"
-         href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">{{ selectedChatInfo?.id }}</a>
+         href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
       <v-icon v-if="!searchFriendInput" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
       <v-text-field v-if="searchFriendInput" hide-details v-model="friendName"
                     density="compact" variant="solo" class="mr-4"/>
