@@ -390,7 +390,7 @@ const dispatchFunction = (item: string) => {
   <SelectMember
       v-model:show-dialog="createGroupDialog"
       :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
-      title="Create a New Group"
+      title="Add member to group"
   />
   <SelectMember
       v-model:show-dialog="shareMessageDialog"

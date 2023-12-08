@@ -4,13 +4,11 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {user, userEmail, userId, userName} from "../globals.ts";
+import {activeChatId, selectedChatInfo, user, userContacts, userEmail, userId, userName} from "../globals.ts";
+import {GroupData} from "../utils/structs.ts";
+import SelectMember from "./SelectMember.vue";
 
 const router = useRouter();
-
-const editingMode = ref(false);
-const phoneNumberInput = ref('');
-const emailInput = ref('');
 
 const fileInput = ref(null);
 const triggerFileInput = () => {
@@ -55,12 +53,6 @@ const handleLogout = () => {
   }
 }
 
-const handleEdit = () => {
-  editingMode.value = true;
-  phoneNumberInput.value = '114514';
-  emailInput.value = 'donkey@bohan.cn';
-}
-
 onMounted(async () => {
   try {
     const response = await axios.get(`${BASE_API_URL}users/avatar`, {
@@ -81,9 +73,6 @@ onMounted(async () => {
 
 const displayEditEntry = ref(undefined);
 const editingEntry = ref<string | undefined>(undefined);
-
-const usernameEditing = ref(false);
-const userPhoneNumber = ref(false);
 
 const inputValue = ref('');
 
@@ -108,6 +97,8 @@ const handleConfirm = () => {
     editingEntry.value = undefined;
   }
 }
+
+const blackListDialog = ref(false);
 
 
 </script>
@@ -183,10 +174,9 @@ const handleConfirm = () => {
                       Email:
                     </v-col>
                     <v-col cols="6" class="text-left mb-3">
-                      <span v-if="!editingMode">
+                      <span>
                         {{ userEmail }}
                       </span>
-                      <span v-if="editingMode"><input v-model="emailInput"/></span>
                     </v-col>
                   </v-row>
                 </v-list-item>
@@ -196,10 +186,9 @@ const handleConfirm = () => {
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
             <v-btn-group color="info" variant="outlined" divided>
-              <v-btn v-if="!editingMode" @click="handleEdit">EDIT</v-btn>
-              <v-btn v-if="!editingMode" @click="handleLogout">LOGOUT</v-btn>
-              <v-btn v-if="editingMode" @click="handleLogout">DONE</v-btn>
-              <v-btn v-if="!editingMode" @click="triggerFileInput">UPLOAD AVATAR</v-btn>
+              <v-btn @click="handleLogout">LOGOUT</v-btn>
+              <v-btn @click="triggerFileInput">UPLOAD AVATAR</v-btn>
+              <v-btn @click="blackListDialog=true">BLACK LIST</v-btn>
             </v-btn-group>
             <input
                 type="file"
@@ -212,6 +201,12 @@ const handleConfirm = () => {
       </v-card>
     </v-col>
   </v-row>
+  <SelectMember
+      v-model:show-dialog="blackListDialog"
+      :pinned="[]"
+      :title="`${user.name}'s Black List`"
+      :possible="userContacts"
+  />
 </template>
 
 <style scoped>
