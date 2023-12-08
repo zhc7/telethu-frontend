@@ -4,17 +4,7 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {
-  activeChatId,
-  currentPage,
-  selectedChatInfo,
-  user,
-  userContacts,
-  userEmail,
-  userId,
-  userName
-} from "../globals.ts";
-import {GroupData} from "../utils/structs.ts";
+import {user, userContacts, userEmail, userId, userName} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {unblockFriend} from "../core/users/send.ts";
 
@@ -114,7 +104,7 @@ const blackListDialog = ref(false);
 </script>
 
 <template>
-  <v-row no-gutters v-show="currentPage === 'profile'">
+  <v-row no-gutters>
     <v-dialog v-model="dialog" max-width="30vw" max-height="80vh">
       <v-card class="fill-height overflow-y-auto">
         <v-card-title>{{ editingTitle }}</v-card-title>
@@ -215,7 +205,7 @@ const blackListDialog = ref(false);
         :pinned="[]"
         :title="`${user.name}'s Black List`"
         :possible="userContacts"
-        single="true"
+        :single="true"
         @confirm="(target, _) => {
         unblockFriend(target);
       }"
