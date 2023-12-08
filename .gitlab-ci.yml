@@ -17,7 +17,18 @@ build:
     - main
 
 test:
+  image: node:20-alpine
   stage: test
+
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
+  before_script:
+    - yarn config set registry https://registry.npm.taobao.org/
+    - yarn --frozen-lockfile
+
   script:
     - echo placeholder
   after_script:
