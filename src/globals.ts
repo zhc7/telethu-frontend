@@ -113,3 +113,7 @@ export const userContacts = computed(() => {
         getUser(i).category === 'user'
     ))
 })
+
+export const groupPinnedMessages = ref<{
+    [id: number]: Array<number>
+}>({});

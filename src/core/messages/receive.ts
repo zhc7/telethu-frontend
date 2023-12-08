@@ -2,6 +2,7 @@ import {Message} from "../../utils/structs";
 import axios from "axios";
 import {messages, user} from "../../globals.ts";
 import {token} from "../../auth.ts";
+import {getUser} from "../data.ts";
 
 const getMessage = (messageId: number): Promise<Message> => {
     return axios.get(`/messages/${messageId}`, {

@@ -22,6 +22,7 @@ import {
 import axios from "axios";
 import {token} from "../auth.ts";
 import {handleDeleteMessage, handleRecallMessage} from "./messages/receive.ts";
+import {getUser} from "./data.ts";
 
 
 const searchResult = ref();
@@ -198,6 +199,11 @@ const getHistoryMessage = (id: number, from: number, t_type: TargetType, num: nu
     })
 }
 
+const updateReceiverInfo = (msg: Message) => {
+    const updated = getUser(msg.receiver, true);
+    console.log("updated receiver info", updated);
+}
+
 
 const dispatcher: { [key in MessageType]?: (arg0: Message) => void } = {}
 dispatcher[MessageType.FUNC_CREATE_GROUP] = handleCreateGroup;
@@ -220,6 +226,8 @@ dispatcher[MessageType.FUNC_ADD_GROUP_ADMIN] = handleGroupAdminAdded;
 dispatcher[MessageType.FUNC_REMOVE_GROUP_ADMIN] = handleGroupAdminRemoved;
 dispatcher[MessageType.FUNC_REMOVE_GROUP_MEMBER] = handleSomebodyRemovedFromGroup;
 dispatcher[MessageType.FUNC_DELETE_MESSAGE] = handleDeleteMessage;
+dispatcher[MessageType.FUNC_MESSAGE_ADD_BROADCAST] = updateReceiverInfo;
+dispatcher[MessageType.FUNC_MESSAGE_DEL_BROADCAST] = updateReceiverInfo;
 
 
 export {

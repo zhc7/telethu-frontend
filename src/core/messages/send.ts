@@ -47,3 +47,16 @@ export const deleteMessage = (messageId: number, receiver: number, t_type: Targe
     };
     chatManager.sendMessage(newMessage);
 }
+
+export const pinMessage = (messageId: number, receiver: number) => {
+    const newMessage: Message = {
+        message_id: generateMessageId(messageId, user.value.id, Date.now()),
+        m_type: MessageType.FUNC_MESSAGE_ADD_BROADCAST,
+        t_type: TargetType.GROUP,
+        content: messageId,
+        receiver,
+        sender: user.value.id,
+        time: Date.now(),
+    };
+    chatManager.sendMessage(newMessage);
+}

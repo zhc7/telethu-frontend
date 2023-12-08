@@ -13,7 +13,7 @@ import {getUser} from "../core/data";
 import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
-import {deleteMessage, forwardMessage, recallMessage} from "../core/messages/send.ts";
+import {deleteMessage, forwardMessage, pinMessage, recallMessage} from "../core/messages/send.ts";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -37,8 +37,9 @@ const contextMenuChoices = computed(() => {
       "Select",
     ]
   }
+  let choices;
   if (contextMenuSubject.value.sender === user.value.id) {
-    return [
+    choices = [
       "Copy",
       "Share",
       "Select",
@@ -46,12 +47,16 @@ const contextMenuChoices = computed(() => {
       "Withdraw",
     ]
   } else {
-    return [
+    choices = [
       "Copy",
       "Share",
       "Select",
-    ]
+    ];
   }
+  if (category.value === "group" && (selectedChatInfo.value as GroupData).owner === user.value.id) {
+    choices.push("Pin");
+  }
+  return choices;
 });
 
 const openContextMenu = (x: number, y: number, subject: ContextMenuSubject) => {
@@ -194,7 +199,7 @@ const shareMessage = (msg: Message) => {
     return;
   }
   selected.value.push(msg.message_id);
-  console.log('shared messsages: ', selected.value);
+  console.log('shared messages: ', selected.value);
   shareMessageDialog.value = true;
   console.log('share', selected.value);
 };
@@ -253,6 +258,13 @@ const withdrawMessage = (message: Message) => {
   recallMessage(message.message_id, activeChatId.value, category.value === 'group' ? TargetType.GROUP : TargetType.FRIEND);
 };
 
+const pinGroupMessage = (message: Message) => {
+  if (typeof message.message_id !== 'number') {
+    return;
+  }
+  pinMessage(message.message_id, activeChatId.value);
+};
+
 const handleForwardGroupMessage = () => {
   shareMessageDialog.value = true;
 }
@@ -265,6 +277,7 @@ const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Select": selectMessage,
   "Delete": delMessage,
   "Withdraw": withdrawMessage,
+  "Pin": pinGroupMessage,
 };
 
 const dispatchFunction = (item: string) => {
@@ -335,6 +348,9 @@ const dispatchFunction = (item: string) => {
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
       </v-toolbar>
+      <div v-if="category === 'group'">
+        {{ (selectedChatInfo as GroupData).top_message }}
+      </div>
       <v-row
           no-gutters
           class="d-flex flex-column flex-1-1 overflow-y-auto fill-height"

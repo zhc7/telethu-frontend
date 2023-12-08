@@ -54,6 +54,7 @@ export interface GroupData extends ContactsData {
     category: "group",
     owner: number,
     admin: Array<number>,
+    top_message?: any,
 }
 
 export interface Message {
