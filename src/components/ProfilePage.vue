@@ -4,7 +4,7 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {blacklist, user, userEmail, userId, userName} from "../globals.ts";
+import {blacklist, settings, user, userEmail, userId, userName} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {unblockFriend} from "../core/users/send.ts";
 
@@ -93,7 +93,7 @@ const editingTitle = computed(() => {
 
 const handleConfirm = () => {
   if (editingEntry.value === 'username') {
-    alert('changing username to', inputValue.value);
+    alert('changing username to' + inputValue.value);
     editingEntry.value = undefined;
   }
 }
@@ -205,9 +205,9 @@ const blackListDialog = ref(false);
         :pinned="[]"
         :title="`${user.name}'s Black List`"
         :possible="blacklist"
-        single="true"
+        :single="true"
         @confirm="(target, _) => {
-          settings.blocked = settings.blocked.filter(id => id !== displayContactInfo.value.id);
+          settings.blocked = settings.blocked.filter(id => id !== target.value.id);
           unblockFriend(target);
         }"
     />
