@@ -2,7 +2,7 @@
 import {ref, vModelText, watch} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
-import {activeChatId, messages, unreadCounter, user, users} from "../globals.ts";
+import {activeChatId, messages, selectedChatInfo, unreadCounter, user, users} from "../globals.ts";
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 import SelectMember from "./SelectMember.vue";
 
@@ -137,6 +137,7 @@ const handleMembersSelected = (selectedMembers: Array<number>) => {
   for (const member of selectedMembers) {
     message.value += `@${users.value[member].name} `;
   }
+  selectMemberDialog.value = false;
 };
 
 const handleFocus = () => {
@@ -228,12 +229,11 @@ const handleFocus = () => {
   </v-dialog>
 
   <selectMember
-      v-if="encounterAt"
-      :showDialog="selectMemberDialog"
+      v-model:showDialog="selectMemberDialog"
+      :pinned="[]"
       title="Select member to mention"
-      source="input@mention"
-      @membersSelected="handleMembersSelected"
-      @update:showDialog="selectMemberDialog = $event"
+      :possible="selectedChatInfo.members"
+      @confirm="(target, _) => handleMembersSelected(target)"
   />
 </template>
 
