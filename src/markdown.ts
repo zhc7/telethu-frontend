@@ -5,7 +5,6 @@ import hljs from "highlight.js";
 import {markedEmoji} from "marked-emoji";
 import {ref} from "vue";
 import axios from "axios";
-import {tr} from "vuetify/locale";
 
 const emojisLoaded = ref(false);
 // Get all the emojis available to use on GitHub.
