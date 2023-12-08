@@ -174,6 +174,7 @@ const getHistoryMessage = async (id: number, from: number, t_type: TargetType, n
         }
     }).then((response) => {
         const pulled_messages = response.data as Array<Message>;
+        const pulled_length = pulled_messages.length;
         for (let msg of response.data) {
             // TODO: should change to backend real status
             msg.status = 'sent';
@@ -192,12 +193,14 @@ const getHistoryMessage = async (id: number, from: number, t_type: TargetType, n
         }
         console.log(new_msg);
         messages.value[id] = new_msg;
-        hotMessages.value[id] = {
-            sender: id,
-            time: messages.value[id][messages.value[id].length - 1].time,
-            content: messages.value[id][messages.value[id].length - 1],
-        };
-        return pulled_messages.length;
+        if (new_msg.length) {
+            hotMessages.value[id] = {
+                sender: id,
+                time: messages.value[id][messages.value[id].length - 1].time,
+                content: messages.value[id][messages.value[id].length - 1],
+            };
+        }
+        return pulled_length;
     });
 }
 
