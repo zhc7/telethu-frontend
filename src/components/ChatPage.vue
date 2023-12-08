@@ -279,8 +279,19 @@ const dispatchFunction = (item: string) => {
       <ChatList v-model="activeChatId"></ChatList>
     </v-col>
     <v-divider vertical v-if="selectedChatInfo"/>
-    <v-col v-if="selectedChatInfo?.id !== user.id" cols="12" sm="8" md="9"
-           class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
+    <v-col
+        cols="12" sm="8" md="9"
+        v-if="activeChatId <= 0"
+        class="d-flex flex-column justify-center"
+    >
+      <div class="d-flex justify-center">
+        <h4>Select a Friend to Start Chatting</h4>
+      </div>
+    </v-col>
+    <v-col
+        v-if="activeChatId !== user.id && activeChatId > 0"
+        cols="12" sm="8" md="9"
+        class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
