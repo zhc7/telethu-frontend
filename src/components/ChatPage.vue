@@ -13,7 +13,8 @@ import {getUser} from "../core/data";
 import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
-import {deleteMessage, forwardMessage, pinMessage, recallMessage} from "../core/messages/send.ts";
+import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
+import BannerMessage from "./BannerMessage.vue";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -36,6 +37,13 @@ const contextMenuChoices = computed(() => {
     return [
       "Select",
     ]
+  }
+  if (typeof contextMenuSubject.value === 'number') {
+    if ((selectedChatInfo.value as GroupData).owner === user.value.id) {
+      return ["Unpin"]
+    } else {
+      return []
+    }
   }
   let choices;
   if (contextMenuSubject.value.sender === user.value.id) {
@@ -267,6 +275,12 @@ const dispatchFunction = (item: string) => {
     selectionMode.value = true;
     return;
   }
+  if (typeof contextMenuSubject.value === 'number') {
+    if (item === "Unpin") {
+      unpinMessage(contextMenuSubject.value, activeChatId.value);
+    }
+    return;
+  }
   messageItemDispatcher[item](contextMenuSubject.value);
 }
 
@@ -285,6 +299,9 @@ const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
   }
 }
 
+const openBannerContextMenu = (event: MouseEvent, id: number) => {
+  openContextMenu(event.clientX, event.clientY, id);
+}
 </script>
 
 <template>
@@ -345,9 +362,13 @@ const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
       </v-toolbar>
-      <div v-if="category === 'group'">
-        {{ (selectedChatInfo as GroupData).top_message }}
-      </div>
+      <BannerMessage
+          v-if="category === 'group'"
+          v-for="id in (selectedChatInfo as GroupData).top_message"
+          :key="id"
+          :message-id="id"
+          @contextmenu.prevent="openBannerContextMenu($event, id)"
+      />
       <v-infinite-scroll
           class="fill-height"
           side="start"

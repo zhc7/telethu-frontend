@@ -2,12 +2,12 @@ import {Message} from "../../utils/structs";
 import axios from "axios";
 import {messages, user} from "../../globals.ts";
 import {token} from "../../auth.ts";
-import {getUser} from "../data.ts";
+import {BASE_API_URL} from "../../constants.ts";
 
-const getMessage = (messageId: number): Promise<Message> => {
-    return axios.get(`/messages/${messageId}`, {
+export const getMessage = async (messageId: number): Promise<Message> => {
+    return axios.get(BASE_API_URL + `chat/message/${messageId}`, {
         headers: {
-            Authorization: `Bearer ${token.value}`
+            Authorization: token.value,
         }
     }).then(res => res.data);
 }

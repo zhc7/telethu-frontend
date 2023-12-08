@@ -60,3 +60,16 @@ export const pinMessage = (messageId: number, receiver: number) => {
     };
     chatManager.sendMessage(newMessage);
 }
+
+export const unpinMessage = (messageId: number, receiver: number) => {
+    const newMessage: Message = {
+        message_id: generateMessageId(messageId, user.value.id, Date.now()),
+        m_type: MessageType.FUNC_MESSAGE_DEL_BROADCAST,
+        t_type: TargetType.GROUP,
+        content: messageId,
+        receiver,
+        sender: user.value.id,
+        time: Date.now(),
+    };
+    chatManager.sendMessage(newMessage);
+}

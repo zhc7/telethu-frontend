@@ -1,28 +1,17 @@
 <script setup lang="ts">
 import {hotMessages, nowRef, settings, unreadCounter} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
-import {Message} from "../utils/structs";
 import {computed} from "vue";
 import ListItem from "./ListItem.vue";
 import Avatar from "./Avatar.vue";
 import {getUser} from "../core/data.ts";
+import {displayHotMessage} from "../utils/notification.ts";
 
 
 const props = defineProps<{
   contactId: number,
 }>();
 
-
-const displayHotMessage = (message: Message | undefined) => {
-  const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
-  if (message === undefined) {
-    return '';
-  } else if (message.m_type === 0) {
-    return message.content;
-  } else {
-    return '[' + types[message.m_type] + ']';
-  }
-}
 
 const contact = computed(() => getUser(props.contactId));
 

@@ -1,4 +1,4 @@
-import {Message} from "./structs";
+import {Message, MessageType} from "./structs";
 
 export const sendNotification = (message: Message) => {
     console.log("sending notification", message);
@@ -15,5 +15,15 @@ export const sendNotification = (message: Message) => {
                 })
             }
         });
+    }
+}
+export const displayHotMessage = (message: Message | undefined): string => {
+    const types = ['text', 'image', 'audio', 'video', 'file', 'stickers'];
+    if (message === undefined) {
+        return '';
+    } else if (message.m_type === MessageType.TEXT) {
+        return message.content as string;
+    } else {
+        return '[' + types[message.m_type] + ']';
     }
 }
