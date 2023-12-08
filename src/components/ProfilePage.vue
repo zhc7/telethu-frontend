@@ -4,11 +4,7 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-<<<<<<< HEAD
-import {user, userContacts, userEmail, userId, userName} from "../globals.ts";
-=======
-import {blacklist, currentPage, settings, user, userEmail, userId, userName} from "../globals.ts";
->>>>>>> 1760181 (feat: black list.)
+import {user, userEmail, userId, userName} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {unblockFriend} from "../core/users/send.ts";
 
