@@ -53,7 +53,9 @@ export const handleSomebodyRemovedFromGroup = (message: Message) => {
 export const handleCreateGroup = (message: Message) => {
     const content = message.content;
     if (content === +content) {
-        contacts.value.push(content);
+        if (!contacts.value.includes(content)) {
+            contacts.value.push(content);
+        }
     } else {
         alert(content);
     }
