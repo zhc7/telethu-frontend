@@ -69,6 +69,16 @@ export const getSettings = async () => {
             postSettings();
         }
     });
+};
+
+export const getBlackList = async () => {
+    return await axios.get(BASE_API_URL + 'users/block_list', {
+        headers: {
+            Authorization: token.value,
+        }
+    }).then((response) => {
+        console.log('get black list', response);
+    });
 }
 
 

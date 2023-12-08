@@ -22,6 +22,7 @@ export const selectedChatInfo = ref<ContactsData | undefined>(undefined);
 export const users = useLocalStorage<Users>("users", {});
 export const contacts = ref<Array<number>>([]);
 export const requests = ref<Array<number>>([]);
+export const blacklist = ref<Array<number>>([]);
 export const user = useLocalStorage<UserData>("user", {
     id: -1,
     name: "",

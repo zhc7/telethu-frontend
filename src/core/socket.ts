@@ -4,7 +4,7 @@ import {contacts, isSocketConnected, messages, settingsUpdating, unreadCounter} 
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
 import {applyList} from "./users/send.ts";
-import {getSettings} from "./data.ts";
+import {getBlackList, getSettings} from "./data.ts";
 
 export let socket: WebSocket;
 const createSocket = () => {
@@ -31,6 +31,7 @@ const createSocket = () => {
             getSettings().then(() => {
                 settingsUpdating.value = false;
             });
+            getBlackList().then();
             applyList().then();
             contacts.value = idList;
 

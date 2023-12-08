@@ -64,8 +64,9 @@ const unreadTotal = computed(() => {
                      @click="activePage = 'profile'"
         >
         </v-list-item>
-<!--        <v-list-item class="text-left" @click="debugAction">-->
-<!--        </v-list-item>-->
+        <v-list-item class="text-left" @click="debugAction">
+<!--          {{ activePage === 'profile' }}-->
+        </v-list-item>
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts" k="contacts"></ListItem>
