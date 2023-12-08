@@ -128,11 +128,6 @@ watch(shareMessageDialog, (value) => {
   }
 });
 
-const ScrollToBottom = () => {
-  const container = document.getElementById('message-flow')!;
-  container.scrollTop = container.scrollHeight;
-};
-
 const displayContact = ref();
 const handleDisplayProfile = () => {
   displayProfile.value = true;
@@ -153,19 +148,6 @@ const handleHideProfile = (event: any) => {
       showProfileDetail.value = false;
     }, 300);
   }
-}
-
-
-const handleGetMoreMessage = () => {
-  if (selectedChatInfo.value === undefined) {
-    return;
-  }
-  getHistoryMessage(
-      activeChatId.value,
-      messages.value[activeChatId.value][0] === undefined ? Date.now() : messages.value[activeChatId.value][0].time,
-      selectedChatInfo.value.category === "group" ? TargetType.GROUP : TargetType.FRIEND,
-      20,
-  )
 }
 
 onMounted(() => {
@@ -288,6 +270,21 @@ const dispatchFunction = (item: string) => {
   messageItemDispatcher[item](contextMenuSubject.value);
 }
 
+const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
+  const messageList = messages.value[activeChatId.value];
+  let pulled = await getHistoryMessage(
+      activeChatId.value,
+      messageList[0] === undefined ? Date.now() : messageList[messageList.length - 1].time,
+      selectedChatInfo.value!.category === "group" ? TargetType.GROUP : TargetType.FRIEND,
+      20,);
+  console.log(pulled);
+  if (pulled) {
+    done("ok");
+  } else {
+    done("empty");
+  }
+}
+
 </script>
 
 <template>
@@ -351,40 +348,35 @@ const dispatchFunction = (item: string) => {
       <div v-if="category === 'group'">
         {{ (selectedChatInfo as GroupData).top_message }}
       </div>
-      <v-row
-          no-gutters
-          class="d-flex flex-column flex-1-1 overflow-y-auto fill-height"
+      <v-infinite-scroll
+          class="fill-height"
+          side="start"
+          @load="loadMoreMessage"
           @contextmenu.prevent="openBlankContextMenu"
       >
-        <div class="overflow-y-auto flex-1-1 d-flex flex-column" id="message-flow" style="max-width: 100%">
-          <div>
-            <v-btn @click="handleGetMoreMessage" class="text-blue mt-2" variant="text">Get more message...</v-btn>
+        <div v-for="(group, index) in groupedMessages" :key="index">
+          <div class="justify-center ma-1">
+            {{ formatChatMessageTime(nowRef, group.time.toString()) }}
           </div>
-          <div v-for="(group, index) in groupedMessages" :key="index">
-            <div class="justify-center ma-1">
-              {{ formatChatMessageTime(nowRef, group.time.toString()) }}
-            </div>
-            <MessagePop
-                v-for="(message, mIndex) in group.messages"
-                :key="mIndex"
-                :message="message"
-                :final="mIndex === group.messages.length - 1"
-                :class="{'bg-blue': messageSelected(message)}"
-                @finished="ScrollToBottom"
-                @show-profile="handleDisplayProfile"
-                @show-context-menu="openContextMenu"
-                @click="handleSelectMessage(message)"
-            />
-            <MessageContextMenu
-                v-if="showContextMenu"
-                :x="contextMenuX"
-                :y="contextMenuY"
-                :choices="contextMenuChoices"
-                @choose="dispatchFunction"
-            />
-          </div>
+          <MessagePop
+              v-for="(message, mIndex) in group.messages"
+              :key="mIndex"
+              :message="message"
+              :final="mIndex === group.messages.length - 1"
+              :class="{'bg-blue': messageSelected(message)}"
+              @show-profile="handleDisplayProfile"
+              @show-context-menu="openContextMenu"
+              @click="handleSelectMessage(message)"
+          />
+          <MessageContextMenu
+              v-if="showContextMenu"
+              :x="contextMenuX"
+              :y="contextMenuY"
+              :choices="contextMenuChoices"
+              @choose="dispatchFunction"
+          />
         </div>
-      </v-row>
+      </v-infinite-scroll>
       <InputArea :chat="selectedChatInfo"/>
     </v-col>
   </v-row>
