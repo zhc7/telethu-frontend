@@ -1,6 +1,7 @@
 import {ContactsData, Message} from "../../utils/structs.ts";
 import {contactPageProfileSource, contacts, messages, selectedContactInfo, user} from "../../globals.ts";
 import {applyList} from "./send";
+import {getBlackList} from "../data.ts";
 
 export const handleDeleteFriend = (message: Message) => {
     contacts.value = contacts.value.filter(id => id !== message.sender && id !== message.receiver);
@@ -8,6 +9,10 @@ export const handleDeleteFriend = (message: Message) => {
 export const handleReceiveRequest = async (_: Message) => {
     await applyList();
 }
+export const handleBlockFriend = (message: Message) => {
+    getBlackList().then();
+}
+
 export const handleApplicationAccepted = (message: Message) => {
     if (message.sender === user.value.id) {
         if (!contacts.value.includes(message.receiver)) {
@@ -41,4 +46,8 @@ export const handleReceiveMessageRead = (message: Message) => {
         return;
     }
     m.status = "read";
+}
+
+export const handleUnblockFriend = (message: Message) => {
+    getBlackList().then();
 }

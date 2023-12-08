@@ -1,4 +1,4 @@
-import {activeRequestId, rawRequestList, requests, settings, users} from "../globals";
+import {activeRequestId, blacklist, rawRequestList, requests, settings, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, RequestListItem} from "../utils/structs";
@@ -72,12 +72,14 @@ export const getSettings = async () => {
 };
 
 export const getBlackList = async () => {
-    return await axios.get(BASE_API_URL + 'users/block_list', {
+    return await axios.get(BASE_API_URL + 'users/block_user_list', {
         headers: {
             Authorization: token.value,
         }
     }).then((response) => {
-        console.log('get black list', response);
+        console.log('got black list', response.data);
+        console.log('settings.blocked: ', settings.value.blocked)
+        blacklist.value = response.data.block_list;
     });
 }
 

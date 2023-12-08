@@ -13,11 +13,11 @@ import {
     handleSomebodyRemovedFromGroup
 } from "./groups/receive.ts";
 import {
-    handleApplicationAccepted,
+    handleApplicationAccepted, handleBlockFriend,
     handleDeleteFriend,
     handleReceiveMessageRead,
     handleReceiveRequest,
-    handleSearchResult
+    handleSearchResult, handleUnblockFriend
 } from "./users/receive.ts";
 import axios from "axios";
 import {token} from "../auth.ts";
@@ -207,14 +207,12 @@ dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted;
 dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {
 }; // TODO
-dispatcher[MessageType.FUNC_BlOCK_FRIEND] = () => {
-}; // TODO
+dispatcher[MessageType.FUNC_BlOCK_FRIEND] = handleBlockFriend;
 dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
 dispatcher[MessageType.FUNC_CHANGE_GROUP_OWNER] = handleGroupOwnerChanged;
 dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {
 }; // TODO
-dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = () => {
-}; // TODO
+dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = handleUnblockFriend;
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = handleReceiveMessageRead;
 dispatcher[MessageType.FUNC_LEAVE_GROUP] = handleSomebodyExitGroup;

@@ -74,7 +74,7 @@ const emitValue = computed(() => {
   <v-dialog v-model="dialog" max-width="40vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-center">
-        {{ title }}
+        {{ title }}{{ possible }}
       </v-card-title>
       <v-card-text class="overflow-y-auto d-flex flex-column">
         <v-text-field

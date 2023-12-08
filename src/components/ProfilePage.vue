@@ -4,7 +4,11 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
+<<<<<<< HEAD
 import {user, userContacts, userEmail, userId, userName} from "../globals.ts";
+=======
+import {blacklist, currentPage, settings, user, userEmail, userId, userName} from "../globals.ts";
+>>>>>>> 1760181 (feat: black list.)
 import SelectMember from "./SelectMember.vue";
 import {unblockFriend} from "../core/users/send.ts";
 
@@ -204,11 +208,12 @@ const blackListDialog = ref(false);
         v-model:show-dialog="blackListDialog"
         :pinned="[]"
         :title="`${user.name}'s Black List`"
-        :possible="userContacts"
-        :single="true"
+        :possible="blacklist"
+        single="true"
         @confirm="(target, _) => {
-        unblockFriend(target);
-      }"
+          settings.blocked = settings.blocked.filter(id => id !== displayContactInfo.value.id);
+          unblockFriend(target);
+        }"
     />
   </v-row>
 </template>

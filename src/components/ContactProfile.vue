@@ -2,7 +2,7 @@
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {activeRequestId, contacts, settings, user, userContacts, userId} from "../globals.ts";
+import {activeRequestId, blacklist, contacts, settings, user, userContacts, userId} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
@@ -61,7 +61,7 @@ const switchValuePin = computed<boolean>({
 
 const switchValueBlock = computed<boolean>({
   get: () => {
-    return settings.value.blocked.includes(displayContactInfo.value.id);
+    return blacklist.value.includes(displayContactInfo.value.id);
   },
   set: (value) => {
     if (displayContactInfo.value.id < 1) {
