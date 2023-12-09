@@ -129,7 +129,7 @@ const emitValue = computed(() => {
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
-        <v-btn @click="dialog=false">
+        <v-btn @click="dialog=false; selectedStuff = single ? 0 : [];">
           {{ negativeButtonText }}
         </v-btn>
         <v-btn @click="$emit('confirm', emitValue, groupName)">{{ positiveButtonText }}</v-btn>
