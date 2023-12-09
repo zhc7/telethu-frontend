@@ -126,7 +126,7 @@ console.log("message", props.message);
               style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
           >
             <ReferencingMessage v-if="message.info?.reference" :message-id="message.info.reference as number"/>
-            <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string)"></div>
+            <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members)"></div>
           </div>
           <div
               v-else-if="message.m_type === MessageType.TEXT"

@@ -6,13 +6,24 @@ import {activeChatId, messages, referencingMessageId, unreadCounter, user, users
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 import {getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
-import SelectMember from "./SelectMember.vue";
+import selectMember from "./SelectMember.vue";
 import InputAreaReferencing from "./InputAreaReferencing.vue";
 
 
 const chat = computed(() => getUser(activeChatId.value));
 
 const message = ref("");
+const messageSend = computed(() => {
+  return message.value.replace(/@[a-zA-Z0-9_-]+/g, (match, offset) => {
+    for (const member of atMembers.value) {
+      if (offset >= member.section[0] && offset + match.length - 1 <= member.section[1]) {
+        return "@" + member.id.toString();
+      }
+    }
+    return match;
+  });
+});
+
 const showStickers = ref(false);
 const previewFilesDialog = ref(false);
 
@@ -80,7 +91,7 @@ const handlePaste = (event: ClipboardEvent) => {
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    sendMessage(activeChatId.value, message.value, chat.value.category === 'group' ? 1 : 0, atMembers.value);
+    sendMessage(activeChatId.value, messageSend.value, chat.value.category === 'group' ? 1 : 0, atMembers.value.map((i) => i.id));
     message.value = "";
     referencingMessageId.value = -1;
   }
@@ -122,11 +133,22 @@ const handleTextareaKeydown = (e: KeyboardEvent) => {
     handleSendMessage();
     message.value = "";
   }
+  // if cursor is in the section of @, then delete the whole section
+  if (e.key === 'Backspace') {
+    const cursorPos = (e.target as HTMLTextAreaElement).selectionStart as number;
+    for (const member of atMembers.value) {
+      if (cursorPos >= member.section[0] && cursorPos <= member.section[1]) {
+        atMembers.value = atMembers.value.filter((i) => i.id !== member.id);
+        message.value = message.value.slice(0, member.section[0]) + message.value.slice(member.section[1]);
+        break;
+      }
+    }
+  }
 };
 
 const encounterAt = ref(false);
 const selectMemberDialog = ref(false);
-const atMembers = ref<Array<number>>([]);
+const atMembers = ref<{ id: number; section: [number, number]; }[]>([]);
 const handleInput = () => {
   const currentMessage = message.value;
   const lastChar = currentMessage.charAt(currentMessage.length - 1);
@@ -145,8 +167,10 @@ const handleMembersSelected = (selectedMembers: Array<number>) => {
     message.value = message.value.slice(0, -1);
   }
   for (const member of selectedMembers) {
+    const start = message.value.length;
     message.value += `@${users.value[member].name} `;
-    atMembers.value.push(member);
+    const end = message.value.length;
+    atMembers.value.push({id: member, section: [start, end]});
   }
   selectMemberDialog.value = false;
 };
