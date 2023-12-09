@@ -104,6 +104,9 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
     chatManager.sendMessage(message);
 }
 const createGroup = (groupName: string, members: Array<number>) => {
+    if (groupName === '') {
+        groupName = "new group";
+    }
     const message: Message = {
         time: Date.now(),
         m_type: MessageType.FUNC_CREATE_GROUP,
