@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, inject, ref, watch} from 'vue'
+import {computed, inject} from 'vue'
 
 const props = defineProps(['k', 'prependIcon', 'prependAvatar', 'title', 'subtitle', 'badgeValue', 'pin']);
 const {selected} = inject<any>("selected");
@@ -40,7 +40,7 @@ const active = computed(() => {
       v-ripple
       v-bind="$attrs"
       @click="handleClick"
-      class="pa-3 d-flex flex-row justify-start align-center rounded-lg"
+      class="pa-3 d-flex flex-row justify-start align-center rounded-lg list-item"
       :class="{'v-list-item--active': active, 'dark-ocean': active}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
@@ -71,6 +71,10 @@ const active = computed(() => {
 </template>
 
 <style scoped>
+.list-item:hover {
+  background-color: #ebebeb;
+}
+
 .v-list-item--active {
   color: white !important;
 }

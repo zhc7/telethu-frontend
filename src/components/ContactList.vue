@@ -87,12 +87,4 @@ const displayList = computed(() => {
 </template>
 
 <style scoped>
-  .chat-list-item {
-    position: relative;
-  }
-
-  .chat-list-item:hover {
-    position: relative;
-    background-color: #ebebeb;
-  }
 </style>
