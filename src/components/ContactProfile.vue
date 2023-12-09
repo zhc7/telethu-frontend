@@ -8,9 +8,11 @@ import {
   activeRequestId,
   blacklist,
   contactPageProfileSource,
-  contacts, floatingContactId,
+  contacts,
+  floatingContactId,
   requests,
-  settings, showProfileDialog,
+  settings,
+  showProfileDialog,
   user,
   userContacts,
   userId
@@ -18,16 +20,16 @@ import {
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
-  createGroup,
   exitGroup,
   groupAddAdmin,
+  groupAddMember,
   groupChangeOwner,
   groupRemoveAdmin,
   removeGroupMember
 } from "../core/groups/send.ts";
 import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
-import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
+import {UserData} from "../utils/structs.ts";
 
 
 const props = defineProps(['contactId']);
@@ -146,10 +148,15 @@ const handleAcceptFriend = () => {
   contactPageProfileSource.value = 'contactList';
 }
 
-const handleRejectFriend = () =>{
+const handleRejectFriend = () => {
   const id = displayContactInfo.value.id;
   rejectFriend(id);
   activeRequestId.value = 0;
+}
+
+const handleAddMember = (list, _) => {
+  groupAddMember(displayContactInfo.value.id, list.filter(i => !displayContactInfo.value.members.includes(i)));
+  groupAddMemberDialog.value = false;
 }
 
 const handleChat = async () => {
@@ -189,7 +196,9 @@ const handleChat = async () => {
             </ProfileRow>
             <ProfileRow v-show="displayContactInfo && displayContactInfo.category === 'user'">
               <template #title> Email:</template>
-              <template #content> {{ (displayContactInfo as UserData).email ? (displayContactInfo as UserData).email : '' }}</template>
+              <template #content>
+                {{ (displayContactInfo as UserData).email ? (displayContactInfo as UserData).email : '' }}
+              </template>
             </ProfileRow>
           </div>
         </v-list-item>
@@ -198,7 +207,7 @@ const handleChat = async () => {
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
-          <v-card-title class="ma-7"> {{ (displayContactInfo as GroupData).owner }}</v-card-title>
+          <v-card-title class="ma-7">Members</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
                 v-for="member in memberInfoTable"
@@ -276,7 +285,8 @@ const handleChat = async () => {
       </v-col>
       <v-card-actions class="justify-center">
         <div class="d-flex flex-column">
-          <v-btn v-if="contacts.includes(displayContactInfo.id) && activeChatId !== displayContactInfo.id" @click="handleChat" color="green">
+          <v-btn v-if="contacts.includes(displayContactInfo.id) && activeChatId !== displayContactInfo.id"
+                 @click="handleChat" color="green">
             Chat
           </v-btn>
           <v-btn
@@ -287,11 +297,19 @@ const handleChat = async () => {
           </v-btn>
           <v-btn color="green" v-if="requests.includes(displayContactInfo.id)" @click="handleAcceptFriend">Accept
           </v-btn>
-          <v-btn color="error" v-if="requests.includes(displayContactInfo.id)" @click="handleRejectFriend">Reject</v-btn>
-          <v-btn v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id && !requests.includes(displayContactInfo.id)" color="blue" @click="handleApplyFriend(activeRequestId)">Apply</v-btn>
-          <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="router.push('/profile')">Goto Profile</v-btn>
+          <v-btn color="error" v-if="requests.includes(displayContactInfo.id)" @click="handleRejectFriend">Reject
+          </v-btn>
+          <v-btn
+              v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id && !requests.includes(displayContactInfo.id)"
+              color="blue" @click="handleApplyFriend(activeRequestId)">Apply
+          </v-btn>
+          <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="router.push('/profile')">Goto
+            Profile
+          </v-btn>
           <slot name="buttons"/>
-          <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id" @click="deleteConfirmDialog=true">Delete</v-btn>
+          <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id"
+                 @click="deleteConfirmDialog=true">Delete
+          </v-btn>
         </div>
       </v-card-actions>
     </v-card-item>
@@ -316,10 +334,7 @@ const handleChat = async () => {
         :possible="userContacts"
         :title="'Add Member'"
         :base-group="displayContactInfo"
-        @confirm="(list, name) => {
-          groupAddMemberDialog=false;
-          createGroup(name, list);
-        }"
+        @confirm="handleAddMember"
     />
     <SelectMember
         v-model:show-dialog="changeOwnerDialog"

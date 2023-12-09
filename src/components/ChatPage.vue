@@ -15,7 +15,7 @@ import {
   referencingMessageId,
   selectedChatInfo,
   settings,
- showProfileDialog, user,
+ showProfileDialog, user, userContacts,
   users
 } from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
@@ -444,6 +444,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
   <SelectMember
       v-model:show-dialog="createGroupDialog"
       :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
+      :possible="userContacts"
       title="Add member to group"
   />
   <SelectMember

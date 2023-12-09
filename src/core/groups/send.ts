@@ -70,16 +70,8 @@ export const groupAddMember = (groupId: number, memberList: number []) => {
     const message: Message = {
         time: Date.now(),
         m_type: MessageType.FUNC_ADD_GROUP_MEMBER,
-        t_type: TargetType.FRIEND,
-        content: {
-            members: memberList,
-            category: 'group',
-            name: '',
-            avatar: '',
-            admin: [-1],
-            id: -1,
-            owner: -1,
-        },
+        t_type: TargetType.GROUP,
+        content: memberList,
         sender: userId.value,
         receiver: groupId,
         info: "",

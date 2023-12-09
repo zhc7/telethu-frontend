@@ -3,6 +3,8 @@ import {contacts, userId} from "../../globals.ts";
 import {getUser} from "../data.ts";
 
 export const handleAddGroupMember = (message: Message) => {
+    alert('haha')
+    console.log('adding member to group', message);
     // FUNC_ADD_GROUP_MEMBER
     getUser(message.receiver, true);
     console.log('member added');
