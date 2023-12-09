@@ -39,11 +39,6 @@ const search = () => {
   searchForFriend(+searchInput.value);
 };
 
-const handleChat = async () => {
-  activeChatId.value = activeContactId.value;
-  router.replace('chat');
-};
-
 const handleContactList = () => {
   contactPageContentLeft.value = 0;
 };
@@ -150,10 +145,6 @@ watch(activeRequestId, selectRequest);
           class="overflow-y-auto"
           :contact-id="activeContactId"
       >
-        <template #buttons>
-          <v-btn color="green" @click="handleChat">Chat</v-btn>
-          <v-btn color="info">Recommend</v-btn>
-        </template>
       </ContactProfile>
       <ContactProfile
           v-show="contactPageProfileSource === 'requestList'"

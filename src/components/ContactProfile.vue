@@ -3,13 +3,14 @@ import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
+  activeChatId,
   activeContactId,
   activeRequestId,
   blacklist,
   contactPageProfileSource,
-  contacts,
+  contacts, floatingContactId,
   requests,
-  settings,
+  settings, showProfileDialog,
   user,
   userContacts,
   userId
@@ -151,6 +152,13 @@ const handleRejectFriend = () =>{
   activeRequestId.value = 0;
 }
 
+const handleChat = async () => {
+  activeChatId.value = displayContactInfo.value.id;
+  router.replace('chat').then();
+  floatingContactId.value = 0;
+  showProfileDialog.value = false;
+};
+
 </script>
 
 <template>
@@ -268,6 +276,9 @@ const handleRejectFriend = () =>{
       </v-col>
       <v-card-actions class="justify-center">
         <div class="d-flex flex-column">
+          <v-btn v-if="contacts.includes(displayContactInfo.id) && activeChatId !== displayContactInfo.id" @click="handleChat" color="green">
+            Chat
+          </v-btn>
           <v-btn
               v-if="displayContactInfo.category === 'group' && displayContactInfo.owner === user.id"
               color="primary"
