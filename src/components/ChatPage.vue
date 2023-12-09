@@ -165,17 +165,13 @@ const handleDisplayProfile = () => {
   displayContact.value = users.value[activeChatId.value];
 };
 
-const handleHideProfile = (event: any) => {
-  // TODO: complete event type
-  const target = event.target.parentNode.parentNode;
-  if (target.classList.contains('v-avatar') || target.classList.contains('v-btn')) {
-  } else {
-    displayProfile.value = false;
+const handleClickBlank = () => {
+  showWhoReadDialog.value = false;
+  displayProfile.value = false;
+  showProfileDetail.value = false;
+  window.setTimeout(() => {
     showProfileDetail.value = false;
-    window.setTimeout(() => {
-      showProfileDetail.value = false;
-    }, 300);
-  }
+  }, 300);
 }
 
 onMounted(() => {
@@ -332,7 +328,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
 <template>
   <v-row
       class="mt-auto overflow-y-auto fill-height"
-      @click="handleHideProfile($event)"
+      @click="handleClickBlank"
       style="margin-right: 0; margin-bottom: 0"
       v-show="show"
   >
@@ -454,7 +450,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
       :possible="contacts"
       @confirm="handleShareMessages"
   />
-  <v-dialog v-model="showWhoReadDialog" width="20vw">
+  <v-dialog v-if="category === 'group'" v-model="showWhoReadDialog" width="20vw">
     <v-card>
       <v-card-title class="font-weight-bold text-center">Who Read</v-card-title>
       <v-card-text>
