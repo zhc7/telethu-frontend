@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import {ref, vModelText, watch} from "vue";
+import {computed, ref} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
-import {activeChatId, messages, selectedChatInfo, unreadCounter, user, users} from "../globals.ts";
+import {activeChatId, messages, unreadCounter, user, users} from "../globals.ts";
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
+import {getUser} from "../core/data.ts";
+import {GroupData} from "../utils/structs.ts";
 import SelectMember from "./SelectMember.vue";
 
-const props = defineProps(['chat'])
+
+const chat = computed(() => getUser(activeChatId.value));
 
 const message = ref("");
 const showStickers = ref(false);
@@ -76,7 +79,7 @@ const handlePaste = (event: ClipboardEvent) => {
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    sendMessage(+props.chat.id, message.value, props.chat.category === 'group' ? 1 : 0, atMembers.value);
+    sendMessage(activeChatId.value, message.value, chat.value.category === 'group' ? 1 : 0, atMembers.value);
     message.value = "";
   }
 };
@@ -85,12 +88,12 @@ const loading = ref(false);
 const uploadProgress = ref(0);
 const handleSendFiles = async () => {
   loading.value = true;
-  const t_type = props.chat.category === 'group' ? 1 : 0;
+  const t_type = chat.value.category === 'group' ? 1 : 0;
   const uploadPromises = [];
 
   for (let file of uploadingFiles.value) {
     const m_type = getFileType(file.name);
-    const md5Promise = sendFiles(+props.chat.id, file, t_type, m_type).then(md5 => {
+    const md5Promise = sendFiles(activeChatId.value, file, t_type, m_type).then(md5 => {
       return uploadFiles(file, md5, (progress: number) => {
         uploadProgress.value = progress;
       });
@@ -235,8 +238,8 @@ const handleFocus = () => {
       v-model:showDialog="selectMemberDialog"
       :pinned="[]"
       title="Select member to mention"
-      :possible="chat.members.filter((id: number) => id !== user.id)"
-      @confirm="(target, _) => handleMembersSelected(target)"
+      :possible="(chat as GroupData).members.filter((id: number) => id !== user.id)"
+      @confirm="handleMembersSelected"
   />
 </template>
 
