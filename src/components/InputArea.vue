@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
-import {activeChatId, messages, unreadCounter, user, users} from "../globals.ts";
+import {activeChatId, messages, referencingMessageId, unreadCounter, user, users} from "../globals.ts";
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 import {getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
 import SelectMember from "./SelectMember.vue";
+import InputAreaReferencing from "./InputAreaReferencing.vue";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -81,8 +82,13 @@ const handleSendMessage = () => {
   if (message.value !== "") {
     sendMessage(activeChatId.value, message.value, chat.value.category === 'group' ? 1 : 0, atMembers.value);
     message.value = "";
+    referencingMessageId.value = -1;
   }
 };
+
+watch(activeChatId, () => {
+  referencingMessageId.value = -1;
+});
 
 const loading = ref(false);
 const uploadProgress = ref(0);
@@ -161,6 +167,7 @@ const handleFocus = () => {
   <v-row no-gutters class="d-flex" style="width: 100%">
     <Stickers v-if="showStickers" class="ml-4" @sticker-click="handleSendMessage"/>
   </v-row>
+  <InputAreaReferencing v-if="referencingMessageId >= 0"/>
   <v-row no-gutters class="d-flex" style="align-items: center">
     <v-textarea
         rows="1"

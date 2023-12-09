@@ -3,12 +3,11 @@ import {computed, onMounted, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
-import {contacts, user, userId} from "../globals.ts";
+import {user, userId} from "../globals.ts";
 import {GroupData, Message, MessageType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
-
-// TODO: display menu when right click on message
+import ReferencingMessage from "./ReferencingMessage.vue";
 
 const props = defineProps<{
   message: Message,
@@ -126,6 +125,7 @@ console.log("message", props.message);
               :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
               style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
           >
+            <ReferencingMessage v-if="message.info?.reference" :message-id="message.info.reference as number"/>
             <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string)"></div>
           </div>
           <div

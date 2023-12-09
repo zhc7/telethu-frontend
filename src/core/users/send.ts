@@ -2,7 +2,7 @@ import {Message, MessageType, TargetType} from "../../utils/structs";
 import {
     activeRequestId,
     contactPageProfileSource,
-    contacts,
+    contacts, referencingMessageId,
     requests,
     searchedId,
     selectedContactInfo,
@@ -114,7 +114,9 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
         content: inputMessage,
         receiver: receiverId,
         sender: userId.value,
-        info: atMembers ? atMembers : "",
+        info: {
+            reference: referencingMessageId.value,
+        },
         message_id: generateMessageId(inputMessage, userId.value, Date.now()),
         status: 'sending',
         who_read: t_type === TargetType.FRIEND ? false : [],

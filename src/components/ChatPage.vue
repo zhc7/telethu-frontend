@@ -10,12 +10,12 @@ import {formatChatMessageTime} from "../utils/datetime.ts";
 import {
   activeChatId,
   contacts,
-  floatingContactId,
-  messages,
+ floatingContactId, messages,
   nowRef,
+  referencingMessageId,
   selectedChatInfo,
-  settings, showProfileDialog,
-  user,
+  settings,
+ showProfileDialog, user,
   users
 } from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
@@ -68,21 +68,18 @@ const contextMenuChoices = computed(() => {
       return []
     }
   }
-  let choices;
+  let choices = [
+    "Copy",
+    "Share",
+    "Select",
+    "Reference",
+  ]
   if (contextMenuSubject.value.sender === user.value.id) {
-    choices = [
-      "Copy",
-      "Share",
-      "Select",
-      "Delete",
-      "Withdraw",
-    ]
-  } else {
-    choices = [
-      "Copy",
-      "Share",
-      "Select",
-    ];
+    choices.push(
+        "Delete",
+        "Edit",
+        "Withdraw",
+    );
   }
   if (category.value === "group" && (selectedChatInfo.value as GroupData).owner === user.value.id) {
     choices.push("Pin");
@@ -288,6 +285,10 @@ const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   },
   "Share": shareMessage,
   "Select": selectMessage,
+  "Reference": (msg: Message) => {
+    if (typeof msg.message_id === 'string') return;
+    referencingMessageId.value = msg.message_id;
+  },
   "Delete": delMessage,
   "Withdraw": withdrawMessage,
   "Pin": pinGroupMessage,

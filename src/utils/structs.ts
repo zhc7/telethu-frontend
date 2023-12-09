@@ -65,7 +65,7 @@ export interface Message {
     content: string | Array<any> | number | GroupData | UserData,
     sender: number,
     receiver: number,
-    info?: string | number | Array<any>,
+    info?: string | number | Array<any> | any,
     status?: string; // pure frontend
     who_read?: Array<number> | boolean, // group array, user boolean
 }
