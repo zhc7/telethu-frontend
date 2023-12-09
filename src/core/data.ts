@@ -62,7 +62,7 @@ export const getSettings = async () => {
             Authorization: token.value,
         }
     }).then((response) => {
-        const received = response.data.settings;
+        const received = response.data;
         if ("pinned" in received) {
             settings.value = received;
         } else {
