@@ -10,14 +10,15 @@ import {
   activeRequestId,
   contactPageContentLeft,
   contactPageProfileSource,
-  rawRequestList, searchedId,
+  rawRequestList,
+  searchedId,
   selectedContactInfo
 } from "../globals.ts"
 
 import RequestList from "./RequestList.vue";
 import ContactProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
-import {acceptFriend, applyFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
+import {acceptFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 import router from "../router.ts";
 
 
@@ -159,15 +160,11 @@ watch(activeRequestId, selectRequest);
           class="overflow-y-auto"
           :contact-id="activeRequestId"
       >
-        <template #buttons>
-          <v-btn color="green" @click="acceptFriend(activeRequestId)">Accept</v-btn>
-          <v-btn color="error" @click="rejectFriend(activeRequestId)">Reject</v-btn>
-        </template>
       </ContactProfile>
       <ContactProfile
-        v-show="contactPageProfileSource === 'searchResult'"
-        class="overflow-y-auto"
-        :contact-id="searchedId"
+          v-show="contactPageProfileSource === 'searchResult'"
+          class="overflow-y-auto"
+          :contact-id="searchedId"
       >
       </ContactProfile>
     </v-col>

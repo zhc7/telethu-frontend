@@ -2,7 +2,18 @@
 import {computed, ref} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
-import {activeRequestId, blacklist, contacts, settings, user, userContacts, userId} from "../globals.ts";
+import {
+  activeContactId,
+  activeRequestId,
+  blacklist,
+  contactPageProfileSource,
+  contacts,
+  requests,
+  settings,
+  user,
+  userContacts,
+  userId
+} from "../globals.ts";
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
@@ -13,7 +24,7 @@ import {
   groupRemoveAdmin,
   removeGroupMember
 } from "../core/groups/send.ts";
-import {applyFriend, blockFriend, deleteFriend, unblockFriend} from "../core/users/send.ts";
+import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
 
@@ -126,6 +137,20 @@ const handleAddAdmin = (memberId: number) => {
 const handleRemoveAdmin = (memberId: number) => {
   groupRemoveAdmin(displayContactInfo.value.id, memberId);
 }
+
+const handleAcceptFriend = () => {
+  const id = displayContactInfo.value.id;
+  acceptFriend(id);
+  activeContactId.value = id;
+  contactPageProfileSource.value = 'contactList';
+}
+
+const handleRejectFriend = () =>{
+  const id = displayContactInfo.value.id;
+  rejectFriend(id);
+  activeRequestId.value = 0;
+}
+
 </script>
 
 <template>
@@ -246,7 +271,10 @@ const handleRemoveAdmin = (memberId: number) => {
               @click="changeOwnerDialog=true"
           >Change Ownership
           </v-btn>
-          <v-btn v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id" color="blue" @click="handleApplyFriend(activeRequestId)">Apply</v-btn>
+          <v-btn color="green" v-if="requests.includes(displayContactInfo.id)" @click="handleAcceptFriend">Accept
+          </v-btn>
+          <v-btn color="error" v-if="requests.includes(displayContactInfo.id)" @click="handleRejectFriend">Reject</v-btn>
+          <v-btn v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id && !requests.includes(displayContactInfo.id)" color="blue" @click="handleApplyFriend(activeRequestId)">Apply</v-btn>
           <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="router.push('/profile')">Goto Profile</v-btn>
           <slot name="buttons"/>
           <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id" @click="deleteConfirmDialog=true">Delete</v-btn>
