@@ -264,7 +264,7 @@ const handleChat = async () => {
               v-model="switchValueMute"
           ></v-switch>
         </v-row>
-        <v-row style="display: flex; align-items: center" class="ma-1">
+        <v-row style="display: flex; align-items: center" class="ma-1" v-if="displayContactInfo.category === 'user'">
           <p style="flex: 1" class="text-right pr-4">Block:</p>
           <v-switch
               style="flex: 2"
