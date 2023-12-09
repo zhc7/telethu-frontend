@@ -4,7 +4,7 @@ import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
 import {floatingContactId, showProfileDialog, user, userId} from "../globals.ts";
-import {GroupData, Message, MessageType} from "../utils/structs.ts";
+import {GroupData, Message, MessageType, TargetType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 import MessageBrief from "./MessageBrief.vue";
@@ -27,7 +27,7 @@ const sender = getUser(props.message.sender);
 const name = computed(() => sender.name); // maintain reactivity
 const readPercent = computed(() => {
   if (props.message.who_read) {
-    return (props.message.who_read as Array<number>).length / (getUser(props.message.receiver) as GroupData).members.length;
+    return 100 * (props.message.who_read as Array<number>).length / (getUser(props.message.receiver) as GroupData).members.length;
   } else {
     return 0;
   }
@@ -222,16 +222,20 @@ console.log("message", props.message);
       </div>
 
       <!-- bottom icon row -->
-      <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'" v-if="!forward">
-        <v-icon v-if="message.pending_status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
-        <v-icon v-else-if="message.who_read && message.sender === userId" size="12px">mdi-check-all</v-icon>
+      <div
+          class="d-flex"
+          :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
+          v-if="!forward && message.sender === userId"
+      >
         <v-progress-circular
-            v-if="message.t_type === 1 && message.sender === userId"
+            v-if="message.t_type === TargetType.GROUP && readPercent < 100"
             :model-value="readPercent"
             size="12" width="2"
             @click.stop="$emit('showWhoRead')"
             style="cursor: pointer"
         />
+        <v-icon v-else-if="message.pending_status === 'sent'" size="12px">mdi-check</v-icon>
+        <v-icon v-else-if="message.who_read" size="12px">mdi-check-all</v-icon>
       </div>
 
       <!-- end message column -->
