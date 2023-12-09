@@ -32,7 +32,7 @@ const marked = new Marked(markedHighlight({
 const getNameById = (match: string, members: Array<number>) => {
     const id = match.slice(1);
     if (members.includes(parseInt(id))) {
-        return `<span style="color: blue;">@${getUser(parseInt(id)).name}</span>`
+        return `<span style="color: blue;" class="mention" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
     }
     return `<span>${match}</span>`;
 }

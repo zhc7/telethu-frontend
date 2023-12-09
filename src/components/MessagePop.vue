@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, onUpdated, Ref, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
-import {user, userId} from "../globals.ts";
+import {floatingContactId, showProfileDialog, user, userId} from "../globals.ts";
 import {GroupData, Message, MessageType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
@@ -79,6 +79,29 @@ onMounted(() => {
   if (props.message.m_type > 0) download(0);
 });
 
+const container: Ref<HTMLElement | null> = ref(null);
+
+const handleMentionClick = (event) => {
+  const userId = event.target.getAttribute('data-user-id');
+  if (userId) {
+    // 处理点击事件
+    console.log(`Mention clicked for user ID: ${userId}`);
+    showProfileDialog.value = true;
+    floatingContactId.value = parseInt(userId);
+  }
+};
+
+const addMentionEventListeners = () => {
+  const element = container.value;
+  if (element) {
+    const mentions = element.querySelectorAll('.mention');
+    mentions.forEach(mention => mention.addEventListener('click', handleMentionClick));
+  }
+};
+
+onMounted(addMentionEventListeners);
+onUpdated(addMentionEventListeners);
+
 console.log("message", props.message);
 </script>
 
@@ -128,7 +151,7 @@ console.log("message", props.message);
             <blockquote v-if="message.info?.reference && message.info.reference >= 0">
               <MessageBrief :message-id="message.info.reference as number"/>
             </blockquote>
-            <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members)"></div>
+            <div ref="container" :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members)"></div>
           </div>
           <div
               v-else-if="message.m_type === MessageType.TEXT"
