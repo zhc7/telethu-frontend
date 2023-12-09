@@ -60,6 +60,11 @@ const unread = computed<number>(() => {
   position: relative;
 }
 
+.chat-list-item:hover {
+  position: relative;
+  background-color: #ebebeb;
+}
+
 .chat-time {
   font-size: 0.75em;
   position: absolute;
