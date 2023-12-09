@@ -87,7 +87,7 @@ const unreadTotal = computed(() => {
     <ChatPage :show="activePage === 'chat'" v-model="activeChatId"/>
     <ContactPage v-show="activePage === 'contacts'"/>
     <ProfilePage v-show="activePage === 'profile'"/>
-    <v-dialog v-model="showProfileDialog" class="justify-center align-content-center" max-width="60vw">
+    <v-dialog v-model="showProfileDialog" class="justify-center align-content-center" max-width="25vw">
       <ContactProfile
           :contact-id="floatingContactId"
           class="overflow-y-auto justify-center align-content-center mt-6 mb-6 pt-6 pb-6"
