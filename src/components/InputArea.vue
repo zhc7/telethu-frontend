@@ -7,7 +7,7 @@ import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 import {getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
 import selectMember from "./SelectMember.vue";
-import InputAreaReferencing from "./InputAreaReferencing.vue";
+import MessageBrief from "./MessageBrief.vue";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -191,7 +191,17 @@ const handleFocus = () => {
   <v-row no-gutters class="d-flex" style="width: 100%">
     <Stickers v-if="showStickers" class="ml-4" @sticker-click="handleSendMessage"/>
   </v-row>
-  <InputAreaReferencing v-if="referencingMessageId >= 0"/>
+  <v-alert
+      v-if="referencingMessageId >= 0"
+      border="start"
+      variant="tonal"
+      style="overflow: visible"
+      class="ml-3 mr-3"
+      closable
+      @close="referencingMessageId = -1"
+  >
+    <MessageBrief :message-id="referencingMessageId"/>
+  </v-alert>
   <v-row no-gutters class="d-flex" style="align-items: center">
     <v-textarea
         rows="1"

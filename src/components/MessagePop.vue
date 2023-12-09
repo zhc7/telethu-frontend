@@ -7,7 +7,7 @@ import {user, userId} from "../globals.ts";
 import {GroupData, Message, MessageType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
-import ReferencingMessage from "./ReferencingMessage.vue";
+import MessageBrief from "./MessageBrief.vue";
 
 const props = defineProps<{
   message: Message,
@@ -125,7 +125,9 @@ console.log("message", props.message);
               :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
               style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
           >
-            <ReferencingMessage v-if="message.info?.reference" :message-id="message.info.reference as number"/>
+            <blockquote v-if="message.info?.reference && message.info.reference >= 0">
+              <MessageBrief :message-id="message.info.reference as number"/>
+            </blockquote>
             <div :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members)"></div>
           </div>
           <div

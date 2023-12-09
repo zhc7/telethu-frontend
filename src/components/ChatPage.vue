@@ -24,7 +24,7 @@ import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/struc
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
-import BannerMessage from "./BannerMessage.vue";
+import BannerMessage from "./MessageBanner.vue";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -425,7 +425,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
           />
         </div>
       </v-infinite-scroll>
-      <InputArea :chat="selectedChatInfo"/>
+      <InputArea/>
     </v-col>
   </v-row>
   <div

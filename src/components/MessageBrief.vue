@@ -8,7 +8,6 @@ const props = defineProps<{
 }>();
 
 const content = ref("");
-const show = ref(true);
 
 getMessage(props.messageId).then((message) => {
   content.value = displayHotMessage(message);
@@ -16,18 +15,9 @@ getMessage(props.messageId).then((message) => {
 </script>
 
 <template>
-  <v-banner
-      lines="one"
-      style="overflow: visible"
-      v-show="show"
-  >
-    <v-banner-text>
-      {{ content }}
-    </v-banner-text>
-    <template v-slot:actions>
-      <v-btn @click="show = false">Dismiss</v-btn>
-    </template>
-  </v-banner>
+  <div>
+    {{ content }}
+  </div>
 </template>
 
 <style scoped>
