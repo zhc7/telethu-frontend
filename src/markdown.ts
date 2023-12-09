@@ -28,8 +28,12 @@ const marked = new Marked(markedHighlight({
   }
 }))
 
-const markdown2Html = (markdown: string) => {
-  return marked.parse(markdown, {
+const markdown2Html = (markdown) => {
+  // 首先处理 @ 提及
+  const processedMarkdown = markdown.replace(/@[a-zA-Z0-9_-]+/g, match => `<span style="color: blue;">${match}</span>`);
+
+  // 然后将处理过的文本传递给 Markdown 解析器
+  return marked.parse(processedMarkdown, {
     breaks: true,
   });
 }

@@ -30,9 +30,15 @@ const contextMenuSubject = ref<ContextMenuSubject>("blank");
 
 const showWhoReadDialog = ref(false);
 const showWhoReadMessage = ref<Message>();
+const atMembers = ref<Array<number>>([]);
 const showWhoRead = (message: Message) => {
     showWhoReadDialog.value = true;
     showWhoReadMessage.value = message;
+    if (message.info instanceof Array) {
+      atMembers.value = message.info;
+    } else {
+      atMembers.value = [];
+    }
 }
 
 const openBlankContextMenu = (event: MouseEvent) => {
@@ -460,6 +466,16 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
           <v-list-item
               v-for="id in (selectedChatInfo as GroupData).members.filter((_id) => !(showWhoReadMessage?.who_read as number[]).includes(_id))"
               :key="id">
+            <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-list-item>
+          <v-list-item-title class="font-weight-bold text-center">
+            ----At {{ atMembers.length }} people----
+          </v-list-item-title>
+        </v-list-item>
+        <v-list class="text-center">
+          <v-list-item v-for="id in atMembers" :key="id">
             <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
           </v-list-item>
         </v-list>

@@ -76,7 +76,7 @@ const handlePaste = (event: ClipboardEvent) => {
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    sendMessage(+props.chat.id, message.value, props.chat.category === 'group' ? 1 : 0);
+    sendMessage(+props.chat.id, message.value, props.chat.category === 'group' ? 1 : 0, atMembers.value);
     message.value = "";
   }
 };
@@ -117,6 +117,7 @@ const handleTextareaKeydown = (e: KeyboardEvent) => {
 
 const encounterAt = ref(false);
 const selectMemberDialog = ref(false);
+const atMembers = ref<Array<number>>([]);
 const handleInput = () => {
   const currentMessage = message.value;
   const lastChar = currentMessage.charAt(currentMessage.length - 1);
@@ -136,6 +137,7 @@ const handleMembersSelected = (selectedMembers: Array<number>) => {
   }
   for (const member of selectedMembers) {
     message.value += `@${users.value[member].name} `;
+    atMembers.value.push(member);
   }
   selectMemberDialog.value = false;
 };
