@@ -117,3 +117,7 @@ export const userContacts = computed(() => {
 export const groupPinnedMessages = ref<{
     [id: number]: Array<number>
 }>({});
+
+export const showProfileDialog = ref(false);
+
+export const floatingContactId = ref(0);

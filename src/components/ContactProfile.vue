@@ -30,7 +30,7 @@ import {ContactsData, GroupData, UserData} from "../utils/structs.ts";
 
 
 const props = defineProps(['contactId']);
-defineEmits(["accept", "reject", "apply"]);
+defineEmits(["accept", "reject", "apply", "displayProfile"]);
 
 const groupAddMemberDialog = ref(false);
 
@@ -154,14 +154,16 @@ const handleRejectFriend = () =>{
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto" v-if="displayContactInfo.id > 0">
-    <Avatar :contact-id="displayContactInfo.id"></Avatar>
-    <v-card-item class="overflow-y-auto">
-      <v-list class="overflow-y-auto">
-        <v-list-item-title>
+  <v-card class="mb-auto mt-6 overflow-y-auto justify-center" v-if="displayContactInfo.id > 0">
+    <v-card-item class="overflow-y-auto justify-center">
+      <Avatar :contact-id="displayContactInfo.id" class="justify-center"></Avatar>
+    </v-card-item>
+    <v-card-item class="overflow-y-auto justify-center text-center">
+      <v-list class="overflow-y-auto justify-center">
+        <v-list-item-title class="justify-center">
           {{ displayContactInfo.name }}
         </v-list-item-title>
-        <v-list-item-subtitle> @{{ displayContactInfo ? displayContactInfo.id : '' }}
+        <v-list-item-subtitle class="justify-center"> @{{ displayContactInfo ? displayContactInfo.id : '' }}
         </v-list-item-subtitle>
         <v-list-item
             v-if="displayContactInfo && displayContactInfo.category === 'user'"
@@ -201,6 +203,7 @@ const handleRejectFriend = () =>{
                   size="60"
                   style="position: relative"
                   :style="displayContactInfo.owner === member ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member) ? 'border: #008eff 2px solid' : '' "
+                  @click="$emit('displayProfile', member)"
               />
               <div class="badge-kick"
                    v-if="displayContactInfo.owner === userId && member !== userId || displayContactInfo.admin.includes(userId) && member !== userId && member !== displayContactInfo.owner && !displayContactInfo.admin.includes(member)"

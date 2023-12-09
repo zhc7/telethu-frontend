@@ -10,14 +10,17 @@ import NavBar from "./NavBar.vue";
 import {
   activeChatId,
   currentPage,
+  floatingContactId,
   isSocketConnected,
-  rawRequestList, requests,
+  requests,
+  showProfileDialog,
   unreadCounter,
   userAvatar,
   userName
 } from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
+import ContactProfile from "./ContactProfile.vue";
 
 const router = useRouter();
 
@@ -65,23 +68,31 @@ const unreadTotal = computed(() => {
         >
         </v-list-item>
         <v-list-item class="text-left" @click="debugAction">
-<!--          {{ activePage === 'profile' }}-->
+          <!--          {{ activePage === 'profile' }}-->
         </v-list-item>
         <v-divider/>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
-        <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts" k="contacts"></ListItem>
+        <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts"
+                  k="contacts"></ListItem>
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
       <div class="fix-left-bottom">
-        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram</v-icon>
+        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram
+        </v-icon>
         <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isSocketConnected">mdi-loading</v-icon>
       </div>
     </NavBar>
     <!--ChatPage contains fragments, must manually apply show-->
-    <ChatPage :show="activePage === 'chat'" v-model="activeChatId" />
+    <ChatPage :show="activePage === 'chat'" v-model="activeChatId"/>
     <ContactPage v-show="activePage === 'contacts'"/>
     <ProfilePage v-show="activePage === 'profile'"/>
+    <v-dialog v-model="showProfileDialog" class="justify-center align-content-center" max-width="60vw">
+      <ContactProfile
+          :contact-id="floatingContactId"
+          class="overflow-y-auto justify-center align-content-center mt-6 mb-6 pt-6 pb-6"
+      />
+    </v-dialog>
   </v-container>
 </template>
 

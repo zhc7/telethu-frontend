@@ -7,7 +7,17 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
-import {activeChatId, contacts, messages, nowRef, selectedChatInfo, settings, user, users} from "../globals.ts";
+import {
+  activeChatId,
+  contacts,
+  floatingContactId,
+  messages,
+  nowRef,
+  selectedChatInfo,
+  settings, showProfileDialog,
+  user,
+  users
+} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
 import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/structs";
@@ -32,13 +42,13 @@ const showWhoReadDialog = ref(false);
 const showWhoReadMessage = ref<Message>();
 const atMembers = ref<Array<number>>([]);
 const showWhoRead = (message: Message) => {
-    showWhoReadDialog.value = true;
-    showWhoReadMessage.value = message;
-    if (message.info instanceof Array) {
-      atMembers.value = message.info;
-    } else {
-      atMembers.value = [];
-    }
+  showWhoReadDialog.value = true;
+  showWhoReadMessage.value = message;
+  if (message.info instanceof Array) {
+    atMembers.value = message.info;
+  } else {
+    atMembers.value = [];
+  }
 }
 
 const openBlankContextMenu = (event: MouseEvent) => {
@@ -315,6 +325,7 @@ const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
 const openBannerContextMenu = (event: MouseEvent, id: number) => {
   openContextMenu(event.clientX, event.clientY, id);
 }
+
 </script>
 
 <template>
@@ -425,10 +436,8 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
         class="overflow-y-auto"
         v-if="selectedChatInfo"
         :contact-id="activeChatId"
+        @display-profile="(id) => {floatingContactId = id; showProfileDialog = true}"
     >
-      <template #buttons>
-        <v-btn color="info">Recommend</v-btn>
-      </template>
     </ContactProfile>
   </div>
   <SelectMember
@@ -449,7 +458,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
       <v-card-text>
         <v-list-item>
           <v-list-item-title class="font-weight-bold text-center">
-            ----Read by {{ (showWhoReadMessage?.who_read as number[])?.length??0 }} people----
+            ----Read by {{ (showWhoReadMessage?.who_read as number[])?.length ?? 0 }} people----
           </v-list-item-title>
         </v-list-item>
         <v-list class="text-center">
@@ -459,7 +468,9 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
         </v-list>
         <v-list-item>
           <v-list-item-title class="font-weight-bold text-center">
-            ----Unread by {{ (selectedChatInfo as GroupData).members.length - (showWhoReadMessage?.who_read as number[])?.length??0 }} people----
+            ----Unread by {{
+              (selectedChatInfo as GroupData).members.length - (showWhoReadMessage?.who_read as number[])?.length ?? 0
+            }} people----
           </v-list-item-title>
         </v-list-item>
         <v-list class="text-center">
