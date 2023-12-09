@@ -118,7 +118,7 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
             reference: referencingMessageId.value,
         },
         message_id: generateMessageId(inputMessage, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
         who_read: t_type === TargetType.FRIEND ? false : [],
     };
     chatManager.sendMessage(message);
@@ -145,7 +145,7 @@ const blockFriend = (friendId: number) => {
         receiver: friendId,
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     }
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -160,7 +160,7 @@ const unblockFriend = (friendId: number) => {
         receiver: friendId,
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     }
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -177,7 +177,7 @@ const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_t
         sender: userId.value,
         info: file.name + "/" + formatFileSize(file.size) + "/" + getFileType(file.name),
         message_id: generateMessageId(file.name, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     chatManager.sendMessage(message);
     return md5;

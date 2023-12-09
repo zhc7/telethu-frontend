@@ -66,7 +66,8 @@ export interface Message {
     sender: number,
     receiver: number,
     info?: string | number | Array<any> | any,
-    status?: string; // pure frontend
+    status?: number,
+    pending_status?: string; // pure frontend
     who_read?: Array<number> | boolean, // group array, user boolean
 }
 

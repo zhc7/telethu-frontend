@@ -16,7 +16,7 @@ export const exitGroup = (id: number | undefined) => {
         sender: userId.value,
         info: '',
         message_id: generateMessageId(id, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -31,7 +31,7 @@ export const groupChangeOwner = (groupId: number, memberId: number) => {
         receiver: memberId,
         info: "",
         message_id: generateMessageId(groupId, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -46,7 +46,7 @@ export const groupAddAdmin = (groupId: number, memberId: number) => {
         receiver: memberId,
         info: "",
         message_id: generateMessageId(groupId, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -61,7 +61,7 @@ export const groupRemoveAdmin = (groupId: number, memberId: number) => {
         receiver: memberId,
         info: "",
         message_id: generateMessageId(groupId, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -76,7 +76,7 @@ export const groupAddMember = (groupId: number, memberList: number []) => {
         receiver: groupId,
         info: "",
         message_id: generateMessageId(groupId, userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
@@ -116,7 +116,7 @@ const createGroup = (groupName: string, members: Array<number>) => {
         sender: userId.value,
         info: groupName,
         message_id: generateMessageId(members.toString(), userId.value, Date.now()),
-        status: 'sending',
+        pending_status: 'sending',
     };
     console.log('create message sending: ', JSON.stringify(message));
     chatManager.sendMessage(message);

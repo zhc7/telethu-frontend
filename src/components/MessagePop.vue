@@ -106,13 +106,13 @@ console.log("message", props.message);
            :class="message.sender !== userId ? 'justify-start' : 'justify-end'"
       >
         <v-icon
-            v-if="message.status === 'sending' && message.sender === userId"
+            v-if="message.pending_status === 'sending' && message.sender === userId"
             class="mr-3 spin"
         >
           mdi-sync
         </v-icon>
         <v-icon
-            v-if="message.status === 'failed' && message.sender === userId"
+            v-if="message.pending_status === 'failed' && message.sender === userId"
             class="mr-3 text-red"
         >
           mdi-close-circle-outline
@@ -200,13 +200,13 @@ console.log("message", props.message);
 
       <!-- bottom icon row -->
       <div class="d-flex" :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'" v-if="!forward">
-        <v-icon v-if="message.status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
+        <v-icon v-if="message.pending_status === 'sent' && message.sender === userId" size="12px">mdi-check</v-icon>
         <v-icon v-else-if="message.who_read && message.sender === userId" size="12px">mdi-check-all</v-icon>
         <v-progress-circular
             v-if="message.t_type === 1 && message.sender === userId"
             :model-value="readPercent"
             size="12" width="2"
-            @click="$emit('showWhoRead')"
+            @click.stop="$emit('showWhoRead')"
             style="cursor: pointer"
         />
       </div>

@@ -61,7 +61,7 @@ const chatManager: {
 
     sendMessage(message: Message) {
         console.log("sending message from manager", message);
-        message.status = 'sending';
+        message.pending_status = 'sending';
         message = reactive(message);
         if (message.m_type <= 5) {
             messages.value[message.receiver].push(message);
@@ -70,7 +70,7 @@ const chatManager: {
 
         // set a timeout. If ack not received in given time, then resend.
         setTimeout(() => {
-            if (message.status === 'sending') {
+            if (message.pending_status === 'sending') {
                 this._retrySendMessage(message);
             }
         }, this.timeout * 1000);
@@ -79,18 +79,18 @@ const chatManager: {
     },
 
     _retrySendMessage(message: Message, attempts = 0) {
-        if (message.status === 'sent') {
+        if (message.pending_status === 'sent') {
             return;
         }
         if (attempts >= this.retryLimit) {
-            message.status = 'failed';
+            message.pending_status = 'failed';
             return;
         }
 
         socket.send(JSON.stringify(message));
 
         setTimeout(() => {
-            if (message.status === 'sending') {
+            if (message.pending_status === 'sending') {
                 this._retrySendMessage(message, attempts + 1);
             }
         }, this.timeout * 1000);
@@ -132,7 +132,7 @@ const chatManager: {
         };
         let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
-            message.status = 'sent';
+            message.pending_status = 'sent';
             if (message.sender !== user.value.id) {
                 unreadCounter.value[target] += 1;
             }
@@ -140,8 +140,8 @@ const chatManager: {
             if (message.sender !== user.value.id && !settings.value.muted.includes(target)) {
                 sendNotification(message);
             }
-        } else if (existing.status === 'sending') {
-            existing.status = 'sent';
+        } else if (existing.pending_status === 'sending') {
+            existing.pending_status = 'sent';
         }
     },
 
@@ -150,7 +150,7 @@ const chatManager: {
         if (message === undefined) {
             return;
         }
-        message.status = 'sent';
+        message.pending_status = 'sent';
         message.message_id = ack.message_id;
         if (message.m_type < MessageType.FUNCTION) {
             let old_messages = messages.value[message.receiver];
