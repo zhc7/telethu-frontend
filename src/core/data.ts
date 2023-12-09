@@ -62,8 +62,8 @@ export const getSettings = async () => {
             Authorization: token.value,
         }
     }).then((response) => {
-        const received = response.data;
-        if ("pinned" in received) {
+        const received = response.data.settings;
+        if (received !== undefined && "pinned" in received) {
             settings.value = received;
         } else {
             postSettings();
