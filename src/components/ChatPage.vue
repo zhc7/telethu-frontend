@@ -312,9 +312,9 @@ const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
   const messageList = messages.value[activeChatId.value];
   let pulled = await getHistoryMessage(
       activeChatId.value,
-      messageList[0] === undefined ? Date.now() : messageList[messageList.length - 1].time,
+      messageList[0] === undefined ? Date.now() : messageList[0].time,
       selectedChatInfo.value!.category === "group" ? TargetType.GROUP : TargetType.FRIEND,
-      20,);
+      10,);
   console.log(pulled);
   if (pulled) {
     done("ok");
