@@ -405,6 +405,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
               :key="mIndex"
               :message="message"
               :final="mIndex === group.messages.length - 1"
+              class="message-pop"
               :class="{'bg-blue': messageSelected(message)}"
               @show-profile="handleDisplayProfile"
               @show-context-menu="openContextMenu"
@@ -497,6 +498,13 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
 </template>
 
 <style scoped>
+.message-pop {
+  transition: background-color 150ms ease-out;
+}
+
+.bg-blue {
+  transition: background-color 30ms ease-in;
+}
 
 .profile-area {
   width: 0;
