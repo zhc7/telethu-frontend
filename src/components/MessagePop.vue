@@ -234,8 +234,8 @@ console.log("message", props.message);
             @click.stop="$emit('showWhoRead')"
             style="cursor: pointer"
         />
+        <v-icon v-else-if="message.who_read && (message.who_read as Array<number>).length" size="12px">mdi-check-all</v-icon>
         <v-icon v-else-if="message.pending_status === 'sent'" size="12px">mdi-check</v-icon>
-        <v-icon v-else-if="message.who_read" size="12px">mdi-check-all</v-icon>
       </div>
 
       <!-- end message column -->

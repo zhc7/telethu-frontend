@@ -175,10 +175,6 @@ const getHistoryMessage = async (id: number, from: number, t_type: TargetType, n
     }).then((response) => {
         const pulled_messages = response.data as Array<Message>;
         const pulled_length = pulled_messages.length;
-        for (let msg of response.data) {
-            // TODO: should change to backend real status
-            msg.status = 'sent';
-        }
         // sort and merge
         pulled_messages.push(...messages.value[id]);
         pulled_messages.sort((a: Message, b: Message) => (a.time - b.time));
