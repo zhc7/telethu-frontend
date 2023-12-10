@@ -159,8 +159,8 @@ console.log("message", props.message);
           <div
               v-else-if="message.m_type === MessageType.TEXT"
           >
-            <v-list style="background-color: #DCEDC8" rounded>
-              <v-list-group value="chat history">
+            <v-list style="background-color: #DCEDC8" class="ml-3 mr-3 rounded-lg border">
+              <v-list-group value="chat history" class="ml-2 mr-2">
                 <template v-slot:activator="{ props }">
                   <v-list-item
                       v-bind="props"
