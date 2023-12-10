@@ -6,6 +6,7 @@ import {markedEmoji} from "marked-emoji";
 import {ref} from "vue";
 import axios from "axios";
 import {getUser} from "./core/data.ts";
+import {ContactsData, GroupData, Message} from "./utils/structs.ts";
 
 const emojisLoaded = ref(false);
 // Get all the emojis available to use on GitHub.
@@ -29,20 +30,24 @@ const marked = new Marked(markedHighlight({
     }
 }))
 
-const getNameById = (match: string, members: Array<number>, who_read: Array<number>) => {
+const getNameById = (match: string, message: Message, contactData: ContactsData) => {
     const id = match.slice(1);
-    if (members.includes(parseInt(id))) {
-        if (who_read.includes(parseInt(id))) {
-            return `<span class="mention_read" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
+    if (contactData.category === "group") {
+        if ((contactData as GroupData).members.includes(parseInt(id))) {
+            if ((message.who_read as Array<number>).includes(parseInt(id))) {
+                return `<span class="mention_read" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
+            }
+            return `<span class="mention" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
         }
-        return `<span class="mention" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
     }
     return `<span>${match}</span>`;
 }
 
-const markdown2Html = (markdown: string, members: Array<number>, who_read: Array<number>) => {
+const markdown2Html = (message: Message, contactData: ContactsData) => {
+    const markdown = message.content as string;
     // 首先处理 @ 提及
-    const processedMarkdown = markdown.replace(/@[a-zA-Z0-9_-]+/g, match => getNameById(match, members, who_read));
+    const processedMarkdown = markdown.replace(/@[a-zA-Z0-9_-]+/g,
+            match => getNameById(match, message, contactData));
 
     // 然后将处理过的文本传递给 Markdown 解析器
     return marked.parse(processedMarkdown, {

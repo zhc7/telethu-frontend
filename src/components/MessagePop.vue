@@ -153,7 +153,7 @@ console.log("message", props.message);
             </blockquote>
             <div ref="container"
                  :key="emojisLoaded.toString()"
-                 v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members, message.who_read as Array<number>)"
+                 v-html="markdown2Html(message, getUser(props.message.receiver))"
             />
           </div>
           <div
