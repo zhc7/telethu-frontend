@@ -407,6 +407,7 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
       <v-infinite-scroll
           class="fill-height"
           side="start"
+          :key="activeChatId"
           @load="loadMoreMessage"
           @contextmenu.prevent="openBlankContextMenu"
       >
