@@ -470,37 +470,24 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
     <v-card>
       <v-card-title class="font-weight-bold text-center">Who Read</v-card-title>
       <v-card-text>
-        <v-list-item>
-          <v-list-item-title class="font-weight-bold text-center">
-            ----Read by {{ (showWhoReadMessage?.who_read as number[])?.length ?? 0 }} people----
-          </v-list-item-title>
-        </v-list-item>
+        <fieldset class="title-fieldset">
+          <legend class="inner">Read by {{ (showWhoReadMessage?.who_read as number[])?.length ?? 0 }} people</legend>
+        </fieldset>
         <v-list class="text-center">
           <v-list-item v-for="id in showWhoReadMessage?.who_read" :key="id">
             <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
           </v-list-item>
         </v-list>
-        <v-list-item>
-          <v-list-item-title class="font-weight-bold text-center">
-            ----Unread by {{
-              (selectedChatInfo as GroupData).members.length - (showWhoReadMessage?.who_read as number[])?.length ?? 0
-            }} people----
-          </v-list-item-title>
-        </v-list-item>
+        <fieldset class="title-fieldset">
+          <legend class="inner">Unread by {{
+              (selectedChatInfo as GroupData).members.length - 1 - (showWhoReadMessage?.who_read as number[])?.length ?? 0
+            }} people</legend>
+        </fieldset>
         <v-list class="text-center">
           <v-list-item
-              v-for="id in (selectedChatInfo as GroupData).members.filter((_id) => !(showWhoReadMessage?.who_read as number[]).includes(_id))"
+              v-for="id in (selectedChatInfo as GroupData).members.filter((_id) =>
+              !(showWhoReadMessage?.who_read as number[]).includes(_id) && _id !== user.id)"
               :key="id">
-            <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-        <v-list-item>
-          <v-list-item-title class="font-weight-bold text-center">
-            ----At {{ atMembers.length }} people----
-          </v-list-item-title>
-        </v-list-item>
-        <v-list class="text-center">
-          <v-list-item v-for="id in atMembers" :key="id">
             <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -536,4 +523,16 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
   font-size: 15px;
   font-weight: bold;
 }
+
+.title-fieldset{
+  font-size:1rem;
+  color:red;
+  border:none;
+  border-top:1px solid red;
+}
+.title-fieldset .inner{
+  margin:0 auto;
+  padding:0 0.25rem
+}
+
 </style>

@@ -27,7 +27,7 @@ const sender = getUser(props.message.sender);
 const name = computed(() => sender.name); // maintain reactivity
 const readPercent = computed(() => {
   if (props.message.who_read) {
-    return 100 * (props.message.who_read as Array<number>).length / (getUser(props.message.receiver) as GroupData).members.length;
+    return 100 * (props.message.who_read as Array<number>).length / ((getUser(props.message.receiver) as GroupData).members.length - 1);
   } else {
     return 0;
   }
@@ -153,7 +153,7 @@ console.log("message", props.message);
             </blockquote>
             <div ref="container"
                  :key="emojisLoaded.toString()"
-                 v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members, message.who_read)"
+                 v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members, message.who_read as Array<number>)"
             />
           </div>
           <div
@@ -233,9 +233,9 @@ console.log("message", props.message);
         <v-progress-circular
             v-if="message.t_type === TargetType.GROUP && readPercent < 100"
             :model-value="readPercent"
-            size="12" width="2"
+            size="10" width="2"
             @click.stop="$emit('showWhoRead')"
-            style="cursor: pointer"
+            style="cursor: pointer; margin-top: 3px"
         />
         <v-icon v-else-if="message.who_read && (message.who_read as Array<number>).length" size="12px">mdi-check-all</v-icon>
         <v-icon v-else-if="message.pending_status === 'sent'" size="12px">mdi-check</v-icon>
