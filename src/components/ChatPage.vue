@@ -30,6 +30,7 @@ import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
 import BannerMessage from "./MessageBanner.vue";
 import axios from "axios";
+import Avatar from "./Avatar.vue";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -496,8 +497,11 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
         <fieldset class="title-fieldset">
           <legend class="inner">Read by {{ (showWhoReadMessage?.who_read as number[])?.length ?? 0 }} people</legend>
         </fieldset>
-        <v-list class="text-center">
-          <v-list-item v-for="id in showWhoReadMessage?.who_read" :key="id">
+        <v-list>
+          <v-list-item v-for="id in showWhoReadMessage?.who_read" :key="id" style="margin-left: 3vw">
+            <template #prepend>
+              <Avatar :contact-id="id"/>
+            </template>
             <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -507,11 +511,15 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
             }} people
           </legend>
         </fieldset>
-        <v-list class="text-center">
+        <v-list>
           <v-list-item
               v-for="id in (selectedChatInfo as GroupData).members.filter((_id) =>
               !(showWhoReadMessage?.who_read as number[]).includes(_id) && _id !== user.id)"
-              :key="id">
+              :key="id"
+              style="margin-left: 3vw">
+            <template #prepend>
+              <Avatar :contact-id="id"/>
+            </template>
             <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
           </v-list-item>
         </v-list>
