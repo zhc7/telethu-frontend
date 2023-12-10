@@ -2,6 +2,7 @@ import {computed, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
 import {ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
 import {getUser, postSettings} from "./core/data.ts";
+import MessagePop from "./components/MessagePop.vue";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -122,3 +123,7 @@ export const groupPinnedMessages = ref<{
 export const showProfileDialog = ref(false);
 
 export const floatingContactId = ref(0);
+
+export const activeMessages = ref<{
+    [id: number]: InstanceType<typeof MessagePop>
+}>({});

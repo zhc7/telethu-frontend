@@ -9,13 +9,17 @@ import InputArea from "./InputArea.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
 import {
   activeChatId,
+  activeMessages,
   contacts,
- floatingContactId, messages,
+  floatingContactId,
+  messages,
   nowRef,
   referencingMessageId,
   selectedChatInfo,
   settings,
- showProfileDialog, user, userContacts,
+  showProfileDialog,
+  user,
+  userContacts,
   users
 } from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
@@ -323,6 +327,16 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
   openContextMenu(event.clientX, event.clientY, id);
 }
 
+const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | string) => {
+  if (typeof id === 'string') {
+    return;
+  }
+  if (el) {
+    activeMessages.value[id] = el;
+  } else {
+    delete activeMessages.value[id];
+  }
+}
 </script>
 
 <template>
@@ -407,6 +421,7 @@ const openBannerContextMenu = (event: MouseEvent, id: number) => {
               :final="mIndex === group.messages.length - 1"
               class="message-pop"
               :class="{'bg-blue': messageSelected(message)}"
+              :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
               @show-profile="handleDisplayProfile"
               @show-context-menu="openContextMenu"
               @click="handleSelectMessage(message)"
