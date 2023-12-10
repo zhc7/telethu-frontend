@@ -16,6 +16,14 @@
 
 .mention {
   cursor: pointer;
+  color: blue;
+  font-weight: bold;
+}
+
+.mention_read {
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
 }
 
 a {

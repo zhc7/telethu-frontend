@@ -29,17 +29,20 @@ const marked = new Marked(markedHighlight({
     }
 }))
 
-const getNameById = (match: string, members: Array<number>) => {
+const getNameById = (match: string, members: Array<number>, who_read: Array<number>) => {
     const id = match.slice(1);
     if (members.includes(parseInt(id))) {
-        return `<span style="color: blue;" class="mention" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
+        if (who_read.includes(parseInt(id))) {
+            return `<span class="mention_read" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
+        }
+        return `<span class="mention" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
     }
     return `<span>${match}</span>`;
 }
 
-const markdown2Html = (markdown: string, members: Array<number>) => {
+const markdown2Html = (markdown: string, members: Array<number>, who_read: Array<number>) => {
     // 首先处理 @ 提及
-    const processedMarkdown = markdown.replace(/@[a-zA-Z0-9_-]+/g, match => getNameById(match, members));
+    const processedMarkdown = markdown.replace(/@[a-zA-Z0-9_-]+/g, match => getNameById(match, members, who_read));
 
     // 然后将处理过的文本传递给 Markdown 解析器
     return marked.parse(processedMarkdown, {

@@ -151,7 +151,10 @@ console.log("message", props.message);
             <blockquote v-if="message.info?.reference && message.info.reference >= 0">
               <MessageBrief :message-id="message.info.reference as number"/>
             </blockquote>
-            <div ref="container" :key="emojisLoaded.toString()" v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members)"></div>
+            <div ref="container"
+                 :key="emojisLoaded.toString()"
+                 v-html="markdown2Html(message.content as string, (getUser(props.message.receiver) as GroupData).members, message.who_read)"
+            />
           </div>
           <div
               v-else-if="message.m_type === MessageType.TEXT"
