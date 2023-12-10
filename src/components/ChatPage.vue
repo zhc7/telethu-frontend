@@ -29,6 +29,7 @@ import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
 import BannerMessage from "./MessageBanner.vue";
+import axios from "axios";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -77,6 +78,7 @@ const contextMenuChoices = computed(() => {
     "Share",
     "Select",
     "Reference",
+    "Translate",
   ]
   if (contextMenuSubject.value.sender === user.value.id) {
     choices.push(
@@ -275,6 +277,25 @@ const pinGroupMessage = (message: Message) => {
   pinMessage(message.message_id, activeChatId.value);
 };
 
+const translateMessage = async (message: Message) => {
+  if (typeof message.content !== 'string') {
+    return;
+  }
+  try {
+    const response = await axios.post('https://libretranslate.de/translate', {
+      q: message.content,
+      source: 'auto',
+      target: 'zh',
+      format: 'text'
+    });
+    const translatedText =  response.data.translatedText;
+    alert(translatedText)
+    return translatedText;
+  } catch (error) {
+    console.error('Error during translation:', error);
+  }
+}
+
 const handleForwardGroupMessage = () => {
   shareMessageDialog.value = true;
 }
@@ -292,6 +313,7 @@ const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Delete": delMessage,
   "Withdraw": withdrawMessage,
   "Pin": pinGroupMessage,
+  "Translate": translateMessage,
 };
 
 const dispatchFunction = (item: string) => {
@@ -482,7 +504,8 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
         <fieldset class="title-fieldset">
           <legend class="inner">Unread by {{
               (selectedChatInfo as GroupData).members.length - 1 - (showWhoReadMessage?.who_read as number[])?.length ?? 0
-            }} people</legend>
+            }} people
+          </legend>
         </fieldset>
         <v-list class="text-center">
           <v-list-item
@@ -525,15 +548,16 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
   font-weight: bold;
 }
 
-.title-fieldset{
-  font-size:1rem;
-  color:red;
-  border:none;
-  border-top:1px solid red;
+.title-fieldset {
+  font-size: 1rem;
+  color: red;
+  border: none;
+  border-top: 1px solid red;
 }
-.title-fieldset .inner{
-  margin:0 auto;
-  padding:0 0.25rem
+
+.title-fieldset .inner {
+  margin: 0 auto;
+  padding: 0 0.25rem
 }
 
 </style>
