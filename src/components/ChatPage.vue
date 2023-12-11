@@ -347,6 +347,16 @@ const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
   }
 }
 
+onMounted(async () => {
+  // sleep 0.3s to wait for the contacts to be loaded
+  await new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
+  for (const id of contacts.value) {
+    await getHistoryMessage(id, Date.now(), getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND, 10);
+  }
+});
+
 const openBannerContextMenu = (event: MouseEvent, id: number) => {
   openContextMenu(event.clientX, event.clientY, id);
 }

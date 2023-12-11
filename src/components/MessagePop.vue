@@ -160,7 +160,7 @@ console.log("message", props.message);
             />
           </div>
           <div
-              v-else-if="message.m_type === MessageType.TEXT"
+              v-else-if="message.m_type === MessageType.TEXT && message.content instanceof Array"
           >
             <v-list style="background-color: #DCEDC8" class="ml-3 mr-3 rounded-lg border">
               <v-list-group value="chat history" class="ml-2 mr-2">
