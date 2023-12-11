@@ -254,8 +254,8 @@ const handleChat = async () => {
         </div>
       </v-list>
       <v-divider class="ma-4"/>
-      <v-col v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)">
-        <v-row style="display: flex; align-items: center" class="ma-1">
+      <v-col>
+        <v-row v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)" style="display: flex; align-items: center" class="ma-1">
           <p style="flex: 1" class="text-right pr-4">Pin:</p>
           <v-switch
               style="flex: 2"
@@ -264,7 +264,7 @@ const handleChat = async () => {
               v-model="switchValuePin"
           ></v-switch>
         </v-row>
-        <v-row style="display: flex; align-items: center" class="ma-1">
+        <v-row v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)" style="display: flex; align-items: center" class="ma-1">
           <p style="flex: 1" class="text-right pr-4">Mute:</p>
           <v-switch
               style="flex: 2"
