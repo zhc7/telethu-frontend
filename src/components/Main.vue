@@ -96,7 +96,7 @@ onMounted(() => {
       </div>
     </NavBar>
     <!--ChatPage contains fragments, must manually apply show-->
-    <Purchase v-show="activePage === 'purchase'"/>
+    <Purchase v-if="activePage === 'purchase'"/>
     <ChatPage :show="activePage === 'chat'" v-model="activeChatId"/>
     <ContactPage v-show="activePage === 'contacts'"/>
     <ProfilePage v-show="activePage === 'profile'"/>
