@@ -31,6 +31,7 @@ import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} 
 import BannerMessage from "./MessageBanner.vue";
 import axios from "axios";
 import Avatar from "./Avatar.vue";
+import {VInfiniteScroll} from "vuetify/components";
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -289,7 +290,7 @@ const translateMessage = async (message: Message) => {
       target: 'zh',
       format: 'text'
     });
-    const translatedText =  response.data.translatedText;
+    const translatedText = response.data.translatedText;
     alert(translatedText)
     return translatedText;
   } catch (error) {
@@ -360,6 +361,23 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
     delete activeMessages.value[id];
   }
 }
+
+const scroll = ref<InstanceType<typeof VInfiniteScroll> | null>(null);
+
+const scrollToBottom = () => {
+  if (scroll.value === null) return;
+  scroll.value.$el.scrollTop = scroll.value.$el.scrollHeight;
+}
+
+const lastMessageId = computed(() => {
+  const messageList = messages.value[activeChatId.value];
+  if (messageList === undefined || !messageList.length) {
+    return -1;
+  }
+  return messageList[messageList.length - 1].message_id;
+});
+
+watch(lastMessageId, scrollToBottom);
 </script>
 
 <template>
@@ -431,6 +449,7 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
           class="fill-height"
           side="start"
           :key="activeChatId"
+          ref="scroll"
           @load="loadMoreMessage"
           @contextmenu.prevent="openBlankContextMenu"
       >
