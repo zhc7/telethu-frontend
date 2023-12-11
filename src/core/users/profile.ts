@@ -1,9 +1,9 @@
 import {Message, UserData} from "../../utils/structs.ts";
-import {user} from "../../globals.ts";
+import {user, userName} from "../../globals.ts";
 import {generateMessageId} from "../../utils/hash.ts";
 import {chatManager} from "../chat.ts";
 
-export const editProfile = (newProfile: UserData) => {
+export const editProfile = (newProfile: string) => {
     const message: Message = {
         time: Date.now(),
         m_type: 29,
@@ -19,8 +19,9 @@ export const editProfile = (newProfile: UserData) => {
 }
 
 export const updateUserProfile = (message: Message) => {
-    const newProfile = message.content as UserData;
-    for (const key in newProfile) {
-        (user.value[key as keyof UserData] as any) = newProfile[key as keyof UserData];
-    }
+    const newProfile = JSON.parse(message.content as string);
+    user.value = {
+        ...user.value,
+        ...newProfile,
+    } as UserData;
 }

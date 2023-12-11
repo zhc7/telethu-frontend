@@ -94,13 +94,15 @@ const editingTitle = computed(() => {
 })
 
 const handleConfirm = () => {
-  const newProfile = user.value;
+  const newProfile = {
+    name: user.value.name,
+  };
   if (editingEntry.value === 'username') {
     newProfile.name = inputValue.value;
     alert('changing username to ' + inputValue.value);
   }
   editingEntry.value = undefined;
-  editProfile(newProfile);
+  editProfile(JSON.stringify(newProfile));
 }
 
 const blackListDialog = ref(false);
