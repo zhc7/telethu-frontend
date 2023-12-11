@@ -28,7 +28,7 @@ const name = computed(() => sender.name); // maintain reactivity
 const readPercent = computed(() => {
   if (props.message.who_read) {
     if (getUser(props.message.receiver).category !== 'group') {
-      return;
+      return 0;
     }
     return 100 * (props.message.who_read as Array<number>).length / ((getUser(props.message.receiver) as GroupData).members.length - 1);
   } else {
@@ -173,7 +173,7 @@ console.log("message", props.message);
                 </template>
 
                 <MessagePop
-                    v-for="msg in message.content"
+                    v-for="msg in message.content.filter(m => m)"
                     :message="msg"
                     :final="false"
                     :forward="true"
