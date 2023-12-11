@@ -7,7 +7,7 @@ import {token} from "../auth";
 import {BASE_API_URL} from "../constants";
 
 const props = withDefaults(defineProps<{
-  displayBigAvatar: boolean,
+  displayBigAvatar?: boolean,
   contactId: number,
 }>(), {
   displayBigAvatar: false
