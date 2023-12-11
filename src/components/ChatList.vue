@@ -48,6 +48,7 @@ const searchFriendInput = ref(false);
 const searchText = ref('');
 
 const decideRelative = (msg: Message, str: string) => {
+  const strList = str.split(' ');
   if (msg.m_type === MessageType.TEXT) {
     if (msg.content instanceof Array) {
       for (const submsg of msg.content) {
@@ -56,7 +57,13 @@ const decideRelative = (msg: Message, str: string) => {
       return false;
     }
     if (typeof(msg.content) === 'string') {
-      return msg.content.includes(str);
+      let flag = true;
+      strList.forEach((word) => {
+        if (!(msg.content as string).includes(word)) {
+          flag = false;
+        }
+      });
+      return flag;
     }
   }
   return false;
@@ -67,11 +74,13 @@ const filteredMessages = computed(() => {
   for (const id of Object.keys(messages.value)) {
     for (const msg of messages.value[+id]) {
       if (decideRelative(msg, searchText.value)) {
-        list.push(msg.message_id);
+        list.push(msg);
       }
     }
   }
-  return list;
+  return list.sort((a, b) => {
+    return b.time - a.time;
+  });
 })
 
 </script>
@@ -102,8 +111,8 @@ const filteredMessages = computed(() => {
     </List>
     <List class="overflow-y-auto fill-height" v-else v-model="activeMessageId">
       <MessagePopItem
-          v-for="msgid in filteredMessages"
-          :message-id="msgid as string"
+          v-for="msg in filteredMessages"
+          :message-id="msg.message_id as number"
       ></MessagePopItem>
     </List>
   </div>

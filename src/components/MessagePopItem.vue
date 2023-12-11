@@ -10,7 +10,7 @@ import {Message} from "../utils/structs.ts";
 const {selected} = inject<any>("selected");
 
 const props = defineProps<{
-  messageId: number,
+  messageId: number | string,
   active: boolean,
 }>();
 
@@ -48,7 +48,7 @@ const receiver = computed(() => {
 
 const scrollTo = () => {
   setTimeout(() => {
-    const el = activeMessages.value[props.messageId];
+    const el = activeMessages.value[props.messageId as number];
     el.$el.scrollIntoView({behavior: "smooth", block: "center"});
     el.$el.classList.add("bg-blue");
     setTimeout(() => {
