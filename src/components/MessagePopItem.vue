@@ -57,21 +57,23 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
 </script>
 
 <template>
-  <ListItem
-      :k="message.message_id"
-      class="pa-3 pl-6 chat-list-item text-left hot-message"
-      rounded="lg"
-      :title="sender.name"
-      :subtitle="formatChatMessageTime(nowRef, message.time)"
-  />
-  <MessagePop
-      :key="message.message_id"
-      :message="message"
-      :final="true"
-      class="message-pop"
-      :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
-      :forward="false"
-  />
+  <div class="rounded-lg message-pop-item">
+    <ListItem
+        :k="message.message_id"
+        class="pa-3 pl-6 chat-list-item text-left hot-message"
+        rounded="lg"
+        :title="sender.name"
+        :subtitle="formatChatMessageTime(nowRef, message.time)"
+    />
+    <MessagePop
+        :key="message.message_id"
+        :message="message"
+        :final="true"
+        class="message-pop"
+        :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
+        :forward="true"
+    />
+  </div>
 </template>
 
 <style scoped>
@@ -85,6 +87,10 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
   right: 4em;
   top: 2em;
   color: #888
+}
+
+.message-pop-item:hover {
+  background-color: #ebebeb;
 }
 
 </style>
