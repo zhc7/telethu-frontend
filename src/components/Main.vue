@@ -123,24 +123,24 @@ const setDefaultColor = () => {
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="colorPickerDialog" max-width="50vw" max-height="60vh">
+    <v-dialog v-model="colorPickerDialog" max-width="45vw" max-height="70vh">
       <v-card class="fill-height">
-        <v-card-title class="text-center ma-3">
+        <v-card-title class="text-center ma-5">
           Pick color for List Item
         </v-card-title>
-        <v-row>
+        <v-row class="justify-center">
           <v-color-picker
-              class="ma-auto"
               show-swatches
               v-model="pickingColor1"
           ></v-color-picker>
+          <span class="mx-4"></span>
           <v-color-picker
-              class="ma-auto"
               show-swatches
               v-model="pickingColor2"
           ></v-color-picker>
         </v-row>
-        <v-card-actions class="mb-3 mr-4 ma-3">
+        <span class="mt-6 text-center" style="color: #888888">Pick two color to make it linear gradient.</span>
+        <v-card-actions class="mb-3 mr-4">
           <v-spacer></v-spacer>
           <v-btn color="info" @click="setDefaultColor">default</v-btn>
           <v-btn color="info" @click="setColor">Confirm</v-btn>
