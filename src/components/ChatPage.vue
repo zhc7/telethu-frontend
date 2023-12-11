@@ -26,7 +26,6 @@ import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
 import axios from "axios";
 import Avatar from "./Avatar.vue";
-import {VInfiniteScroll} from "vuetify/components";
 import MessageFlow from "./MessageFlow.vue";
 import {messageFlow} from "../globals";
 
@@ -287,23 +286,6 @@ watch(contacts, async () => {
     await getHistoryMessage(id, Date.now(), getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND, 10);
   }
 });
-
-const scroll = ref<InstanceType<typeof VInfiniteScroll> | null>(null);
-
-const scrollToBottom = () => {
-  if (scroll.value === null) return;
-  scroll.value.$el.scrollTop = scroll.value.$el.scrollHeight;
-}
-
-const lastMessageId = computed(() => {
-  const messageList = messages.value[activeChatId.value];
-  if (messageList === undefined || !messageList.length) {
-    return -1;
-  }
-  return messageList[messageList.length - 1].message_id;
-});
-
-watch(lastMessageId, scrollToBottom);
 
 const searchingMessage = ref<boolean>(false);
 </script>
