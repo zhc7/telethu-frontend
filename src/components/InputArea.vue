@@ -127,8 +127,18 @@ const handleSendFiles = async () => {
   loading.value = false;
 };
 
+const composing = ref(false); // handle chinese input
+
+const handleCompositionStart = () => {
+  composing.value = true;
+};
+
+const handleCompositionEnd = () => {
+  composing.value = false;
+};
+
 const handleTextareaKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
+  if (e.key === 'Enter' && !e.shiftKey && !composing.value) {
     e.preventDefault();
     handleSendMessage();
     message.value = "";
@@ -219,6 +229,8 @@ const handleFocus = () => {
         @click:append-inner="showStickers = !showStickers"
         @paste="handlePaste"
         @input="handleInput"
+        @compositionstart="handleCompositionStart"
+        @compositionend="handleCompositionEnd"
     >
       <template #prepend-inner>
         <v-icon @click="triggerFileInput">mdi-paperclip</v-icon>
