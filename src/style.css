@@ -13,7 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --picked-color: #646cff;
+  --picked-color1: #4286f4;
+  --picked-color2: #373B44;
 }
 
 .mention {
@@ -119,7 +120,9 @@ button:focus-visible {
 }
 
 .picked-color {
-  background: var(--picked-color);
+  background: var(--picked-color1);
+  background: -webkit-linear-gradient(to right, var(--picked-color1), var(--picked-color2));
+  background: linear-gradient(to right, var(--picked-color1), var(--picked-color2));
 }
 
 .megatron {

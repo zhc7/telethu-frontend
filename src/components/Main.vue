@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
@@ -8,7 +8,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {
-  activeChatId, alreadyPickColor, bigAvatarSource,
+  activeChatId, bigAvatarSource,
   currentPage,
   floatingContactId,
   isSocketConnected,
@@ -55,17 +55,19 @@ const unreadTotal = computed(() => {
   return counter;
 })
 
-const pickingColor = ref("");
+const pickingColor1 = ref(null);
+const pickingColor2 = ref(null);
 const colorPickerDialog = ref(false);
 const setColor = () => {
-  if (pickingColor.value) {
-    alreadyPickColor.value = true;
-    document.documentElement.style.setProperty('--picked-color', pickingColor.value);
+  if (pickingColor1 && pickingColor2) {
+    document.documentElement.style.setProperty('--picked-color1', pickingColor1.value);
+    document.documentElement.style.setProperty('--picked-color2', pickingColor2.value);
   }
   colorPickerDialog.value = false;
 }
 const setDefaultColor = () => {
-  alreadyPickColor.value = false;
+  document.documentElement.style.setProperty('--picked-color1', '#4286f4');
+  document.documentElement.style.setProperty('--picked-color2', '#373B44');
   colorPickerDialog.value = false;
 }
 
@@ -121,16 +123,23 @@ const setDefaultColor = () => {
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="colorPickerDialog" max-width="30vw" max-height="60vh">
+    <v-dialog v-model="colorPickerDialog" max-width="50vw" max-height="60vh">
       <v-card class="fill-height">
         <v-card-title class="text-center ma-3">
           Pick color for List Item
         </v-card-title>
+        <v-row>
           <v-color-picker
               class="ma-auto"
               show-swatches
-              v-model="pickingColor"
+              v-model="pickingColor1"
           ></v-color-picker>
+          <v-color-picker
+              class="ma-auto"
+              show-swatches
+              v-model="pickingColor2"
+          ></v-color-picker>
+        </v-row>
         <v-card-actions class="mb-3 mr-4 ma-3">
           <v-spacer></v-spacer>
           <v-btn color="info" @click="setDefaultColor">default</v-btn>
