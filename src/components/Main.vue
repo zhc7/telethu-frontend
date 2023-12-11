@@ -8,7 +8,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {
-  activeChatId, bigAvatarSource,
+  activeChatId, bigAvatarSource, colorPickerDialog,
   currentPage,
   floatingContactId,
   isSocketConnected,
@@ -21,6 +21,7 @@ import {
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
 import ContactProfile from "./ContactProfile.vue";
+import ColorPicker from "./ColorPicker.vue";
 import Purchase from "./Purchase.vue";
 
 const router = useRouter();
@@ -54,23 +55,19 @@ const unreadTotal = computed(() => {
     counter += unreadCounter.value[key];
   }
   return counter;
-})
+});
 
-const pickingColor1 = ref(null);
-const pickingColor2 = ref(null);
-const colorPickerDialog = ref(false);
-const setColor = () => {
-  if (pickingColor1 && pickingColor2) {
-    document.documentElement.style.setProperty('--picked-color1', pickingColor1.value);
-    document.documentElement.style.setProperty('--picked-color2', pickingColor2.value);
+onMounted(() => {
+  if (localStorage.getItem('colors')) {
+    const colors = JSON.parse(localStorage.getItem('colors') as string);
+    if (colors.color1 && colors.color2 && colors.color3 && colors.color4) {
+      document.documentElement.style.setProperty('--picked-color1', colors.color1);
+      document.documentElement.style.setProperty('--picked-color2', colors.color2);
+      document.documentElement.style.setProperty('--picked-color3', colors.color3);
+      document.documentElement.style.setProperty('--picked-color4', colors.color4);
+    }
   }
-  colorPickerDialog.value = false;
-}
-const setDefaultColor = () => {
-  document.documentElement.style.setProperty('--picked-color1', '#4286f4');
-  document.documentElement.style.setProperty('--picked-color2', '#373B44');
-  colorPickerDialog.value = false;
-}
+});
 
 </script>
 
@@ -123,31 +120,7 @@ const setDefaultColor = () => {
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="colorPickerDialog" max-width="45vw" max-height="70vh">
-      <v-card class="fill-height">
-        <v-card-title class="text-center ma-5">
-          Pick color for List Item
-        </v-card-title>
-        <v-row class="justify-center">
-          <v-color-picker
-              show-swatches
-              v-model="pickingColor1"
-          ></v-color-picker>
-          <span class="mx-4"></span>
-          <v-color-picker
-              show-swatches
-              v-model="pickingColor2"
-          ></v-color-picker>
-        </v-row>
-        <span class="mt-6 text-center" style="color: #888888">Pick two color to make it linear gradient.</span>
-        <v-card-actions class="mb-3 mr-4">
-          <v-spacer></v-spacer>
-          <v-btn color="info" @click="setDefaultColor">default</v-btn>
-          <v-btn color="info" @click="setColor">Confirm</v-btn>
-          <v-btn color="error" @click="colorPickerDialog = false">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <ColorPicker v-model="colorPickerDialog" @update:show-dialog="colorPickerDialog = false"/>
   </v-container>
 </template>
 

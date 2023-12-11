@@ -39,7 +39,7 @@ const active = computed(() => {
       v-bind="$attrs"
       @click="handleClick"
       class="pa-3 d-flex flex-row justify-start align-center rounded-lg list-item"
-      :class="{'v-list-item--active': active, 'picked-color': active}"
+      :class="{'v-list-item--active': active, 'picked-color-list-item': active}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" cover/>

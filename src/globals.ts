@@ -134,4 +134,8 @@ export const activeMessages = ref<{
     [id: number]: InstanceType<typeof MessagePop>
 }>({});
 
+export const colors = useLocalStorage('colors', {});
+
+export const colorPickerDialog = ref(false);
+
 export const messageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);

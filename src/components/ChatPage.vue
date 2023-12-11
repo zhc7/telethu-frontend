@@ -316,7 +316,7 @@ const searchingMessage = ref<boolean>(false);
         cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
         class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0 changeable-width"
     >
-      <v-toolbar class="megatron" style="width: 100%">
+      <v-toolbar class="picked-color-toolbar" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
           <div v-if="selectionMode" class="d-flex">
             <v-btn
