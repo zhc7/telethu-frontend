@@ -23,6 +23,7 @@ import axios from "axios";
 import {token} from "../auth.ts";
 import {handleDeleteMessage, handleRecallMessage} from "./messages/receive.ts";
 import {getUser} from "./data.ts";
+import {updateUserProfile} from "./users/profile.ts";
 
 
 const searchResult = ref();
@@ -229,6 +230,7 @@ dispatcher[MessageType.FUNC_REMOVE_GROUP_MEMBER] = handleSomebodyRemovedFromGrou
 dispatcher[MessageType.FUNC_DELETE_MESSAGE] = handleDeleteMessage;
 dispatcher[MessageType.FUNC_MESSAGE_ADD_BROADCAST] = updateReceiverInfo;
 dispatcher[MessageType.FUNC_MESSAGE_DEL_BROADCAST] = updateReceiverInfo;
+dispatcher[MessageType.FUNC_EDIT_PROFILE] = updateUserProfile;
 
 
 export {

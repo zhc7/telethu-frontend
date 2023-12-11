@@ -7,6 +7,8 @@ import {BASE_API_URL} from "../constants.ts";
 import {blacklist, settings, user, userEmail, userId, userName} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {unblockFriend} from "../core/users/send.ts";
+import {editProfile} from "../core/users/profile.ts";
+import {UserData} from "../utils/structs.ts";
 
 const router = useRouter();
 
@@ -92,10 +94,13 @@ const editingTitle = computed(() => {
 })
 
 const handleConfirm = () => {
+  const newProfile = user.value;
   if (editingEntry.value === 'username') {
-    alert('changing username to' + inputValue.value);
-    editingEntry.value = undefined;
+    newProfile.name = inputValue.value;
+    alert('changing username to ' + inputValue.value);
   }
+  editingEntry.value = undefined;
+  editProfile(newProfile);
 }
 
 const blackListDialog = ref(false);
