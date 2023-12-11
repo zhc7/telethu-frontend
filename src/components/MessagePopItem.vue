@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {activeChatId, activeMessages, messages, nowRef, user} from "../globals";
+import {activeChatId, activeMessages, messageFlow, messages, nowRef, user} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
 import {computed, inject} from "vue";
 import ListItem from "./ListItem.vue";
@@ -47,14 +47,8 @@ const receiver = computed(() => {
 })
 
 const scrollTo = () => {
-  setTimeout(() => {
-    const el = activeMessages.value[props.messageId as number];
-    el.$el.scrollIntoView({behavior: "smooth", block: "center"});
-    el.$el.classList.add("bg-blue");
-    setTimeout(() => {
-      el.$el.classList.remove("bg-blue");
-    }, 700);
-  }, 100);
+  if (typeof props.messageId === "string") return;
+  messageFlow.value?.jumpTo(props.messageId);
 }
 
 </script>
