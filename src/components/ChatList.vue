@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {
   activeChatId, activeMessageId,
   contacts,
   hotMessages,
   messages,
-  selectedChatInfo,
   settings,
   user,
   userContacts
@@ -14,14 +13,18 @@ import List from "./List.vue";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
-import ListItem from "./ListItem.vue";
 
 import {createGroup} from "../core/groups/send.ts";
-import MessagePop from "./MessagePop.vue";
 import MessagePopItem from "./MessagePopItem.vue";
 import {Message, MessageType} from "../utils/structs.ts";
 
 const createGroupDialog = ref(false);
+
+const props = defineProps<{
+  modelValue: boolean,
+}>();
+
+const emit = defineEmits(['update:modelValue'])
 
 const chatList = computed(() => {
   return contacts.value.sort((aId, bId) => {
@@ -81,7 +84,15 @@ const filteredMessages = computed(() => {
   return list.sort((a, b) => {
     return b.time - a.time;
   });
-})
+});
+
+watch(searchFriendInput, () => {
+    emit('update:modelValue', searchText.value && searchFriendInput.value);
+});
+
+watch(searchText, () => {
+  emit('update:modelValue', searchText.value && searchFriendInput.value);
+});
 
 </script>
 

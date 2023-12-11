@@ -384,6 +384,8 @@ const lastMessageId = computed(() => {
 });
 
 watch(lastMessageId, scrollToBottom);
+
+const searchingMessage = ref<boolean>(false);
 </script>
 
 <template>
@@ -393,14 +395,15 @@ watch(lastMessageId, scrollToBottom);
       style="margin-right: 0; margin-bottom: 0"
       v-show="show"
   >
-    <v-col cols="12" sm="4" md="3" class="pa-0 fill-height">
-      <ChatList v-model="activeChatId"></ChatList>
+    <v-col cols="12" :sm="searchingMessage ? 6 : 4" :md="searchingMessage ? 6 : 3" class="pa-0 fill-height changeable-width">
+      <ChatList
+          v-model="searchingMessage"></ChatList>
     </v-col>
     <v-divider vertical v-if="selectedChatInfo"/>
     <v-col
-        cols="12" sm="8" md="9"
+        cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
         v-if="activeChatId <= 0"
-        class="d-flex flex-column justify-center"
+        class="d-flex flex-column justify-center changeable-width"
     >
       <div class="d-flex justify-center">
         <h4>Select a Friend to Start Chatting</h4>
@@ -408,8 +411,8 @@ watch(lastMessageId, scrollToBottom);
     </v-col>
     <v-col
         v-if="activeChatId !== user.id && activeChatId > 0"
-        cols="12" sm="8" md="9"
-        class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0"
+        cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
+        class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0 changeable-width"
     >
       <v-toolbar class="megatron" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
@@ -451,6 +454,7 @@ watch(lastMessageId, scrollToBottom);
           :message-id="id"
           @contextmenu.prevent="openBannerContextMenu($event, id)"
       />
+      {{ searchingMessage }}
       <v-infinite-scroll
           class="fill-height"
           side="start"
@@ -591,6 +595,13 @@ watch(lastMessageId, scrollToBottom);
 .title-fieldset .inner {
   margin: 0 auto;
   padding: 0 0.25rem
+}
+
+.changeable-width {
+  transition-property: width;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
 }
 
 </style>
