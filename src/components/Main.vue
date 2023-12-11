@@ -8,15 +8,15 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {
-  activeChatId,
+  activeChatId, bigAvatarSource,
   currentPage,
   floatingContactId,
   isSocketConnected,
-  requests,
+  requests, showBigAvatar,
   showProfileDialog,
   unreadCounter,
   userAvatar,
-  userName
+  userName, users
 } from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
@@ -92,6 +92,19 @@ const unreadTotal = computed(() => {
           :contact-id="floatingContactId"
           class="overflow-y-auto justify-center align-content-center mt-6 mb-6 pt-6 pb-6"
       />
+    </v-dialog>
+    <v-dialog v-model="showBigAvatar" class="justify-center align-content-center" max-width="60vh">
+      <v-card>
+        <v-card-item class="justify-center">
+          <v-img
+              width="50vh"
+              height="50vh"
+              :src="bigAvatarSource"
+              class="overflow-y-auto justify-center align-content-center mt-6 mb-6 pt-6 pb-6"
+              cover="true"
+          />
+        </v-card-item>
+      </v-card>
     </v-dialog>
   </v-container>
 </template>

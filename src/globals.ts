@@ -123,6 +123,8 @@ export const groupPinnedMessages = ref<{
 export const showProfileDialog = ref(false);
 
 export const floatingContactId = ref(0);
+export const showBigAvatar = ref(false);
+export const bigAvatarSource = ref('');
 
 export const activeMessages = ref<{
     [id: number]: InstanceType<typeof MessagePop>

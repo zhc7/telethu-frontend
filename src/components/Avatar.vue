@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
 import {getUser} from "../core/data";
-import {cache} from "../globals";
+import {bigAvatarSource, cache, showBigAvatar} from "../globals";
 import axios from "axios";
 import {token} from "../auth";
 import {BASE_API_URL} from "../constants";
@@ -52,6 +52,7 @@ watch(contact, () => {
 <template>
   <v-avatar>
     <v-img
+        @click="bigAvatarSource=avatar; showBigAvatar=true"
         v-if="contact.category === 'user'"
         lazy-src="/Logo.png"
         :src="avatar"

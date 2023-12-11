@@ -7,10 +7,6 @@ import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../globals.ts";
 
-/**
- * source: chatList, personalFriend, existingGroup, share
- *
- */
 const props = withDefaults(defineProps<{
   showDialog: boolean,
   title?: string,
@@ -75,7 +71,7 @@ const emitValue = computed(() => {
   <v-dialog v-model="dialog" max-width="40vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-center">
-        {{ title }}{{ possible }}
+        {{ title }}
       </v-card-title>
       <v-card-text class="overflow-y-auto d-flex flex-column">
         <v-text-field
