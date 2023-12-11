@@ -256,7 +256,7 @@ watch(lastMessageId, (id: number | string) => {
   const legacy = messages.value[activeChatId.value];
   blocks.value[blocks.value.length - 1] = {
     uid: blocks.value[blocks.value.length - 1].uid,
-    messages: legacy.map((msg: Message) => msg.message_id),
+    messages: [...new Set([...blocks.value[blocks.value.length - 1].messages.filter(m => typeof m === "number"), ...legacy.map((msg: Message) => msg.message_id)])],
     startTime: legacy[0] ? legacy[0].time : Date.now(),
     endTime: legacy[0] ? legacy[legacy.length - 1].time : Date.now(),
   };
@@ -292,10 +292,12 @@ defineExpose({
     }).then(() => {
       callback = () => {
         if (first) {
+          setTimeout(scrollTo, 50);
           first = false;
         } else {
           setTimeout(scrollTo, 50);
-          callback = () => {};
+          callback = () => {
+          };
         }
       }
     });
