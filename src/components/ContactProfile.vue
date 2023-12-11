@@ -40,7 +40,7 @@ const groupAddMemberDialog = ref(false);
 
 const deleteConfirmDialog = ref<boolean>(false);
 const changeOwnerDialog = ref<boolean>(false);
-const dismissGroupDialog = ref<boolean>(false);
+const dismissConfirmDialog = ref<boolean>(false);
 
 watch(props, () => getUser(props.contactId, true));
 
@@ -119,6 +119,7 @@ const handleDelete = () => {
 };
 
 const handleDismiss = () => {
+  dismissConfirmDialog.value = false;
   dismissGroup(displayContactInfo.value.id);
 }
 
@@ -347,7 +348,7 @@ const handleRename = () => {
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dismissGroupDialog" max-width="30vw">
+    <v-dialog v-model="dismissConfirmDialog" max-width="30vw">
       <v-card>
         <v-alert
             type="warning"
@@ -355,7 +356,7 @@ const handleRename = () => {
             text="This operation cannot be undone."
         ></v-alert>
         <v-card-actions class="justify-end">
-          <v-btn @click="dismissGroupDialog = false">cancel</v-btn>
+          <v-btn @click="dismissConfirmDialog = false">cancel</v-btn>
           <v-btn @click="handleDismiss">Dismiss</v-btn>
         </v-card-actions>
       </v-card>

@@ -8,7 +8,7 @@ import {
     handleAddGroupMember,
     handleCreateGroup,
     handleGroupAdminAdded,
-    handleGroupAdminRemoved, handleGroupOwnerChanged,
+    handleGroupAdminRemoved, handleGroupDismissed, handleGroupNameChanged, handleGroupOwnerChanged,
     handleSomebodyExitGroup,
     handleSomebodyRemovedFromGroup
 } from "./groups/receive.ts";
@@ -231,7 +231,8 @@ dispatcher[MessageType.FUNC_DELETE_MESSAGE] = handleDeleteMessage;
 dispatcher[MessageType.FUNC_MESSAGE_ADD_BROADCAST] = updateReceiverInfo;
 dispatcher[MessageType.FUNC_MESSAGE_DEL_BROADCAST] = updateReceiverInfo;
 dispatcher[MessageType.FUNC_EDIT_PROFILE] = updateUserProfile;
-
+dispatcher[MessageType.FUNC_GROUP_CHANGE_NAME] = handleGroupNameChanged;
+dispatcher[MessageType.FUNC_GROUP_DISMISS] = handleGroupDismissed;
 
 export {
     friendRequests,
