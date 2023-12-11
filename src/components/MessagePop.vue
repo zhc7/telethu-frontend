@@ -151,8 +151,7 @@ console.log("message", props.message);
               :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
               style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
           >
-            <blockquote v-if="message.info?.reference && message.info.reference >= 0"
-                        style="font-size: 12px; color: #dddddd; font-weight: bold">
+            <blockquote v-if="message.info?.reference && message.info.reference >= 0" class="reference">
               <MessageBrief :message-id="message.info.reference as number"/>
             </blockquote>
             <v-divider v-if="message.info?.reference && message.info.reference >= 0" :thickness="3" class="mb-2"/>
@@ -179,7 +178,7 @@ console.log("message", props.message);
                     :message="msg"
                     :final="false"
                     :forward="true"
-                    />
+                />
               </v-list-group>
             </v-list>
           </div>
@@ -242,7 +241,8 @@ console.log("message", props.message);
             @click.stop="$emit('showWhoRead')"
             style="cursor: pointer; margin-top: 3px"
         />
-        <v-icon v-else-if="message.who_read && (message.who_read as Array<number>).length" size="12px">mdi-check-all</v-icon>
+        <v-icon v-else-if="message.who_read && (message.who_read as Array<number>).length" size="12px">mdi-check-all
+        </v-icon>
         <v-icon v-else-if="message.pending_status === 'sent'" size="12px">mdi-check</v-icon>
       </div>
 
@@ -317,6 +317,15 @@ console.log("message", props.message);
   /* 位置 - 箭头将出现在气泡的右侧 */
   right: -8px; /* 通过增加或减少数值，调整箭头的确切位置 */
   top: 10px;
+}
+
+.reference {
+  font-size: 12px;
+  color: #dddddd;
+  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 </style>
