@@ -43,6 +43,14 @@ const getAvatar = async (hash: string): Promise<string> => {
   }
 }
 
+const handleClick = () => {
+  if (!avatar.value) return;
+  bigAvatarSource.value = avatar.value;
+  if (props.displayBigAvatar) {
+    showBigAvatar.value = true;
+  }
+}
+
 watch(contact, () => {
   getAvatar(contact.value.avatar).then((result) => {
     avatar.value = result;
@@ -53,11 +61,7 @@ watch(contact, () => {
 <template>
   <v-avatar>
     <v-img
-        @click="
-        bigAvatarSource=avatar;
-        if (displayBigAvatar) {
-          showBigAvatar=true
-        }"
+        @click="handleClick"
         v-if="contact.category === 'user'"
         lazy-src="/Logo.png"
         :src="avatar"
