@@ -29,10 +29,10 @@ import {
 } from "../core/groups/send.ts";
 import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
-import {UserData} from "../utils/structs.ts";
+import {GroupData, UserData} from "../utils/structs.ts";
 
 
-const props = defineProps<{contactId: number}>();
+const props = defineProps<{ contactId: number }>();
 defineEmits(["accept", "reject", "apply", "displayProfile"]);
 
 const groupAddMemberDialog = ref(false);
@@ -95,13 +95,8 @@ const switchValueBlock = computed<boolean>({
 
 const router = useRouter();
 
-
-const friendCircle = ref(["THU", "PKU", "CMU", "MIT"]);
-const friendCircleSelect = ref([]);
-const newName = ref("");
-
 const memberInfoTable = computed(() => {
-  return displayContactInfo.value.members;
+  return (displayContactInfo.value as GroupData).members;
 })
 
 const handleDelete = () => {
@@ -112,7 +107,8 @@ const handleDelete = () => {
   if (displayContactInfo.value.category === 'user') {
     deleteFriend(displayContactInfo.value.id);
   } else {
-    if (displayContactInfo.value.owner === userId.value && displayContactInfo.value.members.length > 1) {
+    const group = displayContactInfo.value as GroupData;
+    if (group.owner === userId.value && group.members.length > 1) {
       alert('不许退群！成年人要学会负责任，你作为群主退群让其他群成员咋办？起码指定一个接班人再说！')
     } else {
       exitGroup(displayContactInfo.value.id);
@@ -123,10 +119,6 @@ const handleDelete = () => {
 const handleApplyFriend = (friendId: number) => {
   applyFriend(friendId);
   alert("喜报：你发送了申请！\nGood news! You sent an application! ");
-};
-
-const editName = () => {
-  console.log("editName");
 };
 
 const displayContactInfo = computed(() => getUser(props.contactId));
@@ -156,8 +148,8 @@ const handleRejectFriend = () => {
   activeRequestId.value = 0;
 }
 
-const handleAddMember = (list, _) => {
-  groupAddMember(displayContactInfo.value.id, list.filter(i => !displayContactInfo.value.members.includes(i)));
+const handleAddMember = (list: Array<number>) => {
+  groupAddMember(displayContactInfo.value.id, list.filter(i => !(displayContactInfo.value as GroupData).members.includes(i)));
   groupAddMemberDialog.value = false;
 }
 
@@ -168,6 +160,9 @@ const handleChat = async () => {
   showProfileDialog.value = false;
 };
 
+const groupInfo = computed(() => {
+  return displayContactInfo.value as GroupData;
+})
 </script>
 
 <template>
@@ -221,11 +216,11 @@ const handleChat = async () => {
                   :contact-id="member"
                   size="60"
                   style="position: relative"
-                  :style="displayContactInfo.owner === member ? 'border: #008eff 4px double' : displayContactInfo.admin.includes(member) ? 'border: #008eff 2px solid' : '' "
+                  :style="groupInfo.owner === member ? 'border: #008eff 4px double' : groupInfo.admin.includes(member) ? 'border: #008eff 2px solid' : '' "
                   @click="$emit('displayProfile', member)"
               />
               <div class="badge-kick"
-                   v-if="displayContactInfo.owner === userId && member !== userId || displayContactInfo.admin.includes(userId) && member !== userId && member !== displayContactInfo.owner && !displayContactInfo.admin.includes(member)"
+                   v-if="groupInfo.owner === userId && member !== userId || groupInfo.admin.includes(userId) && member !== userId && member !== groupInfo.owner && !groupInfo.admin.includes(member)"
                    @click="handleKickMember(member)">——
               </div>
               <p>{{
@@ -235,11 +230,11 @@ const handleChat = async () => {
                   })()
                 }}</p>
               <div class="badge-lift"
-                   v-if="displayContactInfo.owner === userId && member !== userId && !displayContactInfo.admin.includes(member)"
+                   v-if="groupInfo.owner === userId && member !== userId && !groupInfo.admin.includes(member)"
                    @click="handleAddAdmin(member)">|
               </div>
               <div class="badge-fire"
-                   v-if="displayContactInfo.owner === userId && member !== userId && displayContactInfo.admin.includes(member)"
+                   v-if="groupInfo.owner === userId && member !== userId && groupInfo.admin.includes(member)"
                    @click="handleRemoveAdmin(member)">*
               </div>
             </div>
@@ -257,7 +252,8 @@ const handleChat = async () => {
       </v-list>
       <v-divider class="ma-4"/>
       <v-col>
-        <v-row v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)" style="display: flex; align-items: center" class="ma-1">
+        <v-row v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)"
+               style="display: flex; align-items: center" class="ma-1">
           <p style="flex: 1" class="text-right pr-4">Pin:</p>
           <v-switch
               style="flex: 2"
@@ -266,7 +262,8 @@ const handleChat = async () => {
               v-model="switchValuePin"
           ></v-switch>
         </v-row>
-        <v-row v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)" style="display: flex; align-items: center" class="ma-1">
+        <v-row v-if="displayContactInfo.id !== user.id && contacts.includes(displayContactInfo.id)"
+               style="display: flex; align-items: center" class="ma-1">
           <p style="flex: 1" class="text-right pr-4">Mute:</p>
           <v-switch
               style="flex: 2"
@@ -292,7 +289,7 @@ const handleChat = async () => {
             Chat
           </v-btn>
           <v-btn
-              v-if="displayContactInfo.category === 'group' && displayContactInfo.owner === user.id"
+              v-if="displayContactInfo.category === 'group' && groupInfo.owner === user.id"
               color="primary"
               @click="changeOwnerDialog=true"
           >Change Ownership
@@ -332,7 +329,7 @@ const handleChat = async () => {
 
     <SelectMember
         v-model:show-dialog="groupAddMemberDialog"
-        :pinned="displayContactInfo.members"
+        :pinned="groupInfo.members"
         :possible="userContacts"
         :title="'Add Member'"
         :base-group="displayContactInfo"
@@ -342,10 +339,10 @@ const handleChat = async () => {
         v-model:show-dialog="changeOwnerDialog"
         :single="true"
         title="Change Ownership"
-        :possible="displayContactInfo.members"
+        :possible="groupInfo.members"
         :pinned="[]"
         @confirm="(target, _) => {
-          changeOwnerDialog=false;
+          changeOwnerDialog = false;
           groupChangeOwner(displayContactInfo.id, target);
         }"
     />
