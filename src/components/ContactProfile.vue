@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
 import {
@@ -32,13 +32,15 @@ import Avatar from "./Avatar.vue";
 import {UserData} from "../utils/structs.ts";
 
 
-const props = defineProps(['contactId']);
+const props = defineProps<{contactId: number}>();
 defineEmits(["accept", "reject", "apply", "displayProfile"]);
 
 const groupAddMemberDialog = ref(false);
 
 const deleteConfirmDialog = ref(false);
 const changeOwnerDialog = ref(false);
+
+watch(props, () => getUser(props.contactId, true));
 
 const switchValueMute = computed<boolean>({
   get: () => {
