@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import {activeMessages, hotMessages, messages, nowRef, settings, unreadCounter} from "../globals";
+import {activeChatId, activeMessages, messages, nowRef, user} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
-import {computed} from "vue";
+import {computed, inject} from "vue";
 import ListItem from "./ListItem.vue";
-import Avatar from "./Avatar.vue";
 import {getUser} from "../core/data.ts";
-import {displayHotMessage} from "../utils/notification.ts";
 import MessagePop from "./MessagePop.vue";
-import {GroupData, Message, MessageType, TargetType, UserData} from "../utils/structs.ts";
+import {Message} from "../utils/structs.ts";
 
+const {selected} = inject<any>("selected");
 
 const props = defineProps<{
-  messageId: string,
+  messageId: number,
+  active: boolean,
 }>();
 
+const active = computed(() => {
+  return selected.value === props.messageId;
+});
 
 const message = computed(() => {
   for (const msgs of Object.values(messages.value)) {
@@ -43,34 +46,38 @@ const receiver = computed(() => {
   return getUser(message.value.receiver);
 })
 
-const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | string) => {
-  if (typeof id === 'string') {
-    return;
-  }
-  if (el) {
-    activeMessages.value[id] = el;
-  } else {
-    delete activeMessages.value[id];
-  }
+const scrollTo = () => {
+  setTimeout(() => {
+    const el = activeMessages.value[props.messageId];
+    el.$el.scrollIntoView({behavior: "smooth", block: "center"});
+    el.$el.classList.add("bg-blue");
+    setTimeout(() => {
+      el.$el.classList.remove("bg-blue");
+    }, 700);
+  }, 100);
 }
 
 </script>
 
 <template>
-  <div class="rounded-lg message-pop-item">
+  <div class="rounded-lg message-pop-item"
+       @click="activeChatId = receiver.id === user.id ? sender.id : receiver.id; selected=message.message_id; scrollTo();"
+  >
     <ListItem
         :k="message.message_id"
         class="pa-3 pl-6 chat-list-item text-left hot-message"
         rounded="lg"
         :title="sender.name"
         :subtitle="formatChatMessageTime(nowRef, message.time)"
+        style="border-radius: 0!important;"
+        v-ripple="false"
     />
     <MessagePop
+        :class="{'message-pop--active': active, 'dark-ocean': active}"
         :key="message.message_id"
         :message="message"
         :final="true"
         class="message-pop"
-        :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
         :forward="true"
     />
   </div>
@@ -91,6 +98,10 @@ const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | st
 
 .message-pop-item:hover {
   background-color: #ebebeb;
+}
+
+.message-pop--active {
+  color: white !important;
 }
 
 </style>

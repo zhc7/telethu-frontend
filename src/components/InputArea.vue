@@ -152,7 +152,6 @@ const atMembers = ref<{ id: number; section: [number, number]; }[]>([]);
 const handleInput = () => {
   const currentMessage = message.value;
   const lastChar = currentMessage.charAt(currentMessage.length - 1);
-
   if (lastChar === '@') {
     encounterAt.value = true;
     selectMemberDialog.value = true;

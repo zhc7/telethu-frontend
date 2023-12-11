@@ -1,7 +1,7 @@
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "./constants"
 import {useLocalStorage} from "@vueuse/core"
-import {user} from "./globals";
+import {blacklist, contacts, messages, requests, user} from "./globals";
 import router from "./router.ts";
 
 const token = useLocalStorage("token", "");
@@ -35,6 +35,10 @@ const login = async (email: string, password: string) => {
 }
 
 const logout = () => {
+    messages.value = {};
+    contacts.value = [];
+    requests.value = [];
+    blacklist.value = [];
     token.value = "";
     user.value = {email: "", id: -1, name: "", avatar: "", category: "user"};
 }

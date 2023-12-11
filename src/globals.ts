@@ -13,6 +13,7 @@ export const currentPage = ref<string>('chat');
 export const activeChatId = ref<number>(-1);
 export const activeContactId = ref<number>(-1);
 export const activeRequestId = ref<number>(-1);
+export const activeMessageId = ref<number>(-1);
 export const referencingMessageId = ref<number>(-1);
 export const searchedId = ref<number>(-1);
 export const contactPageContentLeft = ref<number>(0);

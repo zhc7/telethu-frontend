@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import {
-  activeChatId,
+  activeChatId, activeMessageId,
   contacts,
   hotMessages,
   messages,
@@ -100,7 +100,7 @@ const filteredMessages = computed(() => {
     <List class="overflow-y-auto fill-height" v-model="activeChatId" v-if="!searchFriendInput || !searchText">
       <ChatListItem v-for="id in chatList" :contact-id="id"/>
     </List>
-    <List class="overflow-y-auto fill-height" v-else>
+    <List class="overflow-y-auto fill-height" v-else v-model="activeMessageId">
       <MessagePopItem
           v-for="msgid in filteredMessages"
           :message-id="msgid as string"
