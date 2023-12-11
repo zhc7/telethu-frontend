@@ -118,9 +118,10 @@ export const createGroup = (groupName: string, members: Array<number>) => {
         message_id: generateMessageId(members.toString(), userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log('create message sending: ', JSON.stringify(message));
+    console.log('Creating group: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
+
 export const changeGroupName = (groupId: number, newName: string) => {
     const message: Message = {
         time: Date.now(),
@@ -132,6 +133,20 @@ export const changeGroupName = (groupId: number, newName: string) => {
         message_id: generateMessageId(newName, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log('create message sending: ', JSON.stringify(message));
+    console.log('Changing group name: ', JSON.stringify(message));
+    chatManager.sendMessage(message);
+}
+export const dismissGroup = (groupId: number) => {
+    const message: Message = {
+        time: Date.now(),
+        m_type: MessageType.FUNC_GROUP_DISMISS,
+        t_type: TargetType.FRIEND,
+        receiver: groupId,
+        sender: userId.value,
+        content: '',
+        message_id: generateMessageId(groupId, userId.value, Date.now()),
+        pending_status: 'sending',
+    };
+    console.log('Dismissing group: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }

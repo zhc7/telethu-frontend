@@ -20,7 +20,7 @@ import {
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
-  changeGroupName,
+  changeGroupName, dismissGroup,
   exitGroup,
   groupAddAdmin,
   groupAddMember,
@@ -38,8 +38,9 @@ defineEmits(["accept", "reject", "apply", "displayProfile"]);
 
 const groupAddMemberDialog = ref(false);
 
-const deleteConfirmDialog = ref(false);
-const changeOwnerDialog = ref(false);
+const deleteConfirmDialog = ref<boolean>(false);
+const changeOwnerDialog = ref<boolean>(false);
+const dismissGroupDialog = ref<boolean>(false);
 
 watch(props, () => getUser(props.contactId, true));
 
@@ -116,6 +117,10 @@ const handleDelete = () => {
     }
   }
 };
+
+const handleDismiss = () => {
+  dismissGroup(displayContactInfo.value.id);
+}
 
 const handleApplyFriend = (friendId: number) => {
   applyFriend(friendId);
@@ -322,6 +327,9 @@ const handleRename = () => {
           <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id"
                  @click="deleteConfirmDialog=true">Delete
           </v-btn>
+          <v-btn color="red-darken-4" v-if="displayContactInfo.category === 'group' && (displayContactInfo as GroupData).owner === user.id"
+                 @click="dismissConfirmDialog=true">Dismiss
+          </v-btn>
         </div>
       </v-card-actions>
     </v-card-item>
@@ -336,6 +344,19 @@ const handleRename = () => {
         <v-card-actions class="justify-end">
           <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
           <v-btn @click="handleDelete">{{ displayContactInfo.category === 'group' ? 'Quit Group' : 'Delete' }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dismissGroupDialog" max-width="30vw">
+      <v-card>
+        <v-alert
+            type="warning"
+            title="Are you sure to dismiss the group?"
+            text="This operation cannot be undone."
+        ></v-alert>
+        <v-card-actions class="justify-end">
+          <v-btn @click="dismissGroupDialog = false">cancel</v-btn>
+          <v-btn @click="handleDismiss">Dismiss</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
