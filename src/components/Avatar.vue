@@ -7,6 +7,7 @@ import {token} from "../auth";
 import {BASE_API_URL} from "../constants";
 
 const props = defineProps<{
+  displayBigAvatar: boolean,
   contactId: number,
 }>();
 
@@ -52,7 +53,11 @@ watch(contact, () => {
 <template>
   <v-avatar>
     <v-img
-        @click="bigAvatarSource=avatar; showBigAvatar=true"
+        @click="
+        bigAvatarSource=avatar;
+        if (displayBigAvatar) {
+          showBigAvatar=true
+        }"
         v-if="contact.category === 'user'"
         lazy-src="/Logo.png"
         :src="avatar"

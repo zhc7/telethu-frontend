@@ -181,7 +181,7 @@ const handleRename = () => {
 <template>
   <v-card class="mb-auto mt-6 overflow-y-auto justify-center" v-if="displayContactInfo.id > 0">
     <v-card-item class="overflow-y-auto justify-center">
-      <Avatar :contact-id="displayContactInfo.id" class="justify-center"></Avatar>
+      <Avatar :display-big-avatar="true" :contact-id="displayContactInfo.id" class="justify-center"></Avatar>
     </v-card-item>
     <v-card-item class="overflow-y-auto justify-center text-center">
       <v-list class="overflow-y-auto justify-center">
@@ -226,6 +226,7 @@ const handleRename = () => {
             >
 
               <Avatar
+                  :display-big-avatar="false"
                   :contact-id="member"
                   size="60"
                   style="position: relative"
