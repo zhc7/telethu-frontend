@@ -1,5 +1,5 @@
 import {Message, UserData} from "../../utils/structs.ts";
-import {user, userName} from "../../globals.ts";
+import {user, userId} from "../../globals.ts";
 import {generateMessageId} from "../../utils/hash.ts";
 import {chatManager} from "../chat.ts";
 
@@ -7,12 +7,12 @@ export const editProfile = (newProfile: string) => {
     const message: Message = {
         time: Date.now(),
         m_type: 29,
-        t_type: 1,
+        t_type: 0,
         content: newProfile,
-        sender: user.value.id,
-        receiver: user.value.id,
+        sender: userId.value,
+        receiver: userId.value,
         info: "",
-        message_id: generateMessageId(user.value.id, user.value.id, Date.now()),
+        message_id: generateMessageId(newProfile, userId.value, Date.now()),
     }
     console.log(JSON.stringify(message));
     chatManager.sendMessage(message);

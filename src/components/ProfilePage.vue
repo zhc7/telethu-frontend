@@ -8,7 +8,6 @@ import {blacklist, settings, user, userEmail, userId, userName} from "../globals
 import SelectMember from "./SelectMember.vue";
 import {unblockFriend} from "../core/users/send.ts";
 import {editProfile} from "../core/users/profile.ts";
-import {UserData} from "../utils/structs.ts";
 
 const router = useRouter();
 
