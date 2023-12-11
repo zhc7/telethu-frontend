@@ -141,9 +141,9 @@ export const dismissGroup = (groupId: number) => {
         time: Date.now(),
         m_type: MessageType.FUNC_GROUP_DISMISS,
         t_type: TargetType.FRIEND,
+        content: groupId,
         receiver: groupId,
         sender: userId.value,
-        content: '',
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         pending_status: 'sending',
     };

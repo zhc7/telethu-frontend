@@ -64,9 +64,9 @@ export const handleCreateGroup = (message: Message) => {
 };
 
 export const handleGroupDismissed = (message: Message) => {
-    const groupId = message.receiver;
+    const groupId = message.content;
     if (groupId === +groupId) {
-        contacts.value.filter(i => i !== groupId);
+        contacts.value = contacts.value.filter(i => i !== groupId);
     } else {
         alert(groupId);
     }
