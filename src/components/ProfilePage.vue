@@ -111,11 +111,11 @@ const blackListDialog = ref(false);
 
 <template>
   <v-row no-gutters>
-    <v-dialog v-model="dialog" max-width="30vw" max-height="80vh">
+    <v-dialog v-model="dialog" max-width="20vw" max-height="80vh">
       <v-card class="fill-height overflow-y-auto">
         <v-card-title>{{ editingTitle }}</v-card-title>
         <v-card-text>
-          <v-text-field autofocus v-model="inputValue"></v-text-field>
+          <v-text-field autofocus v-model="inputValue" variant="outlined"></v-text-field>
         </v-card-text>
         <v-card-actions class="mb-3 mr-4">
           <v-spacer></v-spacer>

@@ -130,3 +130,5 @@ export const bigAvatarSource = ref('');
 export const activeMessages = ref<{
     [id: number]: InstanceType<typeof MessagePop>
 }>({});
+
+export const alreadyPickColor = ref(false);

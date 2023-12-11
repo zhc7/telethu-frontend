@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed, inject} from 'vue'
+import {alreadyPickColor} from "../globals.ts";
 
 const props = defineProps(['k', 'prependIcon', 'prependAvatar', 'title', 'subtitle', 'badgeValue', 'pin']);
 const {selected} = inject<any>("selected");
@@ -32,6 +33,13 @@ const active = computed(() => {
   }
 });
 
+const colorPicked = computed(() => {
+  if (alreadyPickColor.value) {
+    return "picked-color";
+  } else {
+    return "dark-ocean";
+  }
+});
 
 </script>
 
@@ -41,7 +49,7 @@ const active = computed(() => {
       v-bind="$attrs"
       @click="handleClick"
       class="pa-3 d-flex flex-row justify-start align-center rounded-lg list-item"
-      :class="{'v-list-item--active': active, 'dark-ocean': active}"
+      :class="{'v-list-item--active': active, [colorPicked]: active}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" cover/>

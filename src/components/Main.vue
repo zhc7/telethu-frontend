@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
@@ -8,7 +8,7 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {
-  activeChatId, bigAvatarSource,
+  activeChatId, alreadyPickColor, bigAvatarSource,
   currentPage,
   floatingContactId,
   isSocketConnected,
@@ -16,7 +16,7 @@ import {
   showProfileDialog,
   unreadCounter,
   userAvatar,
-  userName, users
+  userName
 } from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
@@ -55,6 +55,20 @@ const unreadTotal = computed(() => {
   return counter;
 })
 
+const pickingColor = ref("");
+const colorPickerDialog = ref(false);
+const setColor = () => {
+  if (pickingColor.value) {
+    alreadyPickColor.value = true;
+    document.documentElement.style.setProperty('--picked-color', pickingColor.value);
+  }
+  colorPickerDialog.value = false;
+}
+const setDefaultColor = () => {
+  alreadyPickColor.value = false;
+  colorPickerDialog.value = false;
+}
+
 </script>
 
 <template>
@@ -78,8 +92,8 @@ const unreadTotal = computed(() => {
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
       <div class="fix-left-bottom">
-        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram
-        </v-icon>
+        <v-icon title="color picker" @click="colorPickerDialog = true" class="mb-2">mdi-palette</v-icon>
+        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram</v-icon>
         <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isSocketConnected">mdi-loading</v-icon>
       </div>
     </NavBar>
@@ -106,6 +120,25 @@ const unreadTotal = computed(() => {
         </v-card-item>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="colorPickerDialog" max-width="30vw" max-height="60vh">
+      <v-card class="fill-height">
+        <v-card-title class="text-center ma-3">
+          Pick color for List Item
+        </v-card-title>
+          <v-color-picker
+              class="ma-auto"
+              show-swatches
+              v-model="pickingColor"
+          ></v-color-picker>
+        <v-card-actions class="mb-3 mr-4 ma-3">
+          <v-spacer></v-spacer>
+          <v-btn color="info" @click="setDefaultColor">default</v-btn>
+          <v-btn color="info" @click="setColor">Confirm</v-btn>
+          <v-btn color="error" @click="colorPickerDialog = false">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -124,5 +157,7 @@ const unreadTotal = computed(() => {
   position: absolute;
   bottom: 1em;
   left: 1em;
+  display: flex;
+  flex-direction: column;
 }
 </style>
