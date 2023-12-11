@@ -6,10 +6,12 @@ import axios from "axios";
 import {token} from "../auth";
 import {BASE_API_URL} from "../constants";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   displayBigAvatar: boolean,
   contactId: number,
-}>();
+}>(), {
+  displayBigAvatar: false
+});
 
 let contact = computed(() => getUser(props.contactId));
 const avatar = ref<string>();
