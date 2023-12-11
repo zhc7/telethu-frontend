@@ -23,7 +23,7 @@ const emits = defineEmits<{
 
 const messagePop = ref();
 const blobSrc = ref("");
-const sender = getUser(props.message.sender);
+const sender = getUser(props.message?.sender);
 const name = computed(() => sender.name); // maintain reactivity
 const readPercent = computed(() => {
   if (props.message.who_read) {

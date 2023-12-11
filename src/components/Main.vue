@@ -21,6 +21,7 @@ import {
 import {createSocket} from "../core/socket.ts";
 import {getUser} from "../core/data.ts";
 import ContactProfile from "./ContactProfile.vue";
+import Purchase from "./Purchase.vue";
 
 const router = useRouter();
 
@@ -83,10 +84,8 @@ const setDefaultColor = () => {
                      @click="activePage = 'profile'"
         >
         </v-list-item>
-        <v-list-item class="text-left" @click="debugAction">
-          <!--          {{ activePage === 'profile' }}-->
-        </v-list-item>
         <v-divider/>
+        <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"></ListItem>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts"
                   k="contacts"></ListItem>
@@ -100,6 +99,7 @@ const setDefaultColor = () => {
       </div>
     </NavBar>
     <!--ChatPage contains fragments, must manually apply show-->
+    <Purchase v-show="activePage === 'purchase'"/>
     <ChatPage :show="activePage === 'chat'" v-model="activeChatId"/>
     <ContactPage v-show="activePage === 'contacts'"/>
     <ProfilePage v-show="activePage === 'profile'"/>
