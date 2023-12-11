@@ -14,9 +14,12 @@ import List from "./List.vue";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
-import {handleCreateGroup} from "../core/groups/receive.ts";
+import ListItem from "./ListItem.vue";
 
 import {createGroup} from "../core/groups/send.ts";
+import MessagePop from "./MessagePop.vue";
+import MessagePopItem from "./MessagePopItem.vue";
+import {Message, MessageType} from "../utils/structs.ts";
 
 const createGroupDialog = ref(false);
 
@@ -41,28 +44,35 @@ const chatList = computed(() => {
   });
 });
 
-const searchChatHistory = ref(false);
-const chatHistoryContent = ref('');
+const searchFriendInput = ref(false);
+const searchText = ref('');
 
-// TODO: search chat history
-const chatHistoryList = computed(() => {
-  if (searchChatHistory.value) {
-    let matchMessages = [];
-    for (const id of contacts.value) {
-      for (const message of messages.value[id]) {
-        if (typeof message.content !== 'string') continue;
-        if (message.content.includes(chatHistoryContent.value)) {
-          matchMessages.push(message);
-        }
+const decideRelative = (msg: Message, str: string) => {
+  if (msg.m_type === MessageType.TEXT) {
+    if (msg.content instanceof Array) {
+      for (const submsg of msg.content) {
+        if (decideRelative(submsg, str)) return true;
+      }
+      return false;
+    }
+    if (typeof(msg.content) === 'string') {
+      return msg.content.includes(str);
+    }
+  }
+  return false;
+}
+
+const filteredMessages = computed(() => {
+  const list = [];
+  for (const id of Object.keys(messages.value)) {
+    for (const msg of messages.value[+id]) {
+      if (decideRelative(msg, searchText.value)) {
+        list.push(msg.message_id);
       }
     }
-    return matchMessages.sort((a, b) => {
-      return b.time - a.time;
-    });
-  } else {
-    return [];
   }
-});
+  return list;
+})
 
 </script>
 
@@ -80,16 +90,21 @@ const chatHistoryList = computed(() => {
     />
 
     <div class="d-flex mt-3" style="justify-content: space-between">
-      <v-icon class="ma-3" @click="searchChatHistory = !searchChatHistory">mdi-magnify</v-icon>
-      <a v-if="!searchChatHistory" class="ma-3"
+      <v-icon class="ma-3" @click="searchFriendInput = !searchFriendInput">mdi-magnify</v-icon>
+      <a v-if="!searchFriendInput" class="ma-3"
          href="https://ys.mihoyo.com/?utm_source=adbdpz&from_channel=adbdpz#/">TeleTHU</a>
-      <v-icon v-if="!searchChatHistory" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
-      <v-text-field v-if="searchChatHistory" hide-details v-model="chatHistoryContent" label="Search Chat History"
+      <v-icon v-if="!searchFriendInput" class="ma-3" @click="createGroupDialog = true;">mdi-plus</v-icon>
+      <v-text-field v-if="searchFriendInput" hide-details v-model="searchText"
                     density="compact" variant="solo" class="mr-4"/>
     </div>
-    <List class="overflow-y-auto fill-height" v-model="activeChatId">
-      <ChatListItem v-for="id in chatList" v-if="!searchChatHistory" :contact-id="id"/>
-      <ChatListItem v-for="message in chatHistoryList" v-if="searchChatHistory" :contact-id="message.sender"/>
+    <List class="overflow-y-auto fill-height" v-model="activeChatId" v-if="!searchFriendInput || !searchText">
+      <ChatListItem v-for="id in chatList" :contact-id="id"/>
+    </List>
+    <List class="overflow-y-auto fill-height" v-else>
+      <MessagePopItem
+          v-for="msgid in filteredMessages"
+          :message-id="msgid as string"
+      ></MessagePopItem>
     </List>
   </div>
 </template>
