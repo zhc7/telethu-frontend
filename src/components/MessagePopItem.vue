@@ -56,18 +56,17 @@ const scrollTo = () => {
 <template>
   <div class="rounded-lg message-pop-item"
        @click="activeChatId = receiver.id === user.id ? sender.id : receiver.id; selected=message.message_id; scrollTo();"
+        :class="{'message-pop--active': active, 'picked-color-list-item': active}"
   >
     <ListItem
         :k="message.message_id"
         class="pa-3 pl-6 chat-list-item text-left hot-message"
-        rounded="lg"
         :title="sender.name"
         :subtitle="formatChatMessageTime(nowRef, message.time)"
         style="border-radius: 0!important;"
         v-ripple="false"
     />
     <MessagePop
-        :class="{'message-pop--active': active, 'dark-ocean': active}"
         :key="message.message_id"
         :message="message"
         :final="true"
