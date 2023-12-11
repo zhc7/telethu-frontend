@@ -211,8 +211,8 @@ const handleFocus = () => {
         class="ma-2 ml-4 message-input"
         v-model="message"
         hide-details
-        flat
-        clearable
+        :flat="true"
+        :clearable="true"
         @keydown="handleTextareaKeydown"
         @focusin="handleFocus"
         :append-inner-icon="'mdi-emoticon-kiss-outline'"

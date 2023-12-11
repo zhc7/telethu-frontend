@@ -95,7 +95,7 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
     console.log('kicking member', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
-const createGroup = (groupName: string, members: Array<number>) => {
+export const createGroup = (groupName: string, members: Array<number>) => {
     if (groupName === '') {
         groupName = "new group";
     }
@@ -121,4 +121,17 @@ const createGroup = (groupName: string, members: Array<number>) => {
     console.log('create message sending: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
-export {createGroup};
+export const changeGroupName = (groupId: number, newName: string) => {
+    const message: Message = {
+        time: Date.now(),
+        m_type: MessageType.FUNC_GROUP_CHANGE_NAME,
+        t_type: TargetType.FRIEND,
+        content: newName,
+        receiver: groupId,
+        sender: userId.value,
+        message_id: generateMessageId(newName, userId.value, Date.now()),
+        pending_status: 'sending',
+    };
+    console.log('create message sending: ', JSON.stringify(message));
+    chatManager.sendMessage(message);
+}

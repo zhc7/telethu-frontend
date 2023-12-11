@@ -20,6 +20,7 @@ import {
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
+  changeGroupName,
   exitGroup,
   groupAddAdmin,
   groupAddMember,
@@ -163,6 +164,12 @@ const handleChat = async () => {
 const groupInfo = computed(() => {
   return displayContactInfo.value as GroupData;
 })
+
+const renameDialog = ref<boolean>(false);
+const renameInputValue = ref<string>('');
+const handleRename = () => {
+  changeGroupName(displayContactInfo.value.id, renameInputValue.value);
+}
 </script>
 
 <template>
@@ -294,6 +301,12 @@ const groupInfo = computed(() => {
               @click="changeOwnerDialog=true"
           >Change Ownership
           </v-btn>
+          <v-btn
+              v-if="displayContactInfo.category === 'group' && groupInfo.owner === user.id"
+              color="indigo"
+              @click="changeOwnerDialog=true"
+          >Rename Group
+          </v-btn>
           <v-btn color="green" v-if="requests.includes(displayContactInfo.id)" @click="handleAcceptFriend">Accept
           </v-btn>
           <v-btn color="error" v-if="requests.includes(displayContactInfo.id)" @click="handleRejectFriend">Reject
@@ -326,7 +339,19 @@ const groupInfo = computed(() => {
         </v-card-actions>
       </v-card>
     </v-dialog>
-
+    <v-dialog v-model="renameDialog" max-width="30vw" max-height="80vh">
+      <v-card class="fill-height overflow-y-auto">
+        <v-card-title>Rename</v-card-title>
+        <v-card-text>
+          <v-text-field autofocus v-model="renameInputValue"></v-text-field>
+        </v-card-text>
+        <v-card-actions class="mb-3 mr-4">
+          <v-spacer></v-spacer>
+          <v-btn color="info" @click="handleRename">Confirm</v-btn>
+          <v-btn color="error" @click="renameInputValue=''; renameDialog=false;">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <SelectMember
         v-model:show-dialog="groupAddMemberDialog"
         :pinned="groupInfo.members"

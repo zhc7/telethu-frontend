@@ -62,3 +62,12 @@ export const handleCreateGroup = (message: Message) => {
         alert(content);
     }
 };
+
+export const handleGroupNameChanged = (message: Message) => {
+    const groupId = message.receiver;
+    if (groupId === +groupId) {
+        getUser(groupId, true);
+    } else {
+        alert(groupId);
+    }
+}

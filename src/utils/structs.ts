@@ -29,6 +29,8 @@ export enum MessageType {
     FUNC_DELETE_MESSAGE = 27,
     FUNC_EDIT_MESSAGE = 28,
     FUNC_EDIT_PROFILE = 29,
+    FUNC_UNKNOWN_YET = 30,
+    FUNC_GROUP_CHANGE_NAME = 31,
 }
 
 export enum TargetType {
