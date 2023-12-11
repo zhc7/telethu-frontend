@@ -151,9 +151,11 @@ console.log("message", props.message);
               :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
               style="overflow-wrap: break-word; max-width: 100%; margin-bottom: 0; margin-top: 3px"
           >
-            <blockquote v-if="message.info?.reference && message.info.reference >= 0">
+            <blockquote v-if="message.info?.reference && message.info.reference >= 0"
+                        style="font-size: 12px; color: #dddddd; font-weight: bold">
               <MessageBrief :message-id="message.info.reference as number"/>
             </blockquote>
+            <v-divider v-if="message.info?.reference && message.info.reference >= 0" :thickness="3" class="mb-2"/>
             <div ref="container"
                  :key="emojisLoaded.toString()"
                  v-html="markdown2Html(message, getUser(props.message.receiver))"
