@@ -4,7 +4,7 @@ import {messages, user} from "../../globals.ts";
 import {token} from "../../auth.ts";
 import {BASE_API_URL} from "../../constants.ts";
 
-export const getMessage = async (messageId: number): Promise<Message> => {
+export const getAsyncMessage = async (messageId: number): Promise<Message> => {
     return axios.get(BASE_API_URL + `chat/message/${messageId}`, {
         headers: {
             Authorization: token.value,

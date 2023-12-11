@@ -1,19 +1,15 @@
 <script setup lang="ts">
 
 import ChatList from "./ChatList.vue";
-import MessagePop from "./MessagePop.vue";
 import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
-import {formatChatMessageTime} from "../utils/datetime.ts";
 import {
   activeChatId,
-  activeMessages,
   contacts,
   floatingContactId,
   messages,
-  nowRef,
   referencingMessageId,
   selectedChatInfo,
   settings,
@@ -28,10 +24,19 @@ import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/struc
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
-import BannerMessage from "./MessageBanner.vue";
 import axios from "axios";
 import Avatar from "./Avatar.vue";
 import {VInfiniteScroll} from "vuetify/components";
+import MessageFlow from "./MessageFlow.vue";
+import {messageFlow} from "../globals";
+
+
+const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
+watch(localMessageFlow, (value) => {
+  if (value) {
+    messageFlow.value = value;
+  }
+}, {immediate: true});
 
 defineProps(['modelValue', 'show']);
 defineEmits(['update:modelValue']);
@@ -56,10 +61,6 @@ const showWhoRead = (message: Message) => {
   } else {
     atMembers.value = [];
   }
-}
-
-const openBlankContextMenu = (event: MouseEvent) => {
-  openContextMenu(event.clientX, event.clientY, "blank");
 }
 
 const contextMenuChoices = computed(() => {
@@ -109,47 +110,9 @@ const closeContextMenu = () => {
   showContextMenu.value = false;
 }
 
-const messageSelected = (msg: Message) => {
-  if (typeof msg.message_id !== 'number') {
-    return false;
-  }
-  if (selectionMode.value) return selected.value.includes(msg.message_id);
-  return showContextMenu.value && contextMenuSubject.value === msg;
-}
-
 const createGroupDialog = ref(false);
 const shareMessageDialog = ref(false);
 const selected = ref<Array<number>>([]);
-
-
-const groupedMessages = computed(() => {
-  const grouped: Array<{
-    time: number,
-    messages: Array<Message>,
-  }> = [];
-  let lastTimestamp: null | number = null;
-  console.log(messages.value[activeChatId.value]);
-
-  if (messages.value[activeChatId.value] === undefined) {
-    return [];
-  }
-
-  messages.value[activeChatId.value].forEach((message) => {
-    const messageTimestamp = new Date(message.time).getTime();
-    if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
-      grouped.push({
-        time: message.time,
-        messages: [message],
-      });
-    } else {
-      grouped[grouped.length - 1].messages.push(message);
-    }
-
-    lastTimestamp = messageTimestamp;
-  });
-
-  return grouped;
-});
 
 watch(activeChatId, (id) => {
   if (id < 1) {
@@ -245,19 +208,6 @@ const selectMessage = (msg: Message) => {
   selectionMode.value = true;
 }
 
-const handleSelectMessage = (msg: Message) => {
-  if (typeof msg.message_id !== 'number') {
-    return;
-  }
-  if (selectionMode.value) {
-    if (selected.value.includes(msg.message_id)) {
-      selected.value.splice(selected.value.indexOf(msg.message_id), 1);
-    } else {
-      selected.value.push(msg.message_id);
-    }
-  }
-}
-
 const delMessage = (message: Message) => {
   if (typeof message.message_id !== 'number') {
     return;
@@ -332,41 +282,11 @@ const dispatchFunction = (item: string) => {
   messageItemDispatcher[item](contextMenuSubject.value);
 }
 
-const loadMoreMessage = async ({done}: { done: (status: any) => void }) => {
-  const messageList = messages.value[activeChatId.value];
-  let pulled = await getHistoryMessage(
-      activeChatId.value,
-      messageList[0] === undefined ? Date.now() : messageList[0].time,
-      selectedChatInfo.value!.category === "group" ? TargetType.GROUP : TargetType.FRIEND,
-      10,);
-  console.log(pulled);
-  if (pulled) {
-    done("ok");
-  } else {
-    done("empty");
-  }
-}
-
 watch(contacts, async () => {
   for (const id of contacts.value) {
     await getHistoryMessage(id, Date.now(), getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND, 10);
   }
 });
-
-const openBannerContextMenu = (event: MouseEvent, id: number) => {
-  openContextMenu(event.clientX, event.clientY, id);
-}
-
-const bindMessage = (el: InstanceType<typeof MessagePop> | null, id: number | string) => {
-  if (typeof id === 'string') {
-    return;
-  }
-  if (el) {
-    activeMessages.value[id] = el;
-  } else {
-    delete activeMessages.value[id];
-  }
-}
 
 const scroll = ref<InstanceType<typeof VInfiniteScroll> | null>(null);
 
@@ -447,49 +367,22 @@ const searchingMessage = ref<boolean>(false);
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
       </v-toolbar>
-      <BannerMessage
-          v-if="category === 'group'"
-          v-for="id in (selectedChatInfo as GroupData).top_message"
-          :key="id"
-          :message-id="id"
-          @contextmenu.prevent="openBannerContextMenu($event, id)"
-      />
-      {{ searchingMessage }}
-      <v-infinite-scroll
-          class="fill-height"
-          side="start"
+      <MessageFlow
           :key="activeChatId"
-          ref="scroll"
-          @load="loadMoreMessage"
-          @contextmenu.prevent="openBlankContextMenu"
-      >
-        <div v-for="(group, index) in groupedMessages" :key="index">
-          <div class="justify-center ma-1">
-            {{ formatChatMessageTime(nowRef, group.time.toString()) }}
-          </div>
-          <MessagePop
-              v-for="(message, mIndex) in group.messages"
-              :key="mIndex"
-              :message="message"
-              :final="mIndex === group.messages.length - 1"
-              class="message-pop"
-              :class="{'bg-blue': messageSelected(message)}"
-              :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
-              @show-profile="handleDisplayProfile"
-              @show-context-menu="openContextMenu"
-              @click="handleSelectMessage(message)"
-              :forward="false"
-              @show-who-read="showWhoRead(message)"
-          />
-          <MessageContextMenu
-              v-if="showContextMenu"
-              :x="contextMenuX"
-              :y="contextMenuY"
-              :choices="contextMenuChoices"
-              @choose="dispatchFunction"
-          />
-        </div>
-      </v-infinite-scroll>
+          ref="localMessageFlow"
+          :show-context-menu="showContextMenu"
+          :selection-mode="selectionMode"
+          v-model:selected="selected"
+          @open-context-menu="openContextMenu"
+          @show-who-read="showWhoRead"
+      />
+      <MessageContextMenu
+          v-if="showContextMenu"
+          :x="contextMenuX"
+          :y="contextMenuY"
+          :choices="contextMenuChoices"
+          @choose="dispatchFunction"
+      />
       <InputArea/>
     </v-col>
   </v-row>

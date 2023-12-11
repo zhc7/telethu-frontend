@@ -2,7 +2,7 @@ import {ContactsData, Message} from "../../utils/structs.ts";
 import {contactPageProfileSource, contacts, messages, selectedContactInfo, user} from "../../globals.ts";
 import {applyList} from "./send";
 import {getBlackList} from "../data.ts";
-import {getMessage} from "../messages/receive.ts";
+import {getAsyncMessage} from "../messages/receive.ts";
 
 export const handleDeleteFriend = (message: Message) => {
     contacts.value = contacts.value.filter(id => id !== message.sender && id !== message.receiver);
@@ -47,7 +47,7 @@ export const handleReceiveMessageRead = (message: Message) => {
         console.log("error receive read:", target, m, "not send by this user");
         return;
     }
-    getMessage(m.message_id as number).then((message) => {
+    getAsyncMessage(m.message_id as number).then((message) => {
         if (message === undefined) {
             console.log("error receive read:", target, m, "not found");
             return;

@@ -15,6 +15,7 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
         };
     }
     force ||= users.value[id].category === "";
+    force &&= id > 0;
     if (force) {
         axios.get(BASE_API_URL + "users/" + id, {
             headers: {

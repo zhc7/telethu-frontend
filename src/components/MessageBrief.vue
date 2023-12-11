@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {getMessage} from "../core/messages/receive";
+import {getAsyncMessage} from "../core/messages/receive";
 import {displayHotMessage} from "../utils/notification";
-import {activeMessages} from "../globals";
+import {messageFlow} from "../globals";
 import {Message} from "../utils/structs";
 
 const props = defineProps<{
@@ -11,17 +11,12 @@ const props = defineProps<{
 
 const content = ref("");
 
-getMessage(props.messageId).then((message: Message) => {
+getAsyncMessage(props.messageId).then((message: Message) => {
   content.value = displayHotMessage(message);
 });
 
 const scrollTo = () => {
-  const el = activeMessages.value[props.messageId];
-  el.$el.scrollIntoView({behavior: "smooth", block: "center"});
-  el.$el.classList.add("bg-blue");
-  setTimeout(() => {
-    el.$el.classList.remove("bg-blue");
-  }, 700);
+  messageFlow.value?.jumpTo(props.messageId);
 }
 </script>
 

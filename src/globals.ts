@@ -3,6 +3,7 @@ import {useLocalStorage} from "@vueuse/core";
 import {ContactsData, Message, RequestListItem, Settings, UserData, Users} from "./utils/structs";
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
+import MessageFlow from "./components/MessageFlow.vue";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -86,6 +87,8 @@ export const messages = ref<{
     [id: number]: Array<Message>
 }>({});
 
+export const messageDict = ref<{[id: number | string]: Message}>({});
+
 watch(contacts, () => {
     for (const id of contacts.value) {
         if (messages.value[id] === undefined) {
@@ -130,3 +133,5 @@ export const bigAvatarSource = ref('');
 export const activeMessages = ref<{
     [id: number]: InstanceType<typeof MessagePop>
 }>({});
+
+export const messageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
