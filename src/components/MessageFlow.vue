@@ -2,7 +2,7 @@
 import {computed, nextTick, reactive, ref, watch} from "vue";
 import MessagePop from "./MessagePop.vue";
 import {formatChatMessageTime} from "../utils/datetime";
-import {activeChatId, activeMessages, messageDict, messages, nowRef, selectedChatInfo} from "../globals";
+import {activeChatId, activeMessages, messageDict, messages, nowRef, selectedChatInfo, user} from "../globals";
 import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getAsyncMessage} from "../core/messages/receive";
 import axios from "axios";
@@ -156,6 +156,8 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
     const ids = pulled_messages.map((msg) => msg.message_id);
     for (const message of pulled_messages) {
       messageDict.value[message.message_id] = message;
+      const target = message.sender + message.receiver - user.value.id;
+      messages.value[target].push(message);
     }
     // uniquely concat
     activeBlock.value.messages = [...new Set(direction === 'start' ? [...ids, ...activeBlock.value.messages] : [...activeBlock.value.messages, ...ids])];

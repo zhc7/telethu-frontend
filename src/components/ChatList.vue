@@ -6,7 +6,7 @@ import {
   activeChatId,
   activeMessageId,
   contacts,
-  hotMessages,
+  hotMessages, messageDict,
   messages,
   settings,
   user,
@@ -20,6 +20,7 @@ import ChatListItem from "./ChatListItem.vue";
 import MessagePopItem from "./MessagePopItem.vue";
 import {Message, MessageType} from "../utils/structs.ts";
 import Avatar from "./Avatar.vue";
+import list from "./List.vue";
 
 const createGroupDialog = ref(false);
 
@@ -54,7 +55,6 @@ const searchFriendInput = ref(false);
 const searchText = ref('');
 
 const decideRelative = (msg: Message, str: string) => {
-  alert(msg.content);
   const strList = str.split(' ');
   if (msg.m_type === MessageType.TEXT) {
     if (msg.content instanceof Array) {
@@ -80,7 +80,6 @@ const filteredMessages = computed(() => {
   const list = [];
   for (const id of Object.keys(messages.value)) {
     for (const msg of messages.value[+id]) {
-      alert(msg.content);
       if (decideRelative(msg, searchText.value)) {
         list.push(msg);
       }
@@ -137,15 +136,12 @@ watch(searchText, () => {
       <ChatListItem v-for="id in chatList" :contact-id="id"/>
     </List>
     <template v-else>
-      <List class="overflow-y-auto fill-height" v-model="activeMessageId">
-        <MessagePopItem
-            v-for="msg in filteredMessages"
-            :message-id="msg.message_id as number"
-            :active="false"
-        />
-      </List>
-      <List class="overflow-y-auto fill-height">
+      <List @click="activeMessageId=-1" v-if="filteredContact.length" class="overflow-y-auto" v-model="activeChatId" min-height="15vh">
+        <v-list-item ma="6" class="bg-grey-lighten-3">
+          Contacts
+        </v-list-item>
         <ListItem v-for="id in filteredContact"
+                  :k="id"
                   :title="users[id].name"
                   :subtitle="'@' + id"
         >
@@ -154,6 +150,17 @@ watch(searchText, () => {
           </template>
         </ListItem>
       </List>
+      <List v-if="filteredMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
+        <v-list-item ma="6" class="bg-grey-lighten-3">
+          Chats
+        </v-list-item>
+        <MessagePopItem
+            v-for="msg in filteredMessages"
+            :message-id="msg.message_id as number"
+            :active="false"
+        />
+      </List>
+
     </template>
 
   </div>

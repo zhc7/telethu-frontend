@@ -34,7 +34,6 @@ const createSocket = () => {
             getBlackList().then();
             applyList().then();
             contacts.value = idList;
-
             first = false;
             return;
         }
