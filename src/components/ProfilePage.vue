@@ -11,9 +11,9 @@ import {editProfile} from "../core/users/profile.ts";
 
 const router = useRouter();
 
-const fileInput = ref(null);
+const fileInput = ref<HTMLElement | null>(null);
 const triggerFileInput = () => {
-  fileInput.value.click();
+  fileInput.value!.click();
 };
 
 const handleUploadAvatar = (event: any) => {
@@ -38,7 +38,7 @@ const handleUploadAvatar = (event: any) => {
           const reader = new FileReader();
           reader.readAsDataURL(response.data); // change Blob into Base64
           reader.onloadend = () => {
-            user.value.avatar = reader.result;
+            user.value.avatar = reader.result as string;
           }
         }
     )
@@ -65,14 +65,14 @@ onMounted(async () => {
     const reader = new FileReader();
     reader.readAsDataURL(response.data); // change Blob into Base64
     reader.onloadend = () => {
-      user.value.avatar = reader.result;
+      user.value.avatar = reader.result as string;
     };
   } catch (error) {
     console.error('Http get avatar failed -> ', error);
   }
 });
 
-const displayEditEntry = ref(undefined);
+const displayEditEntry = ref<string |undefined>(undefined);
 const editingEntry = ref<string | undefined>(undefined);
 
 const inputValue = ref('');

@@ -80,7 +80,7 @@ export const getBlackList = async () => {
     }).then((response) => {
         console.log('got black list', response.data);
         console.log('settings.blocked: ', settings.value.blocked)
-        blacklist.value = response.data.block_list;
+        blacklist.value = response.data["block_list"];
     });
 }
 

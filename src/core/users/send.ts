@@ -106,7 +106,7 @@ const deleteFriend = (id: number) => {
     console.log('deleting friend', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
-const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType, atMembers?: Array<number>) => {
+const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
     const message: Message = {
         time: Date.now(),
         m_type: MessageType.TEXT,

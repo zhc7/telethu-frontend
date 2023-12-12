@@ -90,8 +90,8 @@ const handleClickImage = () => {
   showBigImage.value = true;
 }
 
-const handleMentionClick = (event) => {
-  const userId = event.target.getAttribute('data-user-id');
+const handleMentionClick = (event: Event) => {
+  const userId = (event.target! as HTMLElement).getAttribute('data-user-id');
   if (userId) {
     // 处理点击事件
     console.log(`Mention clicked for user ID: ${userId}`);
@@ -250,7 +250,7 @@ console.log("message", props.message);
         />
         <v-icon v-else-if="message.who_read && (message.who_read as Array<number>).length" size="12px">mdi-check-all
         </v-icon>
-        <v-icon v-else-if="message.pending_status === 'sent'" size="12px">mdi-check</v-icon>
+        <v-icon v-else-if="typeof message.message_id === 'number'" size="12px">mdi-check</v-icon>
       </div>
 
       <!-- end message column -->

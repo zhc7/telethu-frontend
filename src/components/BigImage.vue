@@ -20,7 +20,5 @@ import {bigImageSource, showBigImage} from "../globals";
 </template>
 
 <style scoped>
-.v-responsive {
 
-}
 </style>

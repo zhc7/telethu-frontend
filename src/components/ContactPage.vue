@@ -5,7 +5,6 @@ import ContactList from "./ContactList.vue";
 import {friendRequests,} from "../core/chat.ts";
 
 import {
-  activeChatId,
   activeContactId,
   activeRequestId,
   contactPageContentLeft,
@@ -19,7 +18,6 @@ import RequestList from "./RequestList.vue";
 import ContactProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
 import {acceptFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
-import router from "../router.ts";
 
 
 defineEmits(["chat"]);

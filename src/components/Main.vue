@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted} from 'vue'
 import ChatPage from './ChatPage.vue'
 import ContactPage from "./ContactPage.vue";
 import {useRouter} from "vue-router";
@@ -8,18 +8,18 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {
-  activeChatId, bigImageSource, colorPickerDialog,
+  activeChatId,
+  colorPickerDialog,
   currentPage,
   floatingContactId,
   isSocketConnected,
-  requests, showBigImage,
+  requests,
   showProfileDialog,
   unreadCounter,
   userAvatar,
   userName
 } from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
-import {getUser} from "../core/data.ts";
 import ContactProfile from "./ContactProfile.vue";
 import ColorPicker from "./ColorPicker.vue";
 import Purchase from "./Purchase.vue";
@@ -44,11 +44,6 @@ onMounted(() => {
   console.log("page " + activePage.value);
   createSocket();
 });
-
-const debugAction = () => {
-  const contact = getUser(162);
-  alert(contact);
-};
 
 const unreadTotal = computed(() => {
   let counter = 0;

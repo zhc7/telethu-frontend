@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {colorPickerDialog, colors} from "../globals.ts";
 
 const emit = defineEmits(['update:showDialog']);

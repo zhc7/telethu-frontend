@@ -91,7 +91,7 @@ const handlePaste = (event: ClipboardEvent) => {
 
 const handleSendMessage = () => {
   if (message.value !== "") {
-    sendMessage(activeChatId.value, messageSend.value, chat.value.category === 'group' ? 1 : 0, atMembers.value.map((i) => i.id));
+    sendMessage(activeChatId.value, messageSend.value, chat.value.category === 'group' ? 1 : 0);
     message.value = "";
     referencingMessageId.value = -1;
   }

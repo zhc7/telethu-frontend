@@ -20,7 +20,7 @@ import {Message, MessageType} from "../utils/structs.ts";
 
 const createGroupDialog = ref(false);
 
-const props = defineProps<{
+defineProps<{
   modelValue: boolean,
 }>();
 
@@ -124,7 +124,8 @@ watch(searchText, () => {
       <MessagePopItem
           v-for="msg in filteredMessages"
           :message-id="msg.message_id as number"
-      ></MessagePopItem>
+          :active="false"
+      />
     </List>
   </div>
 </template>
