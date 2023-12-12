@@ -1,21 +1,22 @@
 import {Message, UserData} from "../../utils/structs.ts";
-import {user, userId} from "../../globals.ts";
-import {generateMessageId} from "../../utils/hash.ts";
-import {chatManager} from "../chat.ts";
+import {user} from "../../globals.ts";
+import axios from "axios";
+import {BASE_API_URL} from "../../constants.ts";
+import {token} from "../../auth.ts";
+import {getUser} from "../data.ts";
 
-export const editProfile = (newProfile: string) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: 29,
-        t_type: 0,
-        content: newProfile,
-        sender: userId.value,
-        receiver: userId.value,
-        info: "",
-        message_id: generateMessageId(newProfile, userId.value, Date.now()),
-    }
-    console.log(JSON.stringify(message));
-    chatManager.sendMessage(message);
+export const editProfile = async (newProfile: any) => {
+    const response = await axios.post(BASE_API_URL + 'users/edit_profile', newProfile, {
+        headers: {
+            Authorization: token.value,
+        }
+    });
+    console.log('edited profile: ', response);
+    user.value = {
+        ...user.value,
+        ...response.data,
+    };
+    console.log('new info:', user.value);
 }
 
 export const updateUserProfile = (message: Message) => {

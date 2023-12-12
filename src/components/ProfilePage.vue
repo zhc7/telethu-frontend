@@ -101,7 +101,7 @@ const handleConfirm = () => {
     alert('changing username to ' + inputValue.value);
   }
   editingEntry.value = undefined;
-  editProfile(JSON.stringify(newProfile));
+  editProfile(newProfile);
 }
 
 const blackListDialog = ref(false);
