@@ -6,6 +6,12 @@ import {token} from "../../auth.ts";
 import {getSettings, postSettings} from "../data.ts";
 
 export const editProfile = async (newProfile: any, http: boolean = true) => {
+    const res = await axios.get(BASE_API_URL + 'users/email_exists/' + newProfile.email);
+    if (res.data === 'True') {
+        alert('Duplicated email');
+        return;
+    }
+    console.log('email exists: ', res);
     if (http) {
         const response = await axios.post(BASE_API_URL + 'users/edit_profile', newProfile, {
             headers: {

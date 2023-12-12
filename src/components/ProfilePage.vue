@@ -169,7 +169,7 @@ const blackListDialog = ref(false);
                       Location:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <span>{{ settings.location }}</span>
+                      <span>{{ settings.location ? settings.location : 'to be determined' }}</span>
                       <v-icon v-if="displayEditEntry==='location'" size="xs"
                               @click="editingEntry='location'; inputValue=(settings.location ? settings.location : '')">
                         mdi-grease-pencil
