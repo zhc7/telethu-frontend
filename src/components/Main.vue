@@ -10,7 +10,7 @@ import NavBar from "./NavBar.vue";
 import {
   activeChatId,
   colorPickerDialog,
-  currentPage,
+  currentPage, defaultTheme,
   floatingContactId,
   isSocketConnected,
   requests,
@@ -65,6 +65,15 @@ onMounted(() => {
   }
 });
 
+import { useTheme } from 'vuetify'
+
+const theme = useTheme()
+
+function toggleTheme () {
+  defaultTheme.value = theme.global.current.value.dark ? 'light' : 'dark';
+  theme.global.name.value = defaultTheme.value;
+}
+
 </script>
 
 <template>
@@ -86,6 +95,7 @@ onMounted(() => {
         <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
       </List>
       <div class="fix-left-bottom">
+        <v-icon title="toggle theme" @click="toggleTheme" class="mb-2">mdi-theme-light-dark</v-icon>
         <v-icon title="color picker" @click="colorPickerDialog = true" class="mb-2">mdi-palette</v-icon>
         <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram</v-icon>
         <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isSocketConnected">mdi-loading</v-icon>

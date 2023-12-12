@@ -128,7 +128,7 @@ export const activeMessages = ref<{
 }>({});
 
 export const colors = useLocalStorage('colors', {});
-
+export const defaultTheme = useLocalStorage('defaultTheme', 'light');
 export const colorPickerDialog = ref(false);
 
 export const messageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);

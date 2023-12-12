@@ -9,6 +9,7 @@ import {aliases, mdi} from 'vuetify/iconsets/mdi'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import router from "./router";
+import {defaultTheme} from "./globals.ts";
 
 const vuetify = createVuetify({
     components,
@@ -19,6 +20,9 @@ const vuetify = createVuetify({
         sets: {
             mdi,
         },
+    },
+    theme: {
+        defaultTheme: defaultTheme.value,
     }
 })
 
