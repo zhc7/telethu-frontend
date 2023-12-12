@@ -40,8 +40,7 @@ interface Block {
 
 const updateTime = (block: Block) => {
   if (!block.messages.length) {
-    block.startTime = Date.now();
-    block.endTime = Date.now();
+    return;
   }
   block.startTime = messageDict.value[block.messages[0]].time;
   block.endTime = messageDict.value[block.messages[block.messages.length - 1]].time;
@@ -172,8 +171,7 @@ const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void })
   const promise = side === "start" ? getHistoryMessage(0, activeBlock.value.startTime, 10, "start") :
       getHistoryMessage(activeBlock.value.endTime, Date.now() * 2, 10, "end");
   promise.then((pulled_length) => {
-    activeBlock.value.startTime = messageDict.value[activeBlock.value.messages[0]].time;
-    activeBlock.value.endTime = messageDict.value[activeBlock.value.messages[activeBlock.value.messages.length - 1]].time;
+    updateTime(activeBlock.value);
     mergeBlocks();
     if (pulled_length < 10) {
       done("empty");
