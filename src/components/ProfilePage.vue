@@ -87,6 +87,8 @@ const editingTitle = computed(() => {
     return 'Change location';
   } else if (editingEntry.value === 'phone') {
     return 'Change phone number';
+  } else if (editingEntry.value === 'email') {
+    return 'Change Email';
   }
   return '';
 })
@@ -94,10 +96,15 @@ const editingTitle = computed(() => {
 const handleConfirm = () => {
   const newProfile = {
     name: user.value.name,
+    email: user.value.email,
   };
   if (editingEntry.value === 'username') {
     newProfile.name = inputValue.value;
     alert('changing username to ' + inputValue.value);
+  }
+  if (editingEntry.value === 'email') {
+    newProfile.email = inputValue.value;
+    alert('changing email to ' + inputValue.value);
   }
   editingEntry.value = undefined;
   editProfile(newProfile);
@@ -136,9 +143,9 @@ const blackListDialog = ref(false);
                 <v-list-item-title @mouseover="displayEditEntry='username'"
                                    @mouseleave="displayEditEntry=undefined">
                   <v-icon size="xs"></v-icon>
-                  <span>{{ userName }}</span>
+                  <span>{{ user.name }}</span>
                   <v-icon v-if="displayEditEntry==='username'" size="xs"
-                          @click="editingEntry='username'; inputValue=userName">
+                          @click="editingEntry='username'; inputValue=user.name">
                     mdi-grease-pencil
                   </v-icon>
                   <v-icon v-else size="xs"></v-icon>
@@ -174,7 +181,7 @@ const blackListDialog = ref(false);
                       <v-icon v-else></v-icon>
                     </v-col>
                   </v-row>
-                  <v-row>
+                  <v-row pa="2" @mouseover="displayEditEntry='email'" @mouseleave="displayEditEntry=undefined">
                     <v-col cols="4" offset="1" class="text-right">
                       Email:
                     </v-col>
@@ -182,6 +189,11 @@ const blackListDialog = ref(false);
                       <span>
                         {{ userEmail }}
                       </span>
+                      <v-icon v-if="displayEditEntry==='email'" size="xs"
+                              @click="editingEntry='email'; inputValue=user.email">
+                        mdi-grease-pencil
+                      </v-icon>
+                      <v-icon v-else></v-icon>
                     </v-col>
                   </v-row>
                 </v-list-item>
