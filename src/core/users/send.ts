@@ -75,18 +75,12 @@ const applyList = async () => {
         }
     }).then((response) => {
         if (DEBUG) {
-            console.log(response.data);
+            console.log('apply_list', response.data);
         }
-        const idList = response.data['friends'];
+        const idList = response.data.list;
         console.log(response.data);
         for (const request of idList) {
-            requestInsert(request.id, {
-                id: request.id,
-                name: request.name,
-                email: request.email,
-                avatar: request.avatar,
-                time: request.time,
-            });
+            requestInsert(request.id);
         }
         console.log('requests', requests.value);
     });

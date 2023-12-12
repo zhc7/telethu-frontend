@@ -1,4 +1,4 @@
-import {activeRequestId, blacklist, rawRequestList, requests, settings, users} from "../globals";
+import {activeRequestId, blacklist, requests, settings, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
 import {ContactsData, RequestListItem} from "../utils/structs";
@@ -35,22 +35,20 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
 }
 
 
-export const requestInsert = (id: number, info: RequestListItem) => {
+export const requestInsert = (id: number) => {
     if (requests.value.includes(id)) return;
     requests.value.push(id);
-    rawRequestList.value.push(info);
 }
 
 export const requestRemove = (id: number) => {
     activeRequestId.value = 0;
     requests.value = requests.value.filter((i: number) => (i !== id));
-    rawRequestList.value = rawRequestList.value.filter((i) => (i.id !== id));
 }
 
 export const postSettings = async () => {
     return await axios.post(BASE_API_URL + 'users/profile', {
         settings: settings.value,
-    },{
+    }, {
         headers: {
             Authorization: token.value,
         }

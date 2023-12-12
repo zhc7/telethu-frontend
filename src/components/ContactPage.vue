@@ -9,7 +9,7 @@ import {
   activeRequestId,
   contactPageContentLeft,
   contactPageProfileSource,
-  rawRequestList,
+  requests,
   searchedId,
   selectedContactInfo
 } from "../globals.ts"
@@ -82,7 +82,7 @@ watch(activeRequestId, selectRequest);
             {{ contactPageContentLeft === 0 ? "Contact List" : "Add Friends" }}
           </v-list-item-title>
           <template #append style="position: relative">
-            <div class="badge" v-if="rawRequestList.length">{{ rawRequestList.length }}</div>
+            <div class="badge" v-if="requests.length">{{ requests.length }}</div>
             <v-icon
                 v-show="contactPageContentLeft === 0"
                 @click="handleRequestList"

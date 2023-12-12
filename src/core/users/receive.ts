@@ -10,7 +10,7 @@ export const handleDeleteFriend = (message: Message) => {
 export const handleReceiveRequest = async (_: Message) => {
     await applyList();
 }
-export const handleBlockFriend = (message: Message) => {
+export const handleBlockFriend = (_: Message) => {
     getBlackList().then();
 }
 
