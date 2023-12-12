@@ -49,6 +49,7 @@ const register = async (name: string, email: string, password: string) => {
         console.log("register " + email);
     }
     await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
+        // TODO: actually handle the response and errors, please only remove this after the issue is actually resolved
         console.log('response: ', res);
         console.log("register succeeded");
     })

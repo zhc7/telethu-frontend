@@ -6,11 +6,13 @@ import {getAsyncMessage} from "../messages/receive.ts";
 
 export const handleDeleteFriend = (message: Message) => {
     contacts.value = contacts.value.filter(id => id !== message.sender && id !== message.receiver);
-};
-export const handleReceiveRequest = async (_: Message) => {
+}
+
+export const handleReceiveRequest = async () => {
     await applyList();
 }
-export const handleBlockFriend = (_: Message) => {
+
+export const handleBlockFriend = () => {
     getBlackList().then();
 }
 
@@ -25,11 +27,13 @@ export const handleApplicationAccepted = (message: Message) => {
         }
     }
 }
+
 export const handleSearchResult = (message: Message) => {
     console.log(message.content);
     selectedContactInfo.value = message.content as ContactsData;
     contactPageProfileSource.value = "searchResult";
 }
+
 export const handleReceiveMessageRead = (message: Message) => {
     console.log("read message", message);
     let target = [message.sender, message.receiver][message.t_type];
