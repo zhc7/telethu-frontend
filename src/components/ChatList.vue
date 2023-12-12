@@ -55,6 +55,7 @@ const searchFriendInput = ref(false);
 const searchText = ref('');
 
 const decideRelative = (msg: Message, str: string) => {
+  if (!msg) return;
   const strList = str.split(' ');
   if (msg.m_type === MessageType.TEXT) {
     if (msg.content instanceof Array) {
@@ -79,7 +80,7 @@ const decideRelative = (msg: Message, str: string) => {
 const filteredMessages = computed(() => {
   const list = [];
   for (const id of Object.keys(messages.value)) {
-    for (const msg of messages.value[+id]) {
+    for (const msg of messages.value[id]) {
       if (decideRelative(msg, searchText.value)) {
         list.push(msg);
       }

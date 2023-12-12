@@ -157,6 +157,9 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
     for (const message of pulled_messages) {
       messageDict.value[message.message_id] = message;
       const target = message.sender + message.receiver - user.value.id;
+      if (!messages.value[target]) {
+        messages.value[target] = [];
+      }
       messages.value[target].push(message);
     }
     // uniquely concat
