@@ -1,7 +1,7 @@
 import {activeRequestId, blacklist, requests, settings, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL} from "../constants";
-import {ContactsData, RequestListItem} from "../utils/structs";
+import {ContactsData} from "../utils/structs";
 import {token} from "../auth.ts";
 
 

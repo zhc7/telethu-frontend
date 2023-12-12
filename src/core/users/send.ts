@@ -2,7 +2,8 @@ import {Message, MessageType, TargetType} from "../../utils/structs";
 import {
     activeRequestId,
     contactPageProfileSource,
-    contacts, referencingMessageId,
+    contacts,
+    referencingMessageId,
     requests,
     searchedId,
     selectedContactInfo,
