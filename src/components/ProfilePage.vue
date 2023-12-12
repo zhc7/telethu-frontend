@@ -94,10 +94,12 @@ const editingTitle = computed(() => {
 })
 
 const handleConfirm = () => {
-  const newProfile = {
-    name: user.value.name,
-    email: user.value.email,
-  };
+  const newProfile: {
+    name?: string,
+    email?: string,
+    location?: string,
+    phone?: string
+  } = {};
   let http = false;
   if (editingEntry.value === 'username') {
     http = true;
