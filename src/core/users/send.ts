@@ -78,11 +78,9 @@ const applyList = async () => {
         if (DEBUG) {
             console.log('apply_list', response.data);
         }
-        const idList = response.data.list;
-        console.log(response.data);
-        for (const request of idList) {
-            requestInsert(request.id);
-        }
+        requests.value = response.data.list;
+        console.log('get request list', response.data.list);
+
         console.log('requests', requests.value);
     });
 }

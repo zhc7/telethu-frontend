@@ -1,22 +1,25 @@
 <script setup lang="ts">
+import ListItem from "./ListItem.vue";
 import {computed, ref, watch} from "vue";
+import {createGroup} from "../core/groups/send.ts";
 import {
-  activeChatId, activeMessageId,
+  activeChatId,
+  activeMessageId,
   contacts,
   hotMessages,
   messages,
   settings,
   user,
-  userContacts
+  userContacts,
+  users
 } from "../globals.ts";
 import List from "./List.vue";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
-
-import {createGroup} from "../core/groups/send.ts";
 import MessagePopItem from "./MessagePopItem.vue";
 import {Message, MessageType} from "../utils/structs.ts";
+import Avatar from "./Avatar.vue";
 
 const createGroupDialog = ref(false);
 
@@ -51,6 +54,7 @@ const searchFriendInput = ref(false);
 const searchText = ref('');
 
 const decideRelative = (msg: Message, str: string) => {
+  alert(msg.content);
   const strList = str.split(' ');
   if (msg.m_type === MessageType.TEXT) {
     if (msg.content instanceof Array) {
@@ -59,7 +63,7 @@ const decideRelative = (msg: Message, str: string) => {
       }
       return false;
     }
-    if (typeof(msg.content) === 'string') {
+    if (typeof (msg.content) === 'string') {
       let flag = true;
       strList.forEach((word) => {
         if (!(msg.content as string).includes(word)) {
@@ -76,6 +80,7 @@ const filteredMessages = computed(() => {
   const list = [];
   for (const id of Object.keys(messages.value)) {
     for (const msg of messages.value[+id]) {
+      alert(msg.content);
       if (decideRelative(msg, searchText.value)) {
         list.push(msg);
       }
@@ -86,8 +91,19 @@ const filteredMessages = computed(() => {
   });
 });
 
+const filteredContact = computed(() => {
+  const list = [];
+  for (const id of contacts.value) {
+    if (getUser(id).name.includes(searchText.value)) {
+      list.push(id);
+    }
+  }
+  return list;
+})
+
 watch(searchFriendInput, () => {
-    emit('update:modelValue', searchText.value && searchFriendInput.value);
+  console.log('messages', messages.value);
+  emit('update:modelValue', searchText.value && searchFriendInput.value);
 });
 
 watch(searchText, () => {
@@ -105,7 +121,7 @@ watch(searchText, () => {
         title="Create Group"
         @confirm="(list, name) => {
           createGroupDialog=false;
-          return createGroup(name, list);
+          createGroup(name, list);
         }"
     />
 
@@ -120,13 +136,26 @@ watch(searchText, () => {
     <List class="overflow-y-auto fill-height" v-model="activeChatId" v-if="!searchFriendInput || !searchText">
       <ChatListItem v-for="id in chatList" :contact-id="id"/>
     </List>
-    <List class="overflow-y-auto fill-height" v-else v-model="activeMessageId">
-      <MessagePopItem
-          v-for="msg in filteredMessages"
-          :message-id="msg.message_id as number"
-          :active="false"
-      />
-    </List>
+    <template v-else>
+      <List class="overflow-y-auto fill-height" v-model="activeMessageId">
+        <MessagePopItem
+            v-for="msg in filteredMessages"
+            :message-id="msg.message_id as number"
+            :active="false"
+        />
+      </List>
+      <List class="overflow-y-auto fill-height">
+        <ListItem v-for="id in filteredContact"
+                  :title="users[id].name"
+                  :subtitle="'@' + id"
+        >
+          <template #prepend>
+            <Avatar :contact-id="id"/>
+          </template>
+        </ListItem>
+      </List>
+    </template>
+
   </div>
 </template>
 

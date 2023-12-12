@@ -38,6 +38,7 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
 export const requestInsert = (id: number) => {
     if (requests.value.includes(id)) return;
     requests.value.push(id);
+    alert(requests.value);
 }
 
 export const requestRemove = (id: number) => {
