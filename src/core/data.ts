@@ -6,7 +6,7 @@ import {token} from "../auth.ts";
 
 
 const getUser = (id: number, force: boolean = false): ContactsData => {
-    if (users.value[id] === undefined) {
+    if (!users.value[id]) {
         users.value[id] = {
             id,
             name: "Loading...",

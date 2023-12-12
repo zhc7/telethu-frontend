@@ -175,6 +175,7 @@ const renameDialog = ref<boolean>(false);
 const renameInputValue = ref<string>('');
 const handleRename = () => {
   changeGroupName(displayContactInfo.value.id, renameInputValue.value);
+  renameDialog.value = false;
 }
 </script>
 
@@ -311,7 +312,7 @@ const handleRename = () => {
           <v-btn
               v-if="displayContactInfo.category === 'group' && groupInfo.owner === user.id"
               color="indigo"
-              @click="changeOwnerDialog=true"
+              @click="renameDialog=true"
           >Rename Group
           </v-btn>
           <v-btn color="green" v-if="requests.includes(displayContactInfo.id)" @click="handleAcceptFriend">Accept

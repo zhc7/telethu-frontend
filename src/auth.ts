@@ -40,7 +40,7 @@ const logout = () => {
     requests.value = [];
     blacklist.value = [];
     token.value = "";
-    users.value = [];
+    users.value = {};
     user.value = {email: "", id: -1, name: "", avatar: "", category: "user"};
 }
 
