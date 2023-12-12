@@ -298,7 +298,7 @@ const handleRename = () => {
       </v-col>
       <v-card-actions class="justify-center">
         <div class="d-flex flex-column">
-          <v-btn v-if="contacts.includes(displayContactInfo.id) && activeChatId !== displayContactInfo.id"
+          <v-btn v-if="contacts.includes(displayContactInfo.id)"
                  @click="handleChat" color="green">
             Chat
           </v-btn>

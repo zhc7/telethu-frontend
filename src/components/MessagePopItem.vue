@@ -73,6 +73,7 @@ const scrollTo = () => {
         class="message-pop"
         :forward="true"
     />
+    <v-divider ma="2"/>
   </div>
 </template>
 
