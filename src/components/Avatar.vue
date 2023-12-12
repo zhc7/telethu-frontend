@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from "vue";
 import {getUser} from "../core/data";
-import {bigAvatarSource, cache, showBigAvatar} from "../globals";
+import {bigImageSource, cache, showBigImage} from "../globals";
 import axios from "axios";
 import {token} from "../auth";
 import {BASE_API_URL} from "../constants";
@@ -47,9 +47,9 @@ const getAvatar = async (hash: string): Promise<string> => {
 
 const handleClick = () => {
   if (!avatar.value) return;
-  bigAvatarSource.value = avatar.value;
+  bigImageSource.value = avatar.value;
   if (props.displayBigAvatar) {
-    showBigAvatar.value = true;
+    showBigImage.value = true;
   }
 }
 

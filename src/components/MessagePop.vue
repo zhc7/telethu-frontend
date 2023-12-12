@@ -3,7 +3,7 @@ import {computed, onMounted, onUpdated, Ref, ref} from "vue";
 import {BASE_API_URL} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
-import {floatingContactId, showProfileDialog, user, userId} from "../globals.ts";
+import {bigImageSource, floatingContactId, showBigImage, showProfileDialog, user, userId} from "../globals.ts";
 import {GroupData, Message, MessageType, TargetType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
@@ -83,6 +83,12 @@ onMounted(() => {
 });
 
 const container: Ref<HTMLElement | null> = ref(null);
+
+const handleClickImage = () => {
+  if (!blobSrc.value) return;
+  bigImageSource.value = blobSrc.value;
+  showBigImage.value = true;
+}
 
 const handleMentionClick = (event) => {
   const userId = event.target.getAttribute('data-user-id');
@@ -187,6 +193,7 @@ console.log("message", props.message);
               :src="blobSrc"
               style="max-width: 18vw; max-height: 20vh; min-height: 12vw; min-width: 18vw;"
               class="border rounded-lg"
+              @click="handleClickImage"
           >
             <!-- TODO: setting min-width here is inelegant, fix this later -->
             <template v-slot:error>

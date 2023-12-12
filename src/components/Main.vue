@@ -8,11 +8,11 @@ import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import NavBar from "./NavBar.vue";
 import {
-  activeChatId, bigAvatarSource, colorPickerDialog,
+  activeChatId, bigImageSource, colorPickerDialog,
   currentPage,
   floatingContactId,
   isSocketConnected,
-  requests, showBigAvatar,
+  requests, showBigImage,
   showProfileDialog,
   unreadCounter,
   userAvatar,
@@ -23,6 +23,7 @@ import {getUser} from "../core/data.ts";
 import ContactProfile from "./ContactProfile.vue";
 import ColorPicker from "./ColorPicker.vue";
 import Purchase from "./Purchase.vue";
+import BigImage from "./BigImage.vue";
 
 const router = useRouter();
 
@@ -106,20 +107,7 @@ onMounted(() => {
           class="overflow-y-auto justify-center align-content-center mt-6 mb-6 pt-6 pb-6"
       />
     </v-dialog>
-    <v-dialog v-model="showBigAvatar" class="justify-center align-content-center" max-width="60vh">
-      <v-card>
-        <v-card-item class="justify-center">
-          <v-img
-              width="50vh"
-              height="50vh"
-              :src="bigAvatarSource"
-              class="overflow-y-auto justify-center align-content-center mt-6 mb-6 pt-6 pb-6"
-              cover="true"
-          />
-        </v-card-item>
-      </v-card>
-    </v-dialog>
-
+    <BigImage/>
     <ColorPicker v-model="colorPickerDialog" @update:show-dialog="colorPickerDialog = false"/>
   </v-container>
 </template>
