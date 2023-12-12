@@ -56,7 +56,7 @@ export const postSettings = async () => {
 }
 
 export const getSettings = async () => {
-    return await axios.get(BASE_API_URL + 'users/profile', {
+    await axios.get(BASE_API_URL + 'users/profile', {
         headers: {
             Authorization: token.value,
         }
@@ -65,8 +65,9 @@ export const getSettings = async () => {
         if (received !== undefined && "pinned" in received) {
             settings.value = received;
         } else {
-            postSettings();
+            postSettings().then();
         }
+        console.log('got settings: ', response.data);
     });
 };
 
@@ -77,7 +78,6 @@ export const getBlackList = async () => {
         }
     }).then((response) => {
         console.log('got black list', response.data);
-        console.log('settings.blocked: ', settings.value.blocked)
         blacklist.value = response.data["block_list"];
     });
 }

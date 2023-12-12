@@ -49,6 +49,8 @@ export interface ContactsData {
 export interface UserData extends ContactsData {
     email: string,
     category: "user",
+    phone?: string,
+    location?: string,
 }
 
 export interface GroupData extends ContactsData {
@@ -85,7 +87,8 @@ export interface Users {
 export interface Settings {
     muted: Array<number>,
     pinned: Array<number>,
-    blocked: Array<number>,
+    location?: string,
+    phone?: string,
 }
 
 export interface ChatListItemData {

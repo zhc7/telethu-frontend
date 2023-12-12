@@ -33,6 +33,8 @@ export const user = useLocalStorage<UserData>("user", {
     email: "",
     avatar: "",
     category: "user",
+    phone: '0',
+    location: '',
 })
 
 export const userId = computed({
@@ -73,7 +75,8 @@ export const settingsUpdating = ref(false);
 export const settings = ref<Settings>({
     muted: [],
     pinned: [],
-    blocked: [],
+    location: '',
+    phone: '',
 });
 
 watch(settings, () => {

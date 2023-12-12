@@ -4,7 +4,7 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {blacklist, user, userEmail, userId, userName} from "../globals.ts";
+import {blacklist, settings, user, userEmail, userId, userName} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {editProfile} from "../core/users/profile.ts";
 
@@ -98,16 +98,25 @@ const handleConfirm = () => {
     name: user.value.name,
     email: user.value.email,
   };
+  let http = false;
   if (editingEntry.value === 'username') {
+    http = true;
     newProfile.name = inputValue.value;
-    alert('changing username to ' + inputValue.value);
+    console.log('changing username to ' + inputValue.value);
   }
   if (editingEntry.value === 'email') {
+    http = true;
     newProfile.email = inputValue.value;
-    alert('changing email to ' + inputValue.value);
+    console.log('changing email to ' + inputValue.value);
+  }
+  if (editingEntry.value === 'phone') {
+    settings.value.phone = inputValue.value;
+  }
+  if (editingEntry.value === 'location') {
+    settings.value.location = inputValue.value;
   }
   editingEntry.value = undefined;
-  editProfile(newProfile);
+  editProfile(newProfile, http);
 }
 
 const blackListDialog = ref(false);
@@ -160,9 +169,9 @@ const blackListDialog = ref(false);
                       Location:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <span>Beijing, China Mainland</span>
+                      <span>{{ settings.location }}</span>
                       <v-icon v-if="displayEditEntry==='location'" size="xs"
-                              @click="editingEntry='location'; inputValue='Beijing, China Mainland'">
+                              @click="editingEntry='location'; inputValue=(settings.location ? settings.location : '')">
                         mdi-grease-pencil
                       </v-icon>
                       <v-icon v-else></v-icon>
@@ -173,9 +182,9 @@ const blackListDialog = ref(false);
                       Phone:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <span>114514</span>
+                      <span>{{ settings.phone ? settings.phone : 'to be determined' }}</span>
                       <v-icon v-if="displayEditEntry==='phone'" size="xs"
-                              @click="editingEntry='phone'; inputValue='114514'">
+                              @click="editingEntry='phone'; inputValue=(settings.phone ? settings.phone : '')">
                         mdi-grease-pencil
                       </v-icon>
                       <v-icon v-else></v-icon>
@@ -187,7 +196,7 @@ const blackListDialog = ref(false);
                     </v-col>
                     <v-col cols="6" class="text-left mb-3">
                       <span>
-                        {{ userEmail }}
+                        {{ user.email }}
                       </span>
                       <v-icon v-if="displayEditEntry==='email'" size="xs"
                               @click="editingEntry='email'; inputValue=user.email">
