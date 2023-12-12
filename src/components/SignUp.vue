@@ -4,6 +4,8 @@ import {useRouter} from "vue-router";
 import {login, register} from "../auth.ts";
 import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
+import axios from "axios";
+import {BASE_API_URL} from "../constants.ts";
 
 defineEmits(["finished"])
 
@@ -41,12 +43,18 @@ const submitRegister = async () => {
   dialog.value = false;
 };
 
-const next = () => {
+const next = async () => {
   if (currentPage.value === 1 && $v.value.signupAccount.$invalid) {
     snackbarText.value = "Invalid email!";
     snackbar.value = true;
     return;
   } else {
+    const res = await axios.get(BASE_API_URL + 'users/email_exists/' + signupAccount.value);
+    if (res.data === 'True') {
+      snackbarText.value = "Email duplicated!";
+      snackbar.value = true;
+      return;
+    }
     currentPage.value += 1;
   }
 }
