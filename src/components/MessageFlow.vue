@@ -172,6 +172,7 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
 let callback = () => {
 };
 
+const loadingMessage = ref(false);
 const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void }) => {
   const promise = side === "start" ? getHistoryMessage(0, activeBlock.value.startTime, 10, "start") :
       getHistoryMessage(activeBlock.value.endTime, Date.now() * 2, 10, "end");
@@ -184,6 +185,7 @@ const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void })
       done("ok");
     }
     callback();
+    loadingMessage.value = true;
   });
 }
 
@@ -250,6 +252,10 @@ const lastMessageId = computed(() => {
 });
 
 watch(lastMessageId, (id: number | string) => {
+  if (loadingMessage.value) {
+    loadingMessage.value = false;
+    return;
+  }
   if (typeof id === 'string') {
     activeBlockId.value = blocks.value.length - 1;
   }
