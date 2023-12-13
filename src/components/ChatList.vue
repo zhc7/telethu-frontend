@@ -140,7 +140,7 @@ watch(searchText, () => {
 
     <template v-else>
       <v-list-item ma="6" class="bg-grey-lighten-3" v-if="filteredContact.length">
-        Contacts
+        Contacts ({{filteredContact.length}})
       </v-list-item>
       <List @click="activeMessageId=-1" v-if="filteredContact.length" class="overflow-y-auto" v-model="activeChatId" min-height="15vh">
         <ListItem v-for="id in filteredContact"
@@ -154,7 +154,7 @@ watch(searchText, () => {
         </ListItem>
       </List>
       <v-list-item ma="6" class="bg-grey-lighten-3" v-if="filteredMessages.length">
-        Chats
+        Chats ({{filteredMessages.length}})
       </v-list-item>
       <List v-if="filteredMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
         <MessagePopItem
