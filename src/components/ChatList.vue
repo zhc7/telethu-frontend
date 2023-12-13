@@ -133,14 +133,16 @@ watch(searchText, () => {
       <v-text-field v-if="searchFriendInput" hide-details v-model="searchText"
                     density="compact" variant="solo" class="mr-4"/>
     </div>
+
     <List class="overflow-y-auto fill-height" v-model="activeChatId" v-if="!searchFriendInput || !searchText">
       <ChatListItem v-for="id in chatList" :contact-id="id"/>
     </List>
+
     <template v-else>
+      <v-list-item ma="6" class="bg-grey-lighten-3" v-if="filteredContact.length">
+        Contacts
+      </v-list-item>
       <List @click="activeMessageId=-1" v-if="filteredContact.length" class="overflow-y-auto" v-model="activeChatId" min-height="15vh">
-        <v-list-item ma="6" class="bg-grey-lighten-3">
-          Contacts
-        </v-list-item>
         <ListItem v-for="id in filteredContact"
                   :k="id"
                   :title="users[id].name"
@@ -151,17 +153,17 @@ watch(searchText, () => {
           </template>
         </ListItem>
       </List>
+      <v-list-item ma="6" class="bg-grey-lighten-3" v-if="filteredMessages.length">
+        Chats
+      </v-list-item>
       <List v-if="filteredMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
-        <v-list-item ma="6" class="bg-grey-lighten-3">
-          Chats
-        </v-list-item>
         <MessagePopItem
             v-for="msg in filteredMessages"
             :message-id="msg.message_id as number"
             :active="false"
         />
       </List>
-
+      <span v-if="!filteredMessages.length && !filteredContact.length" class="text-center mt-5">No result</span>
     </template>
 
   </div>
