@@ -156,12 +156,15 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
     const ids = pulled_messages.map((msg) => msg.message_id);
     for (const message of pulled_messages) {
       messageDict.value[message.message_id] = message;
-      const target = message.sender + message.receiver - user.value.id;
-      if (!messages.value[target]) {
-        messages.value[target] = [];
-      }
-      messages.value[target].push(message);
     }
+    // update messages
+    const new_messages = [...messages.value[activeChatId.value], ...pulled_messages];
+    // sort
+    new_messages.sort((a, b) => a.time - b.time);
+    // unique with id
+    messages.value[activeChatId.value] = new_messages.filter((msg, index, self) => {
+      return self.findIndex((m) => m.message_id === msg.message_id) === index;
+    });
     // uniquely concat
     activeBlock.value.messages = [...new Set(direction === 'start' ? [...ids, ...activeBlock.value.messages] : [...activeBlock.value.messages, ...ids])];
     updateTime(activeBlock.value);
