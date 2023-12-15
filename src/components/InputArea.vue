@@ -189,7 +189,7 @@ const handleFocus = () => {
   const chatMessages = messages.value[activeChatId.value];
   unreadCounter.value[activeChatId.value] = 0;
   for (const m of chatMessages) {
-    if (m.sender !== user.value.id) {
+    if (m.sender !== user.value.id && !m.who_read?.includes(user.value.id)) {
       readMessage(m.message_id as number);
     }
   }
