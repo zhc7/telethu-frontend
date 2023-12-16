@@ -410,7 +410,7 @@ const searchingMessage = ref<boolean>(false);
         </v-list>
         <fieldset class="title-fieldset">
           <legend class="inner">Unread by {{
-              (selectedChatInfo as GroupData).members.length - 1 - (showWhoReadMessage?.who_read as number[])?.length ?? 0
+              (selectedChatInfo as GroupData).members.length - 1 - ((showWhoReadMessage?.who_read as number[])?.length ?? 0)
             }} people
           </legend>
         </fieldset>
