@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {getAsyncMessage} from "../core/messages/receive";
 import {displayHotMessage} from "../utils/notification";
 import {messageFlow} from "../globals";
@@ -11,9 +11,11 @@ const props = defineProps<{
 
 const content = ref("");
 
-getAsyncMessage(props.messageId).then((message: Message) => {
-  content.value = displayHotMessage(message);
-});
+watch(props, () => {
+  getAsyncMessage(props.messageId).then((message: Message) => {
+    content.value = displayHotMessage(message);
+  })
+}, {immediate: true});
 
 const scrollTo = () => {
   messageFlow.value?.jumpTo(props.messageId);

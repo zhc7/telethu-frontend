@@ -338,7 +338,7 @@ defineExpose({
       ref="scroll"
       @load="loadMoreMessage"
       @contextmenu.prevent="openBlankContextMenu"
-      @dblclick="scrollToBottom"
+      @dblclick.prevent="scrollToBottom"
   >
     <div v-for="(group, index) in groupedMessages" :key="index">
       <div class="justify-center ma-1">
@@ -354,7 +354,7 @@ defineExpose({
           :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
           @show-profile="handleDisplayProfile"
           @show-context-menu="(x, y, subject) => $emit('openContextMenu', x, y, subject)"
-          @dblclick="$emit('reference', message)"
+          @dblclick.stop="$emit('reference', message)"
           @click="handleSelectMessage(message)"
           :forward="false"
           @show-who-read="emits('showWhoRead', message)"

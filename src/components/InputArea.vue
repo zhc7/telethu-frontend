@@ -202,13 +202,13 @@ const handleFocus = () => {
     <Stickers v-if="showStickers" class="ml-4" @sticker-click="handleSendMessage"/>
   </v-row>
   <v-alert
-      v-if="referencingMessageId >= 0"
+      :model-value="referencingMessageId >= 0"
       border="start"
       variant="tonal"
       style="overflow: visible"
       class="ml-3 mr-3"
       closable
-      @close="referencingMessageId = -1"
+      @update:model-value="referencingMessageId = -1"
   >
     <MessageBrief :message-id="referencingMessageId"/>
   </v-alert>
