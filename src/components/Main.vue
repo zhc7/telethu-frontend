@@ -11,7 +11,7 @@ import {
   activeChatId,
   colorPickerDialog,
   currentPage, defaultTheme,
-  floatingContactId,
+  floatingContactId, hotMessages,
   isSocketConnected,
   requests,
   showProfileDialog,
@@ -87,6 +87,9 @@ function toggleTheme () {
         >
         </v-list-item>
         <v-divider/>
+<!--        <v-list-item @click="() => {-->
+<!--          console.log(hotMessages);-->
+<!--        }">test</v-list-item>-->
         <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"></ListItem>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts"

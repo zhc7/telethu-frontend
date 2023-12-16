@@ -4,6 +4,7 @@ import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs"
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
+import {maxValue} from "@vuelidate/validators";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -104,13 +105,35 @@ export const cache = ref<{
     [hash: string]: string
 }>({});
 
-export const hotMessages = ref<{
+export const hotMessages = computed<{
     [id: number]: {
         sender: number,
         time: number,
         content: Message,
     } | undefined
-}>({});
+}>(() => {
+    const obj: {
+        [id: number]: {
+            sender: number,
+            time: number,
+            content: Message,
+        } | undefined
+    } = {};
+    for (const id of contacts.value) {
+        const msgs = messages.value[id];
+        if (!msgs || msgs.length === 0) {
+            obj[id] = undefined;
+        } else {
+            const msg = msgs.sort((a, b) => b.time - a.time)[0];
+            obj[id] = {
+                sender: msg.sender,
+                time: msg.time,
+                content: msg,
+            }
+        }
+    }
+    return obj;
+});
 
 export const unreadCounter = ref<{ [id: number]: number }>({});
 
