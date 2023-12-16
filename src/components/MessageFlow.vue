@@ -2,7 +2,7 @@
 import {computed, nextTick, reactive, ref, watch} from "vue";
 import MessagePop from "./MessagePop.vue";
 import {formatChatMessageTime} from "../utils/datetime";
-import {activeChatId, activeMessages, messageDict, messages, nowRef, selectedChatInfo, user} from "../globals";
+import {activeChatId, activeMessages, messageDict, messages, nowRef, selectedChatInfo} from "../globals";
 import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getAsyncMessage} from "../core/messages/receive";
 import axios from "axios";
@@ -20,6 +20,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   openContextMenu: [x: number, y: number, subject: ContextMenuSubject],
+  reference: [message: ContextMenuSubject],
   showWhoRead: [message: Message],
   "update:selected": [value: Array<number>],
 }>();
@@ -332,6 +333,7 @@ defineExpose({
       ref="scroll"
       @load="loadMoreMessage"
       @contextmenu.prevent="openBlankContextMenu"
+      @dblclick="scrollToBottom"
   >
     <div v-for="(group, index) in groupedMessages" :key="index">
       <div class="justify-center ma-1">
@@ -347,6 +349,7 @@ defineExpose({
           :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
           @show-profile="handleDisplayProfile"
           @show-context-menu="(x, y, subject) => $emit('openContextMenu', x, y, subject)"
+          @dblclick="$emit('reference', message)"
           @click="handleSelectMessage(message)"
           :forward="false"
           @show-who-read="emits('showWhoRead', message)"

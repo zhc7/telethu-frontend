@@ -357,6 +357,7 @@ const searchingMessage = ref<boolean>(false);
           v-model:selected="selected"
           @open-context-menu="openContextMenu"
           @show-who-read="showWhoRead"
+          @reference="subject => { contextMenuSubject = subject; dispatchFunction('Reference'); }"
       />
       <MessageContextMenu
           v-if="showContextMenu"
