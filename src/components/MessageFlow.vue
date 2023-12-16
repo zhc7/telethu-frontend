@@ -249,7 +249,11 @@ const scrollToBottom = () => {
 
 const lastMessageId = computed(() => {
   const messageList = messages.value[activeChatId.value];
-  if (messageList === undefined || !messageList.length) {
+  if (messageList === undefined) {
+    messages.value[activeChatId.value] = [];
+    return -1;
+  }
+  if (!messageList.length) {
     return -1;
   }
   return messageList[messageList.length - 1].message_id;
