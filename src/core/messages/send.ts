@@ -10,11 +10,12 @@ export const forwardMessage = (msg: Message | Array<Message>, receiver: number) 
         m_type: msg.constructor === Array ? MessageType.TEXT : (msg as Message).m_type,
         t_type: getUser(receiver).category === "user" ? TargetType.FRIEND : TargetType.GROUP,
         content: msg.constructor === Array ? msg : (msg as Message).content,
+        info: msg.constructor === Array ? undefined : (msg as Message).info,
         receiver,
         sender: user.value.id,
         time: Date.now(),
     };
-    if (msg.constructor !== Array && (msg as Message).m_type === MessageType.TEXT) {
+    if (msg.constructor !== Array && (msg as Message).m_type === MessageType.TEXT && typeof (msg as Message).content === "string") {
         // change to md quote by line
         newMessage.content = "*Forwarded from " + user.value.name + "@" + user.value.id + "*\n\n"
         newMessage.content += ((msg as Message).content as string).split("\n").map((line: string) => "> " + line).join("\n");

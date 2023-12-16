@@ -45,7 +45,12 @@ const previewIconUrl = (extension: string) => {
 }
 
 const getFileInformation = (message: Message) => {
-  let parts = (message.info as string).split('/');
+  let parts;
+  if (typeof message.info !== 'string') {
+    parts = ["Unknown", "Unknown", "Unknown"];
+  } else {
+    parts = (message.info as string).split('/');
+  }
   const url = BASE_API_URL + 'files/' + message.content + '/';
   const icon = previewIconUrl(getFileExtension(parts[0]));
   return {
