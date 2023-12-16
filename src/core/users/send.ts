@@ -13,7 +13,7 @@ import {generateMD5, generateMessageId} from "../../utils/hash";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../../constants";
 import {token} from "../../auth";
-import {requestInsert, requestRemove} from "../data";
+import {requestRemove} from "../data";
 import {formatFileSize, getFileType} from "../files";
 import {chatManager} from "../chat";
 
@@ -112,7 +112,6 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
         },
         message_id: generateMessageId(inputMessage, userId.value, Date.now()),
         pending_status: 'sending',
-        who_read: t_type === TargetType.FRIEND ? false : [],
     };
     chatManager.sendMessage(message);
 };
