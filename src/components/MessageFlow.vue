@@ -122,6 +122,7 @@ const groupedMessages = computed(() => {
     const message = getMessage(messageId);
     if (message === null) {
       if (DEBUG) console.log("null message", messageId);
+      return;
     }
     const messageTimestamp = new Date(message.time).getTime();
     if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {
