@@ -1,11 +1,14 @@
 import {Message, MessageType, TargetType} from "../../utils/structs";
-import {user, userId} from "../../globals";
+import {activeChatId, user, userId} from "../../globals";
 import {generateMessageId} from "../../utils/hash";
 import {chatManager} from "../chat";
 
 export const exitGroup = (id: number | undefined) => {
     if (id === undefined) {
         return;
+    }
+    if (activeChatId.value === id) {
+        activeChatId.value = -1;
     }
     const message: Message = {
         time: Date.now(),
@@ -137,6 +140,9 @@ export const changeGroupName = (groupId: number, newName: string) => {
     chatManager.sendMessage(message);
 }
 export const dismissGroup = (groupId: number) => {
+    if (activeChatId.value === groupId) {
+        activeChatId.value = 0;
+    }
     const message: Message = {
         time: Date.now(),
         m_type: MessageType.FUNC_GROUP_DISMISS,

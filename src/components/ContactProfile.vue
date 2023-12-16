@@ -111,7 +111,7 @@ const handleDelete = () => {
   } else {
     const group = displayContactInfo.value as GroupData;
     if (group.owner === userId.value && group.members.length > 1) {
-      alert('不许退群！成年人要学会负责任，你作为群主退群让其他群成员咋办？起码指定一个接班人再说！')
+      alert('You are the current group owner. Determine a new owner before leaving. ')
     } else {
       exitGroup(displayContactInfo.value.id);
     }

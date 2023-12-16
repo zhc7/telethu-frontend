@@ -1,5 +1,6 @@
 import {Message, MessageType, TargetType} from "../../utils/structs";
 import {
+    activeChatId,
     activeRequestId,
     contactPageProfileSource,
     contacts,
@@ -86,6 +87,9 @@ const applyList = async () => {
 }
 
 const deleteFriend = (id: number) => {
+    if (activeChatId.value === id) {
+        activeChatId.value = 0;
+    }
     const message = {
         time: Date.now(),
         m_type: MessageType.FUNC_DEL_FRIEND,
