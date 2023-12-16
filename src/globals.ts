@@ -123,7 +123,7 @@ export const hotMessages = computed<{
         if (!msgs || msgs.length === 0) {
             obj[id] = undefined;
         } else {
-            const msg = msgs.sort((a, b) => b.time - a.time)[0];
+            const msg = msgs[msgs.length - 1];
             obj[id] = {
                 sender: msg.sender,
                 time: msg.time,
