@@ -14,18 +14,15 @@ const createSocket = () => {
     let first = true;
 
     socket.onopen = () => {
-        if (DEBUG) {
-            console.log("WebSocket Client Connected");
-            isSocketConnected.value = true;
-        }
+        if (DEBUG) console.log("WebSocket Client Connected");
+        isSocketConnected.value = true;
     };
 
     socket.onmessage = (e) => {
         const _message = JSON.parse(e.data);
-        if (DEBUG)
-            console.log('received message: ', _message);
+        if (DEBUG) console.log('received message: ', _message);
         if (first) {
-            console.log("receiving meta data", _message);
+            if (DEBUG) console.log("receiving meta data", _message);
             const idList: Array<number> = _message as Array<number>;
             settingsUpdating.value = true;
             getSettings().then(() => {

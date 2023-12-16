@@ -6,7 +6,7 @@ import {activeChatId, activeMessages, messageDict, messages, nowRef, selectedCha
 import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getAsyncMessage} from "../core/messages/receive";
 import axios from "axios";
-import {BASE_API_URL} from "../constants.ts";
+import {BASE_API_URL, DEBUG} from "../constants.ts";
 import {token} from "../auth.ts";
 import {getUser} from "../core/data.ts";
 import {VInfiniteScroll} from "vuetify/components";
@@ -116,12 +116,12 @@ const groupedMessages = computed(() => {
     messages: Array<Message>,
   }> = [];
   let lastTimestamp: null | number = null;
-  console.log(messages.value[activeChatId.value]);
+  if (DEBUG) console.log(messages.value[activeChatId.value]);
 
   activeBlock.value.messages.forEach((messageId) => {
     const message = getMessage(messageId);
     if (message === null) {
-      console.log("null message", messageId);
+      if (DEBUG) console.log("null message", messageId);
     }
     const messageTimestamp = new Date(message.time).getTime();
     if (lastTimestamp == null || messageTimestamp - lastTimestamp >= 180000) {

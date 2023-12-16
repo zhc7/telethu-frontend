@@ -2,6 +2,7 @@ import {Message, MessageType, TargetType} from "../../utils/structs";
 import {activeChatId, user, userId} from "../../globals";
 import {generateMessageId} from "../../utils/hash";
 import {chatManager} from "../chat";
+import {DEBUG} from "../../constants.ts";
 
 export const exitGroup = (id: number | undefined) => {
     if (id === undefined) {
@@ -21,7 +22,7 @@ export const exitGroup = (id: number | undefined) => {
         message_id: generateMessageId(id, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const groupChangeOwner = (groupId: number, memberId: number) => {
@@ -36,7 +37,7 @@ export const groupChangeOwner = (groupId: number, memberId: number) => {
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const groupAddAdmin = (groupId: number, memberId: number) => {
@@ -51,7 +52,7 @@ export const groupAddAdmin = (groupId: number, memberId: number) => {
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const groupRemoveAdmin = (groupId: number, memberId: number) => {
@@ -66,7 +67,7 @@ export const groupRemoveAdmin = (groupId: number, memberId: number) => {
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const groupAddMember = (groupId: number, memberList: number []) => {
@@ -81,7 +82,7 @@ export const groupAddMember = (groupId: number, memberList: number []) => {
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const removeGroupMember = (groupId: number, memberId: number) => {
@@ -95,7 +96,7 @@ export const removeGroupMember = (groupId: number, memberId: number) => {
         info: "",
         message_id: generateMessageId(memberId, userId.value, Date.now()),
     };
-    console.log('kicking member', JSON.stringify(message));
+    if (DEBUG) console.log('kicking member', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const createGroup = (groupName: string, members: Array<number>) => {
@@ -121,7 +122,7 @@ export const createGroup = (groupName: string, members: Array<number>) => {
         message_id: generateMessageId(members.toString(), userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log('Creating group: ', JSON.stringify(message));
+    if (DEBUG) console.log('Creating group: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 
@@ -136,7 +137,7 @@ export const changeGroupName = (groupId: number, newName: string) => {
         message_id: generateMessageId(newName, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log('Changing group name: ', JSON.stringify(message));
+    if (DEBUG) console.log('Changing group name: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 export const dismissGroup = (groupId: number) => {
@@ -153,6 +154,6 @@ export const dismissGroup = (groupId: number) => {
         message_id: generateMessageId(groupId, userId.value, Date.now()),
         pending_status: 'sending',
     };
-    console.log('Dismissing group: ', JSON.stringify(message));
+    if (DEBUG) console.log('Dismissing group: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }

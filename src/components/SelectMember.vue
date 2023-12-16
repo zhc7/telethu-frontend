@@ -6,6 +6,7 @@ import {getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts} from "../globals.ts";
+import {DEBUG} from "../constants.ts";
 
 const props = withDefaults(defineProps<{
   showDialog: boolean,
@@ -33,7 +34,7 @@ const actUnselect = (id: number) => {
     selectedStuff.value = 0;
     return;
   }
-  console.log(selectedStuff.value);
+  if (DEBUG) console.log(selectedStuff.value);
   selectedStuff.value = (selectedStuff.value as Array<number>).filter((i) => {
     return id !== i;
   });

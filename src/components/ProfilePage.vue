@@ -3,8 +3,8 @@ import {logout, token} from "../auth.ts";
 import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
-import {BASE_API_URL} from "../constants.ts";
-import {blacklist, settings, user, userEmail, userId, userName} from "../globals.ts";
+import {BASE_API_URL, DEBUG} from "../constants.ts";
+import {blacklist, settings, user, userId} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {editProfile} from "../core/users/profile.ts";
 
@@ -16,7 +16,7 @@ const triggerFileInput = () => {
 };
 
 const handleUploadAvatar = (event: any) => {
-  console.log(event);
+  if (DEBUG) console.log(event);
   const avatar = event.target.files[0];
   avatar.url = URL.createObjectURL(avatar);
   axios.post(BASE_API_URL + 'users/avatar/', avatar, {
@@ -25,7 +25,7 @@ const handleUploadAvatar = (event: any) => {
       Authorization: token.value,
     }
   }).then((response) => {
-    console.log("HTTP upload avatar successful -> ", response);
+    if (DEBUG) console.log("HTTP upload avatar successful -> ", response);
   }).then(() => {
     axios.get(BASE_API_URL + 'users/avatar', {
       headers: {
@@ -33,7 +33,7 @@ const handleUploadAvatar = (event: any) => {
       },
       responseType: 'blob',
     }).then((response) => {
-          console.log('userAvatar: ', response.data);
+          if (DEBUG) console.log('userAvatar: ', response.data);
           const reader = new FileReader();
           reader.readAsDataURL(response.data); // change Blob into Base64
           reader.onloadend = () => {
@@ -42,7 +42,7 @@ const handleUploadAvatar = (event: any) => {
         }
     )
   }).catch((error) => {
-    console.log(error);
+    if (DEBUG) console.log(error);
   })
 };
 
@@ -104,12 +104,12 @@ const handleConfirm = () => {
   if (editingEntry.value === 'username') {
     http = true;
     newProfile.name = inputValue.value;
-    console.log('changing username to ' + inputValue.value);
+    if (DEBUG) console.log('changing username to ' + inputValue.value);
   }
   if (editingEntry.value === 'email') {
     http = true;
     newProfile.email = inputValue.value;
-    console.log('changing email to ' + inputValue.value);
+    if (DEBUG) console.log('changing email to ' + inputValue.value);
   }
   if (editingEntry.value === 'phone') {
     settings.value.phone = inputValue.value;

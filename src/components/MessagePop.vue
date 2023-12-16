@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, onMounted, onUpdated, Ref, ref} from "vue";
-import {BASE_API_URL} from "../constants.ts";
+import {BASE_API_URL, DEBUG} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
 import {bigImageSource, floatingContactId, showBigImage, showProfileDialog, user, userId} from "../globals.ts";
@@ -64,11 +64,11 @@ const getFileInformation = (message: Message) => {
 
 const download = (retry: number) => {
   if (retry === 2) return;
-  console.log('filename: ', props.message.content);
+  if (DEBUG) console.log('filename: ', props.message.content);
   downloadFile(props.message.content as string).then((url) => {
     blobSrc.value = url;
   }).catch((e) => {
-    console.log("an error occurred when fetching data", e);
+    if (DEBUG) console.log("an error occurred when fetching data", e);
     setTimeout(() => {
       download(retry + 1);
     }, 200 + retry * 500);
@@ -99,7 +99,7 @@ const handleMentionClick = (event: Event) => {
   const userId = (event.target! as HTMLElement).getAttribute('data-user-id');
   if (userId) {
     // 处理点击事件
-    console.log(`Mention clicked for user ID: ${userId}`);
+    if (DEBUG) console.log(`Mention clicked for user ID: ${userId}`);
     showProfileDialog.value = true;
     floatingContactId.value = parseInt(userId);
   }
@@ -116,7 +116,7 @@ const addMentionEventListeners = () => {
 onMounted(addMentionEventListeners);
 onUpdated(addMentionEventListeners);
 
-console.log("message", props.message);
+if (DEBUG) console.log("message", props.message);
 </script>
 
 <template>

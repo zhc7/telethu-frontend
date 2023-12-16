@@ -1,5 +1,5 @@
 import axios from "axios";
-import {BASE_API_URL} from "../constants";
+import {BASE_API_URL, DEBUG} from "../constants";
 import {token} from "../auth";
 
 function getFileExtension(filename: string): string {
@@ -56,10 +56,10 @@ const uploadFiles = (file: File, md5: string, updateLoading: Function) => {
             }
             let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             updateLoading(percentCompleted);
-            console.log("Percent completed -> ", percentCompleted);
+            if (DEBUG) console.log("Percent completed -> ", percentCompleted);
         }
     }).then(res => {
-        console.log("HTTP upload successful -> ", res);
+        if (DEBUG) console.log("HTTP upload successful -> ", res);
         return res;
     }).catch(err => {
         console.error("Error when http uploading file -> ", err);

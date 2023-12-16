@@ -4,7 +4,7 @@ import {getUser} from "../core/data";
 import {bigImageSource, cache, showBigImage} from "../globals";
 import axios from "axios";
 import {token} from "../auth";
-import {BASE_API_URL} from "../constants";
+import {BASE_API_URL, DEBUG} from "../constants";
 
 const props = withDefaults(defineProps<{
   displayBigAvatar?: boolean,
@@ -40,7 +40,7 @@ const getAvatar = async (hash: string): Promise<string> => {
       }
     });
   } catch (error) {
-    console.log("error fetching", error);
+    if (DEBUG) console.log("error fetching", error);
     return '/Logo.png'
   }
 }

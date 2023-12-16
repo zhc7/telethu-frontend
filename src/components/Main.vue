@@ -30,18 +30,18 @@ const router = useRouter();
 const props = defineProps(['page'])
 const activePage = computed({
   get: () => {
-    console.log("getting " + props.page);
+    if (DEBUG) console.log("getting " + props.page);
     return props.page;
   },
   set: (value) => {
     currentPage.value = '' + value;
-    console.log("pushing " + value);
+    if (DEBUG) console.log("pushing " + value);
     router.replace(value);
   }
 });
 
 onMounted(() => {
-  console.log("page " + activePage.value);
+  if (DEBUG) console.log("page " + activePage.value);
   createSocket();
 });
 
@@ -66,6 +66,7 @@ onMounted(() => {
 });
 
 import { useTheme } from 'vuetify'
+import {DEBUG} from "../constants.ts";
 
 const theme = useTheme()
 
@@ -87,9 +88,6 @@ function toggleTheme () {
         >
         </v-list-item>
         <v-divider/>
-<!--        <v-list-item @click="() => {-->
-<!--          console.log(hotMessages);-->
-<!--        }">test</v-list-item>-->
         <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"></ListItem>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts"

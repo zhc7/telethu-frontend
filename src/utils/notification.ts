@@ -1,7 +1,8 @@
 import {Message, MessageType} from "./structs";
+import {DEBUG} from "../constants.ts";
 
 export const sendNotification = (message: Message) => {
-    console.log("sending notification", message);
+    if (DEBUG) console.log("sending notification", message);
     if (window.Notification.permission === "granted") {
         new Notification("New Message!", {
             body: message.content as string,

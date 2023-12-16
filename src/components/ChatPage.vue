@@ -145,10 +145,8 @@ const handleClickBlank = () => {
 }
 
 onMounted(() => {
-  if (DEBUG) {
-    console.log('contacts value here', users.value);
-  }
-  console.log('in chat page', users.value);
+  if (DEBUG) console.log('contacts value here', users.value);
+  if (DEBUG) console.log('in chat page', users.value);
   document.addEventListener("click", closeContextMenu);
 });
 
@@ -175,13 +173,13 @@ const shareMessage = (msg: Message) => {
     return;
   }
   selected.value.push(msg.message_id);
-  console.log('shared messages: ', selected.value);
+  if (DEBUG) console.log('shared messages: ', selected.value);
   shareMessageDialog.value = true;
-  console.log('share', selected.value);
+  if (DEBUG) console.log('share', selected.value);
 };
 
 const handleShareMessages = (target: Array<number>) => {
-  console.log('sharing messages', selected.value);
+  if (DEBUG) console.log('sharing messages', selected.value);
   let forwardContent;
   if (selectionMode.value) {
     forwardContent = [];

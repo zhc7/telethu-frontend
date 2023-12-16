@@ -1,7 +1,7 @@
 import {Message, UserData} from "../../utils/structs.ts";
 import {user} from "../../globals.ts";
 import axios from "axios";
-import {BASE_API_URL} from "../../constants.ts";
+import {BASE_API_URL, DEBUG} from "../../constants.ts";
 import {token} from "../../auth.ts";
 import {getSettings, postSettings} from "../data.ts";
 
@@ -11,7 +11,7 @@ export const editProfile = async (newProfile: any, http: boolean = true) => {
         if (res.data === 'True') {
             return;
         }
-        console.log('email exists: ', res);
+        if (DEBUG) console.log('email exists: ', res);
     }
     if (http) {
         const response = await axios.post(BASE_API_URL + 'users/edit_profile', newProfile, {
@@ -19,12 +19,12 @@ export const editProfile = async (newProfile: any, http: boolean = true) => {
                 Authorization: token.value,
             }
         });
-        console.log('edited profile: ', response);
+        if (DEBUG) console.log('edited profile: ', response);
         user.value = {
             ...user.value,
             ...response.data,
         };
-        console.log('new info:', user.value);
+        if (DEBUG) console.log('new info:', user.value);
     } else {
         postSettings().then(() => {
             getSettings();

@@ -29,7 +29,7 @@ const applyFriend = (friendId: number) => {
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     }
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 };
 
@@ -44,7 +44,7 @@ const acceptFriend = async (friendId: number) => {
         info: "",
         message_id: generateMessageId(friendId, userId.value, Date.now()),
     };
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
     contacts.value.push(friendId);
     requestRemove(friendId);
@@ -66,7 +66,7 @@ const rejectFriend = (friendId: number) => {
         selectedContactInfo.value = undefined;
     }
     requestRemove(friendId);
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 };
 
@@ -76,13 +76,11 @@ const applyList = async () => {
             Authorization: token.value,
         }
     }).then((response) => {
-        if (DEBUG) {
-            console.log('apply_list', response.data);
-        }
+        if (DEBUG) console.log('apply_list', response.data);
         requests.value = response.data.list;
-        console.log('get request list', response.data.list);
+        if (DEBUG) console.log('get request list', response.data.list);
 
-        console.log('requests', requests.value);
+        if (DEBUG) console.log('requests', requests.value);
     });
 }
 
@@ -100,7 +98,7 @@ const deleteFriend = (id: number) => {
         info: "",
         message_id: generateMessageId(id, userId.value, Date.now()),
     };
-    console.log('deleting friend', JSON.stringify(message));
+    if (DEBUG) console.log('deleting friend', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
@@ -143,7 +141,7 @@ const blockFriend = (friendId: number) => {
         message_id: generateMessageId(friendId, userId.value, Date.now()),
         pending_status: 'sending',
     }
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 const unblockFriend = (friendId: number) => {
@@ -158,12 +156,12 @@ const unblockFriend = (friendId: number) => {
         message_id: generateMessageId(friendId, userId.value, Date.now()),
         pending_status: 'sending',
     }
-    console.log(JSON.stringify(message));
+    if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
 const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_type: MessageType) => {
     const md5 = await generateMD5(file);
-    console.log("md5 -> ", md5);
+    if (DEBUG) console.log("md5 -> ", md5);
     const message: Message = {
         time: Date.now(),
         m_type: m_type,

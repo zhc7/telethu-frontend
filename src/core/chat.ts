@@ -61,7 +61,7 @@ const chatManager: {
     sentMessages: {},
 
     sendMessage(message: Message) {
-        console.log("sending message from manager", message);
+        if (DEBUG) console.log("sending message from manager", message);
         message.pending_status = 'sending';
         message = reactive(message);
         if (message.m_type <= 5) {
@@ -112,14 +112,11 @@ const chatManager: {
         const ack: Ack = {
             message_id: message.message_id as number,
         }
-        console.log("receive message and send ack", ack);
+        if (DEBUG) console.log("receive message and send ack", ack);
         socket.send(JSON.stringify(ack));
     },
 
     receiveAck(ack: Ack) {
-        if (DEBUG) {
-            // console.log("received ack", ack);
-        }
         this._updateMessage(ack);
     },
 
@@ -155,7 +152,7 @@ const chatManager: {
         message.message_id = ack.message_id;
         if (message.m_type < MessageType.FUNCTION) {
             let old_messages = messages.value[message.receiver];
-            console.log('get old_message', old_messages);
+            if (DEBUG) console.log('get old_message', old_messages);
             const existing = old_messages.findIndex((m) => m.message_id === ack.reference);
             if (existing !== -1) {
                 old_messages.splice(existing, 1);
@@ -165,7 +162,7 @@ const chatManager: {
 }
 
 const getHistoryMessage = async (id: number, from: number, t_type: TargetType, num: number) => {
-    console.log("pulling from: ", from);
+    if (DEBUG) console.log("pulling from: ", from);
     return axios.get(BASE_API_URL + "chat/history", {
         params: {
             id, from, t_type, num,
@@ -188,7 +185,7 @@ const getHistoryMessage = async (id: number, from: number, t_type: TargetType, n
                 last_time = msg.time;
             }
         }
-        console.log(new_msg);
+        if (DEBUG) console.log(new_msg);
         messages.value[id] = new_msg;
         if (new_msg.length) {
             hotMessages.value[id] = {
@@ -203,7 +200,7 @@ const getHistoryMessage = async (id: number, from: number, t_type: TargetType, n
 
 const updateReceiverInfo = (msg: Message) => {
     const updated = getUser(msg.receiver, true);
-    console.log("updated receiver info", updated);
+    if (DEBUG) console.log("updated receiver info", updated);
 }
 
 

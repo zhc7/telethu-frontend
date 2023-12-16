@@ -18,6 +18,7 @@ import RequestList from "./RequestList.vue";
 import ContactProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
 import {acceptFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
+import {DEBUG} from "../constants.ts";
 
 
 defineEmits(["chat"]);
@@ -43,7 +44,7 @@ const handleContactList = () => {
 
 const handleRequestList = () => {
   contactPageContentLeft.value = 1;
-  console.log(friendRequests.value);
+  if (DEBUG) console.log(friendRequests.value);
 };
 
 const handleRequestPass = async (id: number) => {

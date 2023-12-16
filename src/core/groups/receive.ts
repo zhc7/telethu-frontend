@@ -1,13 +1,14 @@
 import {Message} from "../../utils/structs.ts";
 import {contacts, userId} from "../../globals.ts";
 import {getUser} from "../data.ts";
+import {DEBUG} from "../../constants.ts";
 
 export const handleAddGroupMember = (message: Message) => {
     alert('haha')
-    console.log('adding member to group', message);
+    if (DEBUG) console.log('adding member to group', message);
     // FUNC_ADD_GROUP_MEMBER
     getUser(message.receiver, true);
-    console.log('member added');
+    if (DEBUG) console.log('member added');
 };
 export const handleSomebodyExitGroup = (message: Message) => {
     const memberId = message.sender;
@@ -24,7 +25,7 @@ export const handleGroupOwnerChanged = (message: Message) => {
         getUser(content as number, true);
     } else {
         alert(content);
-        console.log('in group add admin', message);
+        if (DEBUG) console.log('in group add admin', message);
     }
 }
 export const handleGroupAdminAdded = (message: Message) => {
@@ -33,7 +34,7 @@ export const handleGroupAdminAdded = (message: Message) => {
         getUser(content as number, true);
     } else {
         alert(content);
-        console.log('in group add admin', message);
+        if (DEBUG) console.log('in group add admin', message);
     }
 }
 export const handleGroupAdminRemoved = (message: Message) => {

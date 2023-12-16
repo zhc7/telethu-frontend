@@ -20,9 +20,7 @@ if (userId.value !== -1) {
 const submit = () => {
   login(account.value, password.value)
       .then((message) => {
-        if (DEBUG) {
-          console.log("received message: " + message);
-        }
+        if (DEBUG) console.log("received message: " + message);
         if (message === "") {
           router.push("/");
         } else {

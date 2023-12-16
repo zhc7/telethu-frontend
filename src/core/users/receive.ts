@@ -3,6 +3,7 @@ import {contactPageProfileSource, contacts, messages, selectedContactInfo, user}
 import {applyList} from "./send";
 import {getBlackList} from "../data.ts";
 import {getAsyncMessage} from "../messages/receive.ts";
+import {DEBUG} from "../../constants.ts";
 
 export const handleDeleteFriend = (message: Message) => {
     contacts.value = contacts.value.filter(id => id !== message.sender && id !== message.receiver);
@@ -29,18 +30,18 @@ export const handleApplicationAccepted = (message: Message) => {
 }
 
 export const handleSearchResult = (message: Message) => {
-    console.log(message.content);
+    if (DEBUG) console.log(message.content);
     selectedContactInfo.value = message.content as ContactsData;
     contactPageProfileSource.value = "searchResult";
 }
 
 export const handleReceiveMessageRead = (message: Message) => {
-    console.log("read message", message);
+    if (DEBUG) console.log("read message", message);
     let target = [message.sender, message.receiver][message.t_type];
     if (target === user.value.id) {
         return;
     }
-    console.log('message read: ', messages.value[target]);
+    if (DEBUG) console.log('message read: ', messages.value[target]);
     let m = messages.value[target].find(m => m.message_id === message.content);
     if (m === undefined) {
         // TODO: handle this properly
@@ -48,12 +49,12 @@ export const handleReceiveMessageRead = (message: Message) => {
     }
     m = m as Message;
     if (m.sender !== user.value.id) {
-        console.log("error receive read:", target, m, "not send by this user");
+        if (DEBUG) console.log("error receive read:", target, m, "not send by this user");
         return;
     }
     getAsyncMessage(m.message_id as number).then((message) => {
         if (message === undefined) {
-            console.log("error receive read:", target, m, "not found");
+            if (DEBUG) console.log("error receive read:", target, m, "not found");
             return;
         }
         m!.who_read = message.who_read;

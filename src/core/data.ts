@@ -1,6 +1,6 @@
 import {activeRequestId, blacklist, requests, settings, users} from "../globals";
 import axios from "axios";
-import {BASE_API_URL} from "../constants";
+import {BASE_API_URL, DEBUG} from "../constants";
 import {ContactsData} from "../utils/structs";
 import {token} from "../auth.ts";
 
@@ -28,7 +28,7 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
                 (users.value[id][key as keyof ContactsData] as any) = data[key];
             }
         }).catch((err) => {
-            console.log(err);
+            if (DEBUG) console.log(err);
         })
     }
     return users.value[id];
@@ -68,7 +68,7 @@ export const getSettings = async () => {
         } else {
             postSettings().then();
         }
-        console.log('got settings: ', response.data);
+        if (DEBUG) console.log('got settings: ', response.data);
     });
 };
 
@@ -78,7 +78,7 @@ export const getBlackList = async () => {
             Authorization: token.value,
         }
     }).then((response) => {
-        console.log('got black list', response.data);
+        if (DEBUG) console.log('got black list', response.data);
         blacklist.value = response.data["block_list"];
     });
 }

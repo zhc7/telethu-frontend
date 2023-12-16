@@ -21,6 +21,7 @@ import MessagePopItem from "./MessagePopItem.vue";
 import {Message, MessageType} from "../utils/structs.ts";
 import Avatar from "./Avatar.vue";
 import list from "./List.vue";
+import {DEBUG} from "../constants.ts";
 
 const createGroupDialog = ref(false);
 
@@ -102,7 +103,7 @@ const filteredContact = computed(() => {
 })
 
 watch(searchFriendInput, () => {
-  console.log('messages', messages.value);
+  if (DEBUG) console.log('messages', messages.value);
   emit('update:modelValue', searchText.value && searchFriendInput.value);
 });
 

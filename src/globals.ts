@@ -4,7 +4,6 @@ import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs"
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
-import {maxValue} from "@vuelidate/validators";
 
 
 export const nowRef = ref<number>(Date.now());

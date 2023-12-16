@@ -8,6 +8,7 @@ import {getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
 import selectMember from "./SelectMember.vue";
 import MessageBrief from "./MessageBrief.vue";
+import {DEBUG} from "../constants.ts";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -70,7 +71,7 @@ const handlePreviewFiles = (event: Event) => {
   if (target && target.files) {
     const files = target.files;
     processFilesForPreview(files);
-    console.log(uploadingFiles.value);
+    if (DEBUG) console.log(uploadingFiles.value);
   }
 };
 

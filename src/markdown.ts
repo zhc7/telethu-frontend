@@ -7,6 +7,7 @@ import {ref} from "vue";
 import axios from "axios";
 import {getUser} from "./core/data.ts";
 import {ContactsData, GroupData, Message} from "./utils/structs.ts";
+import {DEBUG} from "./constants.ts";
 
 const emojisLoaded = ref(false);
 // Get all the emojis available to use on GitHub.
@@ -17,7 +18,7 @@ axios.get("/github_emoji.json").then((res) => {
         unicode: false,
     };
     marked.use(markedEmoji(options));
-    console.log("emojis loaded");
+    if (DEBUG) console.log("emojis loaded");
     // rerender the message
     emojisLoaded.value = true;
 })

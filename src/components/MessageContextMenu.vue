@@ -3,6 +3,7 @@
 import List from "./List.vue";
 import ListItem from "./ListItem.vue";
 import {nextTick, onMounted, ref} from "vue";
+import {DEBUG} from "../constants.ts";
 
 const props = defineProps<{
   x: number,
@@ -27,7 +28,7 @@ onMounted(() => {
   nextTick().then(() => {
     show.value = false;
     // calculate menu size
-    console.log(menu.value);
+    if (DEBUG) console.log(menu.value);
     const menuWidth = menu.value!.$el.clientWidth;
     const menuHeight = menu.value!.$el.clientHeight;
     // calculate x and y
@@ -45,7 +46,7 @@ onMounted(() => {
     } else {
       y.value = props.y;
     }
-    console.log(menuHeight, menuWidth, windowHeight, windowWidth, y.value, x.value, props.y, props.x);
+    if (DEBUG) console.log(menuHeight, menuWidth, windowHeight, windowWidth, y.value, x.value, props.y, props.x);
     nextTick().then(() => show.value = true);
   })
 });
