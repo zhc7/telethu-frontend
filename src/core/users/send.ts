@@ -127,7 +127,6 @@ const searchForFriend = async (info: number | string) => {
         }
     });
     searchResults.value = result.data.users;
-    activeSearchId.value = result.data.users[0].id;
 }
 const blockFriend = (friendId: number) => {
     const message: Message = {
