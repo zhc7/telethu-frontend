@@ -7,10 +7,10 @@ import {friendRequests,} from "../core/chat.ts";
 import {
   activeContactId,
   activeRequestId,
+  activeSearchId,
   contactPageContentLeft,
   contactPageProfileSource,
   requests,
-  searchedId,
   selectedContactInfo
 } from "../globals.ts"
 
@@ -18,6 +18,7 @@ import RequestList from "./RequestList.vue";
 import ContactProfile from "./ContactProfile.vue";
 import {getUser} from "../core/data.ts";
 import {acceptFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
+import SearchResultList from "./SearchResultList.vue";
 import {DEBUG} from "../constants.ts";
 
 
@@ -35,7 +36,7 @@ const selectRequest = async (newRequestId: number) => {
 };
 
 const search = () => {
-  searchForFriend(+searchInput.value);
+  searchForFriend(searchInput.value);
 };
 
 const handleContactList = () => {
@@ -110,6 +111,7 @@ watch(activeRequestId, selectRequest);
               hide-details
               density="compact"
               class="mt-3"
+              @input="(searchInput ? search : () => {})()"
           >
             <template #prepend>
               <v-icon v-if="!displayGroup" @click="displayGroup = !displayGroup">mdi-account</v-icon>
@@ -129,9 +131,13 @@ watch(activeRequestId, selectRequest);
       />
       <RequestList
           v-model="activeRequestId"
-          v-show="contactPageContentLeft === 1"
+          v-show="contactPageContentLeft === 1 && !searchInput"
           @accept="(acceptId) => handleRequestPass(acceptId)"
           @reject="(rejectId) => handleRequestReject(rejectId)"
+      />
+      <SearchResultList
+          v-model="activeSearchId"
+          v-show="contactPageContentLeft === 1 && searchInput"
       />
     </v-col>
     <v-col
@@ -154,7 +160,7 @@ watch(activeRequestId, selectRequest);
       <ContactProfile
           v-show="contactPageProfileSource === 'searchResult'"
           class="overflow-y-auto"
-          :contact-id="searchedId"
+          :contact-id="activeSearchId"
       >
       </ContactProfile>
     </v-col>

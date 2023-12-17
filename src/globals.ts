@@ -16,7 +16,7 @@ export const activeContactId = ref<number>(-1);
 export const activeRequestId = ref<number>(-1);
 export const activeMessageId = ref<number>(-1);
 export const referencingMessageId = ref<number>(-1);
-export const searchedId = ref<number>(-1);
+export const activeSearchId = ref<number>(-1);
 export const contactPageContentLeft = ref<number>(0);
 
 export const selectedContactInfo = ref<ContactsData | undefined>(undefined);
@@ -26,6 +26,7 @@ export const selectedChatInfo = ref<ContactsData | undefined>(undefined);
 export const users = useLocalStorage<Users>("users", {});
 export const contacts = ref<Array<number>>([]);
 export const requests = ref<Array<number>>([]);
+export const searchResults = ref<Array<UserData>>([]);
 export const blacklist = ref<Array<number>>([]);
 export const user = useLocalStorage<UserData>("user", {
     id: -1,

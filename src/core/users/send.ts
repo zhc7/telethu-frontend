@@ -6,9 +6,9 @@ import {
     contacts,
     referencingMessageId,
     requests,
-    searchedId,
+    activeSearchId,
     selectedContactInfo,
-    userId
+    userId, searchResults
 } from "../../globals";
 import {generateMD5, generateMessageId} from "../../utils/hash";
 import axios from "axios";
@@ -117,17 +117,17 @@ const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetTyp
     };
     chatManager.sendMessage(message);
 };
-const searchForFriend = async (friendId: number) => {
+const searchForFriend = async (info: number | string) => {
     const result = await axios.post(BASE_API_URL + 'users/user_search', {
         type: 0,
-        info: friendId,
+        info: info,
     }, {
         headers: {
             Authorization: token.value,
         }
     });
-    searchedId.value = result.data.users[0].id;
-    contactPageProfileSource.value = 'searchResult';
+    searchResults.value = result.data.users;
+    activeSearchId.value = result.data.users[0].id;
 }
 const blockFriend = (friendId: number) => {
     const message: Message = {
