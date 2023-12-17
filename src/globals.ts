@@ -135,6 +135,10 @@ export const hotMessages = computed<{
     return obj;
 });
 
+export const editingMessage = ref<{
+    [id: number]: string,
+}>({});
+
 export const unreadCounter = ref<{ [id: number]: number }>({});
 
 export const userContacts = computed(() => {

@@ -2,7 +2,7 @@
 import {computed, ref, watch} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
-import {activeChatId, messages, referencingMessageId, unreadCounter, user, users} from "../globals.ts";
+import {activeChatId, editingMessage, messages, referencingMessageId, unreadCounter, user, users} from "../globals.ts";
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 import {getUser} from "../core/data.ts";
 import {GroupData} from "../utils/structs.ts";
@@ -98,8 +98,12 @@ const handleSendMessage = () => {
   }
 };
 
-watch(activeChatId, () => {
+watch(activeChatId, (newValue, oldValue) => {
   referencingMessageId.value = -1;
+  if (oldValue > 0) {
+    editingMessage.value[oldValue] = message.value;
+    message.value = editingMessage.value[newValue] ?? '';
+  }
 });
 
 const loading = ref(false);

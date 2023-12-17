@@ -7,7 +7,7 @@ import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {
   activeChatId,
-  contacts,
+  contacts, editingMessage,
   floatingContactId,
   messages,
   referencingMessageId,
