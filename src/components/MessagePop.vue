@@ -156,7 +156,7 @@ if (DEBUG) console.log("message", props.message);
         </v-icon>
         <div @contextmenu.stop="openContextMenu">
           <div
-              v-if="message.m_type === MessageType.TEXT && typeof message.content === 'string'"
+              v-if="message.m_type === MessageType.TEXT && typeof message.content === 'string' && (!message.status || !(message.status & 2))"
               ref="messagePop"
               class="pa-2 rounded-lg text-left message-pop"
               :class="message.sender === userId ? ['bubble-right'] : ['bubble-left']"
@@ -170,6 +170,13 @@ if (DEBUG) console.log("message", props.message);
                  :key="emojisLoaded.toString()"
                  v-html="markdown2Html(message, getUser(props.message.receiver))"
             />
+          </div>
+          <div v-else-if="message.m_type === MessageType.TEXT && message.status && (message.status & 2)">
+            <v-list-item style="background-color: #b8c6ea" class="ml-3 mr-3 rounded-lg border">
+              <v-list-item-title>
+                Recalled Message
+              </v-list-item-title>
+            </v-list-item>
           </div>
           <div
               v-else-if="message.m_type === MessageType.TEXT && message.content instanceof Array"

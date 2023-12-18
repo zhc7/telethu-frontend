@@ -3,6 +3,7 @@ import axios from "axios";
 import {messages, user} from "../../globals.ts";
 import {token} from "../../auth.ts";
 import {BASE_API_URL} from "../../constants.ts";
+import {callSnackbar} from "../../utils/snackbar.ts";
 
 export const getAsyncMessage = async (messageId: number): Promise<Message> => {
     return axios.get(BASE_API_URL + `chat/message/${messageId}`, {
@@ -20,9 +21,11 @@ export const handleRecallMessage = (message: Message) => {
     const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
     let targetMessage = messages.value[target].find((m: Message) => m.message_id === message.content);
     if (targetMessage === undefined) {
+        callSnackbar(message.content as string, "error");
         return;
     }
     targetMessage.content = "*message recalled*";
+    callSnackbar("message recalled", "info");
 }
 
 export const handleDeleteMessage = (message: Message) => {

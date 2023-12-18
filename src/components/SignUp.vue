@@ -6,6 +6,7 @@ import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 defineEmits(["finished"])
 
@@ -24,19 +25,13 @@ const rules = {
 }
 const $v = useVuelidate(rules, {signupAccount, signupPassword});
 
-
-const snackbar = ref(false);
-const snackbarText = ref("");
-const timeout = ref(2000);
-
 const router = useRouter();
 
 const submitRegister = async () => {
   await register(signupName.value, signupAccount.value, signupPassword.value, verifyCode.value).then(() => {
     currentPage.value += 1;
   }).catch((error) => {
-    snackbarText.value = error;
-    snackbar.value = true;
+    callSnackbar(error, "red");
   });
 };
 
@@ -49,14 +44,12 @@ const loginDirectly = async () => {
 const next = async () => {
   if (currentPage.value === 1) {
     if ($v.value.signupAccount.$invalid) {
-      snackbarText.value = "Invalid email!";
-      snackbar.value = true;
+      callSnackbar("Invalid email!", "red");
       return;
     } else {
       const res = await axios.get(BASE_API_URL + 'users/email_exists/' + signupAccount.value);
       if (res.data === 'True') {
-        snackbarText.value = "Email duplicated!";
-        snackbar.value = true;
+        callSnackbar("Email already exists!", "red");
         return;
       }
     }
@@ -66,8 +59,7 @@ const next = async () => {
     }
   } else if (currentPage.value === 3) {
     if (signupPassword.value !== confirmPassword.value || signupPassword.value === "") {
-      snackbarText.value = "Password not match!";
-      snackbar.value = true;
+      callSnackbar("Password not match!", "red");
       signupPassword.value = "";
       confirmPassword.value = "";
       return;
@@ -79,8 +71,7 @@ const next = async () => {
 
 const applyForVerifyCode = () => {
   getVerifyCode(signupAccount.value).catch((error) => {
-    snackbarText.value = error;
-    snackbar.value = true;
+    callSnackbar(error, "red");
   });
   countdown.value = 60;
   const timer = setInterval(() => {
@@ -256,18 +247,8 @@ const cancel = () => {
             Verify
           </v-btn>
         </v-card-actions>
-
       </v-card>
     </v-dialog>
-
-    <v-snackbar v-model="snackbar" :timeout="timeout">
-      {{ snackbarText }}
-      <template v-slot:actions>
-        <v-btn color="red" variant="text" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
 </template>
 
