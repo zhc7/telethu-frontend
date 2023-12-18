@@ -318,8 +318,10 @@ const searchingMessage = ref<boolean>(false);
         <v-toolbar-title align="left" class="ml-8">
           <div v-if="selectionMode" class="d-flex">
             <v-btn
-                color="blue"
+                color="primary"
                 @click="handleForwardGroupMessage"
+                prepend-icon="mdi-export-variant"
+                variant="tonal"
             >
               Forward {{ selected.length }}
             </v-btn>

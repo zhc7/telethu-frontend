@@ -71,13 +71,19 @@ const submit = () => {
         ></v-text-field>
 
         <v-row>
-          <v-col cols="6">
-            <v-btn color="primary" class="login-btn" @click="submit"
-            >Sign in
-            </v-btn
-            >
+          <v-col cols="4">
+            <div class="d-flex justify-start">
+              <v-btn
+                  color="primary"
+                  @click="submit"
+                  size="large"
+                  class="ml-10"
+              >
+                Sign in
+              </v-btn>
+            </div>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="8">
             <SignUp/>
           </v-col>
         </v-row>
