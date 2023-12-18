@@ -98,7 +98,24 @@ const switchValueBlock = computed<boolean>({
 const router = useRouter();
 
 const memberInfoTable = computed(() => {
-  return (displayContactInfo.value as GroupData).members;
+  // 使群主排在第一位，管理员排在第二位，其他人排在后面
+  const group = displayContactInfo.value as GroupData;
+  const members = group.members;
+  const admin = group.admin;
+  const owner = group.owner;
+  const result = [];
+  result.push(owner);
+  for (const i of admin) {
+    if (i !== owner) {
+      result.push(i);
+    }
+  }
+  for (const i of members) {
+    if (i !== owner && !admin.includes(i)) {
+      result.push(i);
+    }
+  }
+  return result;
 })
 
 const handleDelete = () => {
