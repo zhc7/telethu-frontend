@@ -16,6 +16,7 @@ const signupPassword = ref("");
 const confirmPassword = ref("");
 const currentPage = ref(1);
 const verifyCode = ref("");
+const countdown = ref(0);
 
 const rules = {
   signupAccount: {required, email},
@@ -64,7 +65,7 @@ const next = async () => {
       signupName.value = signupAccount.value.split('@')[0];
     }
   } else if (currentPage.value === 3) {
-    if (signupPassword.value !== confirmPassword.value) {
+    if (signupPassword.value !== confirmPassword.value || signupPassword.value === "") {
       snackbarText.value = "Password not match!";
       snackbar.value = true;
       signupPassword.value = "";
@@ -81,6 +82,13 @@ const applyForVerifyCode = () => {
     snackbarText.value = error;
     snackbar.value = true;
   });
+  countdown.value = 60;
+  const timer = setInterval(() => {
+    countdown.value -= 1;
+    if (countdown.value === 0) {
+      clearInterval(timer);
+    }
+  }, 1000);
 }
 
 const cancel = () => {
@@ -126,7 +134,7 @@ const cancel = () => {
 
         <div v-if="currentPage === 2">
           <v-card-title>
-            <h3 class="ml-4 mt-4">Your username(changeable)</h3>
+            <h3 class="ml-4 mt-4">Your username</h3>
           </v-card-title>
           <v-card-text>
             <v-text-field
@@ -139,7 +147,7 @@ const cancel = () => {
                 clearable
                 class="ma-4"
             ></v-text-field>
-            <p class="ml-4"></p>
+            <p class="ml-4">You can change your username anytime.</p>
           </v-card-text>
         </div>
 
@@ -210,8 +218,11 @@ const cancel = () => {
                 class="ma-4"
                 :input-length="6"
             ></v-otp-input>
-            <div class="ml-4">Didn't receive the code? <a href="#" @click.prevent="verifyCode = ''"
-                                                          @click="getVerifyCode(signupAccount)">Resend</a></div>
+            <div class="ml-4">
+              <p>Didn't receive the code?</p>
+              <a href="#" v-if="countdown === 0" @click.prevent="applyForVerifyCode">Resend</a>
+              <span v-else>Resend available in {{ countdown }} seconds</span>
+            </div>
           </v-card-text>
         </v-card-text>
 
@@ -235,7 +246,7 @@ const cancel = () => {
           <v-btn color="blue-darken-1" variant="text" @click="cancel">
             Close
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="currentPage -= 1" v-if="currentPage < 5">
+          <v-btn color="blue-darken-1" variant="text" @click="currentPage -= 1" v-if="currentPage < 5  && currentPage > 1">
             Back
           </v-btn>
           <v-btn color="blue-darken-1" variant="text" @click="next" v-if="currentPage < 4">
