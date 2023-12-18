@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {login, register} from "../auth.ts";
+import {getVerifyCode, login, register} from "../auth.ts";
 import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
 import axios from "axios";
@@ -71,8 +71,16 @@ const next = async () => {
       confirmPassword.value = "";
       return;
     }
+    applyForVerifyCode();
   }
   currentPage.value += 1;
+}
+
+const applyForVerifyCode = () => {
+  getVerifyCode(signupAccount.value).catch((error) => {
+    snackbarText.value = error;
+    snackbar.value = true;
+  });
 }
 
 const cancel = () => {
@@ -193,7 +201,7 @@ const cancel = () => {
             <h3 class="ml-4 mt-4">Verify Your Account</h3>
           </v-card-title>
           <v-card-text>
-            <p class="ml-4">We sent a verification code to {{signupAccount}} <br>
+            <p class="ml-4">We sent a verification code to {{ signupAccount }} <br>
               Please check your email and paste the code below.</p>
             <v-otp-input
                 v-model="verifyCode"
@@ -202,7 +210,8 @@ const cancel = () => {
                 class="ma-4"
                 :input-length="6"
             ></v-otp-input>
-            <div class="ml-4">Didn't receive the code? <a href="#" @click.prevent="verifyCode = ''">Resend</a></div>
+            <div class="ml-4">Didn't receive the code? <a href="#" @click.prevent="verifyCode = ''"
+                                                          @click="getVerifyCode(signupAccount)">Resend</a></div>
           </v-card-text>
         </v-card-text>
 
@@ -217,7 +226,8 @@ const cancel = () => {
               width="50%"
               height="40"
               @click="loginDirectly"
-          >Login right now</v-btn>
+          >Login right now
+          </v-btn>
         </v-card-text>
 
         <v-card-actions>
@@ -268,21 +278,39 @@ const cancel = () => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes popIn {
-  0% { transform: scale(0); }
-  60% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes coolEffect {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.5) rotate(20deg); }
-  50% { transform: scale(1.2) rotate(-20deg); }
-  75% { transform: scale(1.3) rotate(10deg); }
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.5) rotate(20deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(-20deg);
+  }
+  75% {
+    transform: scale(1.3) rotate(10deg);
+  }
 }
 
 

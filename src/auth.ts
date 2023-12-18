@@ -51,4 +51,11 @@ const register = async (name: string, email: string, password: string, verifyCod
     })
 }
 
-export {token, login, register, logout}
+const getVerifyCode = async (email: string) => {
+    if (DEBUG) console.log("get verify code " + email);
+    await axios.post(BASE_API_URL + "users/verify_code", {userEmail: email}).then((res) => {
+        if (DEBUG) console.log("get verify code succeeded", res.data);
+    })
+}
+
+export {token, login, register, logout, getVerifyCode}
