@@ -8,7 +8,7 @@ import {
   activeRequestId,
   blacklist,
   contactPageProfileSource,
-  contacts,
+  contacts, currentPage,
   floatingContactId,
   requests,
   settings,
@@ -20,7 +20,8 @@ import {
 import {useRouter} from "vue-router";
 import {getUser} from "../core/data.ts";
 import {
-  changeGroupName, dismissGroup,
+  changeGroupName,
+  dismissGroup,
   exitGroup,
   groupAddAdmin,
   groupAddMember,
@@ -31,6 +32,8 @@ import {
 import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 import {GroupData, UserData} from "../utils/structs.ts";
+import {isAdmin, isOwner} from "../utils/grouprole.ts";
+import GroupAdministration from "./GroupAdministration.vue";
 
 
 const props = defineProps<{ contactId: number }>();
@@ -41,6 +44,7 @@ const groupAddMemberDialog = ref(false);
 const deleteConfirmDialog = ref<boolean>(false);
 const changeOwnerDialog = ref<boolean>(false);
 const dismissConfirmDialog = ref<boolean>(false);
+const groupAdministrationDialog = ref<boolean>(false);
 
 watch(props, () => getUser(props.contactId, true));
 
@@ -315,21 +319,15 @@ const handleRename = () => {
       </v-col>
       <v-card-actions class="justify-center">
         <div class="d-flex flex-column">
-          <v-btn v-if="contacts.includes(displayContactInfo.id)"
+          <v-btn v-if="contacts.includes(displayContactInfo.id) && (currentPage !== 'chat' || activeChatId !== displayContactInfo.id)"
                  @click="handleChat" color="green">
             Chat
           </v-btn>
-          <v-btn
-              v-if="displayContactInfo.category === 'group' && groupInfo.owner === user.id"
-              color="primary"
-              @click="changeOwnerDialog=true"
-          >Change Ownership
-          </v-btn>
-          <v-btn
-              v-if="displayContactInfo.category === 'group' && groupInfo.owner === user.id"
-              color="indigo"
-              @click="renameDialog=true"
-          >Rename Group
+          <v-btn v-if="contacts.includes(displayContactInfo.id) && isAdmin(user.id, displayContactInfo.id)"
+                 @click="groupAdministrationDialog=true"
+                 color="indigo"
+          >
+            Administration
           </v-btn>
           <v-btn color="green" v-if="requests.includes(displayContactInfo.id)" @click="handleAcceptFriend">Accept
           </v-btn>
@@ -345,9 +343,6 @@ const handleRename = () => {
           <slot name="buttons"/>
           <v-btn color="error" v-if="contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id"
                  @click="deleteConfirmDialog=true">Delete
-          </v-btn>
-          <v-btn color="red-darken-4" v-if="displayContactInfo.category === 'group' && (displayContactInfo as GroupData).owner === user.id"
-                 @click="dismissConfirmDialog=true">Dismiss
           </v-btn>
         </div>
       </v-card-actions>
@@ -410,6 +405,14 @@ const handleRename = () => {
           changeOwnerDialog = false;
           groupChangeOwner(displayContactInfo.id, target);
         }"
+    />
+    <GroupAdministration
+        v-model:show-dialog="groupAdministrationDialog"
+        v-if="displayContactInfo.category === 'group'"
+        :group-id="displayContactInfo.id"
+        @change-ownership="changeOwnerDialog=true"
+        @dismiss-group="dismissConfirmDialog=true"
+        @rename-group="renameDialog=true"
     />
   </v-card>
 </template>
