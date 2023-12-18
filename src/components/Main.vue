@@ -67,6 +67,7 @@ onMounted(() => {
 
 import { useTheme } from 'vuetify'
 import {DEBUG} from "../constants.ts";
+import {killSocket} from "../core/users/send.ts";
 
 const theme = useTheme()
 
@@ -88,6 +89,9 @@ function toggleTheme () {
         >
         </v-list-item>
         <v-divider/>
+        <v-list-item @click="killSocket">
+          寄
+        </v-list-item>
         <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"></ListItem>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts"

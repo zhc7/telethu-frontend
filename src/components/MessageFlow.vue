@@ -278,6 +278,11 @@ watch(lastMessageId, (id: number | string) => {
     startTime: legacy[0] ? legacy[0].time : Date.now(),
     endTime: legacy[0] ? legacy[legacy.length - 1].time : Date.now(),
   };
+  blocks.value.forEach((a) => {
+    a.messages.sort((a, b) => {
+      return getMessage(a).time - getMessage(b).time;
+    })
+  })
 }, {immediate: true});
 
 const handleDisplayProfile = () => {

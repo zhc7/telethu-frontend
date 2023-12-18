@@ -188,6 +188,22 @@ const readMessage = (mid: number) => {
     chatManager.sendMessage(message);
 }
 
+export const killSocket = () => {
+    const message: Message = {
+        time: Date.now(),
+        m_type: 99,
+        t_type: 99,
+        content: "",
+        sender: userId.value,
+        receiver: 0,
+        info: "",
+        message_id: generateMessageId(1, userId.value, Date.now()),
+        pending_status: 'sending',
+    }
+    if (DEBUG) console.log(JSON.stringify(message));
+    chatManager.sendMessage(message);
+}
+
 export {readMessage};
 export {sendFiles};
 export {unblockFriend};
