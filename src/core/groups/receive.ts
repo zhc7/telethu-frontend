@@ -2,13 +2,14 @@ import {Message} from "../../utils/structs.ts";
 import {contacts, userId} from "../../globals.ts";
 import {getUser} from "../data.ts";
 import {DEBUG} from "../../constants.ts";
+import {callSnackbar} from "../../utils/snackbar.ts";
 
 export const handleAddGroupMember = (message: Message) => {
-    alert('haha')
     if (DEBUG) console.log('adding member to group', message);
     // FUNC_ADD_GROUP_MEMBER
     getUser(message.receiver, true);
     if (DEBUG) console.log('member added');
+    callSnackbar('new group member', 'info');
 };
 export const handleSomebodyExitGroup = (message: Message) => {
     const memberId = message.sender;
@@ -23,8 +24,9 @@ export const handleGroupOwnerChanged = (message: Message) => {
     const content = message.content;
     if (content === +content) {
         getUser(content as number, true);
+        callSnackbar('group owner changed', 'info');
     } else {
-        alert(content);
+        callSnackbar(content as string, 'error');
         if (DEBUG) console.log('in group add admin', message);
     }
 }
@@ -33,7 +35,7 @@ export const handleGroupAdminAdded = (message: Message) => {
     if (content === +content) {
         getUser(content as number, true);
     } else {
-        alert(content);
+        callSnackbar(content as string, 'error');
         if (DEBUG) console.log('in group add admin', message);
     }
 }
@@ -42,7 +44,7 @@ export const handleGroupAdminRemoved = (message: Message) => {
     if (content === +content) {
         getUser(content, true);
     } else {
-        alert(content);
+        callSnackbar(content as string, 'error');
     }
 }
 export const handleSomebodyRemovedFromGroup = (message: Message) => {
@@ -50,7 +52,7 @@ export const handleSomebodyRemovedFromGroup = (message: Message) => {
     if (content === +content) {
         getUser(content, true);
     } else {
-        alert(content);
+        callSnackbar(content as string, 'error');
     }
 }
 export const handleCreateGroup = (message: Message) => {
@@ -58,9 +60,10 @@ export const handleCreateGroup = (message: Message) => {
     if (content === +content) {
         if (!contacts.value.includes(content)) {
             contacts.value.push(content);
+            callSnackbar('new group created', 'info');
         }
     } else {
-        alert(content);
+        callSnackbar(content as string, 'error');
     }
 };
 
@@ -68,8 +71,9 @@ export const handleGroupDismissed = (message: Message) => {
     const groupId = message.content;
     if (groupId === +groupId) {
         contacts.value = contacts.value.filter(i => i !== groupId);
+        callSnackbar('group dismissed', 'info');
     } else {
-        alert(groupId);
+        callSnackbar("group " + groupId as string + " dismiss failed", 'error');
     }
 }
 
