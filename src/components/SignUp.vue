@@ -15,7 +15,7 @@ const signupName = ref("");
 const signupAccount = ref("");
 const signupPassword = ref("");
 const confirmPassword = ref("");
-const currentPage = ref(1);
+const currentPage = ref(1); // 1. email 2. name 3. password 4. verify code 5. success
 const verifyCode = ref("");
 const countdown = ref(0);
 
@@ -53,10 +53,12 @@ const next = async () => {
         return;
       }
     }
+    currentPage.value += 1;
   } else if (currentPage.value === 2) {
     if (signupName.value === "") {
       signupName.value = signupAccount.value.split('@')[0];
     }
+    currentPage.value += 1;
   } else if (currentPage.value === 3) {
     if (signupPassword.value !== confirmPassword.value || signupPassword.value === "") {
       callSnackbar("Password not match!", "red");
@@ -66,12 +68,14 @@ const next = async () => {
     }
     applyForVerifyCode();
   }
-  currentPage.value += 1;
 }
 
 const applyForVerifyCode = () => {
-  getVerifyCode(signupAccount.value).catch((error) => {
-    callSnackbar(error, "red");
+  getVerifyCode(signupAccount.value).then(() => {
+    currentPage.value += 1;
+    callSnackbar("Verify code sent!", "green");
+  }).catch((error) => {
+    callSnackbar("Failed sending verify code: " + error, "red");
   });
   countdown.value = 60;
   const timer = setInterval(() => {
@@ -80,6 +84,17 @@ const applyForVerifyCode = () => {
       clearInterval(timer);
     }
   }, 1000);
+}
+
+// if enter is pressed, next or submit
+const keydown = (event: KeyboardEvent) => {
+  if (event.key === "Enter") {
+    if (currentPage.value === 4) {
+      submitRegister();
+    } else {
+      next();
+    }
+  }
 }
 
 const cancel = () => {
@@ -97,7 +112,7 @@ const cancel = () => {
   <div class="flex-grow-1 text-right">
     <p>Didn't have an account?</p>
 
-    <v-dialog v-model="dialog" persistent width="480">
+    <v-dialog v-model="dialog" persistent width="480" @keydown="keydown">
       <template v-slot:activator="{ props }">
         <a href="#" class="ref-text" v-bind="props"> Sign up right now! </a>
       </template>
