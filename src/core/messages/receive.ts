@@ -25,6 +25,7 @@ export const handleRecallMessage = (message: Message) => {
         return;
     }
     targetMessage.content = "*message recalled*";
+    targetMessage.status = 3;
     callSnackbar("message recalled", "info");
 }
 
