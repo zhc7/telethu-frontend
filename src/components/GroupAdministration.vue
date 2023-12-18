@@ -5,7 +5,7 @@ import Avatar from "./Avatar.vue";
 import {getCandidateList, getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {contacts, user} from "../globals.ts";
+import {candidatesList, user} from "../globals.ts";
 import {isOwner} from "../utils/grouprole.ts";
 import {groupAddMember} from "../core/groups/send.ts";
 
@@ -23,15 +23,13 @@ const dialog = computed({
   }
 });
 
-const entryList = ref<Array<{
-  id: number,
-}>>([]);
+const entryList = computed(() => {
+  if (!candidatesList.value[props.groupId]) return [];
+  return candidatesList.value[props.groupId];
+});
 
 watch(props, () => {
-  getCandidateList(props.groupId).then((data: {candidates: Array<number>}) => {
-    entryList.value = [];
-    data.candidates.forEach((id) => entryList.value.push({id: id}));
-  })
+  getCandidateList(props.groupId);
 }, {immediate: true})
 
 </script>
@@ -48,16 +46,16 @@ watch(props, () => {
           <v-divider class="ma-3"></v-divider>
           <ListItem
               v-for="entry in entryList"
-              :title="getUser(entry.id).name"
-              :subtitle="entry.id"
-              :k="entry.id"
+              :title="getUser(entry).name"
+              :subtitle="entry"
+              :k="entry"
           >
             <template #prepend>
-              <Avatar :contact-id="entry.id"/>
+              <Avatar :contact-id="entry"/>
             </template>
             <template #append>
               <v-list-item class="v-btn--density-compact">
-                <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="groupAddMember(groupId, [entry.id])">Accept</v-btn>
+                <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="groupAddMember(groupId, [entry])">Accept</v-btn>
                 <v-btn class="v-btn--density-comfortable ml-1 bg-red">Reject</v-btn>
               </v-list-item>
             </template>

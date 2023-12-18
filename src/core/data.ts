@@ -1,8 +1,9 @@
-import {activeRequestId, blacklist, requests, settings, users} from "../globals";
+import {activeRequestId, blacklist, candidatesList, requests, settings, user, users} from "../globals";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../constants";
 import {ContactsData} from "../utils/structs";
 import {token} from "../auth.ts";
+import {isAdmin} from "../utils/grouprole.ts";
 
 
 const getUser = (id: number, force: boolean = false): ContactsData => {
@@ -35,18 +36,14 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
 }
 
 export const getCandidateList = async (groupId: number) => {
-    return (await axios.get(BASE_API_URL + `users/group_candidates/${groupId}`, {
+    if (!isAdmin(user.value.id, groupId)) return;
+    const result = (await axios.get(BASE_API_URL + `users/group_candidates/${groupId}`, {
         headers: {
             Authorization: token.value
         }
-    })).data;
-}
-
-
-export const requestInsert = (id: number) => {
-    if (requests.value.includes(id)) return;
-    requests.value.push(id);
-    alert(requests.value);
+    })).data.candidates;
+    candidatesList.value[groupId] = result;
+    return result;
 }
 
 export const requestRemove = (id: number) => {

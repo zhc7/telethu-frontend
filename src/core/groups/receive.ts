@@ -1,6 +1,6 @@
 import {Message} from "../../utils/structs.ts";
 import {contacts, userId} from "../../globals.ts";
-import {getUser} from "../data.ts";
+import {getCandidateList, getUser} from "../data.ts";
 import {DEBUG} from "../../constants.ts";
 import {callSnackbar} from "../../utils/snackbar.ts";
 
@@ -8,6 +8,7 @@ export const handleAddGroupMember = (message: Message) => {
     if (DEBUG) console.log('adding member to group', message);
     // FUNC_ADD_GROUP_MEMBER
     getUser(message.receiver, true);
+    getCandidateList(message.receiver).then();
     if (DEBUG) console.log('member added');
     callSnackbar('new group member', 'info');
 };
