@@ -21,6 +21,9 @@ export const handleSomebodyExitGroup = (message: Message) => {
         getUser(groupId, true);
     }
 }
+export const handleCandidateRejected = (message: Message) => {
+    getCandidateList(message.receiver).then();
+}
 export const handleGroupOwnerChanged = (message: Message) => {
     const content = message.content;
     if (content === +content) {

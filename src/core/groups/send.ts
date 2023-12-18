@@ -157,3 +157,18 @@ export const dismissGroup = (groupId: number) => {
     if (DEBUG) console.log('Dismissing group: ', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
+
+export const rejectCandidate = (groupId: number, personId: number) => {
+    const message: Message = {
+        time: Date.now(),
+        m_type: MessageType.FUNC_REJECT_CANDIDATE,
+        t_type: TargetType.GROUP,
+        content: personId,
+        receiver: groupId,
+        sender: userId.value,
+        message_id: generateMessageId(groupId, userId.value, Date.now()),
+        pending_status: 'sending',
+    };
+    if (DEBUG) console.log('Dismissing group: ', JSON.stringify(message));
+    chatManager.sendMessage(message);
+}

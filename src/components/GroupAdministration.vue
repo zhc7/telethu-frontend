@@ -7,7 +7,7 @@ import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {candidatesList, user} from "../globals.ts";
 import {isOwner} from "../utils/grouprole.ts";
-import {groupAddMember} from "../core/groups/send.ts";
+import {groupAddMember, rejectCandidate} from "../core/groups/send.ts";
 
 
 const props = defineProps<{
@@ -56,7 +56,7 @@ watch(props, () => {
             <template #append>
               <v-list-item class="v-btn--density-compact">
                 <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="groupAddMember(groupId, [entry])">Accept</v-btn>
-                <v-btn class="v-btn--density-comfortable ml-1 bg-red">Reject</v-btn>
+                <v-btn class="v-btn--density-comfortable ml-1 bg-red" @click="rejectCandidate(groupId, entry)">Reject</v-btn>
               </v-list-item>
             </template>
           </ListItem>

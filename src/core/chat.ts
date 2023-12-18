@@ -5,7 +5,7 @@ import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, Message, MessageType, TargetType} from "../utils/structs";
 import {
-    handleAddGroupMember,
+    handleAddGroupMember, handleCandidateRejected,
     handleCreateGroup,
     handleGroupAdminAdded,
     handleGroupAdminRemoved, handleGroupDismissed, handleGroupNameChanged, handleGroupOwnerChanged,
@@ -231,6 +231,8 @@ dispatcher[MessageType.FUNC_EDIT_PROFILE] = updateUserProfile;
 dispatcher[MessageType.FUNC_GROUP_CHANGE_NAME] = handleGroupNameChanged;
 dispatcher[MessageType.FUNC_GROUP_DISMISS] = handleGroupDismissed;
 dispatcher[MessageType.FUNC_REPLY] = updateMessage;
+dispatcher[MessageType.FUNC_REJECT_CANDIDATE] = handleCandidateRejected;
+
 
 export {
     friendRequests,

@@ -32,6 +32,7 @@ export enum MessageType {
     FUNC_GROUP_DISMISS = 30,
     FUNC_GROUP_CHANGE_NAME = 31,
     FUNC_REPLY = 32,
+    FUNC_REJECT_CANDIDATE = 33,
 }
 
 export enum TargetType {
