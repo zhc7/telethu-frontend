@@ -7,6 +7,7 @@ import {BASE_API_URL, DEBUG} from "../constants.ts";
 import {blacklist, settings, user, userId} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {editProfile} from "../core/users/profile.ts";
+import {unblockFriend} from "../core/users/send.ts";
 
 const router = useRouter();
 
@@ -75,7 +76,20 @@ const displayEditEntry = ref<string | undefined>(undefined);
 const editingEntry = ref<string | undefined>(undefined);
 
 const inputValue = ref('');
-
+const oldPassword=  ref('');
+const newPassword1 = ref('');
+const newPassword2 = ref('');
+const handleChangePassword = () => {
+  if (newPassword1.value !== newPassword2.value) {
+    alert('Wrong confirmation');
+  } else {
+    editProfile({
+      old_password: oldPassword.value,
+      new_password: newPassword1.value,
+    }, true);
+  }
+  changePasswordDialog.value = false;
+}
 const dialog = computed(() => {
   return editingEntry.value !== undefined;
 });
@@ -122,6 +136,8 @@ const handleConfirm = () => {
 }
 
 const blackListDialog = ref(false);
+const changePasswordDialog = ref(false);
+
 
 
 </script>
@@ -217,6 +233,8 @@ const blackListDialog = ref(false);
               <v-btn @click="handleLogout">LOGOUT</v-btn>
               <v-btn @click="triggerFileInput">UPLOAD AVATAR</v-btn>
               <v-btn @click="blackListDialog=true">BLACK LIST</v-btn>
+              <v-btn @click="changePasswordDialog=true">CHANGE PASSWORD</v-btn>
+
             </v-btn-group>
             <input
                 type="file"
@@ -239,7 +257,24 @@ const blackListDialog = ref(false);
           unblockFriend(target);
         }"
     />
-  </v-row>
+    <v-dialog v-model="changePasswordDialog" max-width="20vw" max-height="80vh">
+      <v-card class="fill-height overflow-y-auto">
+        <v-card-title>Change Password</v-card-title>
+        <v-card-text>
+          <v-label>Old Password</v-label>
+          <v-text-field autofocus v-model="oldPassword" variant="outlined" type="password"></v-text-field>
+          <v-label>New Password</v-label>
+          <v-text-field v-model="newPassword1" variant="outlined" type="password"></v-text-field>
+          <v-label>Confirmation</v-label>
+          <v-text-field v-model="newPassword2" variant="outlined" type="password"></v-text-field>
+        </v-card-text>
+        <v-card-actions class="mb-3 mr-4">
+          <v-spacer></v-spacer>
+          <v-btn color="info" @click="handleChangePassword">Confirm</v-btn>
+          <v-btn color="error" @click="changePasswordDialog=false">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>  </v-row>
 </template>
 
 <style scoped>
