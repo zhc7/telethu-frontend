@@ -8,6 +8,8 @@ import {GroupData, Message, MessageType, TargetType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 import MessageBrief from "./MessageBrief.vue";
+import List from "./List.vue";
+import ListItem from "./ListItem.vue";
 
 const props = defineProps<{
   message: Message,
@@ -253,6 +255,18 @@ if (DEBUG) console.log("message", props.message);
           :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
           v-if="!forward && message.sender === userId"
       >
+        <v-menu v-if="message.who_reply && message.who_reply.length">
+          <template v-slot:activator="{props}">
+            <a style="font-size: 0.7em; text-decoration: underline;" v-bind="props">
+              {{message.who_reply.length}} replies
+            </a>
+          </template>
+          <v-list>
+            <v-list-item v-for="id in message.who_reply" :key="id">
+              <MessageBrief :message-id="id"/>
+            </v-list-item>
+          </v-list>
+        </v-menu>
         <v-progress-circular
             v-if="message.t_type === TargetType.GROUP && readPercent < 100"
             :model-value="readPercent"

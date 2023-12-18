@@ -21,7 +21,7 @@ import {
 } from "./users/receive.ts";
 import axios from "axios";
 import {token} from "../auth.ts";
-import {handleDeleteMessage, handleRecallMessage} from "./messages/receive.ts";
+import {handleDeleteMessage, handleRecallMessage, updateMessage} from "./messages/receive.ts";
 import {getUser} from "./data.ts";
 import {updateUserProfile} from "./users/profile.ts";
 
@@ -230,6 +230,7 @@ dispatcher[MessageType.FUNC_MESSAGE_DEL_BROADCAST] = updateReceiverInfo;
 dispatcher[MessageType.FUNC_EDIT_PROFILE] = updateUserProfile;
 dispatcher[MessageType.FUNC_GROUP_CHANGE_NAME] = handleGroupNameChanged;
 dispatcher[MessageType.FUNC_GROUP_DISMISS] = handleGroupDismissed;
+dispatcher[MessageType.FUNC_REPLY] = updateMessage;
 
 export {
     friendRequests,

@@ -31,6 +31,7 @@ export enum MessageType {
     FUNC_EDIT_PROFILE = 29,
     FUNC_GROUP_DISMISS = 30,
     FUNC_GROUP_CHANGE_NAME = 31,
+    FUNC_REPLY = 32,
 }
 
 export enum TargetType {
@@ -73,6 +74,7 @@ export interface Message {
     status?: number,
     pending_status?: string, // pure frontend
     who_read?: Array<number>,
+    who_reply?: Array<number>,
 }
 
 export interface Ack {
