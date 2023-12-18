@@ -410,9 +410,9 @@ const handleRename = () => {
         v-model:show-dialog="groupAdministrationDialog"
         v-if="displayContactInfo.category === 'group'"
         :group-id="displayContactInfo.id"
-        @change-ownership="changeOwnerDialog=true"
-        @dismiss-group="dismissConfirmDialog=true"
-        @rename-group="renameDialog=true"
+        @change-ownership="changeOwnerDialog=true; groupAdministrationDialog=false;"
+        @dismiss-group="dismissConfirmDialog=true; groupAdministrationDialog=false;"
+        @rename-group="renameDialog=true; groupAdministrationDialog=false;"
     />
   </v-card>
 </template>
