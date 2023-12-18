@@ -132,7 +132,7 @@ if (DEBUG) console.log("message", props.message);
         @click="$emit('showProfile')"
     />
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
-      <div class="d-flex" v-if="message.t_type === 1">
+      <div class="d-flex" v-if="message.t_type === 1 || forward">
         <v-spacer v-if="message.sender === userId"/>
         <span class="text-grey mr-1 ml-1" style="font-size: small">
           {{ name }}

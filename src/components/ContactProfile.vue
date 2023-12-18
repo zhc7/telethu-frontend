@@ -98,7 +98,6 @@ const switchValueBlock = computed<boolean>({
 const router = useRouter();
 
 const memberInfoTable = computed(() => {
-  // 使群主排在第一位，管理员排在第二位，其他人排在后面
   const group = displayContactInfo.value as GroupData;
   const members = group.members;
   const admin = group.admin;
