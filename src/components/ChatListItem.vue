@@ -38,7 +38,7 @@ const unread = computed<number>(() => {
   >
     <template #prepend>
       <div style="position: relative">
-        <div class="badge" v-if="unreadCounter[contactId]">{{ unreadCounter[contactId] }}</div>
+        <div class="badge" v-if="unreadCounter[contactId] && !settings.muted.includes(contactId)">{{ unreadCounter[contactId] }}</div>
         <Avatar :contact-id="contactId"/>
       </div>
 
