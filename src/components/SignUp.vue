@@ -15,6 +15,7 @@ const signupAccount = ref("");
 const signupPassword = ref("");
 const confirmPassword = ref("");
 const currentPage = ref(1);
+const verifyCode = ref("");
 
 const rules = {
   signupAccount: {required, email},
@@ -30,33 +31,58 @@ const timeout = ref(2000);
 const router = useRouter();
 
 const submitRegister = async () => {
-  if (signupPassword.value !== confirmPassword.value) {
-    snackbarText.value = "Password not match!";
+  await register(signupName.value, signupAccount.value, signupPassword.value, verifyCode.value).then(() => {
+    currentPage.value += 1;
+  }).catch((error) => {
+    snackbarText.value = error;
     snackbar.value = true;
-    signupPassword.value = "";
-    confirmPassword.value = "";
-    return;
-  }
-  await register(signupName.value, signupAccount.value, signupPassword.value);
+  });
+};
+
+const loginDirectly = async () => {
   await login(signupAccount.value, signupPassword.value);
   await router.push('/chat');
   dialog.value = false;
-};
+}
 
 const next = async () => {
-  if (currentPage.value === 1 && $v.value.signupAccount.$invalid) {
-    snackbarText.value = "Invalid email!";
-    snackbar.value = true;
-    return;
-  } else {
-    const res = await axios.get(BASE_API_URL + 'users/email_exists/' + signupAccount.value);
-    if (res.data === 'True') {
-      snackbarText.value = "Email duplicated!";
+  if (currentPage.value === 1) {
+    if ($v.value.signupAccount.$invalid) {
+      snackbarText.value = "Invalid email!";
       snackbar.value = true;
       return;
+    } else {
+      const res = await axios.get(BASE_API_URL + 'users/email_exists/' + signupAccount.value);
+      if (res.data === 'True') {
+        snackbarText.value = "Email duplicated!";
+        snackbar.value = true;
+        return;
+      }
     }
-    currentPage.value += 1;
+  } else if (currentPage.value === 2) {
+    if (signupName.value === "") {
+      signupName.value = signupAccount.value.split('@')[0];
+    }
+  } else if (currentPage.value === 3) {
+    if (signupPassword.value !== confirmPassword.value) {
+      snackbarText.value = "Password not match!";
+      snackbar.value = true;
+      signupPassword.value = "";
+      confirmPassword.value = "";
+      return;
+    }
   }
+  currentPage.value += 1;
+}
+
+const cancel = () => {
+  dialog.value = false;
+  currentPage.value = 1;
+  signupAccount.value = "";
+  signupName.value = "";
+  signupPassword.value = "";
+  confirmPassword.value = "";
+  $v.value.signupAccount.$reset();
 }
 </script>
 
@@ -92,7 +118,7 @@ const next = async () => {
 
         <div v-if="currentPage === 2">
           <v-card-title>
-            <h3 class="ml-4 mt-4">Your username</h3>
+            <h3 class="ml-4 mt-4">Your username(changeable)</h3>
           </v-card-title>
           <v-card-text>
             <v-text-field
@@ -113,7 +139,7 @@ const next = async () => {
           <v-container>
             <v-row>
               <v-col cols="12">
-                <h2>Sign up</h2>
+                <h2>Set Password</h2>
               </v-col>
               <v-col cols="12">
                 <v-text-field
@@ -161,16 +187,52 @@ const next = async () => {
             </v-row>
           </v-container>
         </v-card-text>
+
+        <v-card-text v-if="currentPage === 4">
+          <v-card-title>
+            <h3 class="ml-4 mt-4">Verify Your Account</h3>
+          </v-card-title>
+          <v-card-text>
+            <p class="ml-4">We sent a verification code to {{signupAccount}} <br>
+              Please check your email and paste the code below.</p>
+            <v-otp-input
+                v-model="verifyCode"
+                type="password"
+                variant="solo"
+                class="ma-4"
+                :input-length="6"
+            ></v-otp-input>
+            <div class="ml-4">Didn't receive the code? <a href="#" @click.prevent="verifyCode = ''">Resend</a></div>
+          </v-card-text>
+        </v-card-text>
+
+        <v-card-text v-if="currentPage === 5" class="text-center">
+          <h2 class="ma-5 animated-text">Congratulations!</h2>
+          <p class="animated-text">You have successfully registered an account.</p>
+          <div class="emoji">🎉</div>
+          <v-btn
+              class="animated-button"
+              variant="flat"
+              color="primary"
+              width="50%"
+              height="40"
+              @click="loginDirectly"
+          >Login right now</v-btn>
+        </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue-darken-1" variant="text" @click="() => {dialog = false; currentPage = 1}">
+          <v-btn color="blue-darken-1" variant="text" @click="cancel">
             Close
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="submitRegister" v-if="currentPage === 3">
-            Sign up
+          <v-btn color="blue-darken-1" variant="text" @click="currentPage -= 1" v-if="currentPage < 5">
+            Back
           </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="next" v-if="currentPage !== 3">
+          <v-btn color="blue-darken-1" variant="text" @click="next" v-if="currentPage < 4">
             Next
+          </v-btn>
+          <v-btn color="blue-darken-1" variant="text" @click="submitRegister" v-if="currentPage === 4">
+            Verify
           </v-btn>
         </v-card-actions>
 
@@ -187,3 +249,41 @@ const next = async () => {
     </v-snackbar>
   </div>
 </template>
+
+<style>
+
+.animated-text {
+  animation: fadeIn 2s;
+}
+
+.animated-button {
+  animation: popIn 2s;
+}
+
+.emoji {
+  font-size: 48px; /* 调整 emoji 的大小 */
+  display: block;
+  margin: 20px auto; /* 垂直居中显示 */
+  animation: coolEffect 3s infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes coolEffect {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.5) rotate(20deg); }
+  50% { transform: scale(1.2) rotate(-20deg); }
+  75% { transform: scale(1.3) rotate(10deg); }
+}
+
+
+</style>

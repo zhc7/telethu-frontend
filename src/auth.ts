@@ -42,9 +42,9 @@ const logout = () => {
     user.value = {email: "", id: -1, name: "", avatar: "", category: "user"};
 }
 
-const register = async (name: string, email: string, password: string) => {
+const register = async (name: string, email: string, password: string, verifyCode: string) => {
     if (DEBUG) console.log("register " + email);
-    await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password}).then((res) => {
+    await axios.post(BASE_API_URL + "users/register", {userName: name, userEmail: email, password, verifyCode}).then((res) => {
         // TODO: actually handle the response and errors, please only remove this after the issue is actually resolved
         if (DEBUG) console.log('response: ', res);
         if (DEBUG) console.log("register succeeded");
