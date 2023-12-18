@@ -1,12 +1,13 @@
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import Avatar from "./Avatar.vue";
-import {getUser} from "../core/data.ts";
+import {getCandidateList, getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
 import {contacts, user} from "../globals.ts";
 import {isOwner} from "../utils/grouprole.ts";
+import {groupAddMember} from "../core/groups/send.ts";
 
 
 const props = defineProps<{
@@ -24,9 +25,14 @@ const dialog = computed({
 
 const entryList = ref<Array<{
   id: number,
-}>>(contacts.value.map(i => {
-  return {id: i}
-}));
+}>>([]);
+
+watch(props, () => {
+  getCandidateList(props.groupId).then((data: {candidates: Array<number>}) => {
+    entryList.value = [];
+    data.candidates.forEach((id) => entryList.value.push({id: id}));
+  })
+}, {immediate: true})
 
 </script>
 
@@ -51,7 +57,7 @@ const entryList = ref<Array<{
             </template>
             <template #append>
               <v-list-item class="v-btn--density-compact">
-                <v-btn class="v-btn--density-comfortable mr-1 bg-green">Accept</v-btn>
+                <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="groupAddMember(groupId, [entry.id])">Accept</v-btn>
                 <v-btn class="v-btn--density-comfortable ml-1 bg-red">Reject</v-btn>
               </v-list-item>
             </template>
@@ -73,7 +79,6 @@ const entryList = ref<Array<{
           <v-btn color="red-darken-4" v-if="isOwner(user.id, groupId)"
                  @click="$emit('dismissGroup')">Dismiss
           </v-btn>
-
         </v-list-item-action>
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">

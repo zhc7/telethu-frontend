@@ -34,6 +34,14 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
     return users.value[id];
 }
 
+export const getCandidateList = async (groupId: number) => {
+    return (await axios.get(BASE_API_URL + `users/group_candidates/${groupId}`, {
+        headers: {
+            Authorization: token.value
+        }
+    })).data;
+}
+
 
 export const requestInsert = (id: number) => {
     if (requests.value.includes(id)) return;

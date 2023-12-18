@@ -32,7 +32,7 @@ import {
 import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 import {GroupData, UserData} from "../utils/structs.ts";
-import {isAdmin, isOwner} from "../utils/grouprole.ts";
+import {isAdmin} from "../utils/grouprole.ts";
 import GroupAdministration from "./GroupAdministration.vue";
 
 
