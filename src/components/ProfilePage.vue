@@ -156,7 +156,7 @@ const handleChangeEmail = () => {
   axios.post(BASE_API_URL + "users/change_email", {
     oldEmail: user.value.email,
     newEmail: newEmail.value,
-    verifyCode: verifyCode.value,
+    verification_code: verifyCode.value,
   }).then(() => {
     user.value.email = newEmail.value;
     userEmail.value = newEmail.value;
