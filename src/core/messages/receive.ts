@@ -1,6 +1,6 @@
 import {Message} from "../../utils/structs";
 import axios from "axios";
-import {messages, snackbar, snackbarText, user} from "../../globals.ts";
+import {messages, user} from "../../globals.ts";
 import {token} from "../../auth.ts";
 import {BASE_API_URL} from "../../constants.ts";
 import {callSnackbar} from "../../utils/snackbar.ts";
