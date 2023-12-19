@@ -62,8 +62,8 @@ const activeBlock = computed(() => {
   return blocks.value[activeBlockId.value];
 });
 const addBlock = (block: Block) => {
-  for (let i = 0; i < blocks.value.length; i++) {
-    if (blocks.value[i].startTime > block.startTime) {
+  for (let i = 0; i <= blocks.value.length; i++) {
+    if (i === blocks.value.length || blocks.value[i].startTime > block.startTime) {
       blocks.value.splice(i, 0, block);
       activeBlockId.value = i;
       mergeBlocks();
@@ -182,11 +182,22 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
   });
 }
 
+let loadingCount = 0;
 let callback = () => {
 };
+const startLoading = () => {
+  loadingCount++;
+}
 
-const loadingMessage = ref(false);
+const endLoading = () => {
+  loadingCount--;
+  if (loadingCount === 0) {
+    callback();
+  }
+}
+
 const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void }) => {
+  startLoading();
   const promise = side === "start" ? getHistoryMessage(0, activeBlock.value.startTime, 10, "start") :
       getHistoryMessage(activeBlock.value.endTime, Date.now() * 2, 10, "end");
   promise.then((pulled_length) => {
@@ -197,8 +208,7 @@ const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void })
     } else {
       done("ok");
     }
-    callback();
-    loadingMessage.value = true;
+    endLoading();
   });
 }
 
@@ -269,10 +279,6 @@ const lastMessageId = computed(() => {
 });
 
 watch(lastMessageId, (id: number | string) => {
-  if (loadingMessage.value) {
-    loadingMessage.value = false;
-    return;
-  }
   if (typeof id === 'string') {
     activeBlockId.value = blocks.value.length - 1;
   }
@@ -296,7 +302,6 @@ watch(lastMessageId, (id: number | string) => {
 const uid = ref(1);
 defineExpose({
   jumpTo: (messageId: number) => {
-    let first = true;
     const scrollTo = () => {
       const el = activeMessages.value[messageId];
       el.$el.scrollIntoView({behavior: "smooth", block: "center"});
@@ -310,24 +315,22 @@ defineExpose({
       return;
     }
     getAsyncMessage(messageId).then(message => {
+      messageDict.value[messageId] = message;
       addBlock({
         uid: uid.value++,
         messages: [messageId],
         startTime: message.time,
         endTime: message.time,
       });
-      messageDict.value[messageId] = message;
     }).then(() => {
-      callback = () => {
-        if (first) {
-          setTimeout(scrollTo, 50);
-          first = false;
-        } else {
+      setTimeout(() => {
+        callback = () => {
           setTimeout(scrollTo, 50);
           callback = () => {
           };
         }
-      }
+        if (loadingCount === 0) callback();
+      }, 50);
     });
   },
 })
