@@ -26,18 +26,21 @@ import {
   groupAddAdmin,
   groupAddMember,
   groupChangeOwner,
-  groupRemoveAdmin,
+  groupRemoveAdmin, rejectCandidate,
   removeGroupMember
 } from "../core/groups/send.ts";
 import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 import {GroupData, UserData} from "../utils/structs.ts";
-import {isAdmin} from "../utils/grouprole.ts";
+import {isAdmin, isOwner} from "../utils/grouprole.ts";
 import GroupAdministration from "./GroupAdministration.vue";
 import {callSnackbar} from "../utils/snackbar.ts";
+import ListItem from "./ListItem.vue";
+import List from "./List.vue";
+import GroupSearchMessage from "./GroupSearchMessage.vue";
 
 
-const props = defineProps<{ contactId: number }>();
+const props = defineProps<{ contactId: number, from: string }>();
 defineEmits(["accept", "reject", "apply", "displayProfile"]);
 
 const groupAddMemberDialog = ref(false);
@@ -198,6 +201,8 @@ const handleRename = () => {
   changeGroupName(displayContactInfo.value.id, renameInputValue.value);
   renameDialog.value = false;
 }
+
+const searchMessageDialog = ref<boolean>(false);
 </script>
 
 <template>
@@ -239,6 +244,8 @@ const handleRename = () => {
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
+          <GroupSearchMessage v-model:show-dialog="searchMessageDialog" :group-id="displayContactInfo.id"></GroupSearchMessage>
+          <v-btn @click="searchMessageDialog = true">Search</v-btn>
           <v-card-title class="ma-7">Members</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap">
             <div
@@ -253,7 +260,7 @@ const handleRename = () => {
                   size="60"
                   style="position: relative"
                   :style="groupInfo.owner === member ? 'border: #008eff 4px double' : groupInfo.admin.includes(member) ? 'border: #008eff 2px solid' : '' "
-                  @click="$emit('displayProfile', member)"
+                  @click="floatingContactId=member; showProfileDialog=true"
               />
               <div class="badge-kick"
                    v-if="groupInfo.owner === userId && member !== userId || groupInfo.admin.includes(userId) && member !== userId && member !== groupInfo.owner && !groupInfo.admin.includes(member)"
@@ -275,11 +282,10 @@ const handleRename = () => {
               </div>
             </div>
             <div class="d-flex flex-column align-center ma-auto mb-5">
-              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog = true">
+              <v-avatar size="60" color="indigo" @click="groupAddMemberDialog=true">
                 <v-icon style="font-size: 35px"
                 >mdi-account-multiple-plus
-                </v-icon
-                >
+                </v-icon>
               </v-avatar>
               <p>...</p>
             </div>
