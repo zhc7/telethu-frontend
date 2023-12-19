@@ -159,6 +159,7 @@ watch(searchText, () => {
       </v-list-item>
       <List v-if="filteredMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
         <MessagePopItem
+            :jump="false"
             v-for="msg in filteredMessages"
             :message-id="msg.message_id as number"
             :active="false"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {activeChatId, activeMessages, messageFlow, messages, nowRef, user} from "../globals";
+import {activeChatId, messageFlow, messages, nowRef, user} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
 import {computed, inject} from "vue";
 import ListItem from "./ListItem.vue";
@@ -10,8 +10,10 @@ import {Message} from "../utils/structs.ts";
 const {selected} = inject<any>("selected");
 
 const props = defineProps<{
-  messageId: number | string,
+  messageId?: number | string,
   active: boolean,
+  jump: boolean,
+  fullMessage?: Message
 }>();
 
 const active = computed(() => {
@@ -19,6 +21,9 @@ const active = computed(() => {
 });
 
 const message = computed(() => {
+  if (props.fullMessage) {
+    return props.fullMessage;
+  }
   for (const msgs of Object.values(messages.value)) {
     for (const msg of msgs) {
       if (msg.message_id === props.messageId) {
@@ -65,7 +70,11 @@ const scrollTo = () => {
         :subtitle="formatChatMessageTime(nowRef, message.time)"
         style="border-radius: 0!important;"
         v-ripple="false"
-    />
+    >
+      <template #append>
+        <a v-if="jump" @click="messageFlow.value?.jumpTo(message.id);">Goto</a>
+      </template>
+    </ListItem>
     <MessagePop
         :key="message.message_id"
         :message="message"

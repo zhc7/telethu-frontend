@@ -57,6 +57,7 @@ const searchFromBack = async () => {
 }
 
 const resultMessages = ref<Message []>([]);
+const zero = ref(0);
 
 </script>
 
@@ -99,10 +100,11 @@ const resultMessages = ref<Message []>([]);
             variant="outlined"
         />
         <v-btn color="primary" class="mt-2" @click="searchFromBack">Search</v-btn>
-        <List v-if="resultMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
+        <List v-if="resultMessages.length" class="overflow-y-auto" min-height="15vh" v-model="activeMessageId">
           <MessagePopItem
+              :jump="true"
               v-for="msg in resultMessages"
-              :message-id="msg.message_id as number"
+              :full-message="msg"
               :active="false"
           />
         </List>
