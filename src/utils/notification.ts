@@ -1,5 +1,6 @@
 import {Message, MessageType} from "./structs";
 import {DEBUG} from "../constants.ts";
+import {userId} from "../globals.ts";
 
 export const sendNotification = (message: Message) => {
     if (DEBUG) console.log("sending notification", message);
@@ -18,7 +19,14 @@ export const sendNotification = (message: Message) => {
         } else if (message.m_type === MessageType.STICKER) {
             notificationBody = "[sticker]";
         }
-        new Notification("New Message!", {
+        let notificationTitle = "New Message!";
+        // if somebody mentions you, notify that you are mentioned
+        if (message.t_type === 1 && message.m_type === MessageType.TEXT) {
+            if ((message.content as string).includes("@" + userId.value)) {
+                notificationTitle = "You are mentioned!";
+            }
+        }
+        new Notification(notificationTitle, {
             body: notificationBody,
             icon: "/Logo.png",
         })
