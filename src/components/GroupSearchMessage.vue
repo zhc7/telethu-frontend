@@ -6,6 +6,9 @@ import {Message} from "../utils/structs.ts";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {token} from "../auth.ts";
+import {activeMessageId} from "../globals.ts";
+import MessagePopItem from "./MessagePopItem.vue";
+import List from "./List.vue";
 
 
 const props = defineProps<{
@@ -49,13 +52,16 @@ const searchFromBack = async () => {
       Authorization: token.value,
     }
   });
+  resultMessages.value = result.data;
   console.log(result);
 }
+
+const resultMessages = ref<Message []>([]);
 
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="30vw" max-height="90vh">
+  <v-dialog v-model="dialog" max-width="80vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-h5 text-center my-3 ma-4">
         Search for Message in Group {{ getUser(groupId).name }}
@@ -93,6 +99,13 @@ const searchFromBack = async () => {
             variant="outlined"
         />
         <v-btn color="primary" class="mt-2" @click="searchFromBack">Search</v-btn>
+        <List v-if="resultMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
+          <MessagePopItem
+              v-for="msg in resultMessages"
+              :message-id="msg.message_id as number"
+              :active="false"
+          />
+        </List>
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
