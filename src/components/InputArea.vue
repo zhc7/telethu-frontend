@@ -56,14 +56,19 @@ const triggerFileInput = () => {
 const processFilesForPreview = (files: FileList | File[]) => {
   for (let file of files) {
     const fileName = file.name;
+    // use uniqueId to avoid duplicate keys
+    const uniqueId = Date.now().toString();
+    const uniqueFileName = `${uniqueId}-${fileName}`;
+
     if (fileName) {
-      uploadingFilesUrl.value[fileName] = URL.createObjectURL(file);
+      uploadingFilesUrl.value[uniqueFileName] = URL.createObjectURL(file);
       uploadingFiles.value.push(file);
     }
   }
   if (!uploadingFiles.value.length) return;
   previewFilesDialog.value = true;
 };
+
 
 const handlePreviewFiles = (event: Event) => {
   uploadingFiles.value = [];
