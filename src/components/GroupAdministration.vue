@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {computed, ref, watch} from "vue";
+import {computed, watch} from "vue";
 import Avatar from "./Avatar.vue";
 import {getCandidateList, getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
