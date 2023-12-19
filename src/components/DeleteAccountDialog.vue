@@ -28,8 +28,8 @@ const deleteAccount = () => {
       >
         <v-row no-gutters align="center">
           <v-col cols="12">
-            <div class="headline mb-2">Are you sure?</div>
-            <div>This operation cannot be undone.</div>
+            <h3 class="headline mb-2">Are you sure?</h3>
+            <div style="font-weight: bold; color: red">This operation cannot be undone.</div>
           </v-col>
         </v-row>
       </v-alert>
