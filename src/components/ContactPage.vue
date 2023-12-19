@@ -143,7 +143,7 @@ watch(activeRequestId, selectRequest);
     <v-col
         cols="12"
         sm="6"
-        class="d-flex flex-column flex-1-1 justify-center offset-sm-1"
+        class="d-flex flex-column flex-1-1 justify-center offset-sm-1 fill-height"
     >
       <ContactProfile
           v-show="contactPageProfileSource === 'contactList'"
