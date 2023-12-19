@@ -247,11 +247,11 @@ const searchMessageDialog = ref<boolean>(false);
           <GroupSearchMessage v-model:show-dialog="searchMessageDialog" :group-id="displayContactInfo.id"></GroupSearchMessage>
           <v-btn @click="searchMessageDialog = true">Search</v-btn>
           <v-card-title class="ma-7">Members</v-card-title>
-          <div class="overflow-y-auto fill-height d-flex flex-wrap">
+          <div class="overflow-y-auto fill-height d-flex flex-wrap align-items-start member-container">
             <div
                 v-for="member in memberInfoTable"
                 :key="member"
-                class="d-flex flex-column align-center ma-auto mb-5 pt-4 member-pop"
+                class="d-flex flex-column align-center member-item member-pop"
             >
 
               <Avatar
@@ -266,12 +266,14 @@ const searchMessageDialog = ref<boolean>(false);
                    v-if="groupInfo.owner === userId && member !== userId || groupInfo.admin.includes(userId) && member !== userId && member !== groupInfo.owner && !groupInfo.admin.includes(member)"
                    @click="handleKickMember(member)">——
               </div>
-              <p>{{
+              <p class="member-name">
+                {{
                   (() => {
                     member;
                     return getUser(member).name;
                   })()
-                }}</p>
+                }}
+              </p>
               <div class="badge-lift"
                    v-if="groupInfo.owner === userId && member !== userId && !groupInfo.admin.includes(member)"
                    @click="handleAddAdmin(member)">|
@@ -281,13 +283,13 @@ const searchMessageDialog = ref<boolean>(false);
                    @click="handleRemoveAdmin(member)">*
               </div>
             </div>
-            <div class="d-flex flex-column align-center ma-auto mb-5">
+            <div class="d-flex flex-column align-center member-item">
               <v-avatar size="60" color="indigo" @click="groupAddMemberDialog=true">
                 <v-icon style="font-size: 35px"
                 >mdi-account-multiple-plus
                 </v-icon>
               </v-avatar>
-              <p>...</p>
+              <p class="member-name">...</p>
             </div>
           </div>
         </div>
@@ -439,11 +441,11 @@ const searchMessageDialog = ref<boolean>(false);
   border-radius: 6px;
   position: absolute;
   right: 0;
-  top: 12px;
   line-height: 10px;
   font-size: 12px;
   color: white;
   background-color: red;
+  cursor: pointer;
 }
 
 .badge-lift {
@@ -452,11 +454,12 @@ const searchMessageDialog = ref<boolean>(false);
   border-radius: 6px;
   position: absolute;
   right: 0;
-  top: 28px;
+  top: 16px;
   line-height: 10px;
   font-size: 12px;
   color: white;
   background-color: dodgerblue;
+  cursor: pointer;
 }
 
 .badge-fire {
@@ -465,11 +468,12 @@ const searchMessageDialog = ref<boolean>(false);
   border-radius: 6px;
   position: absolute;
   right: 0;
-  top: 28px;
+  top: 16px;
   line-height: 10px;
   font-size: 12px;
   color: white;
   background-color: grey;
+  cursor: pointer;
 }
 
 .v-btn {
@@ -477,5 +481,20 @@ const searchMessageDialog = ref<boolean>(false);
   font-weight: bold;
 }
 
+.member-name {
+  max-width: 60px; /* 设置最大宽度 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 10px;
+}
+
+.member-container {
+  justify-content: flex-start; /* 保证头像靠左排列 */
+}
+
+.member-item {
+  margin-right: 10px; /* 设置头像之间的间隔 */
+}
 
 </style>
