@@ -3,19 +3,17 @@ import {
     activeChatId,
     activeRequestId,
     contacts,
-    referencingMessageId,
     requests,
     searchResults,
     selectedContactInfo,
     user,
     userId
 } from "../../globals";
-import {generateMD5, generateMessageId} from "../../utils/hash";
+import {generateMessageId} from "../../utils/hash";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../../constants";
 import {token} from "../../auth";
 import {requestRemove} from "../data";
-import {formatFileSize, getFileType} from "../files";
 import {chatManager} from "../chat";
 
 const applyFriend = (friendId: number) => {
@@ -101,22 +99,6 @@ const deleteFriend = (id: number) => {
     if (DEBUG) console.log('deleting friend', JSON.stringify(message));
     chatManager.sendMessage(message);
 }
-const sendMessage = (receiverId: number, inputMessage: string, t_type: TargetType) => {
-    const message: Message = {
-        time: Date.now(),
-        m_type: MessageType.TEXT,
-        t_type: t_type === undefined ? 0 : t_type,
-        content: inputMessage,
-        receiver: receiverId,
-        sender: userId.value,
-        info: {
-            reference: referencingMessageId.value,
-        },
-        message_id: generateMessageId(inputMessage, userId.value, Date.now()),
-        pending_status: 'sending',
-    };
-    chatManager.sendMessage(message);
-};
 const searchForFriend = async (info: number | string) => {
     const result = await axios.post(BASE_API_URL + 'users/user_search', {
         type: 0,
@@ -158,23 +140,6 @@ const unblockFriend = (friendId: number) => {
     if (DEBUG) console.log(JSON.stringify(message));
     chatManager.sendMessage(message);
 }
-const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_type: MessageType) => {
-    const md5 = await generateMD5(file);
-    if (DEBUG) console.log("md5 -> ", md5);
-    const message: Message = {
-        time: Date.now(),
-        m_type: m_type,
-        t_type: t_type,
-        content: md5,
-        receiver: receiverId,
-        sender: userId.value,
-        info: file.name + "/" + formatFileSize(file.size) + "/" + getFileType(file.name),
-        message_id: generateMessageId(file.name, userId.value, Date.now()),
-        pending_status: 'sending',
-    };
-    chatManager.sendMessage(message);
-    return md5;
-}
 const readMessage = (mid: number, receiver: number, t_type: TargetType) => {
     const message: Message = {
         message_id: generateMessageId('' + mid, userId.value, Date.now()),
@@ -205,11 +170,9 @@ export const killSocket = () => {
 }
 
 export {readMessage};
-export {sendFiles};
 export {unblockFriend};
 export {blockFriend};
 export {searchForFriend};
-export {sendMessage};
 export {deleteFriend};
 export {applyList};
 export {rejectFriend};

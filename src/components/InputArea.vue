@@ -3,12 +3,13 @@ import {computed, ref, watch} from "vue";
 import Stickers from "./Stickers.vue";
 import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
 import {activeChatId, editingMessage, messages, referencingMessageId, unreadCounter, user, users} from "../globals.ts";
-import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
+import {readMessage} from "../core/users/send.ts";
 import {getUser} from "../core/data.ts";
 import {GroupData, TargetType} from "../utils/structs.ts";
 import selectMember from "./SelectMember.vue";
 import MessageBrief from "./MessageBrief.vue";
 import {DEBUG} from "../constants.ts";
+import {sendFiles, sendMessage} from "../core/messages/send.ts";
 
 
 const chat = computed(() => getUser(activeChatId.value));

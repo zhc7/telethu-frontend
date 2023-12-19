@@ -13,10 +13,6 @@ export const getAsyncMessage = async (messageId: number): Promise<Message> => {
     }).then(res => res.data);
 }
 
-export const handleForwardedMessage = (message: Message) => {
-    // TODO
-}
-
 export const handleRecallMessage = (message: Message) => {
     const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
     let targetMessage = messages.value[target].find((m: Message) => m.message_id === message.content);

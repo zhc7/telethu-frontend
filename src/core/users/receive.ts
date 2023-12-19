@@ -34,6 +34,6 @@ export const handleSearchResult = (message: Message) => {
     contactPageProfileSource.value = "searchResult";
 }
 
-export const handleUnblockFriend = (message: Message) => {
+export const handleUnblockFriend = () => {
     getBlackList().then();
 }
