@@ -95,7 +95,7 @@ const emitValue = computed(() => {
               v-ripple
               style="max-width: 40px"
           >
-            <Avatar :contact-id="member"/>
+            <Avatar style="border: 1px solid blue" :contact-id="member"/>
           </div>
           <div
               v-if="!single"

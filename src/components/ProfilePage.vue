@@ -4,7 +4,7 @@ import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../constants.ts";
-import {blacklist, settings, user, userEmail, userId} from "../globals.ts";
+import {blacklist, settings, user, userEmail} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {editProfile} from "../core/users/profile.ts";
 import {unblockFriend} from "../core/users/send.ts";
@@ -79,7 +79,7 @@ const displayEditEntry = ref<string | undefined>(undefined);
 const editingEntry = ref<string | undefined>(undefined);
 
 const inputValue = ref('');
-const oldPassword=  ref('');
+const oldPassword = ref('');
 const newPassword1 = ref('');
 const newPassword2 = ref('');
 const handleChangePassword = () => {
@@ -130,24 +130,30 @@ const $v = useVuelidate({
 }, {newEmail});
 const changeEmailDialogNext = async () => {
   if (changeEmailDialogPage.value === 1) {
-    const password = verifyPassword.value;
-    axios.post(BASE_API_URL + "users/login", {userEmail: user.value.email, password}).then(() => {
-      changeEmailDialogPage.value += 1;
-    }).catch(() => {
-      callSnackbar("Wrong password!", "red");
-    });
-  } else if (changeEmailDialogPage.value === 2) {
     if ($v.value.newEmail.$invalid) {
       callSnackbar("Invalid email!", "red");
       return;
-    } else {
-      const res = await axios.get(BASE_API_URL + 'users/email_exists/' + newEmail.value);
-      if (res.data === 'True') {
-        callSnackbar("Email already exists!", "red");
-        return;
-      }
     }
-    changeEmailDialogPage.value += 1;
+    const res = await axios.get(BASE_API_URL + 'users/email_exists/' + newEmail.value);
+    if (res.data === 'True') {
+      callSnackbar("Email already exists!", "red");
+      return;
+    }
+    const password = verifyPassword.value;
+    const email = newEmail.value;
+    const result = await axios.post(BASE_API_URL + 'users/edit_profile', {
+      password,
+      email,
+    }, {
+      headers: {
+        Authorization: token.value
+      }
+    });
+    alert(JSON.stringify(result.data))
+    // changeEmailDialogPage.value += 1;
+
+  } else if (changeEmailDialogPage.value === 2) {
+
   } else if (changeEmailDialogPage.value === 3) {
     changeEmailDialogPage.value += 1;
   }
@@ -210,7 +216,6 @@ const blackListDialog = ref(false);
 const changePasswordDialog = ref(false);
 
 
-
 </script>
 
 <template>
@@ -249,7 +254,7 @@ const changePasswordDialog = ref(false);
                   <v-icon v-else size="xs"></v-icon>
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  @{{ userId }}
+                  @{{ user.id }}
                 </v-list-item-subtitle>
                 <v-divider class="ma-4"/>
                 <v-list-item class="text-grey-darken-3 pa-4">
@@ -366,8 +371,6 @@ const changePasswordDialog = ref(false);
             ></v-text-field>
             <p class="ml-4">Enter your password.</p>
           </v-card-text>
-        </div>
-        <div v-if="changeEmailDialogPage === 2">
           <v-card-title>
             <h3 class="ml-4 mt-4">New email</h3>
           </v-card-title>
@@ -385,7 +388,7 @@ const changePasswordDialog = ref(false);
             ></v-text-field>
           </v-card-text>
         </div>
-        <v-card-text v-if="changeEmailDialogPage === 3">
+        <v-card-text v-if="changeEmailDialogPage === 2">
           <v-card-title>
             <h3 class="ml-4 mt-4">Verify Your Account</h3>
           </v-card-title>
