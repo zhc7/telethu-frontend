@@ -23,6 +23,8 @@ const dialog = computed({
 
 const fromTime = ref<number>(0);
 const toTime = ref<number>(0);
+const messageTypes = ['text', 'image', 'video', 'audio', 'file'];
+const selectedMessageType = ref<string>('text');
 
 const messageContentInput = ref<string>('');
 
@@ -44,27 +46,52 @@ const searchFromBack = async () => {
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="60vw" max-height="90vh">
+  <v-dialog v-model="dialog" max-width="30vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
-      <v-card-title class="text-center">
+      <v-card-title class="text-h5 text-center my-3 ma-4">
         Search for Message in Group {{ getUser(groupId).name }}
       </v-card-title>
-      <v-card-text class="overflow-y-auto d-flex flex-column">
-        <label>From</label>
-        <input type="datetime-local" v-model="fromTime"/>
-        <label>To</label>
-        <input type="datetime-local" v-model="toTime"/>
+      <v-card-text class="overflow-y-auto d-flex flex-column ml-10 mr-10">
+        <v-row class="my-2">
+          <v-col cols="12">
+            <label>From</label>
+            <v-text-field
+                v-model="fromTime"
+                label="From"
+                type="datetime-local"
+                prepend-icon="event"
+                variant="underlined"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <label>To</label>
+            <v-text-field
+                v-model="toTime"
+                label="To"
+                type="datetime-local"
+                prepend-icon="event"
+                variant="underlined"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-select
+            :items="messageTypes"
+            label="Select Message Type"
+            v-model="selectedMessageType"
+            class="my-2"
+            variant="outlined"
+        ></v-select>
         <v-text-field
-            density="compact"
+            class="my-2"
             label="Message Content"
             v-model="messageContentInput"
             variant="outlined"
         />
-        <v-btn @click="searchFromBack">Search</v-btn>
+        <v-btn color="primary" class="mt-2" @click="searchFromBack">Search</v-btn>
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
-        <v-btn @click="dialog=false">
+        <v-btn color="grey darken-1" @click="dialog=false">
           Close
         </v-btn>
       </v-card-actions>
@@ -73,5 +100,14 @@ const searchFromBack = async () => {
 </template>
 
 <style scoped>
+.v-text-field {
+  width: 100%;
+}
 
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
 </style>
