@@ -200,7 +200,7 @@ const handleRename = () => {
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto justify-center" v-if="displayContactInfo.id > 0">
+  <v-card class="mb-auto mt-6 overflow-y-auto justify-center" style="min-width: 23vw" v-if="displayContactInfo.id > 0">
     <v-card-item class="overflow-y-auto justify-center">
       <Avatar :display-big-avatar="true" :contact-id="displayContactInfo.id" class="justify-center"></Avatar>
     </v-card-item>

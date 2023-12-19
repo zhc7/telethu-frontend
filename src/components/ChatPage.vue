@@ -423,11 +423,10 @@ const searchingMessage = ref<boolean>(false);
   </v-row>
   <div
       v-show="show && activeChatId"
-      class="profile-area overflow-y-auto"
+      class="profile-area"
       :class="{'profile-area--active': displayProfile}"
   >
     <ContactProfile
-        class="overflow-y-auto"
         v-if="selectedChatInfo"
         :contact-id="activeChatId"
         @display-profile="(id) => {floatingContactId = id; showProfileDialog = true}"
