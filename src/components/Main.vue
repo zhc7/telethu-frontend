@@ -48,7 +48,7 @@ onMounted(() => {
 const unreadTotal = computed(() => {
   let counter = 0;
   for (const key in unreadCounter.value) {
-    if (!settings.muted.includes(key)) {
+    if (!settings.value.muted.includes(key)) {
       counter += unreadCounter.value[key];
     }
   }
