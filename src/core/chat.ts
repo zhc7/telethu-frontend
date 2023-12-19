@@ -15,7 +15,6 @@ import {
 import {
     handleApplicationAccepted, handleBlockFriend,
     handleDeleteFriend,
-    handleReceiveMessageRead,
     handleReceiveRequest,
     handleSearchResult, handleUnblockFriend
 } from "./users/receive.ts";
@@ -219,7 +218,7 @@ dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {
 }; // TODO
 dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = handleUnblockFriend;
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
-dispatcher[MessageType.FUNC_READ_MESSAGE] = handleReceiveMessageRead;
+dispatcher[MessageType.FUNC_READ_MESSAGE] = updateMessage;
 dispatcher[MessageType.FUNC_LEAVE_GROUP] = handleSomebodyExitGroup;
 dispatcher[MessageType.FUNC_ADD_GROUP_ADMIN] = handleGroupAdminAdded;
 dispatcher[MessageType.FUNC_REMOVE_GROUP_ADMIN] = handleGroupAdminRemoved;
