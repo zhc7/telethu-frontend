@@ -34,11 +34,18 @@ export const handleDeleteMessage = (message: Message) => {
     messages.value[target] = messages.value[target].filter((m: Message) => m.message_id !== message.content);
 }
 
+const bind = (obj: any, target: any) => {
+    if (!obj || !target) return;
+    for (const key in target) {
+        obj[key] = target[key];
+    }
+}
+
 export const updateMessage = (message: Message) => {
     const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
     const messageId = message.content as number;
     getAsyncMessage(messageId).then((msg) => {
-        Object.bind(messages.value[target][messageId], msg);
-        Object.bind(messageDict.value[messageId], msg);
+        bind(messages.value[target].find(m => m.message_id === messageId), msg);
+        bind(messageDict.value[messageId], msg);
     });
 }
