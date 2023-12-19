@@ -91,24 +91,22 @@ const emitValue = computed(() => {
           <div
               v-for="member in pinned"
               :key="member"
-              class="d-flex flex-column align-center bg-indigo rounded-lg pa-1 ma-1"
+              class="d-flex flex-column align-center rounded-lg pa-1 ma-1"
               v-ripple
               style="max-width: 40px"
           >
             <Avatar :contact-id="member"/>
-            <p>{{ getUser(member).name }}</p>
           </div>
           <div
               v-if="!single"
               v-for="member in selectedStuff as Array<number>"
               :key="member"
-              class="d-flex flex-column align-center bg-blue rounded-lg pa-1 ma-1"
+              class="d-flex flex-column align-center rounded-lg pa-1 ma-1"
               @click="actUnselect(member)"
               v-ripple
               :style="'max-width: 40px'"
           >
-            <Avatar :contact-id="member"/>
-            <p>{{ getUser(member).name }}</p>
+            <Avatar style="border: 1px solid blue" :contact-id="member"/>
           </div>
         </div>
         <List class="overflow-y-auto flex-1-1" :mode="single ? 'single' : 'multi'" v-model="selectedStuff">
