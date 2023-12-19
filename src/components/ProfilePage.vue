@@ -52,8 +52,8 @@ const handleUploadAvatar = (event: any) => {
 
 const handleLogout = () => {
   if (confirm('Are you sure?')) {
-    logout();
     router.push('/login');
+    logout();
   }
 }
 

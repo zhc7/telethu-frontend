@@ -33,7 +33,7 @@ const login = async (email: string, password: string) => {
 }
 
 const logout = () => {
-    messages.value = {};
+    messages.value = [];
     contacts.value = [];
     requests.value = [];
     blacklist.value = [];
