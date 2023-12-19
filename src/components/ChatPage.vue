@@ -291,19 +291,19 @@ const searchingMessage = ref<boolean>(false);
 <template>
   <v-row
       class="mt-auto overflow-y-auto fill-height"
+      no-gutters
       @click="handleClickBlank"
       style="margin-right: 0; margin-bottom: 0"
       v-show="show"
   >
-    <v-col cols="12" :sm="searchingMessage ? 6 : 4" :md="searchingMessage ? 6 : 3" class="pa-0 fill-height changeable-width">
+    <v-col cols="12" :sm="searchingMessage ? 6 : 4" :md="searchingMessage ? 6 : 3" class="fill-height pa-0">
       <ChatList
           v-model="searchingMessage"></ChatList>
     </v-col>
-    <v-divider vertical v-if="selectedChatInfo"/>
     <v-col
         cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
         v-if="activeChatId <= 0"
-        class="d-flex flex-column justify-center changeable-width"
+        class="d-flex flex-column justify-center"
     >
       <div class="d-flex justify-center">
         <h4>Select a Friend to Start Chatting</h4>
@@ -312,7 +312,7 @@ const searchingMessage = ref<boolean>(false);
     <v-col
         v-if="activeChatId !== user.id && activeChatId > 0"
         cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
-        class="d-flex flex-column flex-1-1 overflow-y-auto fill-height resizable-col pa-0 changeable-width"
+        class="d-flex flex-column flex-1-1 overflow-y-auto fill-height pa-0"
     >
       <v-toolbar class="picked-color-toolbar" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
