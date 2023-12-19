@@ -55,28 +55,34 @@ watch(props, () => {
             </template>
             <template #append>
               <v-list-item class="v-btn--density-compact">
-                <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="groupAddMember(groupId, [entry])">Accept</v-btn>
-                <v-btn class="v-btn--density-comfortable ml-1 bg-red" @click="rejectCandidate(groupId, entry)">Reject</v-btn>
+                <v-btn class="v-btn--density-comfortable mr-1 bg-green" @click="groupAddMember(groupId, [entry])">
+                  Accept
+                </v-btn>
+                <v-btn class="v-btn--density-comfortable ml-1 bg-red" @click="rejectCandidate(groupId, entry)">Reject
+                </v-btn>
               </v-list-item>
             </template>
           </ListItem>
         </List>
-        <v-list-item-action>
-          <v-btn
-              v-if="isOwner(user.id, groupId)"
-              color="primary"
-              @click="$emit('changeOwnership')"
-          >Change Ownership
-          </v-btn>
-          <v-btn
-              v-if="isOwner(user.id, groupId)"
-              color="indigo"
-              @click="$emit('renameGroup')"
-          >Rename Group
-          </v-btn>
-          <v-btn color="red-darken-4" v-if="isOwner(user.id, groupId)"
-                 @click="$emit('dismissGroup')">Dismiss
-          </v-btn>
+        <v-list-item-action class="justify-center">
+          <div class="d-flex flex-column">
+            <v-btn
+                v-if="isOwner(user.id, groupId)"
+                color="primary"
+                @click="$emit('changeOwnership')"
+            >Change Ownership
+            </v-btn>
+            <v-btn
+                v-if="isOwner(user.id, groupId)"
+                color="indigo"
+                variant="flat"
+                @click="$emit('renameGroup')"
+            >Rename Group
+            </v-btn>
+            <v-btn color="red-darken-4" v-if="isOwner(user.id, groupId)"
+                   @click="$emit('dismissGroup')">Dismiss
+            </v-btn>
+          </div>
         </v-list-item-action>
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">

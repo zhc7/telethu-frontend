@@ -427,6 +427,7 @@ const searchingMessage = ref<boolean>(false);
       :class="{'profile-area--active': displayProfile}"
   >
     <ContactProfile
+        class="overflow-y-auto"
         v-if="selectedChatInfo"
         :contact-id="activeChatId"
         @display-profile="(id) => {floatingContactId = id; showProfileDialog = true}"
