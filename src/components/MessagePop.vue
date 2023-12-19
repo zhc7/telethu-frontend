@@ -220,7 +220,7 @@ if (DEBUG) console.log("message", props.message);
               v-else-if="message.m_type === MessageType.AUDIO"
               controls
               :src="blobSrc"
-              style="max-width: 20vw; max-height: 20vh; border: 4px solid #248aff; border-radius: 10px"
+              style="max-width: 20vw; max-height: 20vh;"
           />
           <video
               v-else-if="message.m_type === MessageType.VIDEO"

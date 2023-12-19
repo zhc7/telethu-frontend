@@ -4,8 +4,22 @@ import {DEBUG} from "../constants.ts";
 export const sendNotification = (message: Message) => {
     if (DEBUG) console.log("sending notification", message);
     if (window.Notification.permission === "granted") {
+        let notificationBody = "";
+        if (message.m_type === MessageType.TEXT) {
+            notificationBody = message.content as string;
+        } else if (message.m_type === MessageType.IMAGE) {
+            notificationBody = "[image]";
+        } else if (message.m_type === MessageType.AUDIO) {
+            notificationBody = "[audio]";
+        } else if (message.m_type === MessageType.VIDEO) {
+            notificationBody = "[video]";
+        } else if (message.m_type === MessageType.FILE) {
+            notificationBody = "[file]";
+        } else if (message.m_type === MessageType.STICKER) {
+            notificationBody = "[sticker]";
+        }
         new Notification("New Message!", {
-            body: message.content as string,
+            body: notificationBody,
             icon: "/Logo.png",
         })
     } else if (window.Notification.permission !== "denied") {
