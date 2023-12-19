@@ -8,7 +8,8 @@ import {
   activeRequestId,
   blacklist,
   contactPageProfileSource,
-  contacts, currentPage,
+  contacts,
+  currentPage,
   floatingContactId,
   requests,
   settings,
@@ -26,21 +27,19 @@ import {
   groupAddAdmin,
   groupAddMember,
   groupChangeOwner,
-  groupRemoveAdmin, rejectCandidate,
+  groupRemoveAdmin,
   removeGroupMember
 } from "../core/groups/send.ts";
 import {acceptFriend, applyFriend, blockFriend, deleteFriend, rejectFriend, unblockFriend} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 import {GroupData, UserData} from "../utils/structs.ts";
-import {isAdmin, isOwner} from "../utils/grouprole.ts";
+import {isAdmin} from "../utils/grouprole.ts";
 import GroupAdministration from "./GroupAdministration.vue";
 import {callSnackbar} from "../utils/snackbar.ts";
-import ListItem from "./ListItem.vue";
-import List from "./List.vue";
 import GroupSearchMessage from "./GroupSearchMessage.vue";
 
 
-const props = defineProps<{ contactId: number, from: string }>();
+const props = defineProps<{ contactId: number }>();
 defineEmits(["accept", "reject", "apply", "displayProfile"]);
 
 const groupAddMemberDialog = ref(false);
@@ -263,7 +262,8 @@ const searchMessageDialog = ref<boolean>(false);
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
-          <GroupSearchMessage v-model:show-dialog="searchMessageDialog" :group-id="displayContactInfo.id"></GroupSearchMessage>
+          <GroupSearchMessage v-model:show-dialog="searchMessageDialog"
+                              :group-id="displayContactInfo.id"></GroupSearchMessage>
           <v-btn @click="searchMessageDialog = true">Search</v-btn>
           <v-card-title class="ma-7">Members</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap align-items-start member-container">
@@ -347,8 +347,9 @@ const searchMessageDialog = ref<boolean>(false);
       </v-col>
       <v-card-actions class="justify-center">
         <div class="d-flex flex-column">
-          <v-btn v-if="contacts.includes(displayContactInfo.id) && (currentPage !== 'chat' || activeChatId !== displayContactInfo.id)"
-                 @click="handleChat" color="green">
+          <v-btn
+              v-if="contacts.includes(displayContactInfo.id) && (currentPage !== 'chat' || activeChatId !== displayContactInfo.id)"
+              @click="handleChat" color="green">
             Chat
           </v-btn>
           <v-btn v-if="contacts.includes(displayContactInfo.id) && isAdmin(user.id, displayContactInfo.id)"
@@ -365,7 +366,8 @@ const searchMessageDialog = ref<boolean>(false);
               v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id && !requests.includes(displayContactInfo.id)"
               color="blue" @click="handleApplyFriend(displayContactInfo.id)">Apply
           </v-btn>
-          <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="showProfileDialog = false; router.push('/profile')">Goto
+          <v-btn v-if="displayContactInfo.id === user.id" color="primary"
+                 @click="showProfileDialog = false; router.push('/profile')">Goto
             Profile
           </v-btn>
           <slot name="buttons"/>
@@ -464,31 +466,30 @@ const searchMessageDialog = ref<boolean>(false);
         @dismiss-group="dismissConfirmDialog=true; groupAdministrationDialog=false;"
         @rename-group="renameDialog=true; groupAdministrationDialog=false;"
     />
+    <v-dialog v-model="confirmDialog" max-width="25vw">
+      <v-card>
+        <v-alert
+            type="warning"
+            class="ma-4"
+            colored-border
+            border-left
+            elevation="2"
+            color="amber darken-2"
+        >
+          <v-row no-gutters align="center">
+            <v-col cols="12">
+              <div class="headline mb-2">Are you sure?</div>
+              <div>{{ confirmDialogText }}</div>
+            </v-col>
+          </v-row>
+        </v-alert>
+        <v-card-actions class="justify-end pa-4">
+          <v-btn color="grey darken-1" @click="confirmDialog = false">Cancel</v-btn>
+          <v-btn color="deep-orange darken-2" dark @click="confirmDialogConfirm">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
-
-  <v-dialog v-model="confirmDialog" max-width="25vw">
-    <v-card>
-      <v-alert
-          type="warning"
-          class="ma-4"
-          colored-border
-          border-left
-          elevation="2"
-          color="amber darken-2"
-      >
-        <v-row no-gutters align="center">
-          <v-col cols="12">
-            <div class="headline mb-2">Are you sure?</div>
-            <div>{{ confirmDialogText }}</div>
-          </v-col>
-        </v-row>
-      </v-alert>
-      <v-card-actions class="justify-end pa-4">
-        <v-btn color="grey darken-1" @click="confirmDialog = false">Cancel</v-btn>
-        <v-btn color="deep-orange darken-2" dark @click="confirmDialogConfirm">Confirm</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>
 
 <style scoped>
