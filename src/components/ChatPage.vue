@@ -368,6 +368,58 @@ const searchingMessage = ref<boolean>(false);
       />
       <InputArea/>
     </v-col>
+    <SelectMember
+        v-model:show-dialog="createGroupDialog"
+        :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
+        :possible="userContacts"
+        title="Add member to group"
+    />
+    <SelectMember
+        v-model:show-dialog="shareMessageDialog"
+        :pinned="[]"
+        title="Share Messages"
+        :possible="contacts"
+        @confirm="handleShareMessages"
+    />
+    <v-dialog v-if="category === 'group'" v-model="showWhoReadDialog" width="20vw">
+      <v-card>
+        <v-card-title class="font-weight-bold text-center">Who Read</v-card-title>
+        <v-card-text>
+          <fieldset class="title-fieldset">
+            <legend class="inner">Read by {{ (showWhoReadMessage?.who_read as number[])?.length ?? 0 }} people</legend>
+          </fieldset>
+          <v-list>
+            <v-list-item v-for="id in showWhoReadMessage?.who_read" :key="id" style="margin-left: 3vw">
+              <template #prepend>
+                <Avatar :contact-id="id"/>
+              </template>
+              <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <fieldset class="title-fieldset">
+            <legend class="inner">Unread by {{
+                (selectedChatInfo as GroupData).members.length - 1 - ((showWhoReadMessage?.who_read as number[])?.length ?? 0)
+              }} people
+            </legend>
+          </fieldset>
+          <v-list>
+            <v-list-item
+                v-for="id in (selectedChatInfo as GroupData).members.filter((_id) =>
+              !(showWhoReadMessage?.who_read as number[]).includes(_id) && _id !== user.id)"
+                :key="id"
+                style="margin-left: 3vw">
+              <template #prepend>
+                <Avatar :contact-id="id"/>
+              </template>
+              <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn @click="showWhoReadDialog = false">close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
   <div
       v-show="show && activeChatId"
@@ -382,58 +434,6 @@ const searchingMessage = ref<boolean>(false);
     >
     </ContactProfile>
   </div>
-  <SelectMember
-      v-model:show-dialog="createGroupDialog"
-      :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
-      :possible="userContacts"
-      title="Add member to group"
-  />
-  <SelectMember
-      v-model:show-dialog="shareMessageDialog"
-      :pinned="[]"
-      title="Share Messages"
-      :possible="contacts"
-      @confirm="handleShareMessages"
-  />
-  <v-dialog v-if="category === 'group'" v-model="showWhoReadDialog" width="20vw">
-    <v-card>
-      <v-card-title class="font-weight-bold text-center">Who Read</v-card-title>
-      <v-card-text>
-        <fieldset class="title-fieldset">
-          <legend class="inner">Read by {{ (showWhoReadMessage?.who_read as number[])?.length ?? 0 }} people</legend>
-        </fieldset>
-        <v-list>
-          <v-list-item v-for="id in showWhoReadMessage?.who_read" :key="id" style="margin-left: 3vw">
-            <template #prepend>
-              <Avatar :contact-id="id"/>
-            </template>
-            <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-        <fieldset class="title-fieldset">
-          <legend class="inner">Unread by {{
-              (selectedChatInfo as GroupData).members.length - 1 - ((showWhoReadMessage?.who_read as number[])?.length ?? 0)
-            }} people
-          </legend>
-        </fieldset>
-        <v-list>
-          <v-list-item
-              v-for="id in (selectedChatInfo as GroupData).members.filter((_id) =>
-              !(showWhoReadMessage?.who_read as number[]).includes(_id) && _id !== user.id)"
-              :key="id"
-              style="margin-left: 3vw">
-            <template #prepend>
-              <Avatar :contact-id="id"/>
-            </template>
-            <v-list-item-title>@{{ getUser(id).name }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card-text>
-      <v-card-actions class="justify-end">
-        <v-btn @click="showWhoReadDialog = false">close</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>
 
 <style scoped>
