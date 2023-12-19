@@ -13,7 +13,7 @@ import {
   currentPage, defaultTheme,
   floatingContactId, hotMessages,
   isSocketConnected,
-  requests,
+  requests, settings,
   showProfileDialog,
   unreadCounter,
   userAvatar,
@@ -48,7 +48,9 @@ onMounted(() => {
 const unreadTotal = computed(() => {
   let counter = 0;
   for (const key in unreadCounter.value) {
-    counter += unreadCounter.value[key];
+    if (!settings.muted.includes(key)) {
+      counter += unreadCounter.value[key];
+    }
   }
   return counter;
 });
