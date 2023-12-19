@@ -28,6 +28,7 @@ import axios from "axios";
 import Avatar from "./Avatar.vue";
 import MessageFlow from "./MessageFlow.vue";
 import {messageFlow} from "../globals";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 
 const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
@@ -238,7 +239,7 @@ const translateMessage = async (message: Message) => {
       format: 'text'
     });
     const translatedText = response.data.translatedText;
-    alert(translatedText)
+    callSnackbar(`Translated: ${translatedText}`, 'green')
     return translatedText;
   } catch (error) {
     console.error('Error during translation:', error);

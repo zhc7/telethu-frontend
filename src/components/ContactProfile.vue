@@ -34,6 +34,7 @@ import Avatar from "./Avatar.vue";
 import {GroupData, UserData} from "../utils/structs.ts";
 import {isAdmin} from "../utils/grouprole.ts";
 import GroupAdministration from "./GroupAdministration.vue";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 
 const props = defineProps<{ contactId: number }>();
@@ -131,7 +132,7 @@ const handleDelete = () => {
   } else {
     const group = displayContactInfo.value as GroupData;
     if (group.owner === userId.value && group.members.length > 1) {
-      alert('You are the current group owner. Determine a new owner before leaving. ')
+      callSnackbar('You are the current group owner. Determine a new owner before leaving. ', 'red');
     } else {
       exitGroup(displayContactInfo.value.id);
     }
@@ -145,7 +146,7 @@ const handleDismiss = () => {
 
 const handleApplyFriend = (friendId: number) => {
   applyFriend(friendId);
-  alert("喜报：你发送了申请！\nGood news! You sent an application! ");
+  callSnackbar('Application sent.', 'green');
 };
 
 const displayContactInfo = computed(() => getUser(props.contactId));

@@ -20,6 +20,7 @@ import {getUser} from "../core/data.ts";
 import {acceptFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 import SearchResultList from "./SearchResultList.vue";
 import {DEBUG} from "../constants.ts";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 
 defineEmits(["chat"]);
@@ -53,7 +54,7 @@ const handleRequestPass = async (id: number) => {
     selectedContactInfo.value = getUser(id);
     activeContactId.value = id;
     contactPageProfileSource.value = 'contactList';
-    alert("喜报：你通过了好友的申请！\nGood news! You've just passed a request! ")
+    callSnackbar("New friend!", "green")
   });
 };
 
