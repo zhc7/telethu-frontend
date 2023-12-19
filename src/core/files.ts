@@ -1,6 +1,7 @@
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../constants";
 import {token} from "../auth";
+import {MessageType, TargetType} from "../utils/structs.ts";
 
 function getFileExtension(filename: string): string {
     let parts = filename.split('.');
@@ -26,18 +27,18 @@ const getFileType = (filename: string) => {
         case 'jpg':
         case 'jpeg':
         case 'gif':
-            return 1;
+            return MessageType.IMAGE;
         case 'mp3':
         case 'wav':
         case 'flac':
-            return 2;
+            return MessageType.AUDIO;
         case 'mp4':
         case 'avi':
         case 'mov':
         case 'wmv':
-            return 3;
+            return MessageType.VIDEO;
         default:
-            return 4;
+            return MessageType.FILE;
     }
 }
 

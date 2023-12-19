@@ -53,6 +53,39 @@ const triggerFileInput = () => {
   }
 };
 
+const recorder = ref<MediaRecorder | null>(null);
+const newAudio = ref<null | Blob>(null);
+const triggerAudioInput = async () => {
+  if (recorder.value) {
+    recorder.value.stop();
+    recorder.value = null;
+  } else {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false
+    });
+
+    const options = {mimeType: "audio/webm"};
+    const recordedChunks: Array<BlobPart> = [];
+    recorder.value = new MediaRecorder(stream, options);
+    recorder.value.addEventListener("dataavailable", e => {
+      if (e.data.size > 0) {
+        recordedChunks.push(e.data);
+      }
+    });
+
+    recorder.value.addEventListener("stop", () => {
+      newAudio.value = new Blob(recordedChunks);
+      console.log(newAudio.value);
+      const file = new File([newAudio.value], "voice message.mp3");
+      uploadingFiles.value = [file];
+      handleSendFiles();
+    });
+
+    recorder.value.start();
+  }
+}
+
 const processFilesForPreview = (files: FileList | File[]) => {
   for (let file of files) {
     const fileName = file.name;
@@ -243,8 +276,9 @@ const handleFocus = () => {
         @compositionstart="handleCompositionStart"
         @compositionend="handleCompositionEnd"
     >
-      <template #prepend-inner>
+      <template #prepend>
         <v-icon @click="triggerFileInput">mdi-paperclip</v-icon>
+        <v-icon @click="triggerAudioInput" :class="{'text-green': recorder}">mdi-microphone</v-icon>
       </template>
     </v-textarea>
     <input
