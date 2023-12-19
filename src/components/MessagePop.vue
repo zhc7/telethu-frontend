@@ -8,8 +8,6 @@ import {GroupData, Message, MessageType, TargetType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 import MessageBrief from "./MessageBrief.vue";
-import List from "./List.vue";
-import ListItem from "./ListItem.vue";
 
 const props = defineProps<{
   message: Message,
@@ -18,7 +16,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits<{
   finished: [],
-  showProfile: [],
+  showProfile: [id: number],
   showContextMenu: [x: number, y: number, subject: Message],
   showWhoRead: [],
 }>();
@@ -129,7 +127,7 @@ if (DEBUG) console.log("message", props.message);
         :contact-id="message.sender"
         v-if="userId !== message.sender"
         class="ml-2 mr-2"
-        @click="$emit('showProfile')"
+        @click="$emit('showProfile', message.sender)"
     />
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
       <div class="d-flex" v-if="message.t_type === 1 || forward">

@@ -2,7 +2,15 @@
 import {computed, nextTick, reactive, ref, watch} from "vue";
 import MessagePop from "./MessagePop.vue";
 import {formatChatMessageTime} from "../utils/datetime";
-import {activeChatId, activeMessages, messageDict, messages, nowRef, selectedChatInfo} from "../globals";
+import {
+  activeChatId,
+  activeMessages,
+  floatingContactId,
+  messageDict,
+  messages,
+  nowRef,
+  selectedChatInfo, showProfileDialog
+} from "../globals";
 import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getAsyncMessage} from "../core/messages/receive";
 import axios from "axios";
@@ -285,9 +293,6 @@ watch(lastMessageId, (id: number | string) => {
   })
 }, {immediate: true});
 
-const handleDisplayProfile = () => {
-}
-
 const uid = ref(1);
 defineExpose({
   jumpTo: (messageId: number) => {
@@ -357,7 +362,7 @@ defineExpose({
           class="message-pop"
           :class="{'bg-blue': messageSelected(message)}"
           :ref="(el) => bindMessage(el as InstanceType<typeof MessagePop>, message.message_id)"
-          @show-profile="handleDisplayProfile"
+          @show-profile="(id) => {floatingContactId = id; showProfileDialog = true}"
           @show-context-menu="(x, y, subject) => $emit('openContextMenu', x, y, subject)"
           @dblclick.stop="$emit('reference', message)"
           @click="handleSelectMessage(message)"
