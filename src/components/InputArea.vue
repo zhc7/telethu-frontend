@@ -5,7 +5,7 @@ import {formatFileSize, getFileType, uploadFiles} from "../core/files.ts";
 import {activeChatId, editingMessage, messages, referencingMessageId, unreadCounter, user, users} from "../globals.ts";
 import {readMessage, sendFiles, sendMessage} from "../core/users/send.ts";
 import {getUser} from "../core/data.ts";
-import {GroupData} from "../utils/structs.ts";
+import {GroupData, TargetType} from "../utils/structs.ts";
 import selectMember from "./SelectMember.vue";
 import MessageBrief from "./MessageBrief.vue";
 import {DEBUG} from "../constants.ts";
@@ -195,7 +195,7 @@ const handleFocus = () => {
   unreadCounter.value[activeChatId.value] = 0;
   for (const m of chatMessages) {
     if (m.sender !== user.value.id && !m.who_read?.includes(user.value.id)) {
-      readMessage(m.message_id as number);
+      readMessage(m.message_id as number, activeChatId.value, chat.value.category === "group" ? TargetType.GROUP : TargetType.FRIEND);
     }
   }
 }

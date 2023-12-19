@@ -2,13 +2,13 @@ import {Message, MessageType, TargetType} from "../../utils/structs";
 import {
     activeChatId,
     activeRequestId,
-    contactPageProfileSource,
     contacts,
     referencingMessageId,
     requests,
-    activeSearchId,
+    searchResults,
     selectedContactInfo,
-    userId, searchResults
+    user,
+    userId
 } from "../../globals";
 import {generateMD5, generateMessageId} from "../../utils/hash";
 import axios from "axios";
@@ -175,15 +175,15 @@ const sendFiles = async (receiverId: number, file: File, t_type: TargetType, m_t
     chatManager.sendMessage(message);
     return md5;
 }
-const readMessage = (mid: number) => {
+const readMessage = (mid: number, receiver: number, t_type: TargetType) => {
     const message: Message = {
         message_id: generateMessageId('' + mid, userId.value, Date.now()),
         time: Date.now(),
         m_type: MessageType.FUNC_READ_MESSAGE,
-        t_type: TargetType.FRIEND,
+        t_type,
         content: mid,
-        sender: -1,
-        receiver: -1,
+        sender: user.value.id,
+        receiver,
     }
     chatManager.sendMessage(message);
 }
