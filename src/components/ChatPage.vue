@@ -423,7 +423,7 @@ const searchingMessage = ref<boolean>(false);
   </v-row>
   <div
       v-show="show && activeChatId"
-      class="profile-area"
+      class="profile-area overflow-y-auto"
       :class="{'profile-area--active': displayProfile}"
   >
     <ContactProfile
