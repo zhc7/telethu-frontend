@@ -154,16 +154,35 @@ const handleApplyFriend = (friendId: number) => {
 
 const displayContactInfo = computed(() => getUser(props.contactId));
 
+const confirmDialog = ref<boolean>(false);
+const confirmDialogText = ref<string>('');
+const confirmDialogConfirm = ref<() => void>(() => {
+});
 const handleKickMember = (memberId: number) => {
-  removeGroupMember(displayContactInfo.value.id, memberId);
+  confirmDialog.value = true;
+  confirmDialogText.value = 'Are you sure to kick this member?';
+  confirmDialogConfirm.value = () => {
+    confirmDialog.value = false;
+    removeGroupMember(displayContactInfo.value.id, memberId);
+  }
 }
 
 const handleAddAdmin = (memberId: number) => {
-  groupAddAdmin(displayContactInfo.value.id, memberId);
+  confirmDialog.value = true;
+  confirmDialogText.value = "Are you sure to set this member as an administrator?";
+  confirmDialogConfirm.value = () => {
+    confirmDialog.value = false;
+    groupAddAdmin(displayContactInfo.value.id, memberId);
+  }
 }
 
 const handleRemoveAdmin = (memberId: number) => {
-  groupRemoveAdmin(displayContactInfo.value.id, memberId);
+  confirmDialog.value = true;
+  confirmDialogText.value = "Are you sure to remove this member's rights of administrators?";
+  confirmDialogConfirm.value = () => {
+    confirmDialog.value = false;
+    groupRemoveAdmin(displayContactInfo.value.id, memberId);
+  }
 }
 
 const handleAcceptFriend = () => {
@@ -357,16 +376,28 @@ const searchMessageDialog = ref<boolean>(false);
       </v-card-actions>
     </v-card-item>
 
-    <v-dialog v-model="deleteConfirmDialog" max-width="30vw">
+    <v-dialog v-model="deleteConfirmDialog" max-width="25vw">
       <v-card>
         <v-alert
             type="warning"
-            title="Are you sure?"
-            text="This operation cannot be undone."
-        ></v-alert>
-        <v-card-actions class="justify-end">
-          <v-btn @click="deleteConfirmDialog = false">cancel</v-btn>
-          <v-btn @click="handleDelete">{{ displayContactInfo.category === 'group' ? 'Quit Group' : 'Delete' }}</v-btn>
+            class="ma-4"
+            colored-border
+            border-left
+            elevation="2"
+            color="amber darken-2"
+        >
+          <v-row no-gutters align="center">
+            <v-col cols="12">
+              <div class="headline mb-2">Are you sure?</div>
+              <div>This operation cannot be undone.</div>
+            </v-col>
+          </v-row>
+        </v-alert>
+        <v-card-actions class="justify-end pa-4">
+          <v-btn color="grey darken-1" @click="deleteConfirmDialog = false">Cancel</v-btn>
+          <v-btn color="red darken-2" dark @click="handleDelete">
+            {{ displayContactInfo.category === 'group' ? 'Quit Group' : 'Delete' }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -374,12 +405,22 @@ const searchMessageDialog = ref<boolean>(false);
       <v-card>
         <v-alert
             type="warning"
-            title="Are you sure to dismiss the group?"
-            text="This operation cannot be undone."
-        ></v-alert>
-        <v-card-actions class="justify-end">
-          <v-btn @click="dismissConfirmDialog = false">cancel</v-btn>
-          <v-btn @click="handleDismiss">Dismiss</v-btn>
+            class="ma-4"
+            colored-border
+            border-left
+            elevation="2"
+            color="amber darken-2"
+        >
+          <v-row no-gutters align="center">
+            <v-col cols="12">
+              <div class="headline mb-2">Are you sure to dismiss the group?</div>
+              <div>This operation cannot be undone.</div>
+            </v-col>
+          </v-row>
+        </v-alert>
+        <v-card-actions class="justify-end pa-4">
+          <v-btn color="grey darken-1" @click="dismissConfirmDialog = false">Cancel</v-btn>
+          <v-btn color="red darken-2" dark @click="handleDismiss">Dismiss</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -424,6 +465,30 @@ const searchMessageDialog = ref<boolean>(false);
         @rename-group="renameDialog=true; groupAdministrationDialog=false;"
     />
   </v-card>
+
+  <v-dialog v-model="confirmDialog" max-width="25vw">
+    <v-card>
+      <v-alert
+          type="warning"
+          class="ma-4"
+          colored-border
+          border-left
+          elevation="2"
+          color="amber darken-2"
+      >
+        <v-row no-gutters align="center">
+          <v-col cols="12">
+            <div class="headline mb-2">Are you sure?</div>
+            <div>{{ confirmDialogText }}</div>
+          </v-col>
+        </v-row>
+      </v-alert>
+      <v-card-actions class="justify-end pa-4">
+        <v-btn color="grey darken-1" @click="confirmDialog = false">Cancel</v-btn>
+        <v-btn color="deep-orange darken-2" dark @click="confirmDialogConfirm">Confirm</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
