@@ -11,7 +11,8 @@ import {unblockFriend} from "../core/users/send.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
 import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
-import ChangeEmailDialog from "./changeEmailDialog.vue";
+import ChangeEmailDialog from "./ChangeEmailDialog.vue";
+import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 
 const router = useRouter();
 
@@ -140,6 +141,7 @@ const handleConfirm = () => {
 const blackListDialog = ref(false);
 const changePasswordDialog = ref(false);
 const changeEmailDialog = ref(false);
+const deleteAccountDialog = ref(false);
 </script>
 
 <template>
@@ -234,6 +236,7 @@ const changeEmailDialog = ref(false);
               <v-btn @click="triggerFileInput">UPLOAD AVATAR</v-btn>
               <v-btn @click="blackListDialog=true">BLACK LIST</v-btn>
               <v-btn @click="changePasswordDialog=true">CHANGE PASSWORD</v-btn>
+              <v-btn @click="deleteAccountDialog=true">DELETE ACCOUNT</v-btn>
 
             </v-btn-group>
             <input
@@ -277,6 +280,7 @@ const changeEmailDialog = ref(false);
     </v-dialog>
 
     <changeEmailDialog v-model="changeEmailDialog" @update:showDialog="() => {changeEmailDialog = false}"/>
+    <DeleteAccountDialog v-model="deleteAccountDialog" @update:showDialog="() => {deleteAccountDialog = false}"/>
   </v-row>
 </template>
 
