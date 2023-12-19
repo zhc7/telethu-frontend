@@ -35,7 +35,7 @@ const getNameById = (match: string, message: Message, contactData: ContactsData)
     const id = match.slice(1);
     if (contactData.category === "group") {
         if ((contactData as GroupData).members.includes(parseInt(id))) {
-            if ((message.who_read as Array<number>).includes(parseInt(id))) {
+            if (message.who_read?.includes(parseInt(id))) {
                 return `<span class="mention_read" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
             }
             return `<span class="mention" data-user-id="${id}">@${getUser(parseInt(id)).name}</span>`
