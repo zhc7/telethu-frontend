@@ -31,15 +31,24 @@ const messageContentInput = ref<string>('');
 const messageList = ref<Message []>([])
 
 const searchFromBack = async () => {
-  const result = await axios.get(BASE_API_URL + 'chat/filter?' +
-      'id=' + props.groupId + '&' +
-      (fromTime.value === 0 ? '' : ('from=' + +new Date(fromTime.value))) + '&' +
-      (toTime.value === 0 ? '' : ('to=' + +new Date(toTime.value))) + '&' +
-      (messageContentInput.value === '' ? '' : ('content=' + messageContentInput.value)), {
-        headers: {
-          Authorization: token.value
-        }
-      });
+  const params = {
+    id: props.groupId,
+  };
+  if (fromTime.value) {
+    params.from =  +new Date(fromTime.value);
+  }
+  if (toTime.value) {
+    params.to = +new Date(toTime.value);
+  }
+  if (messageContentInput.value) {
+    params.content = messageContentInput.value;
+  }
+  const result = await axios.get(BASE_API_URL + 'chat/filter', {
+    params,
+    headers: {
+      Authorization: token.value,
+    }
+  });
   console.log(result);
 }
 
