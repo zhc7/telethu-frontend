@@ -344,7 +344,7 @@ const searchMessageDialog = ref<boolean>(false);
               v-if="!contacts.includes(displayContactInfo.id) && displayContactInfo.id !== user.id && !requests.includes(displayContactInfo.id)"
               color="blue" @click="handleApplyFriend(displayContactInfo.id)">Apply
           </v-btn>
-          <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="router.push('/profile')">Goto
+          <v-btn v-if="displayContactInfo.id === user.id" color="primary" @click="showProfileDialog = false; router.push('/profile')">Goto
             Profile
           </v-btn>
           <slot name="buttons"/>
