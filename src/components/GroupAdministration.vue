@@ -69,17 +69,19 @@ watch(props, () => {
             <v-btn
                 v-if="isOwner(user.id, groupId)"
                 color="primary"
+                variant="tonal"
                 @click="$emit('changeOwnership')"
             >Change Ownership
             </v-btn>
             <v-btn
                 v-if="isOwner(user.id, groupId)"
                 color="indigo"
-                variant="flat"
+                variant="tonal"
                 @click="$emit('renameGroup')"
             >Rename Group
             </v-btn>
             <v-btn color="red-darken-4" v-if="isOwner(user.id, groupId)"
+                   variant="tonal"
                    @click="$emit('dismissGroup')">Dismiss
             </v-btn>
           </div>

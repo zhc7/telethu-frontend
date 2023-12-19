@@ -127,7 +127,7 @@ if (DEBUG) console.log("message", props.message);
         :contact-id="message.sender"
         v-if="userId !== message.sender"
         class="ml-2 mr-2"
-        @click="$emit('showProfile', message.sender)"
+        @click="floatingContactId=message.sender; showProfileDialog=true"
     />
     <div class="d-flex flex-column flex-1-1 overflow-x-auto">
       <div class="d-flex" v-if="message.t_type === 1 || forward">
@@ -282,6 +282,7 @@ if (DEBUG) console.log("message", props.message);
     </div>
 
     <Avatar
+        @click="floatingContactId=user.id; showProfileDialog=true"
         :contact-id="user.id"
         v-if="user.id === message.sender"
         class="ml-2 mr-2"
