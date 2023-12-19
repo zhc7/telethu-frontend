@@ -132,6 +132,7 @@ const cancel = () => {
                 :error-messages="$v.signupAccount.$errors[0]? $v.signupAccount.$errors[0].$message : ''"
                 required
                 clearable
+                autofocus
                 class="ma-4"
             ></v-text-field>
             <p class="ml-4">Alert: This email will be used as your unique account.</p>
@@ -151,6 +152,7 @@ const cancel = () => {
                 @blur="$v.signupAccount.$touch()"
                 required
                 clearable
+                autofocus
                 class="ma-4"
             ></v-text-field>
             <p class="ml-4">You can change your username anytime.</p>
@@ -193,6 +195,7 @@ const cancel = () => {
                     :error-messages="$v.signupPassword.$errors[0]? $v.signupPassword.$errors[0].$message : ''"
                     required
                     clearable
+                    autofocus
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
