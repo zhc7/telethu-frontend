@@ -55,9 +55,9 @@ const createSocket = () => {
             );
         }
         isSocketConnected.value = false;
-        setTimeout(() => {
-            createSocket();
-        }, 1000);
+        if (token.value) {
+            setTimeout(createSocket, 1000);
+        }
     };
 
     socket.onerror = (err) => {
