@@ -54,22 +54,18 @@ const searchFromBack = async () => {
       <v-card-text class="overflow-y-auto d-flex flex-column ml-10 mr-10">
         <v-row class="my-2">
           <v-col cols="12">
-            <label>From</label>
             <v-text-field
                 v-model="fromTime"
                 label="From"
                 type="datetime-local"
-                prepend-icon="event"
                 variant="underlined"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
-            <label>To</label>
             <v-text-field
                 v-model="toTime"
                 label="To"
                 type="datetime-local"
-                prepend-icon="event"
                 variant="underlined"
             ></v-text-field>
           </v-col>
