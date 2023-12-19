@@ -93,10 +93,8 @@ const switchValueBlock = computed<boolean>({
       return;
     }
     if (value) {
-      settings.value.blocked.push(displayContactInfo.value.id);
       blockFriend(displayContactInfo.value.id);
     } else {
-      settings.value.blocked = settings.value.blocked.filter(id => id !== displayContactInfo.value.id);
       unblockFriend(displayContactInfo.value.id);
     }
   },
