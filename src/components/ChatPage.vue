@@ -32,7 +32,14 @@ import {getUser} from "../core/data";
 import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
-import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
+import {
+  deleteMessage,
+  forwardMessage,
+  pinMessage,
+  recallMessage,
+  recallOthersMessage,
+  unpinMessage
+} from "../core/messages/send.ts";
 import axios from "axios";
 import Avatar from "./Avatar.vue";
 import MessageFlow from "./MessageFlow.vue";
@@ -108,6 +115,7 @@ const contextMenuChoices = computed(() => {
   }
   if (category.value === "group" && (selectedChatInfo.value as GroupData).owner === user.value.id) {
     choices.push("Pin");
+    choices.push("Revoke");
   }
   return choices;
 });
@@ -246,6 +254,13 @@ const withdrawMessage = (message: Message) => {
   recallMessage(message.message_id, activeChatId.value, category.value === 'group' ? TargetType.GROUP : TargetType.FRIEND);
 };
 
+const revokeMessage = (message: Message) => {
+  if (typeof message.message_id !== 'number') {
+    return;
+  }
+  recallOthersMessage(message.message_id, activeChatId.value);
+}
+
 const pinGroupMessage = (message: Message) => {
   if (typeof message.message_id !== 'number') {
     return;
@@ -333,6 +348,7 @@ const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Pin": pinGroupMessage,
   "Translate": translateMessage,
   "Speech2text": speech2text,
+  "Revoke": revokeMessage,
 };
 
 const dispatchFunction = (item: string) => {

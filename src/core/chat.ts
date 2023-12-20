@@ -248,6 +248,7 @@ dispatcher[MessageType.FUNC_REMOVE_GROUP_MEMBER] = handleSomebodyRemovedFromGrou
 dispatcher[MessageType.FUNC_DELETE_MESSAGE] = handleDeleteMessage;
 dispatcher[MessageType.FUNC_MESSAGE_ADD_BROADCAST] = updateReceiverInfo;
 dispatcher[MessageType.FUNC_MESSAGE_DEL_BROADCAST] = updateReceiverInfo;
+dispatcher[MessageType.FUNC_RECALL_MEMBER_MESSAGE] = handleRecallMessage;
 dispatcher[MessageType.FUNC_EDIT_PROFILE] = updateUserProfile;
 dispatcher[MessageType.FUNC_GROUP_CHANGE_NAME] = handleGroupNameChanged;
 dispatcher[MessageType.FUNC_GROUP_DISMISS] = handleGroupDismissed;

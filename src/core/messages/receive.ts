@@ -18,11 +18,10 @@ export const handleRecallMessage = (message: Message) => {
     const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
     const mid = message.content as number;
     const targetMessage = messages.value[target].find((m: Message) => m.message_id === mid);
-    if (targetMessage === undefined) {
-        return;
+    if (targetMessage !== undefined) {
+        targetMessage.content = "*message recalled*";
+        targetMessage.status = 3;
     }
-    targetMessage.content = "*message recalled*";
-    targetMessage.status = 3;
     const anotherTarget = messageDict.value[mid];
     if (anotherTarget === undefined) return;
     anotherTarget.content = "*message recalled*";
