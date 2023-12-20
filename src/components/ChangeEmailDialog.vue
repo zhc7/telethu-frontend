@@ -53,28 +53,37 @@ const changeEmailDialogNext = async () => {
       return;
     }
     const email = newEmail.value;
-    const result = await axios.post(BASE_API_URL + 'users/receive_code', {
-      userEmail: email,
-    }, {
-      headers: {
-        Authorization: token.value
-      }
-    });
+    try {
+      await axios.post(BASE_API_URL + 'users/receive_code', {
+        userEmail: email,
+      }, {
+        headers: {
+          Authorization: token.value
+        }
+      });
+    } catch(e) {
+      callSnackbar(e.response.data.info, 'red');
+      return;
+    }
     changeEmailDialogPage.value += 1;
   } else if (changeEmailDialogPage.value === 2) {
     const password = stringMd5(verifyPassword.value);
     const email = newEmail.value;
-    editProfile({
-      password,
-      verification_code: verifyCode.value,
-      email,
-    }).then((res) => {
-      changeEmailDialogPage.value += 1;
-    }).catch((err) => {
-        callSnackbar(err, 'red');
-    })
-  } else {
+    try {
+      await editProfile({
+        password,
+        verification_code: verifyCode.value,
+        email,
+      });
+    } catch(e) {
+      console.log(e)
+      callSnackbar(e.response.data.info, 'red');
+      return;
+    }
     emit('update:showDialog', false);
+    setTimeout(() => {
+      changeEmailDialogPage.value = 1;
+    }, 150);
   }
 }
 
@@ -141,8 +150,8 @@ const changeEmailDialogNext = async () => {
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="info" @click="cancelChangeEmail">Cancel</v-btn>
-        <v-btn color="info" v-if="changeEmailDialogPage < 3" @click="changeEmailDialogNext">Next</v-btn>
-        <v-btn color="info" v-if="changeEmailDialogPage === 3" @click="handleChangeEmail">Confirm</v-btn>
+        <v-btn color="info" v-if="changeEmailDialogPage < 2" @click="changeEmailDialogNext">Next</v-btn>
+        <v-btn color="info" v-if="changeEmailDialogPage === 2" @click="changeEmailDialogNext">Confirm</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
