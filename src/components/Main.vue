@@ -17,9 +17,8 @@ import {
   requests,
   settings,
   showProfileDialog,
-  unreadCounter, user,
-  userAvatar,
-  userName
+  unreadCounter,
+  user
 } from "../globals.ts"
 import {createSocket} from "../core/socket.ts";
 import ContactProfile from "./ContactProfile.vue";
