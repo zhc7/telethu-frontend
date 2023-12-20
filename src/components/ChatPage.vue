@@ -6,10 +6,11 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {
-  activeChatId, candidatesList,
-  contacts, editingMessage,
-  floatingContactId, messageDict,
-  messages,
+  activeChatId,
+  candidatesList,
+  contacts,
+  floatingContactId,
+  messageDict,
   referencingMessageId,
   selectedChatInfo,
   settings,
@@ -200,6 +201,7 @@ const handleShareMessages = (target: Array<number>) => {
 }
 
 const handleConfirmPlus = (target: Array<number>, input: string) => {
+  if (selectedChatInfo.value === undefined) return;
   if (selectedChatInfo.value.category === 'user') {
     createGroup(input, target);
   } else if (selectedChatInfo.value.category === 'group') {
@@ -387,7 +389,7 @@ const searchMessageDialog = ref<boolean>(false);
         v-model:show-dialog="createGroupDialog"
         :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
         :possible="userContacts"
-        :title="category === 'user' ? `Create a group with ${selectedChatInfo.name}` : `Add member to group ${selectedChatInfo.name}`"
+        :title="category === 'user' ? `Create a group with ${selectedChatInfo!.name}` : `Add member to group ${selectedChatInfo!.name}`"
         @confirm="handleConfirmPlus"
         label="Group Name"
     />
