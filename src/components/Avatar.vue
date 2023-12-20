@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 });
 
 let contact = computed(() => getUser(props.contactId));
-const avatar = ref<string>();
+const avatar = ref<string>("/Logo.png");
 
 const avatarUrl = (md5: string) => {
   if (md5.startsWith("http")) return md5;
