@@ -1,6 +1,6 @@
 import {computed, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
-import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs";
+import {Block, ContactsData, Message, Settings, UserData, Users} from "./utils/structs";
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
@@ -47,14 +47,7 @@ export const userId = computed({
         user.value.id = newValue;
     },
 })
-export const userName = computed({
-    get() {
-        return user.value.name;
-    },
-    set(newValue) {
-        user.value.name = newValue;
-    }
-})
+
 export const userEmail = computed({
     get() {
         return user.value.email;
@@ -63,14 +56,7 @@ export const userEmail = computed({
         user.value.email = newValue;
     }
 })
-export const userAvatar = computed({
-    get() {
-        return user.value.avatar;
-    },
-    set(newValue) {
-        user.value.avatar = newValue;
-    }
-})
+
 export const isSocketConnected = ref(false);
 
 export const settingsUpdating = ref(false);
@@ -228,29 +214,13 @@ export const scrollTo = (mid: number) => {
     messageFlow.value?.jumpTo(mid);
 }
 
+export const messageBlocks = ref<{
+    [id: number]: Array<Block>
+}>({});
 
-let i = 0;
-// const iid = window.setInterval(() => {
-//     i += 1;
-//     getUser(i, true);
-// }, 300);
-//
-// window.setTimeout(() => {
-//     window.clearInterval(iid);
-// }, 60000);
-
-
-// window.setTimeout(() => {
-//     i = 0;
-//     window.setInterval(() => {
-//         logout();
-//         i += 1;
-//         login(getUser(i).email, '2').then(() => {
-//             editProfile({
-//                 old_password: '1',
-//                 new_password: stringMd5('123456'),
-//             }).then();
-//         })
-//     }, 600)
-//
-// }, 10000)
+export const initMessageBlock = (id: number) => {
+    const bigNumber = 1000000000000000;
+    if (messageBlocks.value[id] === undefined) {
+        messageBlocks.value[id] = [{uid: 0, messages: [], startTime: bigNumber, endTime: bigNumber}];
+    }
+}

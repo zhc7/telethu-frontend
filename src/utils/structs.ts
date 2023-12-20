@@ -132,3 +132,10 @@ export enum MessageMenuItems {
     Delete = 'Delete',
     Withdraw = 'Withdraw',
 }
+
+export interface Block {
+    uid: number,
+    messages: Array<number | string>,
+    startTime: number,
+    endTime: number,
+}

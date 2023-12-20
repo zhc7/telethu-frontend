@@ -5,13 +5,14 @@ import {formatChatMessageTime} from "../utils/datetime";
 import {
   activeChatId,
   activeMessages,
-  floatingContactId,
+  floatingContactId, initMessageBlock, messageBlocks,
   messageDict,
   messages,
   nowRef,
-  selectedChatInfo, showProfileDialog
+  selectedChatInfo,
+  showProfileDialog
 } from "../globals";
-import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
+import {Block, ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getAsyncMessage} from "../core/messages/receive";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../constants.ts";
@@ -40,13 +41,6 @@ const selected = computed({
   }
 });
 
-interface Block {
-  uid: number,
-  messages: Array<number | string>,
-  startTime: number,
-  endTime: number,
-}
-
 const updateTime = (block: Block) => {
   if (!block.messages.length) {
     return;
@@ -55,7 +49,16 @@ const updateTime = (block: Block) => {
   block.endTime = messageDict.value[block.messages[block.messages.length - 1]].time;
 }
 
-const blocks = ref<Array<Block>>([{uid: 0, messages: [], startTime: 0, endTime: 0}]);
+// const blocks = ref<Array<Block>>([{uid: 0, messages: [], startTime: 0, endTime: 0}]);
+const blocks = computed({
+  get: () => {
+    initMessageBlock(activeChatId.value);
+    return messageBlocks.value[activeChatId.value];
+  },
+  set: (newValue) => {
+    messageBlocks.value[activeChatId.value] = newValue;
+  }
+})
 
 const activeBlockId = ref<number>(0);
 const activeBlock = computed(() => {
@@ -173,7 +176,7 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
     new_messages.sort((a, b) => a.time - b.time);
     // unique with id
     messages.value[activeChatId.value] = new_messages.filter((msg, index, self) => {
-      return self.findIndex((m) => m.message_id === msg.message_id) === index;
+      return index == 0 || msg.message_id === self[index - 1].message_id;
     });
     // uniquely concat
     activeBlock.value.messages = [...new Set(direction === 'start' ? [...ids, ...activeBlock.value.messages] : [...activeBlock.value.messages, ...ids])];
@@ -266,16 +269,12 @@ const scrollToBottom = () => {
   scroll.value.$el.scrollTop = scroll.value.$el.scrollHeight;
 }
 
-const lastMessageId = computed(() => {
-  const messageList = messages.value[activeChatId.value];
-  if (messageList === undefined) {
-    messages.value[activeChatId.value] = [];
-    return -1;
-  }
+const lastMessageId = computed<number | string>(() => {
+  const messageList = blocks.value[blocks.value.length - 1].messages;
   if (!messageList.length) {
     return -1;
   }
-  return messageList[messageList.length - 1].message_id;
+  return messageList[messageList.length - 1];
 });
 
 watch(lastMessageId, (id: number | string) => {
@@ -285,18 +284,18 @@ watch(lastMessageId, (id: number | string) => {
   if (activeBlockId.value === blocks.value.length - 1) {
     nextTick().then(scrollToBottom);
   }
-  const legacy = messages.value[activeChatId.value];
-  blocks.value[blocks.value.length - 1] = {
-    uid: blocks.value[blocks.value.length - 1].uid,
-    messages: [...new Set([...blocks.value[blocks.value.length - 1].messages.filter(m => typeof m === "number"), ...legacy.map((msg: Message) => msg.message_id)])],
-    startTime: legacy[0] ? legacy[0].time : Date.now(),
-    endTime: legacy[0] ? legacy[legacy.length - 1].time : Date.now(),
-  };
-  blocks.value.forEach((a) => {
-    a.messages.sort((a, b) => {
-      return getMessage(a).time - getMessage(b).time;
-    })
-  })
+  // const legacy = messages.value[activeChatId.value];
+  // blocks.value[blocks.value.length - 1] = {
+  //   uid: blocks.value[blocks.value.length - 1].uid,
+  //   messages: [...new Set([...blocks.value[blocks.value.length - 1].messages.filter(m => typeof m === "number"), ...legacy.map((msg: Message) => msg.message_id)])],
+  //   startTime: legacy[0] ? legacy[0].time : Date.now(),
+  //   endTime: legacy[0] ? legacy[legacy.length - 1].time : Date.now(),
+  // };
+  // blocks.value.forEach((a) => {
+  //   a.messages.sort((a, b) => {
+  //     return getMessage(a).time - getMessage(b).time;
+  //   })
+  // })
 }, {immediate: true});
 
 const uid = ref(1);

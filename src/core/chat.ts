@@ -1,5 +1,14 @@
 import {BASE_API_URL, DEBUG} from "../constants";
-import {hotMessages, messages, settings, unreadCounter, user} from "../globals"
+import {
+    hotMessages,
+    initMessageBlock,
+    messageBlocks,
+    messageDict,
+    messages,
+    settings,
+    unreadCounter,
+    user
+} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
@@ -64,6 +73,9 @@ const chatManager: {
         message.pending_status = 'sending';
         message = reactive(message);
         if (message.m_type <= 5) {
+            messageDict.value[message.message_id] = message;
+            const blocks = messageBlocks.value[message.receiver];
+            blocks[blocks.length - 1].messages.push(message.message_id);
             messages.value[message.receiver].push(message);
         }
         socket.send(JSON.stringify(message));
@@ -140,6 +152,13 @@ const chatManager: {
         } else if (existing.pending_status === 'sending') {
             existing.pending_status = 'sent';
         }
+        initMessageBlock(target);
+        const blocks = messageBlocks.value[target];
+        const block = blocks[blocks.length - 1];
+        block.messages.push(message.message_id);
+        block.messages.sort();
+        block.messages = block.messages.filter((number, index, array) => index === 0 || number !== array[index - 1]);
+        messageDict.value[message.message_id] = message;
     },
 
     _updateMessage(ack: Ack) {
@@ -156,6 +175,10 @@ const chatManager: {
             if (existing !== -1) {
                 old_messages.splice(existing, 1);
             }
+            const blocks = messageBlocks.value[message.receiver];
+            const block = blocks[blocks.length - 1];
+            const index = block.messages.findIndex(id => id === ack.reference);
+            if (index !== -1) block.messages.splice(index, 1);
         }
     },
 }
