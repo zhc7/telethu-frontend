@@ -364,7 +364,7 @@ const tagsIn = computed(() => {
               v-model="switchValueMute"
           ></v-switch>
         </v-row>
-        <v-row style="display: flex; align-items: center" class="ma-1" v-if="displayContactInfo.category === 'user'">
+        <v-row style="display: flex; align-items: center" class="ma-1" v-if="displayContactInfo.category === 'user' && displayContactInfo.id !== user.id">
           <p style="flex: 1" class="text-right pr-4">Block:</p>
           <v-switch
               style="flex: 2"
