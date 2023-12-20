@@ -8,6 +8,7 @@ import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {user, userEmail} from "../globals.ts";
 import {stringMd5} from "../utils/hash.ts";
+import {editProfile} from "../core/users/profile.ts";
 
 const emit = defineEmits(['update:showDialog']);
 
@@ -52,21 +53,25 @@ const changeEmailDialogNext = async () => {
       callSnackbar("Email already exists!", "red");
       return;
     }
-    const password = stringMd5(verifyPassword.value);
     const email = newEmail.value;
-    const result = await axios.post(BASE_API_URL + 'users/edit_profile', {
-      password,
-      email,
+    // alert(email)
+    const result = await axios.post(BASE_API_URL + 'users/receive_code', {
+      userEmail: email,
     }, {
       headers: {
         Authorization: token.value
       }
     });
-    alert(JSON.stringify(result.data))
-    // changeEmailDialogPage.value += 1;
-
+    // alert(JSON.stringify(result.data))
+    changeEmailDialogPage.value += 1;
   } else if (changeEmailDialogPage.value === 2) {
-
+    const password = stringMd5(verifyPassword.value);
+    const email = newEmail.value;
+    editProfile({
+      password,
+      verification_code: verifyCode.value,
+      email,
+    }).then();
   } else if (changeEmailDialogPage.value === 3) {
     changeEmailDialogPage.value += 1;
   }
@@ -92,22 +97,6 @@ const handleChangeEmail = () => {
     <v-card>
       <div v-if="changeEmailDialogPage === 1">
         <v-card-title>
-          <h3 class="ml-4 mt-4">Your password</h3>
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-              label="Password*"
-              v-model="verifyPassword"
-              type="password"
-              variant="outlined"
-              color="primary"
-              required
-              clearable
-              class="ma-4"
-          ></v-text-field>
-          <p class="ml-4">Enter your password.</p>
-        </v-card-text>
-        <v-card-title>
           <h3 class="ml-4 mt-4">New email</h3>
         </v-card-title>
         <v-card-text>
@@ -125,6 +114,22 @@ const handleChangeEmail = () => {
         </v-card-text>
       </div>
       <v-card-text v-if="changeEmailDialogPage === 2">
+        <v-card-title>
+          <h3 class="ml-4 mt-4">Your password</h3>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+              label="Password*"
+              v-model="verifyPassword"
+              type="password"
+              variant="outlined"
+              color="primary"
+              required
+              clearable
+              class="ma-4"
+          ></v-text-field>
+          <p class="ml-4">Enter your password.</p>
+        </v-card-text>
         <v-card-title>
           <h3 class="ml-4 mt-4">Verify Your Account</h3>
         </v-card-title>
