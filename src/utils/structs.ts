@@ -93,7 +93,7 @@ export interface Settings {
     location?: string,
     phone?: string,
     tags: {
-        string: number [],
+        [key: string]: Array<number>,
     }
 }
 
