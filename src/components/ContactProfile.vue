@@ -289,6 +289,11 @@ const tagsIn = computed(() => {
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
+          <GroupSearchMessage v-model:show-dialog="searchMessageDialog"
+                              :group-id="displayContactInfo.id"></GroupSearchMessage>
+          <v-btn @click="searchMessageDialog = true">Search</v-btn>
+          <v-divider class="ma-4"/>
+
           <v-card-title class="ma-7">Members</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap align-items-start member-container">
             <div
