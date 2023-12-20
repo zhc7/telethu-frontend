@@ -1,6 +1,6 @@
 import {computed, ref, watch} from 'vue';
 import {useLocalStorage} from "@vueuse/core";
-import {Block, ContactsData, Message, Settings, UserData, Users} from "./utils/structs";
+import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs";
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
@@ -210,18 +210,3 @@ export const snackbarTimeout = ref(3000);
 export const candidatesList = ref<{
     [id: number]: number []
 }>([]);
-
-export const scrollTo = (mid: number) => {
-    messageFlow.value?.jumpTo(mid);
-}
-
-export const messageBlocks = ref<{
-    [id: number]: Array<Block>
-}>({});
-
-export const initMessageBlock = (id: number) => {
-    const bigNumber = 1000000000000000;
-    if (messageBlocks.value[id] === undefined) {
-        messageBlocks.value[id] = [{uid: 0, messages: [], startTime: bigNumber, endTime: bigNumber}];
-    }
-}

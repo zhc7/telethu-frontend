@@ -1,8 +1,6 @@
 import {BASE_API_URL, DEBUG} from "../constants";
 import {
     hotMessages,
-    initMessageBlock,
-    messageBlocks,
     messageDict,
     messages,
     settings,
@@ -32,6 +30,7 @@ import {token} from "../auth.ts";
 import {handleDeleteMessage, handleRecallMessage, updateMessage} from "./messages/receive.ts";
 import {getUser} from "./data.ts";
 import {updateUserProfile} from "./users/profile.ts";
+import {initMessageBlock, messageBlocks} from "./blocks.ts";
 
 
 const searchResult = ref();

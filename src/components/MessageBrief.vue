@@ -2,9 +2,9 @@
 import {ref, watch} from "vue";
 import {getAsyncMessage} from "../core/messages/receive";
 import {displayHotMessage} from "../utils/notification";
-import {scrollTo} from "../globals";
 import {Message} from "../utils/structs";
 import {getUser} from "../core/data.ts";
+import {jumpTo} from "../core/blocks.ts";
 
 const props = defineProps<{
   messageId: number,
@@ -23,7 +23,7 @@ watch(props, () => {
 </script>
 
 <template>
-  <div @click="scrollTo(messageId)">
+  <div @click="jumpTo(messageId)">
     <span class="text-blue-darken-4">{{getUser(sender).name}}:</span>&nbsp;{{ content }}
   </div>
 </template>

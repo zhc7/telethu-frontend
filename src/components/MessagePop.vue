@@ -250,7 +250,7 @@ if (DEBUG) console.log("message", props.message);
       <div
           class="d-flex"
           :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
-          v-if="!forward && message.sender === userId"
+          v-if="!forward"
       >
         <v-menu v-if="message.who_reply && message.who_reply.length">
           <template v-slot:activator="{props}">
@@ -264,8 +264,9 @@ if (DEBUG) console.log("message", props.message);
             </v-list-item>
           </v-list>
         </v-menu>
+        <div v-if="message.sender === userId"/>
         <v-progress-circular
-            v-if="message.t_type === TargetType.GROUP && readPercent < 100"
+            v-else-if="message.t_type === TargetType.GROUP && readPercent < 100"
             :model-value="readPercent"
             size="10" width="2"
             @click.stop="$emit('showWhoRead')"

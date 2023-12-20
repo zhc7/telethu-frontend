@@ -5,7 +5,7 @@ import {formatChatMessageTime} from "../utils/datetime";
 import {
   activeChatId,
   activeMessages,
-  floatingContactId, initMessageBlock, messageBlocks,
+  floatingContactId,
   messageDict,
   messages,
   nowRef,
@@ -20,6 +20,7 @@ import {token} from "../auth.ts";
 import {getUser} from "../core/data.ts";
 import {VInfiniteScroll} from "vuetify/components";
 import MessageBanner from "./MessageBanner.vue";
+import {activeBlock, activeBlockId, blocks, endLoading, mergeBlocks, startLoading} from "../core/blocks.ts";
 
 const props = defineProps<{
   showContextMenu: boolean,
@@ -47,54 +48,6 @@ const updateTime = (block: Block) => {
   }
   block.startTime = messageDict.value[block.messages[0]].time;
   block.endTime = messageDict.value[block.messages[block.messages.length - 1]].time;
-}
-
-// const blocks = ref<Array<Block>>([{uid: 0, messages: [], startTime: 0, endTime: 0}]);
-const blocks = computed({
-  get: () => {
-    initMessageBlock(activeChatId.value);
-    return messageBlocks.value[activeChatId.value];
-  },
-  set: (newValue) => {
-    messageBlocks.value[activeChatId.value] = newValue;
-  }
-})
-
-const activeBlockId = ref<number>(0);
-const activeBlock = computed(() => {
-  return blocks.value[activeBlockId.value];
-});
-const addBlock = (block: Block) => {
-  for (let i = 0; i <= blocks.value.length; i++) {
-    if (i === blocks.value.length || blocks.value[i].startTime > block.startTime) {
-      blocks.value.splice(i, 0, block);
-      activeBlockId.value = i;
-      mergeBlocks();
-      return;
-    }
-  }
-}
-
-const mergeBlocks = () => {
-  for (let i = 0; i < blocks.value.length - 1; i++) {
-    if (blocks.value[i].endTime >= blocks.value[i + 1].startTime) {
-      if (activeBlockId.value === i + 1) {
-        blocks.value[i + 1].startTime = blocks.value[i].startTime;
-        // uniquely concat
-        blocks.value[i + 1].messages = [...new Set([...blocks.value[i].messages, ...blocks.value[i + 1].messages])];
-        blocks.value.splice(i, 1);
-      } else {
-        blocks.value[i].endTime = blocks.value[i + 1].endTime;
-        // uniquely concat
-        blocks.value[i].messages = [...new Set([...blocks.value[i].messages, ...blocks.value[i + 1].messages])];
-        blocks.value.splice(i + 1, 1);
-      }
-      if (i < activeBlockId.value) {
-        activeBlockId.value--;
-      }
-      i--;
-    }
-  }
 }
 
 const getMessage = (messageId: number | string) => {
@@ -185,27 +138,13 @@ const getHistoryMessage = async (start: number, end: number, num: number, direct
   });
 }
 
-let loadingCount = 0;
-let callback = () => {
-};
-const startLoading = () => {
-  loadingCount++;
-}
-
-const endLoading = () => {
-  loadingCount--;
-  if (loadingCount === 0) {
-    callback();
-  }
-}
-
 const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void }) => {
   startLoading();
   const promise = side === "start" ? getHistoryMessage(0, activeBlock.value.startTime, 10, "start") :
       getHistoryMessage(activeBlock.value.endTime, Date.now() * 2, 10, "end");
   promise.then((pulled_length) => {
     updateTime(activeBlock.value);
-    mergeBlocks();
+    mergeBlocks(activeChatId.value);
     if (pulled_length < 10) {
       done("empty");
     } else {
@@ -284,55 +223,8 @@ watch(lastMessageId, (id: number | string) => {
   if (activeBlockId.value === blocks.value.length - 1) {
     nextTick().then(scrollToBottom);
   }
-  // const legacy = messages.value[activeChatId.value];
-  // blocks.value[blocks.value.length - 1] = {
-  //   uid: blocks.value[blocks.value.length - 1].uid,
-  //   messages: [...new Set([...blocks.value[blocks.value.length - 1].messages.filter(m => typeof m === "number"), ...legacy.map((msg: Message) => msg.message_id)])],
-  //   startTime: legacy[0] ? legacy[0].time : Date.now(),
-  //   endTime: legacy[0] ? legacy[legacy.length - 1].time : Date.now(),
-  // };
-  // blocks.value.forEach((a) => {
-  //   a.messages.sort((a, b) => {
-  //     return getMessage(a).time - getMessage(b).time;
-  //   })
-  // })
 }, {immediate: true});
 
-const uid = ref(1);
-defineExpose({
-  jumpTo: (messageId: number) => {
-    const scrollTo = () => {
-      const el = activeMessages.value[messageId];
-      el.$el.scrollIntoView({behavior: "smooth", block: "center"});
-      el.$el.classList.add("bg-blue");
-      setTimeout(() => {
-        el.$el.classList.remove("bg-blue");
-      }, 700);
-    }
-    if (activeBlock.value.messages.includes(messageId)) {
-      scrollTo();
-      return;
-    }
-    getAsyncMessage(messageId).then(message => {
-      messageDict.value[messageId] = message;
-      addBlock({
-        uid: uid.value++,
-        messages: [messageId],
-        startTime: message.time,
-        endTime: message.time,
-      });
-    }).then(() => {
-      setTimeout(() => {
-        callback = () => {
-          setTimeout(scrollTo, 50);
-          callback = () => {
-          };
-        }
-        if (loadingCount === 0) callback();
-      }, 50);
-    });
-  },
-})
 </script>
 
 <template>

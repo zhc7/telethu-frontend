@@ -1,9 +1,10 @@
 import {Message} from "../../utils/structs";
 import axios from "axios";
-import {messageBlocks, messageDict, messages, user} from "../../globals.ts";
+import {messageDict, messages, user} from "../../globals.ts";
 import {token} from "../../auth.ts";
 import {BASE_API_URL} from "../../constants.ts";
 import {callSnackbar} from "../../utils/snackbar.ts";
+import {messageBlocks} from "../blocks.ts";
 
 export const getAsyncMessage = async (messageId: number): Promise<Message> => {
     return axios.get(BASE_API_URL + `chat/message/${messageId}`, {
