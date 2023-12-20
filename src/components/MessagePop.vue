@@ -264,7 +264,7 @@ if (DEBUG) console.log("message", props.message);
             </v-list-item>
           </v-list>
         </v-menu>
-        <div v-if="message.sender === userId"/>
+        <div v-if="message.sender !== userId"/>
         <v-progress-circular
             v-else-if="message.t_type === TargetType.GROUP && readPercent < 100"
             :model-value="readPercent"
