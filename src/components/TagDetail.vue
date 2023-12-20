@@ -2,7 +2,7 @@
 import {computed, ref} from "vue";
 import {
   activeTagName,
-  floatingContactId,
+  floatingContactId, removeTag,
   settings,
   showProfileDialog, tagAddMember,
   tagRemoveMember,
@@ -100,7 +100,7 @@ const addMemberDialog = ref<boolean>(false);
         :pinned="members"
         @confirm="handleAddMember"
     ></SelectMember>
-    <Alert v-model:show-dialog="deleteTagDialog" @confirm="" title="Are you sure?"
+    <Alert v-model:show-dialog="deleteTagDialog" @confirm="removeTag(tagName)" title="Are you sure?"
            content="'Are you sure you want to delete the tag"
            :irreversible="true"/>
   </v-card>

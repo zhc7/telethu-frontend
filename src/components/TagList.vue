@@ -46,12 +46,6 @@ const handleNewTag = (target: number [], name: string) => {
           mdi-account-multiple
         </v-icon>
       </template>
-      <template #append>
-<!--        <v-list-item class="v-btn&#45;&#45;density-compact">-->
-<!--          <v-btn class="v-btn&#45;&#45;density-comfortable mr-1 bg-green">TODO</v-btn>-->
-<!--          <v-btn class="v-btn&#45;&#45;density-comfortable ml-1 bg-red">TODO</v-btn>-->
-<!--        </v-list-item>-->
-      </template>
     </ListItem>
     <v-list-item class="text-center">
       <span class="text-blue-grey-lighten-2">
