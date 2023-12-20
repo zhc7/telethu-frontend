@@ -178,7 +178,7 @@ const chatManager: {
             const blocks = messageBlocks.value[message.receiver];
             const block = blocks[blocks.length - 1];
             const index = block.messages.findIndex(id => id === ack.reference);
-            if (index !== -1) block.messages.splice(index, 1);
+            block.messages[index] = ack.message_id;
         }
     },
 }
