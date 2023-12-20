@@ -24,10 +24,10 @@ const handleNewTag = (target: number [], name: string) => {
 <template>
 
   <List class="fill-height" v-model="activeTagName">
-    <v-list-item v-ripple class="new-tag" @click="newTagDialog=true">
+    <v-list-item v-ripple class="new-tag text-center" @click="newTagDialog=true">
       New Tag
     </v-list-item>
-    <v-divider ma-3></v-divider>
+    <v-divider class="ma-3"></v-divider>
     <ListItem
         v-for="tag in tags"
         :key="tag"
@@ -41,13 +41,13 @@ const handleNewTag = (target: number [], name: string) => {
         </v-icon>
       </template>
       <template #append>
-        <v-list-item class="v-btn--density-compact">
-          <v-btn class="v-btn--density-comfortable mr-1 bg-green">TODO</v-btn>
-          <v-btn class="v-btn--density-comfortable ml-1 bg-red">TODO</v-btn>
-        </v-list-item>
+<!--        <v-list-item class="v-btn&#45;&#45;density-compact">-->
+<!--          <v-btn class="v-btn&#45;&#45;density-comfortable mr-1 bg-green">TODO</v-btn>-->
+<!--          <v-btn class="v-btn&#45;&#45;density-comfortable ml-1 bg-red">TODO</v-btn>-->
+<!--        </v-list-item>-->
       </template>
     </ListItem>
-    <v-list-item>
+    <v-list-item class="text-center">
       <span class="text-blue-grey-lighten-2">
         {{ tags.length === 0 ? 'No tags yet' : tags.length === 1 ? '1 tag in total' : tags.length + ' tags in total' }}
       </span>
@@ -60,7 +60,6 @@ const handleNewTag = (target: number [], name: string) => {
       label="Tag Name"
       @confirm="handleNewTag"
     ></SelectMember>
-
   </List>
 </template>
 

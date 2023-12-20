@@ -52,6 +52,12 @@ export const requestRemove = (id: number) => {
 }
 
 export const postSettings = async () => {
+    if (settings.value.tags === undefined) {
+        settings.value.tags = {};
+    }
+    if (Object.keys(settings.value.tags).includes('')) {
+        delete settings.value.tags[''];
+    }
     return await axios.post(BASE_API_URL + 'users/profile', {
         settings: settings.value,
     }, {

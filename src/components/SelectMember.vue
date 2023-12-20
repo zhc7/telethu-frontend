@@ -5,8 +5,11 @@ import Avatar from "./Avatar.vue";
 import {getUser} from "../core/data.ts";
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {contacts} from "../globals.ts";
+import {activeTagName, contacts, settings} from "../globals.ts";
 import {DEBUG} from "../constants.ts";
+import TagList from "./TagList.vue";
+import TagDetail from "./TagDetail.vue";
+import Purchase from "./Purchase.vue";
 
 const props = withDefaults(defineProps<{
   showDialog: boolean,
@@ -17,6 +20,7 @@ const props = withDefaults(defineProps<{
   positiveButtonText?: string,
   name?: boolean,
   label?: string,
+  tags?: boolean,
 }>(), {
   title: 'Select Member',
   pinned: () => [],
@@ -70,6 +74,20 @@ const emitValue = computed(() => {
   return l;
 });
 
+const showTagsDialog = ref<boolean>(false);
+
+const handleImport = () => {
+  if (!activeTagName.value) return;
+  if (!selectedStuff.value instanceof Array) {
+    selectedStuff.value = [];
+  }
+  for (const id of settings.value.tags[activeTagName.value]) {
+    if (!selectedStuff.value.includes(id)) {
+      selectedStuff.value.push(id);
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -91,6 +109,9 @@ const emitValue = computed(() => {
             label="Search"
             v-model="searchFriend"
         />
+        <v-list-item class="import-from-tags" v-if="tags" v-ripple @click="showTagsDialog=true">
+          Import from Tags
+        </v-list-item>
         <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
               v-for="member in pinned"
@@ -134,9 +155,29 @@ const emitValue = computed(() => {
         <v-btn @click="$emit('confirm', emitValue, groupName); selectedStuff = []">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
+    <v-dialog v-model="showTagsDialog" max-width="1200px">
+      <v-card min-height="60vh">
+        <v-row class="ma-6">
+          <v-col cols="4">
+            <TagList v-model="activeTagName"/>
+          </v-col>
+          <v-col cols="8">
+            <TagDetail :tag-name="activeTagName" allow-import @imp="handleImport" />
+          </v-col>
+        </v-row>
+        <v-card-actions class="mb-3 mr-4">
+          <v-spacer />
+          <v-btn @click="showTagsDialog=false">Finish</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-dialog>
 </template>
 
 <style scoped>
+
+.import-from-tags:hover {
+  background-color: #eeeeee;
+}
 
 </style>

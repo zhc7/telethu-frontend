@@ -126,6 +126,7 @@ watch(searchText, () => {
           createGroup(name, list);
         }"
         label="Group Name"
+        tags
     />
 
     <div class="d-flex mt-3" style="justify-content: space-between">

@@ -449,6 +449,7 @@ const searchMessageDialog = ref<boolean>(false);
         :title="category === 'user' ? `Create a group with ${selectedChatInfo!.name}` : `Add member to group ${selectedChatInfo!.name}`"
         @confirm="handleConfirmPlus"
         label="Group Name"
+        tags
     />
     <SelectMember
         v-model:show-dialog="shareMessageDialog"
@@ -456,6 +457,7 @@ const searchMessageDialog = ref<boolean>(false);
         title="Share Messages"
         :possible="contacts"
         @confirm="handleShareMessages"
+        tags
     />
     <v-dialog v-if="category === 'group'" v-model="showWhoReadDialog" width="20vw">
       <v-card>

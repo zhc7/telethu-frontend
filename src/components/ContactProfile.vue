@@ -433,6 +433,7 @@ const tagsIn = computed(() => {
         :title="'Add Member'"
         :base-group="displayContactInfo"
         @confirm="handleAddMember"
+        tags
     />
     <SelectMember
         v-model:show-dialog="changeOwnerDialog"

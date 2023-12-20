@@ -14,7 +14,8 @@ import Alert from "./Alert.vue";
 import SelectMember from "./SelectMember.vue";
 
 
-const props = defineProps<{ tagName: string }>();
+const props = defineProps<{ tagName: string, allowImport: boolean }>();
+defineEmits('imp');
 
 const members = computed(() => {
   if (!settings.value.tags[props.tagName]) {
@@ -85,6 +86,10 @@ const addMemberDialog = ref<boolean>(false);
           <v-btn
               @click="deleteTagDialog=true" color="error">
             Delete Tag
+          </v-btn>
+          <v-btn
+            @click="$emit('imp')" color="indigo" v-if="allowImport">
+            Import
           </v-btn>
         </div>
       </v-card-actions>
