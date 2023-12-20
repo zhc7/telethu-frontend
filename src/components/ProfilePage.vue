@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import {getVerifyCode, logout, token} from "../auth.ts";
+import {logout, token} from "../auth.ts";
 import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../constants.ts";
-import {blacklist, settings, user, userEmail} from "../globals.ts";
+import {blacklist, settings, user} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {editProfile} from "../core/users/profile.ts";
 import {unblockFriend} from "../core/users/send.ts";
-import {callSnackbar} from "../utils/snackbar.ts";
-import {useVuelidate} from "@vuelidate/core";
-import {email, required} from "@vuelidate/validators";
 import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
+import Avatar from "./Avatar.vue";
 
 const router = useRouter();
 
@@ -174,9 +172,7 @@ const deleteAccountDialog = ref(false);
 
     <v-col cols="8" offset="2">
       <v-card class="mb-auto mt-6">
-        <v-avatar size="80" class="mt-5">
-          <v-img :src="user.avatar" cover/>
-        </v-avatar>
+        <Avatar class="mt-2" :contact-id="user.id" display-big-avatar/>
         <v-card-item>
           <v-row no-gutters pa="4">
             <v-col cols="8" offset="2">

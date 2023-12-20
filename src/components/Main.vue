@@ -10,12 +10,14 @@ import NavBar from "./NavBar.vue";
 import {
   activeChatId,
   colorPickerDialog,
-  currentPage, defaultTheme,
-  floatingContactId, hotMessages,
+  currentPage,
+  defaultTheme,
+  floatingContactId,
   isSocketConnected,
-  requests, settings,
+  requests,
+  settings,
   showProfileDialog,
-  unreadCounter,
+  unreadCounter, user,
   userAvatar,
   userName
 } from "../globals.ts"
@@ -24,6 +26,10 @@ import ContactProfile from "./ContactProfile.vue";
 import ColorPicker from "./ColorPicker.vue";
 import Purchase from "./Purchase.vue";
 import BigImage from "./BigImage.vue";
+import {useTheme} from 'vuetify'
+import {DEBUG} from "../constants.ts";
+import {killSocket} from "../core/users/send.ts";
+import Avatar from "./Avatar.vue";
 
 const router = useRouter();
 
@@ -67,13 +73,9 @@ onMounted(() => {
   }
 });
 
-import { useTheme } from 'vuetify'
-import {DEBUG} from "../constants.ts";
-import {killSocket} from "../core/users/send.ts";
-
 const theme = useTheme()
 
-function toggleTheme () {
+function toggleTheme() {
   defaultTheme.value = theme.global.current.value.dark ? 'light' : 'dark';
   theme.global.name.value = defaultTheme.value;
 }
@@ -84,27 +86,29 @@ function toggleTheme () {
   <v-container class="d-flex pa-0 ma-0" style="max-height: 100vh">
     <NavBar class="ma-0">
       <List density="compact" nav v-model="activePage" class="overflow-x-hidden">
-        <v-list-item class="text-left"
-                     :prepend-avatar="userAvatar"
-                     :title="userName"
-                     @click="activePage = 'profile'"
-        >
+        <v-list-item class="text-left" :title="user.name" @click.stop="activePage = 'profile'">
+          <template #prepend>
+            <Avatar
+                :contact-id="user.id"
+                small
+            />
+          </template>
         </v-list-item>
         <v-divider/>
         <v-list-item @click="killSocket">
           寄
         </v-list-item>
-        <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"></ListItem>
-        <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"></ListItem>
-        <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts"
-                  k="contacts"></ListItem>
-        <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"></ListItem>
-        <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"></ListItem>
+        <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"/>
+        <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"/>
+        <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts" k="contacts"/>
+        <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"/>
+        <ListItem prepend-icon="mdi-account-details" title="Profile" k="profile"/>
       </List>
       <div class="fix-left-bottom">
         <v-icon title="toggle theme" @click="toggleTheme" class="mb-5">mdi-theme-light-dark</v-icon>
         <v-icon title="color picker" @click="colorPickerDialog = true" class="mb-5">mdi-palette</v-icon>
-        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram</v-icon>
+        <v-icon title="You are connected" class="text-blue-darken-2" v-if="isSocketConnected">mdi-check-decagram
+        </v-icon>
         <v-icon title="reconnecting..." class="mdi-spin text-yellow" v-if="!isSocketConnected">mdi-loading</v-icon>
       </div>
     </NavBar>

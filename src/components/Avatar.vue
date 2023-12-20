@@ -8,6 +8,7 @@ import {BASE_API_URL, DEBUG} from "../constants";
 
 const props = withDefaults(defineProps<{
   displayBigAvatar?: boolean,
+  small?: boolean,
   contactId: number,
 }>(), {
   displayBigAvatar: false
@@ -61,7 +62,7 @@ watch(contact, () => {
 </script>
 
 <template>
-  <v-avatar>
+  <v-avatar :size="small ? 'small': undefined">
     <v-img
         @click="handleClick"
         v-if="contact.category === 'user'"
