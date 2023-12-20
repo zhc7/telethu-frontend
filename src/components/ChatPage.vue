@@ -329,9 +329,9 @@ const dispatchFunction = (item: string) => {
   messageItemDispatcher[item](contextMenuSubject.value);
 }
 
-watch(contacts, async () => {
+watch(contacts, () => {
   for (const id of contacts.value) {
-    await getHistoryMessage(id, Date.now(), getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND, 10);
+    getHistoryMessage(id, Date.now(), getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND, 1);
   }
 });
 

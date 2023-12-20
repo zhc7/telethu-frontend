@@ -184,7 +184,7 @@ const chatManager: {
 }
 
 const getHistoryMessage = async (id: number, from: number, t_type: TargetType, num: number) => {
-    if (DEBUG) console.log("pulling from: ", from);
+    if (DEBUG) console.log("pulling from: ", from, id);
     return axios.get(BASE_API_URL + "chat/history", {
         params: {
             id, from, t_type, num,
@@ -207,7 +207,7 @@ const getHistoryMessage = async (id: number, from: number, t_type: TargetType, n
                 last_time = msg.time;
             }
         }
-        if (DEBUG) console.log(new_msg);
+        if (DEBUG) console.log(id, "got", new_msg);
         messages.value[id] = new_msg;
         if (new_msg.length) {
             hotMessages.value[id] = {
