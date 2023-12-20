@@ -84,16 +84,28 @@ const inputValue = ref('');
 const oldPassword = ref('');
 const newPassword1 = ref('');
 const newPassword2 = ref('');
+const cancel = () => {
+  editingEntry.value = undefined;
+  inputValue.value = '';
+  oldPassword.value = '';
+  newPassword1.value = '';
+  newPassword2.value = '';
+  changePasswordDialog.value = false;
+}
 const handleChangePassword = () => {
   if (newPassword1.value !== newPassword2.value) {
-    alert('Wrong confirmation');
+    callSnackbar('Password not match!', 'red')
   } else {
     editProfile({
       old_password: oldPassword.value,
       new_password: newPassword1.value,
-    }, true);
+    }, true).then(() => {
+      callSnackbar('Password changed!', 'green');
+      cancel();
+    }).catch((error) => {
+      callSnackbar('Failed changing password: ' + error, 'red');
+    });
   }
-  changePasswordDialog.value = false;
 }
 const dialog = computed(() => {
   return editingEntry.value !== undefined;
@@ -274,7 +286,7 @@ const deleteAccountDialog = ref(false);
         <v-card-actions class="mb-3 mr-4">
           <v-spacer></v-spacer>
           <v-btn color="info" @click="handleChangePassword">Confirm</v-btn>
-          <v-btn color="error" @click="changePasswordDialog=false">Cancel</v-btn>
+          <v-btn color="error" @click="cancel">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

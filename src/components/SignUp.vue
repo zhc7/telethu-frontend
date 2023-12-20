@@ -72,7 +72,9 @@ const next = async () => {
 
 const applyForVerifyCode = () => {
   getVerifyCode(signupAccount.value).then(() => {
-    currentPage.value += 1;
+    if (currentPage.value === 3) {
+      currentPage.value += 1;
+    }
     callSnackbar("Verify code sent!", "green");
   }).catch((error) => {
     callSnackbar("Failed sending verify code: " + error, "red");
@@ -229,7 +231,7 @@ const cancel = () => {
             ></v-otp-input>
             <div class="ml-4">
               <p>Didn't receive the code?</p>
-              <a href="#" v-if="countdown === 0" @click.prevent="applyForVerifyCode">Resend</a>
+              <a href="#" v-if="countdown <= 0" @click.prevent="applyForVerifyCode">Resend</a>
               <span v-else>Resend available in {{ countdown }} seconds</span>
             </div>
           </v-card-text>
