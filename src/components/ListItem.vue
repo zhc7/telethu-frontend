@@ -31,6 +31,18 @@ const active = computed(() => {
   }
 });
 
+// if subtitle starts with [you are mentioned], then make it bold and red
+const subtitle1 = computed(() => {
+  if (typeof props.subtitle === "string") {
+    if (props.subtitle.startsWith("[@]")) {
+      // only bold the [@] part
+      return `<span style="font-weight: bold; color: red">[@] </span>${props.subtitle.slice(4)}`;
+    } else {
+      return props.subtitle;
+    }
+  }
+});
+
 </script>
 
 <template>
@@ -58,7 +70,7 @@ const active = computed(() => {
     <div :class="{'d-none': activated===false, 'd-flex': activated!==false}" class="flex-column title-area">
       <p class="text-left" v-text="props.title"/>
       <span class="subtitle-wrap mr-2">
-        <p class="text-left text-grey" v-text="props.subtitle" style="font-size: small"/>
+        <span v-html="subtitle1" class="text-left text-grey" style="font-size: small"/>
       </span>
     </div>
     <slot/>

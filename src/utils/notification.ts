@@ -45,9 +45,11 @@ export const displayHotMessage = (message: Message | undefined): string => {
     if (message === undefined) {
         return '';
     } else if (message.m_type === MessageType.TEXT) {
-        // 如果是多条消息转发，只显示第一条
         if (Array.isArray(message.content)) {
             return "[chat history]";
+        }
+        if ((message.content as string).includes("@" + userId.value)) {
+            return "[@]" + message.content as string;
         }
         return message.content as string;
     } else {

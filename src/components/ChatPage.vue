@@ -292,8 +292,8 @@ const speech2text = async (message: Message) => {
     return;
   } else callSnackbar('Recognizing speech...', 'green');
 
-  const audioBlob = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
-    responseType: 'blob',
+  const arrayBuffer = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
+    responseType: 'arraybuffer',
     headers: {
       Authorization: token.value,
     }
@@ -302,7 +302,6 @@ const speech2text = async (message: Message) => {
         callSnackbar(err.response.data.message, 'error');
       });
 
-  const arrayBuffer = await new Response(audioBlob).arrayBuffer();
   const pushStream = SpeechSDK.AudioInputStream.createPushStream();
   pushStream.write(arrayBuffer);
   pushStream.close();
