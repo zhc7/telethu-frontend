@@ -3,7 +3,7 @@
 import ChatList from "./ChatList.vue";
 import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import ContactProfile from "./ContactProfile.vue";
-import {DEBUG} from "../constants.ts";
+import {BASE_API_URL, DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {
   activeChatId,
@@ -32,7 +32,8 @@ import {messageFlow} from "../globals";
 import {callSnackbar} from "../utils/snackbar.ts";
 import {createGroup, groupAddMember} from "../core/groups/send.ts";
 import GroupSearchMessage from "./GroupSearchMessage.vue";
-
+import * as SpeechSDK from 'microsoft-cognitiveservices-speech-sdk';
+import {token} from "../auth.ts";
 
 const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
 watch(localMessageFlow, (value) => {
@@ -86,6 +87,7 @@ const contextMenuChoices = computed(() => {
     "Select",
     "Reference",
     "Translate",
+    "Speech-to-text",
   ]
   if (contextMenuSubject.value.sender === user.value.id) {
     choices.push(
@@ -263,6 +265,39 @@ const handleForwardGroupMessage = () => {
   shareMessageDialog.value = true;
 }
 
+const speech2text = async (message: Message) => {
+  callSnackbar('Speech-to-text', 'green');
+  if (typeof message.content !== 'string') {
+    return;
+  }
+
+  const audioBlob = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
+    responseType: 'blob',
+    headers: {
+      Authorization: token.value,
+    }
+  }).then(response => response.data)
+      .catch(err => {
+        callSnackbar(err.response.data.message, 'error');
+      });
+
+  const arrayBuffer = await new Response(audioBlob).arrayBuffer();
+  const pushStream = SpeechSDK.AudioInputStream.createPushStream();
+  pushStream.write(arrayBuffer);
+  pushStream.close();
+
+  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription('c58688bdfbf54beab8079fda18950c81', 'eastasia');
+  speechConfig.speechRecognitionLanguage = 'zh-CN';
+  const audioConfig = SpeechSDK.AudioConfig.fromStreamInput(pushStream);
+  const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+
+  recognizer.recognizeOnceAsync(result => {
+    console.log(result);
+    callSnackbar(result.text, 'green');
+  });
+}
+
+
 const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Copy": (msg: Message) => {
     navigator.clipboard.writeText(msg.content as string)
@@ -277,6 +312,7 @@ const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Withdraw": withdrawMessage,
   "Pin": pinGroupMessage,
   "Translate": translateMessage,
+  "Speech-to-text": speech2text,
 };
 
 const dispatchFunction = (item: string) => {
