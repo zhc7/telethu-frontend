@@ -15,12 +15,17 @@ export const getAsyncMessage = async (messageId: number): Promise<Message> => {
 
 export const handleRecallMessage = (message: Message) => {
     const target = message.sender === user.value.id ? message.receiver : [message.sender, message.receiver][message.t_type];
-    let targetMessage = messages.value[target].find((m: Message) => m.message_id === message.content);
+    const mid = message.content as number;
+    const targetMessage = messages.value[target].find((m: Message) => m.message_id === mid);
     if (targetMessage === undefined) {
         return;
     }
     targetMessage.content = "*message recalled*";
     targetMessage.status = 3;
+    const anotherTarget = messageDict.value[mid];
+    if (anotherTarget === undefined) return;
+    anotherTarget.content = "*message recalled*";
+    anotherTarget.status = 3;
     callSnackbar("message recalled", "info");
 }
 
