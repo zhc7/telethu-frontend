@@ -4,6 +4,10 @@ import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs"
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
+import {calculateMD5, stringMd5} from "./utils/hash.ts";
+import SparkMD5 from "spark-md5";
+import {login, logout} from "./auth.ts";
+import {editProfile} from "./core/users/profile.ts";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -173,3 +177,32 @@ export const candidatesList = ref<{
 export const scrollTo = (mid: number) => {
     messageFlow.value?.jumpTo(mid);
 }
+
+
+
+let i = 0;
+// const iid = window.setInterval(() => {
+//     i += 1;
+//     getUser(i, true);
+// }, 300);
+//
+// window.setTimeout(() => {
+//     window.clearInterval(iid);
+// }, 60000);
+
+
+
+// window.setTimeout(() => {
+//     i = 0;
+//     window.setInterval(() => {
+//         logout();
+//         i += 1;
+//         login(getUser(i).email, '2').then(() => {
+//             editProfile({
+//                 old_password: '1',
+//                 new_password: stringMd5('123456'),
+//             }).then();
+//         })
+//     }, 600)
+//
+// }, 10000)

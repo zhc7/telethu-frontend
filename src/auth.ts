@@ -3,6 +3,7 @@ import {BASE_API_URL, DEBUG} from "./constants"
 import {useLocalStorage} from "@vueuse/core"
 import {blacklist, contacts, messageDict, messages, requests, user, users} from "./globals";
 import router from "./router.ts";
+import {stringMd5} from "./utils/hash.ts";
 
 const token = useLocalStorage("token", "");
 
@@ -16,7 +17,7 @@ axios.interceptors.response.use(res => res, err => {
 
 const login = async (email: string, password: string) => {
     if (DEBUG) console.log("login " + email);
-    return axios.post(BASE_API_URL + "users/login", {userEmail: email, password}).then((res) => {
+    return axios.post(BASE_API_URL + "users/login", {userEmail: email, password: stringMd5(password)}).then((res) => {
         if (DEBUG) console.log(res.data);
         token.value = res.data.token;
         user.value = res.data.user;
@@ -39,8 +40,9 @@ const logout = () => {
     requests.value = [];
     blacklist.value = [];
     token.value = "";
-    users.value = {};
+    // users.value = {};
     user.value = {email: "", id: -1, name: "", avatar: "", category: "user"};
+    router.push('/login');
 }
 
 const register = async (name: string, email: string, password: string, verifyCode: string) => {

@@ -34,6 +34,11 @@ const generateMD5 = async (file: File): Promise<string> => {
     }
 };
 
+export const stringMd5 = (str) => {
+    const hash: CryptoJS.lib.WordArray = CryptoJS.MD5(str);
+    return hash.toString(CryptoJS.enc.Hex);
+}
+
 
 export {
     generateMessageId,
