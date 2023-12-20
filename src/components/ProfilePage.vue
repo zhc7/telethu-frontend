@@ -12,6 +12,7 @@ import {callSnackbar} from "../utils/snackbar.ts";
 import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 import Avatar from "./Avatar.vue";
+import {stringMd5} from "../utils/hash.ts";
 
 const router = useRouter();
 
@@ -96,8 +97,8 @@ const handleChangePassword = () => {
     callSnackbar('Password not match!', 'red')
   } else {
     editProfile({
-      old_password: oldPassword.value,
-      new_password: newPassword1.value,
+      old_password: stringMd5(oldPassword.value),
+      new_password: stringMd5(newPassword1.value),
     }, true).then(() => {
       callSnackbar('Password changed!', 'green');
       cancel();

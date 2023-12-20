@@ -7,6 +7,7 @@ import {email, required} from "@vuelidate/validators";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {user, userEmail} from "../globals.ts";
+import {stringMd5} from "../utils/hash.ts";
 
 const emit = defineEmits(['update:showDialog']);
 
@@ -51,7 +52,7 @@ const changeEmailDialogNext = async () => {
       callSnackbar("Email already exists!", "red");
       return;
     }
-    const password = verifyPassword.value;
+    const password = stringMd5(verifyPassword.value);
     const email = newEmail.value;
     const result = await axios.post(BASE_API_URL + 'users/edit_profile', {
       password,
