@@ -64,16 +64,15 @@ const changeEmailDialogNext = async () => {
   } else if (changeEmailDialogPage.value === 2) {
     const password = stringMd5(verifyPassword.value);
     const email = newEmail.value;
-    const result = await editProfile({
+    editProfile({
       password,
       verification_code: verifyCode.value,
       email,
-    });
-    if (result.status !== 200) {
-      callSnackbar(result.data, 'red');
-      return;
-    }
-    changeEmailDialogPage.value += 1;
+    }).then((res) => {
+      changeEmailDialogPage.value += 1;
+    }).catch((err) => {
+        callSnackbar(err, 'red');
+    })
   } else {
     emit('update:showDialog', false);
   }
