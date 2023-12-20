@@ -6,7 +6,6 @@ import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {user, userEmail} from "../globals.ts";
 import {stringMd5} from "../utils/hash.ts";
 import {editProfile} from "../core/users/profile.ts";
 
@@ -76,7 +75,7 @@ const changeEmailDialogNext = async () => {
     }
     changeEmailDialogPage.value += 1;
   } else {
-    emit('showDialog', false);
+    emit('update:showDialog', false);
   }
 }
 
