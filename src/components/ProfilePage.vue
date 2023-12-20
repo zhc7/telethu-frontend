@@ -11,6 +11,7 @@ import {unblockFriend} from "../core/users/send.ts";
 import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 import Avatar from "./Avatar.vue";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 const router = useRouter();
 
@@ -285,7 +286,7 @@ const deleteAccountDialog = ref(false);
       </v-card>
     </v-dialog>
 
-    <changeEmailDialog v-model="changeEmailDialog" @update:showDialog="() => {changeEmailDialog = false}"/>
+    <ChangeEmailDialog v-model="changeEmailDialog" @update:showDialog="() => {changeEmailDialog = false}"/>
     <DeleteAccountDialog v-model="deleteAccountDialog" @update:showDialog="() => {deleteAccountDialog = false}"/>
   </v-row>
 </template>
