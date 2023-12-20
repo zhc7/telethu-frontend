@@ -85,7 +85,7 @@ function toggleTheme() {
   <v-container class="d-flex pa-0 ma-0" style="max-height: 100vh">
     <NavBar class="ma-0">
       <List density="compact" nav v-model="activePage" class="overflow-x-hidden">
-        <v-list-item class="text-left" :title="user.name" @click.stop="activePage = 'profile'">
+        <v-list-item class="text-left" :title="user.name" :subtitle="`@${user.id}`" @click.stop="activePage = 'profile'">
           <template #prepend>
             <Avatar
                 :contact-id="user.id"
@@ -93,11 +93,7 @@ function toggleTheme() {
             />
           </template>
         </v-list-item>
-        <v-divider/>
-        <v-list-item @click="killSocket">
-          寄
-        </v-list-item>
-        <ListItem prepend-icon="mdi-currency-usd" title="Purchase" k="purchase"/>
+        <v-divider class="ma-4"/>
         <ListItem prepend-icon="mdi-chat" title="Chat" :badge-value="unreadTotal" k="chat"/>
         <ListItem prepend-icon="mdi-account-multiple" :badge-value="requests.length" title="Contacts" k="contacts"/>
         <ListItem prepend-icon="mdi-cog" title="Settings" k="settings"/>

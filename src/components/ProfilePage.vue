@@ -199,7 +199,7 @@ const deleteAccountDialog = ref(false);
                       Location:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <span>{{ settings.location ? settings.location : 'to be determined' }}</span>
+                      <span>{{ settings.location ? settings.location : 'hover to set' }}</span>
                       <v-icon v-if="displayEditEntry==='location'" size="xs"
                               @click="editingEntry='location'; inputValue=(settings.location ? settings.location : '')">
                         mdi-grease-pencil
@@ -212,7 +212,7 @@ const deleteAccountDialog = ref(false);
                       Phone:
                     </v-col>
                     <v-col cols="6" class="text-left">
-                      <span>{{ settings.phone ? settings.phone : 'to be determined' }}</span>
+                      <span>{{ settings.phone ? settings.phone : 'hover to set' }}</span>
                       <v-icon v-if="displayEditEntry==='phone'" size="xs"
                               @click="editingEntry='phone'; inputValue=(settings.phone ? settings.phone : '')">
                         mdi-grease-pencil
