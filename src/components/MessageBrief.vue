@@ -2,7 +2,7 @@
 import {ref, watch} from "vue";
 import {getAsyncMessage} from "../core/messages/receive";
 import {displayHotMessage} from "../utils/notification";
-import {messageFlow} from "../globals";
+import {scrollTo} from "../globals";
 import {Message} from "../utils/structs";
 import {getUser} from "../core/data.ts";
 
@@ -20,13 +20,10 @@ watch(props, () => {
   })
 }, {immediate: true});
 
-const scrollTo = () => {
-  messageFlow.value?.jumpTo(props.messageId);
-}
 </script>
 
 <template>
-  <div @click="scrollTo">
+  <div @click="scrollTo(messageId)">
     <span class="text-blue-darken-4">{{getUser(sender).name}}:</span>&nbsp;{{ content }}
   </div>
 </template>

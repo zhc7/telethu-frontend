@@ -169,3 +169,7 @@ export const snackbarColor = ref("red");
 export const candidatesList = ref<{
     [id: number]: number []
 }>([]);
+
+export const scrollTo = (mid: number) => {
+    messageFlow.value?.jumpTo(mid);
+}
