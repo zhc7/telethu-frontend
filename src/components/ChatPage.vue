@@ -29,7 +29,7 @@ import {
 } from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
-import {ContextMenuSubject, GroupData, Message, TargetType} from "../utils/structs";
+import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {deleteMessage, forwardMessage, pinMessage, recallMessage, unpinMessage} from "../core/messages/send.ts";
@@ -94,14 +94,17 @@ const contextMenuChoices = computed(() => {
     "Delete",
     "Select",
     "Reference",
-    "Translate",
-    "Speech-to-text",
   ]
   if (contextMenuSubject.value.sender === user.value.id) {
     choices.push(
         "Edit",
         "Withdraw",
     );
+  }
+  if (contextMenuSubject.value.m_type === MessageType.AUDIO) {
+    choices.push("Speech2text");
+  } else if (contextMenuSubject.value.m_type === MessageType.TEXT) {
+    choices.push("Translate");
   }
   if (category.value === "group" && (selectedChatInfo.value as GroupData).owner === user.value.id) {
     choices.push("Pin");
@@ -253,9 +256,7 @@ const pinGroupMessage = (message: Message) => {
 const translateMessage = async (message: Message) => {
   if (typeof message.content !== 'string') {
     return;
-  } else {
-    callSnackbar('Translating...', 'green');
-  }
+  } else callSnackbar('Translating...', 'green');
 
   const subscriptionKey = AZURE_TRANSLATE_KEY; // 替换为您的Azure订阅密钥
   const endpoint = "https://api.cognitive.microsofttranslator.com";
@@ -287,10 +288,9 @@ const handleForwardGroupMessage = () => {
 }
 
 const speech2text = async (message: Message) => {
-  callSnackbar('Speech-to-text', 'green');
   if (typeof message.content !== 'string') {
     return;
-  }
+  } else callSnackbar('Recognizing speech...', 'green');
 
   const audioBlob = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
     responseType: 'blob',
@@ -333,7 +333,7 @@ const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Withdraw": withdrawMessage,
   "Pin": pinGroupMessage,
   "Translate": translateMessage,
-  "Speech-to-text": speech2text,
+  "Speech2text": speech2text,
 };
 
 const dispatchFunction = (item: string) => {
@@ -419,7 +419,7 @@ const searchMessageDialog = ref<boolean>(false);
         </v-toolbar-title>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user' || category === 'group'"/>
         <v-btn icon="mdi-magnify" @click="searchMessageDialog = true;" v-if="category === 'group'"/>
-        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile" />
+        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
         <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
       </v-toolbar>
       <MessageFlow
