@@ -324,9 +324,8 @@ const searchingMessage = ref<boolean>(false);
         v-if="activeChatId !== user.id && activeChatId > 0"
         cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
         class="d-flex flex-column flex-1-1 overflow-y-auto fill-height pa-0"
-        style="position:relative;"
     >
-      <v-toolbar class="picked-color-toolbar" style="width: 100%">
+      <v-toolbar class="picked-color-toolbar" style="width: 100%;">
         <v-toolbar-title align="left" class="ml-8">
           <div v-if="selectionMode" class="d-flex">
             <v-btn
@@ -358,10 +357,9 @@ const searchingMessage = ref<boolean>(false);
           </div>
         </v-toolbar-title>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
-        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile">
-        </v-btn>
+        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile" />
+        <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
       </v-toolbar>
-      <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
       <MessageFlow
           :key="activeChatId"
           ref="localMessageFlow"
@@ -501,7 +499,7 @@ const searchingMessage = ref<boolean>(false);
   height: 16px;
   width: 16px;
   line-height: 16px;
-  right: 13px;
+  right: 3px;
   top: 13px;
   font-size: 0.56em;
   z-index: 10000;
