@@ -358,7 +358,7 @@ const searchMessageDialog = ref<boolean>(false);
             </v-icon>
           </div>
         </v-toolbar-title>
-        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
+        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category in ['user', 'group']"/>
         <v-btn icon="mdi-magnify" @click="searchMessageDialog = true;" v-if="category === 'group'"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile" />
         <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
