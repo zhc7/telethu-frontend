@@ -15,7 +15,8 @@ const props = withDefaults(defineProps<{
   possible?: Array<number>,
   single?: boolean,
   positiveButtonText?: string,
-  name?: boolean
+  name?: boolean,
+  label?: string,
 }>(), {
   title: 'Select Member',
   pinned: () => [],
@@ -80,7 +81,7 @@ const emitValue = computed(() => {
       <v-card-text class="overflow-y-auto d-flex flex-column">
         <v-text-field
             density="compact"
-            label="group name"
+            :label="label"
             v-model="groupName"
             variant="outlined"
             v-if="name"

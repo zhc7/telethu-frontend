@@ -4,10 +4,6 @@ import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs"
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
-import {calculateMD5, stringMd5} from "./utils/hash.ts";
-import SparkMD5 from "spark-md5";
-import {login, logout} from "./auth.ts";
-import {editProfile} from "./core/users/profile.ts";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -21,6 +17,7 @@ export const activeRequestId = ref<number>(-1);
 export const activeMessageId = ref<number>(-1);
 export const referencingMessageId = ref<number>(-1);
 export const activeSearchId = ref<number>(-1);
+export const activeTagName = ref<string>('');
 export const contactPageContentLeft = ref<number>(0);
 
 export const selectedContactInfo = ref<ContactsData | undefined>(undefined);
@@ -85,6 +82,58 @@ export const settings = ref<Settings>({
     tags: {},
 });
 
+export const createNewTag = (name: string, target: number [] = []) => {
+    if (settings.value.tags === undefined) {
+        settings.value.tags = {};
+    }
+    if (Object.keys(settings.value.tags).includes(name)) {
+        return -1;
+    } else {
+        settings.value.tags[name] = target;
+        return 0;
+    }
+}
+
+export const tagAddMember = (target: number [], name: string) => {
+    if (settings.value.tags === undefined) {
+        settings.value.tags = {};
+    }
+    if (!Object.keys(settings.value.tags).includes(name)) {
+        settings.value.tags[name] = [];
+    }
+    for (const id of target) {
+        if (!settings.value.tags[name].includes(id)) {
+            settings.value.tags[name].push(id);
+        }
+    }
+    return 0;
+}
+
+export const tagRemoveMember = (id: number, name: string) => {
+    if (settings.value.tags === undefined) {
+        settings.value.tags = {};
+    }
+    if (!Object.keys(settings.value.tags).includes(name)) {
+        return -1;
+    }
+    const before = settings.value.tags[name].length;
+    settings.value.tags[name] = settings.value.tags[name].filter(i => i !== id);
+    const after = settings.value.tags[name].length;
+    return before - after;
+}
+
+export const removeTag = (name: string) => {
+    if (setting.vale.tags === undefined) {
+        settings.value.tags = {};
+    }
+    if (!Object.keys(settings.value.tags).includes(name)) {
+        return -1;
+    }
+    delete settings.value.tags[name];
+    return 0;
+}
+
+
 watch(settings, () => {
     if (settingsUpdating.value) return;
     postSettings().then();
@@ -96,7 +145,7 @@ export const messages = ref<{
     [id: number]: Array<Message>
 }>({});
 
-export const messageDict = ref<{[id: number | string]: Message}>({});
+export const messageDict = ref<{ [id: number | string]: Message }>({});
 
 watch(contacts, () => {
     for (const id of contacts.value) {
@@ -180,7 +229,6 @@ export const scrollTo = (mid: number) => {
 }
 
 
-
 let i = 0;
 // const iid = window.setInterval(() => {
 //     i += 1;
@@ -190,7 +238,6 @@ let i = 0;
 // window.setTimeout(() => {
 //     window.clearInterval(iid);
 // }, 60000);
-
 
 
 // window.setTimeout(() => {

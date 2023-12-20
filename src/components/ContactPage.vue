@@ -8,6 +8,7 @@ import {
   activeContactId,
   activeRequestId,
   activeSearchId,
+  activeTagName,
   contactPageContentLeft,
   contactPageProfileSource,
   requests,
@@ -16,11 +17,13 @@ import {
 
 import RequestList from "./RequestList.vue";
 import ContactProfile from "./ContactProfile.vue";
+import TagList from "./TagList.vue";
 import {getUser} from "../core/data.ts";
 import {acceptFriend, rejectFriend, searchForFriend} from "../core/users/send.ts";
 import SearchResultList from "./SearchResultList.vue";
 import {DEBUG} from "../constants.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
+import TagDetail from "./TagDetail.vue";
 
 
 defineEmits(["chat"]);
@@ -48,6 +51,11 @@ const handleRequestList = () => {
   contactPageContentLeft.value = 1;
   if (DEBUG) console.log(friendRequests.value);
 };
+
+const handleTagList = () => {
+  contactPageContentLeft.value = 2;
+  contactPageProfileSource.value = 'tags';
+}
 
 const handleRequestPass = async (id: number) => {
   acceptFriend(id).then(() => {
@@ -79,21 +87,23 @@ watch(activeRequestId, selectRequest);
       <v-list class="flex-0-0">
         <v-list-item class="bg-purple">
           <template #prepend>
-            <v-icon></v-icon>
+            <v-icon @click="handleTagList" v-if="contactPageContentLeft === 0">mdi-tag-outline</v-icon>
+            <v-icon v-else @click="handleContactList"> mdi-account-multiple
+            </v-icon>
           </template>
           <v-list-item-title class="pa-3 ma-0 fill-height">
-            {{ contactPageContentLeft === 0 ? "Contact List" : "Add Friends" }}
+            {{ ["Contact List", "Add Friends", "Friend Tags"][contactPageContentLeft] }}
           </v-list-item-title>
           <template #append style="position: relative">
             <div class="badge" v-if="requests.length">{{ requests.length }}</div>
             <v-icon
-                v-show="contactPageContentLeft === 0"
+                v-show="contactPageContentLeft === 0 || contactPageContentLeft === 2"
                 @click="handleRequestList"
             >
               mdi-plus
             </v-icon>
             <v-icon
-                v-show="contactPageContentLeft === 1"
+                v-if="contactPageContentLeft === 1"
                 @click="handleContactList"
             >
               mdi-account-multiple
@@ -103,9 +113,11 @@ watch(activeRequestId, selectRequest);
         <v-list-item>
           <v-text-field
               :label="
-              contactPageContentLeft === 0
-                ? 'Search in contacts...'
-                : 'Search for new friends...'
+              [
+                'Search in contacts...',
+                'Search for new friends...',
+                'Search for tags...'
+              ][contactPageContentLeft]
             "
               v-model="searchInput"
               variant="outlined"
@@ -140,6 +152,11 @@ watch(activeRequestId, selectRequest);
           v-model="activeSearchId"
           v-show="contactPageContentLeft === 1 && searchInput"
       />
+      <TagList
+          v-if="contactPageContentLeft === 2"
+          v-model="activeTagName"
+      >
+      </TagList>
     </v-col>
     <v-col
         cols="12"
@@ -164,6 +181,10 @@ watch(activeRequestId, selectRequest);
           :contact-id="activeSearchId"
       >
       </ContactProfile>
+      <TagDetail
+          v-show="contactPageProfileSource === 'tags'"
+          :tag-name="activeTagName"
+      />
     </v-col>
   </v-row>
 </template>

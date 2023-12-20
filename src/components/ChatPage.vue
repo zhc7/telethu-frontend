@@ -389,6 +389,7 @@ const searchMessageDialog = ref<boolean>(false);
         :possible="userContacts"
         :title="category === 'user' ? `Create a group with ${selectedChatInfo.name}` : `Add member to group ${selectedChatInfo.name}`"
         @confirm="handleConfirmPlus"
+        label="Group Name"
     />
     <SelectMember
         v-model:show-dialog="shareMessageDialog"

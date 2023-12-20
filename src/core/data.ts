@@ -70,6 +70,10 @@ export const getSettings = async () => {
         const received = response.data.settings;
         if (received !== undefined && "pinned" in received) {
             settings.value = received;
+            if (!settings.value.tags) {
+                settings.value.tags = {};
+                postSettings().then();
+            }
         } else {
             postSettings().then();
         }
