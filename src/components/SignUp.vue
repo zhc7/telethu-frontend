@@ -31,7 +31,7 @@ const submitRegister = async () => {
   await register(signupName.value, signupAccount.value, signupPassword.value, verifyCode.value).then(() => {
     currentPage.value += 1;
   }).catch((error) => {
-    callSnackbar(error, "red");
+    callSnackbar(error.response.data.info, "red");
   });
 };
 
@@ -77,7 +77,7 @@ const applyForVerifyCode = () => {
     }
     callSnackbar("Verify code sent!", "green");
   }).catch((error) => {
-    callSnackbar("Failed sending verify code: " + error, "red");
+    callSnackbar("Failed sending verify code: " + error.response.data.info, "red");
   });
   countdown.value = 60;
   const timer = setInterval(() => {
@@ -224,7 +224,6 @@ const cancel = () => {
               Please check your email and paste the code below.</p>
             <v-otp-input
                 v-model="verifyCode"
-                type="password"
                 variant="solo"
                 class="ma-4"
                 :input-length="6"

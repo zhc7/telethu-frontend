@@ -20,7 +20,7 @@ const applyForVerifyCode = () => {
     changeEmailDialogPage.value += 1;
     callSnackbar("Verify code sent!", "green");
   }).catch((error) => {
-    callSnackbar("Failed sending verify code: " + error, "red");
+    callSnackbar("Failed sending verify code: " + error.response.data.info, "red");
   });
   countdown.value = 60;
   const timer = setInterval(() => {
@@ -81,7 +81,7 @@ const handleChangeEmail = () => {
     callSnackbar("Email changed!", "green");
     cancelChangeEmail();
   }).catch((error) => {
-    callSnackbar("Failed changing email: " + error, "red");
+    callSnackbar("Failed changing email: " + error.response.data.info, "red");
   });
 }
 </script>

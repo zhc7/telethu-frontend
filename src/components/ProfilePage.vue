@@ -12,6 +12,7 @@ import {callSnackbar} from "../utils/snackbar.ts";
 import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 import Avatar from "./Avatar.vue";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 const router = useRouter();
 
@@ -102,7 +103,7 @@ const handleChangePassword = () => {
       callSnackbar('Password changed!', 'green');
       cancel();
     }).catch((error) => {
-      callSnackbar('Failed changing password: ' + error, 'red');
+      callSnackbar('Failed changing password: ' + error.response.data.info, 'red');
     });
   }
 }
@@ -165,8 +166,8 @@ const deleteAccountDialog = ref(false);
         </v-card-text>
         <v-card-actions class="mb-3 mr-4">
           <v-spacer></v-spacer>
-          <v-btn color="info" @click="handleConfirm">Confirm</v-btn>
           <v-btn color="error" @click="editingEntry=undefined">Cancel</v-btn>
+          <v-btn color="info" @click="handleConfirm">Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -288,8 +289,8 @@ const deleteAccountDialog = ref(false);
         </v-card-text>
         <v-card-actions class="mb-3 mr-4">
           <v-spacer></v-spacer>
-          <v-btn color="info" @click="handleChangePassword">Confirm</v-btn>
           <v-btn color="error" @click="cancel">Cancel</v-btn>
+          <v-btn color="info" @click="handleChangePassword">Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
