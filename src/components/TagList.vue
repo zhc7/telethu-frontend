@@ -6,6 +6,7 @@ import Avatar from "./Avatar.vue";
 import {getUser} from "../core/data.ts";
 import {computed, ref} from "vue";
 import SelectMember from "./SelectMember.vue";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 defineProps(["modelValue"]);
 defineEmits((["update:modelValue"]))
@@ -16,7 +17,12 @@ const tags = computed(() => {
 const newTagDialog = ref<boolean>(false);
 
 const handleNewTag = (target: number [], name: string) => {
+  if (name === '') {
+    callSnackbar('Cannot use empty name for a tag');
+    return;
+  }
   createNewTag(name, target);
+  newTagDialog.value = false;
 }
 
 </script>
