@@ -201,7 +201,7 @@ if (DEBUG) console.log("message", props.message);
           <v-img
               v-else-if="message.m_type === MessageType.IMAGE"
               :src="blobSrc"
-              style="max-width: 18vw; max-height: 20vh; min-height: 12vw; min-width: 18vw;"
+              style="max-width: 30vw; max-height: 20vh; min-height: 12vw; min-width: 20vw;"
               class="border rounded-lg"
               @click="handleClickImage"
           >
@@ -216,13 +216,13 @@ if (DEBUG) console.log("message", props.message);
               v-else-if="message.m_type === MessageType.AUDIO"
               controls
               :src="blobSrc"
-              style="max-width: 20vw; max-height: 20vh;"
+              style="max-width: 50vw;"
           />
           <video
               v-else-if="message.m_type === MessageType.VIDEO"
               controls
               :src="blobSrc"
-              style="max-width: 20vw; max-height: 20vh; border: 1px solid darkgrey; border-radius: 7px"
+              style="min-width: 20vw; max-width: 50vw; max-height: 50vh; border: 1px solid darkgrey; border-radius: 7px"
           ></video>
           <v-list-item
               v-else
