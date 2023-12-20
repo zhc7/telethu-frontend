@@ -79,13 +79,13 @@ const contextMenuChoices = computed(() => {
   let choices = [
     "Copy",
     "Share",
+    "Delete",
     "Select",
     "Reference",
     "Translate",
   ]
   if (contextMenuSubject.value.sender === user.value.id) {
     choices.push(
-        "Delete",
         "Edit",
         "Withdraw",
     );
