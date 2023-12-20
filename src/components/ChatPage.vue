@@ -8,7 +8,7 @@ import InputArea from "./InputArea.vue";
 import {
   activeChatId, candidatesList,
   contacts, editingMessage,
-  floatingContactId,
+  floatingContactId, messageDict,
   messages,
   referencingMessageId,
   selectedChatInfo,
@@ -187,10 +187,10 @@ const handleShareMessages = (target: Array<number>) => {
   if (selectionMode.value) {
     forwardContent = [];
     for (const id of selected.value) {
-      forwardContent.push(messages.value[activeChatId.value].find(m => m.message_id === id)!);
+      forwardContent.push(messageDict.value[id]);
     }
   } else {
-    forwardContent = messages.value[activeChatId.value].find(m => m.message_id === selected.value[0])!;
+    forwardContent = messageDict.value[selected.value[0]];
   }
   for (const member of target) {
     forwardMessage(forwardContent, member);
