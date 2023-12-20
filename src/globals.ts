@@ -109,7 +109,7 @@ export const tagRemoveMember = (id: number, name: string) => {
 }
 
 export const removeTag = (name: string) => {
-    if (setting.vale.tags === undefined) {
+    if (setting.value.tags === undefined) {
         settings.value.tags = {};
     }
     if (!Object.keys(settings.value.tags).includes(name)) {
