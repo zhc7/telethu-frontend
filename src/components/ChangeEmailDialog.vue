@@ -75,8 +75,8 @@ const changeEmailDialogNext = async () => {
       return;
     }
     changeEmailDialogPage.value += 1;
-  } else if (changeEmailDialogPage.value === 3) {
-    changeEmailDialogPage.value += 1;
+  } else {
+    emit('showDialog', false);
   }
 }
 
