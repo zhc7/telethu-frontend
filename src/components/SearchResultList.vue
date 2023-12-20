@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {activeRequestId, activeSearchId, contactPageProfileSource, requests, searchResults} from "../globals.ts";
+import {activeSearchId, contactPageProfileSource, searchResults} from "../globals.ts";
 import Avatar from "./Avatar.vue";
-import {getUser} from "../core/data.ts";
 
 defineProps(["modelValue"]);
 defineEmits((["update:modelValue"]));
