@@ -54,7 +54,6 @@ const changeEmailDialogNext = async () => {
       return;
     }
     const email = newEmail.value;
-    // alert(email)
     const result = await axios.post(BASE_API_URL + 'users/receive_code', {
       userEmail: email,
     }, {
@@ -62,34 +61,25 @@ const changeEmailDialogNext = async () => {
         Authorization: token.value
       }
     });
-    // alert(JSON.stringify(result.data))
     changeEmailDialogPage.value += 1;
   } else if (changeEmailDialogPage.value === 2) {
     const password = stringMd5(verifyPassword.value);
     const email = newEmail.value;
-    editProfile({
+    const result = await editProfile({
       password,
       verification_code: verifyCode.value,
       email,
-    }).then();
+    });
+    if (result.status !== 200) {
+      callSnackbar(result.data, 'red');
+      return;
+    }
+    changeEmailDialogPage.value += 1;
   } else if (changeEmailDialogPage.value === 3) {
     changeEmailDialogPage.value += 1;
   }
 }
-const handleChangeEmail = () => {
-  axios.post(BASE_API_URL + "users/change_email", {
-    oldEmail: user.value.email,
-    newEmail: newEmail.value,
-    verification_code: verifyCode.value,
-  }).then(() => {
-    user.value.email = newEmail.value;
-    userEmail.value = newEmail.value;
-    callSnackbar("Email changed!", "green");
-    cancelChangeEmail();
-  }).catch((error) => {
-    callSnackbar("Failed changing email: " + error.response.data.info, "red");
-  });
-}
+
 </script>
 
 <template>
