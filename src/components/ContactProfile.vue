@@ -7,14 +7,14 @@ import {
   activeChatId,
   activeContactId,
   activeRequestId,
-  blacklist,
+  blacklist, candidatesList,
   contactPageProfileSource,
   contacts,
   currentPage,
   floatingContactId,
   requests,
   settings,
-  showProfileDialog,
+  showProfileDialog, unreadCounter,
   user,
   userContacts,
   userId
@@ -379,6 +379,7 @@ const tagsIn = computed(() => {
                  @click="groupAdministrationDialog=true"
                  color="indigo"
           >
+            <div class="badge" v-if="candidatesList[displayContactInfo.id]?.length">{{ candidatesList[displayContactInfo.id]?.length }}</div>
             Administration
           </v-btn>
           <v-btn color="green" v-if="requests.includes(displayContactInfo.id)" @click="handleAcceptFriend">Accept
@@ -520,6 +521,21 @@ const tagsIn = computed(() => {
 
 .member-item {
   margin-right: 10px; /* 设置头像之间的间隔 */
+}
+
+.badge {
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  line-height: 16px;
+  right: -1.2em;
+  font-size: 0.56em;
+  z-index: 10000;
+  background-color: red;
+  border-radius: 7px;
+  color: white;
+  text-align: center;
+  font-weight: 700;
 }
 
 </style>

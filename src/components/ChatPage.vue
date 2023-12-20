@@ -6,7 +6,7 @@ import ContactProfile from "./ContactProfile.vue";
 import {DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {
-  activeChatId,
+  activeChatId, candidatesList,
   contacts, editingMessage,
   floatingContactId,
   messages,
@@ -324,6 +324,7 @@ const searchingMessage = ref<boolean>(false);
         v-if="activeChatId !== user.id && activeChatId > 0"
         cols="12" :sm="searchingMessage ? 6 : 8" :md="searchingMessage ? 6 : 9"
         class="d-flex flex-column flex-1-1 overflow-y-auto fill-height pa-0"
+        style="position:relative;"
     >
       <v-toolbar class="picked-color-toolbar" style="width: 100%">
         <v-toolbar-title align="left" class="ml-8">
@@ -356,10 +357,11 @@ const searchingMessage = ref<boolean>(false);
             </v-icon>
           </div>
         </v-toolbar-title>
-        <v-btn icon="mdi-bug"/>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
-        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
+        <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile">
+        </v-btn>
       </v-toolbar>
+      <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
       <MessageFlow
           :key="activeChatId"
           ref="localMessageFlow"
@@ -492,6 +494,22 @@ const searchingMessage = ref<boolean>(false);
   transition-duration: 0.15s;
   transition-timing-function: ease;
   transition-delay: 0s;
+}
+
+.badge {
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  line-height: 16px;
+  right: 13px;
+  top: 13px;
+  font-size: 0.56em;
+  z-index: 10000;
+  background-color: red;
+  border-radius: 7px;
+  color: white;
+  text-align: center;
+  font-weight: 700;
 }
 
 </style>
