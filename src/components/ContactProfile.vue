@@ -223,7 +223,8 @@ const searchMessageDialog = ref<boolean>(false);
 </script>
 
 <template>
-  <v-card class="mb-auto mt-6 overflow-y-auto justify-center" style="min-width: 23vw" v-if="displayContactInfo.id > 0">
+  <v-card class="mb-auto mt-6 overflow-y-auto justify-center" style="min-width: 23vw" v-if="displayContactInfo.id > 0"
+          variant="flat">
     <v-card-item class="overflow-y-auto justify-center">
       <Avatar
           :display-big-avatar="true"

@@ -239,14 +239,12 @@ const deleteAccountDialog = ref(false);
           </v-row>
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
-            <v-btn-group color="info" variant="outlined" divided>
-              <v-btn @click="handleLogout">LOGOUT</v-btn>
-              <v-btn @click="triggerFileInput">UPLOAD AVATAR</v-btn>
-              <v-btn @click="blackListDialog=true">BLACK LIST</v-btn>
-              <v-btn @click="changePasswordDialog=true">CHANGE PASSWORD</v-btn>
-              <v-btn @click="deleteAccountDialog=true">DELETE ACCOUNT</v-btn>
+            <v-btn @click="handleLogout" color="primary" variant="tonal">LOGOUT</v-btn>
+            <v-btn @click="triggerFileInput" color="primary" variant="tonal">UPLOAD AVATAR</v-btn>
+            <v-btn @click="blackListDialog=true" color="primary" variant="tonal">BLACK LIST</v-btn>
+            <v-btn @click="changePasswordDialog=true" color="primary" variant="tonal">CHANGE PASSWORD</v-btn>
+            <v-btn @click="deleteAccountDialog=true" color="primary" variant="tonal">DELETE ACCOUNT</v-btn>
 
-            </v-btn-group>
             <input
                 type="file"
                 ref="fileInput"
