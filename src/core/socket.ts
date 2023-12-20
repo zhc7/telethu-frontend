@@ -1,6 +1,6 @@
 import {BASE_WS_URL, DEBUG} from "../constants";
 import {token} from "../auth";
-import {contacts, isSocketConnected, messages, settingsUpdating, unreadCounter} from "../globals";
+import {contacts, isSocketConnected, messages, settings, settingsUpdating, unreadCounter} from "../globals";
 import {chatManager} from "./chat";
 import {Message} from "../utils/structs";
 import {applyList} from "./users/send.ts";

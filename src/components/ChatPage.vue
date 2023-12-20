@@ -29,6 +29,7 @@ import Avatar from "./Avatar.vue";
 import MessageFlow from "./MessageFlow.vue";
 import {messageFlow} from "../globals";
 import {callSnackbar} from "../utils/snackbar.ts";
+import {createGroup, groupAddMember} from "../core/groups/send.ts";
 
 
 const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
@@ -195,6 +196,15 @@ const handleShareMessages = (target: Array<number>) => {
   }
   shareMessageDialog.value = false;
   selectionMode.value = false;
+}
+
+const handleConfirmPlus = (target: Array<number>, input: string) => {
+  if (selectedChatInfo.value.category === 'user') {
+    createGroup(input, target);
+  } else if (selectedChatInfo.value.category === 'group') {
+    groupAddMember(displayContactInfo.value.id, target.filter(i => !(displayContactInfo.value as GroupData).members.includes(i)));
+  }
+  createGroupDialog.value = false;
 }
 
 const selectionMode = ref<boolean>(false);
@@ -370,10 +380,12 @@ const searchingMessage = ref<boolean>(false);
       <InputArea/>
     </v-col>
     <SelectMember
+        name
         v-model:show-dialog="createGroupDialog"
         :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
         :possible="userContacts"
-        title="Add member to group"
+        :title="category === 'user' ? `Create a group with ${selectedChatInfo.name}` : `Add member to group ${selectedChatInfo.name}`"
+        @confirm="handleConfirmPlus"
     />
     <SelectMember
         v-model:show-dialog="shareMessageDialog"

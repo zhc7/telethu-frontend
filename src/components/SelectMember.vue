@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
   possible?: Array<number>,
   single?: boolean,
   positiveButtonText?: string,
+  name?: boolean
 }>(), {
   title: 'Select Member',
   pinned: () => [],
@@ -44,6 +45,8 @@ const dialog = computed({
   get: () => props.showDialog,
   set: (value) => {
     selectedStuff.value = props.single ? 0 : [];
+    groupName.value = '';
+    searchFriend.value = '';
     emit('update:showDialog', value)
   }
 });
@@ -80,7 +83,7 @@ const emitValue = computed(() => {
             label="group name"
             v-model="groupName"
             variant="outlined"
-            v-if="title === 'Create Group'"
+            v-if="name"
         />
         <v-text-field
             density="compact"

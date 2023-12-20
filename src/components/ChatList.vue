@@ -116,6 +116,7 @@ watch(searchText, () => {
 <template>
   <div class="fill-height d-flex flex-column">
     <SelectMember
+        name
         v-model:show-dialog="createGroupDialog"
         :pinned="[user.id]"
         :possible="userContacts"

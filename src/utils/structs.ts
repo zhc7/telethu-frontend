@@ -92,6 +92,9 @@ export interface Settings {
     pinned: Array<number>,
     location?: string,
     phone?: string,
+    tags: {
+        string: number [],
+    }
 }
 
 export interface ChatListItemData {

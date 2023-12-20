@@ -82,6 +82,7 @@ export const settings = ref<Settings>({
     pinned: [],
     location: '',
     phone: '',
+    tags: {},
 });
 
 watch(settings, () => {

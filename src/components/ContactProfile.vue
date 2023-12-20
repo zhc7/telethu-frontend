@@ -2,6 +2,7 @@
 import {computed, ref, watch} from "vue";
 import ProfileRow from "./ProfileRow.vue";
 import SelectMember from "./SelectMember.vue";
+import Tag from "./Tag.vue";
 import {
   activeChatId,
   activeContactId,
@@ -121,7 +122,7 @@ const memberInfoTable = computed(() => {
     }
   }
   return result;
-})
+});
 
 const handleDelete = () => {
   if (!displayContactInfo.value || displayContactInfo.value.category === '') {
@@ -220,6 +221,23 @@ const handleRename = () => {
 }
 
 const searchMessageDialog = ref<boolean>(false);
+
+const tagsIn = computed(() => {
+  if (displayContactInfo.value.category !== 'user') {
+    return [];
+  }
+  if (!settings.value.tags) {
+    return [];
+  }
+  const list = [];
+  for (const tag of Object.keys(settings.value.tags)) {
+    if (settings.value.tags[tag].includes(displayContactInfo.value.id)) {
+      list.push(tag);
+    }
+  }
+  return list;
+})
+
 </script>
 
 <template>
@@ -243,6 +261,7 @@ const searchMessageDialog = ref<boolean>(false);
             v-if="displayContactInfo && displayContactInfo.category === 'user'"
             class="text-grey-darken-3"
         >
+          <Tag v-for="tag in tagsIn" :name="tag"></Tag>
           <v-divider class="ma-4"/>
           <div>
             <ProfileRow>
