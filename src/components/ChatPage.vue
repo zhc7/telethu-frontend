@@ -203,7 +203,7 @@ const handleConfirmPlus = (target: Array<number>, input: string) => {
   if (selectedChatInfo.value.category === 'user') {
     createGroup(input, target);
   } else if (selectedChatInfo.value.category === 'group') {
-    groupAddMember(selectedChatInfo.value.id, target.filter(i => !(selectedChatInfoe.value as GroupData).members.includes(i)));
+    groupAddMember(selectedChatInfo.value.id, target.filter(i => !(selectedChatInfo.value as GroupData).members.includes(i)));
   }
   createGroupDialog.value = false;
 }
@@ -358,7 +358,7 @@ const searchMessageDialog = ref<boolean>(false);
             </v-icon>
           </div>
         </v-toolbar-title>
-        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category in ['user', 'group']"/>
+        <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user' || category === 'group'"/>
         <v-btn icon="mdi-magnify" @click="searchMessageDialog = true;" v-if="category === 'group'"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile" />
         <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
