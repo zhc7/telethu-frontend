@@ -12,11 +12,24 @@ const dialog = ref<boolean>(false);
 </script>
 
 <template>
-  <v-list-item @click="dialog = true">
+  <span class="tag pa-2" @click="dialog = true">
     {{ name }}
-  </v-list-item>
-  <SelectMember
-      :possible="settings.tags[name]"
-      v-model:show-dialog="dialog"
-  ></SelectMember>
+    <SelectMember
+        :title="`Members in ${name}`"
+        :possible="settings.tags[name]"
+        v-model:show-dialog="dialog"
+    ></SelectMember>
+  </span>
 </template>
+
+<style scoped>
+
+.tag {
+  color: grey
+}
+
+.tag:hover {
+  background-color: #eeeeee;
+}
+
+</style>

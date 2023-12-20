@@ -227,7 +227,7 @@ const tagsIn = computed(() => {
     return [];
   }
   if (!settings.value.tags) {
-    return [];
+    settings.value.tags = {};
   }
   const list = [];
   for (const tag of Object.keys(settings.value.tags)) {
@@ -261,6 +261,10 @@ const tagsIn = computed(() => {
             v-if="displayContactInfo && displayContactInfo.category === 'user'"
             class="text-grey-darken-3"
         >
+          <v-divider class="ma-4"></v-divider>
+          <v-list-item-title style="font-weight: 700">
+            Tags containing {{ displayContactInfo.name }}
+          </v-list-item-title>
           <Tag v-for="tag in tagsIn" :name="tag"></Tag>
           <v-divider class="ma-4"/>
           <div>
