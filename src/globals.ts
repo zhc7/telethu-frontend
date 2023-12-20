@@ -206,6 +206,7 @@ export const messageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
 export const snackbar = ref(false);
 export const snackbarText = ref("");
 export const snackbarColor = ref("red");
+export const snackbarTimeout = ref(3000);
 export const candidatesList = ref<{
     [id: number]: number []
 }>([]);

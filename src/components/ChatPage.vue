@@ -3,7 +3,15 @@
 import ChatList from "./ChatList.vue";
 import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import ContactProfile from "./ContactProfile.vue";
-import {BASE_API_URL, DEBUG} from "../constants.ts";
+import {
+  AZURE_REGION,
+  AZURE_SPEECH_KEY,
+  AZURE_SPEECH_REGION,
+  AZURE_TRANSLATE_KEY,
+  BASE_API_URL,
+  DEBUG,
+  LANGUAGE
+} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {
   activeChatId,
@@ -245,16 +253,29 @@ const pinGroupMessage = (message: Message) => {
 const translateMessage = async (message: Message) => {
   if (typeof message.content !== 'string') {
     return;
+  } else {
+    callSnackbar('Translating...', 'green');
   }
+
+  const subscriptionKey = AZURE_TRANSLATE_KEY; // 替换为您的Azure订阅密钥
+  const endpoint = "https://api.cognitive.microsofttranslator.com";
+  const location = AZURE_REGION;
+
+  const url = `${endpoint}/translate?api-version=3.0&to=zh&from=en`;
+
   try {
-    const response = await axios.post('https://libretranslate.de/translate', {
-      q: message.content,
-      source: 'auto',
-      target: 'zh',
-      format: 'text'
+    const response = await axios.post(url, [{
+      text: message.content
+    }], {
+      headers: {
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Ocp-Apim-Subscription-Region': location,
+        'Content-Type': 'application/json'
+      }
     });
-    const translatedText = response.data.translatedText;
-    callSnackbar(`Translated: ${translatedText}`, 'green')
+
+    const translatedText = response.data[0].translations[0].text;
+    callSnackbar(`Translated: ${translatedText}`, 'green', true);
     return translatedText;
   } catch (error) {
     console.error('Error during translation:', error);
@@ -286,14 +307,14 @@ const speech2text = async (message: Message) => {
   pushStream.write(arrayBuffer);
   pushStream.close();
 
-  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription('c58688bdfbf54beab8079fda18950c81', 'eastasia');
-  speechConfig.speechRecognitionLanguage = 'zh-CN';
+  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
+  speechConfig.speechRecognitionLanguage = LANGUAGE;
   const audioConfig = SpeechSDK.AudioConfig.fromStreamInput(pushStream);
   const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
   recognizer.recognizeOnceAsync(result => {
     console.log(result);
-    callSnackbar(result.text, 'green');
+    callSnackbar(result.text, 'green', true);
   });
 }
 
