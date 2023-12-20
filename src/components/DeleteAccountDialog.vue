@@ -1,6 +1,10 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
+import router from "../router.ts";
+import {logout} from "../auth.ts";
+import axios from "axios";
+import {BASE_API_URL} from "../constants.ts";
 
 const emit = defineEmits(['update:showDialog']);
 const password = ref("");
@@ -8,8 +12,16 @@ const cancelDeleteAccount = () => {
   password.value = "";
   emit('update:showDialog', false);
 }
-const deleteAccount = () => {
+const deleteAccount = async () => {
   emit('update:showDialog', false);
+  const result = await axios.delete(BASE_API_URL + 'users/delete', {
+    body: {
+      password: password.value,
+    }
+  });
+  console.log(result);
+  // router.push('/login');
+  // logout();
 }
 
 </script>

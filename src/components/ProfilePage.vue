@@ -8,6 +8,7 @@ import {blacklist, settings, user} from "../globals.ts";
 import SelectMember from "./SelectMember.vue";
 import {editProfile} from "../core/users/profile.ts";
 import {unblockFriend} from "../core/users/send.ts";
+import {callSnackbar} from "../utils/snackbar.ts";
 import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 import Avatar from "./Avatar.vue";
@@ -240,17 +241,26 @@ const deleteAccountDialog = ref(false);
           </v-row>
           <v-divider class="ma-4"/>
           <v-card-actions class="justify-center">
-            <v-btn @click="handleLogout" color="primary" variant="tonal">LOGOUT</v-btn>
-            <v-btn @click="triggerFileInput" color="primary" variant="tonal">UPLOAD AVATAR</v-btn>
-            <v-btn @click="blackListDialog=true" color="primary" variant="tonal">BLACK LIST</v-btn>
-            <v-btn @click="changePasswordDialog=true" color="primary" variant="tonal">CHANGE PASSWORD</v-btn>
-            <v-btn @click="deleteAccountDialog=true" color="primary" variant="tonal">DELETE ACCOUNT</v-btn>
-
+            <v-row>
+              <v-col cols="12">
+                <v-btn-group color="info" variant="outlined" divided>
+                  <v-btn @click="handleLogout">LOGOUT</v-btn>
+                  <v-btn @click="triggerFileInput">UPLOAD AVATAR</v-btn>
+                  <v-btn @click="blackListDialog=true">BLACK LIST</v-btn>
+                </v-btn-group>
+              </v-col>
+              <v-col cols="12">
+                <v-btn-group color="info" variant="outlined" divided>
+                  <v-btn @click="changePasswordDialog=true">CHANGE PASSWORD</v-btn>
+                  <v-btn @click="deleteAccountDialog=true">DELETE ACCOUNT</v-btn>
+                </v-btn-group>
+              </v-col>
+            </v-row>
             <input
                 type="file"
                 ref="fileInput"
                 @change="handleUploadAvatar"
-                style="display: none;"
+                style="display: none"
             />
           </v-card-actions>
         </v-card-item>
@@ -263,7 +273,6 @@ const deleteAccountDialog = ref(false);
         :possible="blacklist"
         :single="true"
         @confirm="(target, _) => {
-          settings.blocked = settings.blocked.filter(id => id !== target.value.id);
           unblockFriend(target);
         }"
     />
@@ -272,7 +281,7 @@ const deleteAccountDialog = ref(false);
         <v-card-title>Change Password</v-card-title>
         <v-card-text>
           <v-label>Old Password</v-label>
-          <v-text-field autofocus v-model="oldPassword" variant="outlined" type="password"></v-text-field>
+          <v-text-field v-model="oldPassword" variant="outlined" type="password"></v-text-field>
           <v-label>New Password</v-label>
           <v-text-field v-model="newPassword1" variant="outlined" type="password"></v-text-field>
           <v-label>Confirmation</v-label>
