@@ -17,7 +17,6 @@ const newTagDialog = ref<boolean>(false);
 
 const handleNewTag = (target: number [], name: string) => {
   createNewTag(name, target);
-  alert(JSON.stringify(settings.value.tags));
 }
 
 </script>
