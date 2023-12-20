@@ -30,6 +30,7 @@ import MessageFlow from "./MessageFlow.vue";
 import {messageFlow} from "../globals";
 import {callSnackbar} from "../utils/snackbar.ts";
 import {createGroup, groupAddMember} from "../core/groups/send.ts";
+import GroupSearchMessage from "./GroupSearchMessage.vue";
 
 
 const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
@@ -297,6 +298,7 @@ watch(contacts, async () => {
 });
 
 const searchingMessage = ref<boolean>(false);
+const searchMessageDialog = ref<boolean>(false);
 </script>
 
 <template>
@@ -357,6 +359,7 @@ const searchingMessage = ref<boolean>(false);
           </div>
         </v-toolbar-title>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user'"/>
+        <v-btn icon="mdi-magnify" @click="searchMessageDialog = true;" v-if="category === 'group'"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile" />
         <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
       </v-toolbar>
@@ -433,6 +436,8 @@ const searchingMessage = ref<boolean>(false);
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <GroupSearchMessage v-model:show-dialog="searchMessageDialog" v-if="selectedChatInfo?.category === 'group'"
+                        :group-id="selectedChatInfo.id"></GroupSearchMessage>
   </v-row>
   <div
       v-show="show && activeChatId"
