@@ -12,15 +12,13 @@ import {
   selectedChatInfo,
   showProfileDialog
 } from "../globals";
-import {Block, ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
+import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
 import {getAsyncMessage} from "../core/messages/receive";
-import axios from "axios";
-import {BASE_API_URL, DEBUG} from "../constants.ts";
-import {token} from "../auth.ts";
+import {DEBUG} from "../constants.ts";
 import {getUser} from "../core/data.ts";
 import {VInfiniteScroll} from "vuetify/components";
 import MessageBanner from "./MessageBanner.vue";
-import {activeBlock, activeBlockId, blocks, endLoading, mergeBlocks, startLoading} from "../core/blocks.ts";
+import {activeBlock, activeBlockId, blocks, loadMoreMessage} from "../core/blocks.ts";
 
 const props = defineProps<{
   showContextMenu: boolean,
@@ -41,14 +39,6 @@ const selected = computed({
     emits("update:selected", value);
   }
 });
-
-const updateTime = (block: Block) => {
-  if (!block.messages.length) {
-    return;
-  }
-  block.startTime = messageDict.value[block.messages[0]].time;
-  block.endTime = messageDict.value[block.messages[block.messages.length - 1]].time;
-}
 
 const getMessage = (messageId: number | string) => {
   const hit = messageDict.value[messageId];
@@ -103,55 +93,8 @@ const groupedMessages = computed(() => {
   return grouped;
 });
 
-const getHistoryMessage = async (start: number, end: number, num: number, direction: 'start' | 'end') => {
-  return axios.get(BASE_API_URL + "chat/history", {
-    params: {
-      id: activeChatId.value,
-      to: start,
-      from: end,
-      t_type: getUser(activeChatId.value).category === 'user' ? TargetType.FRIEND : TargetType.GROUP,
-      num,
-      alignment: direction === "start" ? "from" : "to",
-    },
-    headers: {
-      Authorization: token.value,
-    }
-  }).then((response) => {
-    const pulled_messages = response.data as Array<Message>;
-    const pulled_length = pulled_messages.length;
-    const ids = pulled_messages.map((msg) => msg.message_id);
-    for (const message of pulled_messages) {
-      messageDict.value[message.message_id] = message;
-    }
-    // update messages
-    const new_messages = [...messages.value[activeChatId.value], ...pulled_messages];
-    // sort
-    new_messages.sort((a, b) => a.time - b.time);
-    // unique with id
-    messages.value[activeChatId.value] = new_messages.filter((msg, index, self) => {
-      return index == 0 || msg.message_id === self[index - 1].message_id;
-    });
-    // uniquely concat
-    activeBlock.value.messages = [...new Set(direction === 'start' ? [...ids, ...activeBlock.value.messages] : [...activeBlock.value.messages, ...ids])];
-    updateTime(activeBlock.value);
-    return pulled_length;
-  });
-}
-
-const loadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void }) => {
-  startLoading();
-  const promise = side === "start" ? getHistoryMessage(0, activeBlock.value.startTime, 10, "start") :
-      getHistoryMessage(activeBlock.value.endTime, Date.now() * 2, 10, "end");
-  promise.then((pulled_length) => {
-    updateTime(activeBlock.value);
-    mergeBlocks(activeChatId.value);
-    if (pulled_length < 10) {
-      done("empty");
-    } else {
-      done("ok");
-    }
-    endLoading();
-  });
+const localLoadMoreMessage = ({side, done}: { side: any, done: (arg0: any) => void }) => {
+  loadMoreMessage(activeChatId.value, activeBlockId.value, side, done);
 }
 
 const category = computed(() => {
@@ -240,7 +183,7 @@ watch(lastMessageId, (id: number | string) => {
       :side="activeBlockId === blocks.length - 1 ? 'start' : 'both'"
       :key="activeBlock.uid + ' ' + activeChatId"
       ref="scroll"
-      @load="loadMoreMessage"
+      @load="localLoadMoreMessage"
       @contextmenu.prevent="openBlankContextMenu"
       @dblclick.prevent="scrollToBottom"
   >

@@ -1,7 +1,11 @@
 import {getAsyncMessage} from "./messages/receive.ts";
 import {computed, ref} from "vue";
-import {activeChatId, activeMessages, messageDict, user} from "../globals.ts";
-import {Block} from "../utils/structs.ts";
+import {activeChatId, activeMessages, messageDict, messages, user} from "../globals.ts";
+import {Block, Message, TargetType} from "../utils/structs.ts";
+import axios from "axios";
+import {BASE_API_URL} from "../constants.ts";
+import {getUser} from "./data.ts";
+import {token} from "../auth.ts";
 
 export const messageBlocks = ref<{
     [id: number]: Array<Block>
@@ -42,7 +46,7 @@ export const mergeBlocks = (id: number) => {
     const blocks = messageBlocks.value[id];
     for (let i = 0; i < blocks.length - 1; i++) {
         if (blocks[i].endTime >= blocks[i + 1].startTime) {
-            if (activeBlockId.value === i + 1) {
+            if (id === i + 1) {
                 blocks[i + 1].startTime = blocks[i].startTime;
                 // uniquely concat
                 blocks[i + 1].messages = [...new Set([...blocks[i].messages, ...blocks[i + 1].messages])];
@@ -113,4 +117,61 @@ export const endLoading = () => {
     if (loadingCount === 0) {
         callback();
     }
+}
+
+export const updateTime = (block: Block) => {
+    if (!block.messages.length) {
+        return;
+    }
+    block.startTime = messageDict.value[block.messages[0]].time;
+    block.endTime = messageDict.value[block.messages[block.messages.length - 1]].time;
+}
+
+export const loadMoreMessage = (id: number, blockId: number, side: string, done: any) => {
+  startLoading();
+  const block = messageBlocks.value[id][blockId];
+  const {start, end} = side === "start" ? {start: 0, end: block.startTime} : {start: block.endTime, end: Date.now()};
+  const direction = side;
+  const num = 10;
+  axios.get(BASE_API_URL + "chat/history", {
+        params: {
+            id,
+            to: start,
+            from: end,
+            t_type: getUser(id).category === 'user' ? TargetType.FRIEND : TargetType.GROUP,
+            num,
+            alignment: direction === "start" ? "from" : "to",
+        },
+        headers: {
+            Authorization: token.value,
+        }
+    }).then((response) => {
+        const pulled_messages = response.data as Array<Message>;
+        const pulled_length = pulled_messages.length;
+        const ids = pulled_messages.map((msg) => msg.message_id);
+        for (const message of pulled_messages) {
+            messageDict.value[message.message_id] = message;
+        }
+        // update messages
+        const new_messages = [...messages.value[id], ...pulled_messages];
+        // sort
+        new_messages.sort((a, b) => a.time - b.time);
+        // unique with id
+        messages.value[id] = new_messages.filter((msg, index, self) => {
+            return index == 0 || msg.message_id === self[index - 1].message_id;
+        });
+        // uniquely concat
+        block.messages = [...new Set(direction === 'start' ? [...ids, ...block.messages] : [...block.messages, ...ids])];
+        updateTime(block);
+        return pulled_length;
+    }).then((pulled_length) => {
+    updateTime(block);
+    mergeBlocks(id);
+    if (pulled_length < 10) {
+      done("empty");
+    } else {
+      done("ok");
+    }
+    endLoading();
+  });
 }
