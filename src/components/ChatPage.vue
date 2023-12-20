@@ -203,7 +203,7 @@ const handleConfirmPlus = (target: Array<number>, input: string) => {
   if (selectedChatInfo.value.category === 'user') {
     createGroup(input, target);
   } else if (selectedChatInfo.value.category === 'group') {
-    groupAddMember(displayContactInfo.value.id, target.filter(i => !(displayContactInfo.value as GroupData).members.includes(i)));
+    groupAddMember(selectedChatInfo.value.id, target.filter(i => !(selectedChatInfoe.value as GroupData).members.includes(i)));
   }
   createGroupDialog.value = false;
 }
