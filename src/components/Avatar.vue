@@ -23,6 +23,7 @@ const avatarUrl = (md5: string) => {
 }
 
 const getAvatar = async (hash: string): Promise<string> => {
+  if (!hash) return '/Logo.png';
   if (cache.value[hash]) return cache.value[hash];
   const url = avatarUrl(hash);
   try {
