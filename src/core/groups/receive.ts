@@ -10,7 +10,7 @@ export const handleAddGroupMember = (message: Message) => {
     getUser(message.receiver, true);
     getCandidateList(message.receiver).then();
     if (DEBUG) console.log('member added');
-    callSnackbar('new group member', 'info');
+    callSnackbar('New group member added to "' + getUser(message.receiver).name + '"', 'info');
 };
 export const handleSomebodyExitGroup = (message: Message) => {
     const memberId = message.sender;
