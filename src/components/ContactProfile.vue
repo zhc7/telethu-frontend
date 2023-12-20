@@ -262,7 +262,7 @@ const tagsIn = computed(() => {
             class="text-grey-darken-3"
         >
           <v-divider class="ma-4"></v-divider>
-          <v-list-item-title style="font-weight: 700">
+          <v-list-item-title style="font-weight: 700" v-if="tagsIn.length" class="ma-4">
             Tags containing {{ displayContactInfo.name }}
           </v-list-item-title>
           <Tag v-for="tag in tagsIn" :name="tag"></Tag>

@@ -25,7 +25,7 @@ const dialog = ref<boolean>(false);
 <style scoped>
 
 .tag {
-  color: grey
+  color: grey;
 }
 
 .tag:hover {
