@@ -12,7 +12,6 @@ import {callSnackbar} from "../utils/snackbar.ts";
 import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 import Avatar from "./Avatar.vue";
-import {callSnackbar} from "../utils/snackbar.ts";
 
 const router = useRouter();
 
