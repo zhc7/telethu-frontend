@@ -9,7 +9,6 @@ import {activeTagName, contacts, settings} from "../globals.ts";
 import {DEBUG} from "../constants.ts";
 import TagList from "./TagList.vue";
 import TagDetail from "./TagDetail.vue";
-import Purchase from "./Purchase.vue";
 
 const props = withDefaults(defineProps<{
   showDialog: boolean,

@@ -28,14 +28,13 @@ import TagDetail from "./TagDetail.vue";
 
 defineEmits(["chat"]);
 const searchInput = ref("");
-const searchFriendMode = ref("id");
 const displayGroup = ref(false);
 
-const selectContact = async (newContactId: number) => {
+const selectContact = () => {
   contactPageProfileSource.value = 'contactList'
 };
 
-const selectRequest = async (newRequestId: number) => {
+const selectRequest = () => {
   contactPageProfileSource.value = 'requestList';
 };
 
@@ -184,6 +183,7 @@ watch(activeRequestId, selectRequest);
       <TagDetail
           v-show="contactPageProfileSource === 'tags'"
           :tag-name="activeTagName"
+          :allow-import="false"
       />
     </v-col>
   </v-row>
@@ -192,10 +192,6 @@ watch(activeRequestId, selectRequest);
 <style scoped>
 .v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
   margin-inline-start: 0;
-}
-
-.v-list-item--active {
-  background-color: #248aff !important;
 }
 
 .badge {
@@ -210,9 +206,5 @@ watch(activeRequestId, selectRequest);
   top: 0.6em;
 }
 
-.v-btn {
-  font-size: 15px;
-  font-weight: bold;
-}
 
 </style>

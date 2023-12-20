@@ -1,8 +1,6 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import router from "../router.ts";
-import {logout} from "../auth.ts";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 

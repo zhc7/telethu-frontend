@@ -32,7 +32,6 @@ const selectedMessageType = ref<string>('text');
 
 const messageContentInput = ref<string>('');
 
-const messageList = ref<Message []>([])
 
 const searchFromBack = async () => {
   const params = {

@@ -14,7 +14,7 @@ import {
   floatingContactId,
   requests,
   settings,
-  showProfileDialog, unreadCounter,
+  showProfileDialog,
   user,
   userContacts,
   userId
@@ -417,7 +417,7 @@ const tagsIn = computed(() => {
       <v-card class="fill-height overflow-y-auto">
         <v-card-title>Rename</v-card-title>
         <v-card-text>
-          <v-text-field autofocus v-model="renameInputValue"></v-text-field>
+          <v-text-field :autofocus="true" v-model="renameInputValue"></v-text-field>
         </v-card-text>
         <v-card-actions class="mb-3 mr-4">
           <v-spacer></v-spacer>

@@ -57,7 +57,7 @@ const displayList = computed(() => {
 <template>
   <List class="fill-height overflow-y-auto" v-model="activeContactId">
     <ListItem
-        v-for="contactId in displayList"
+        v-for="contactId in displayList.filter(id => getUser(id).name.includes(searchInput))"
         :key="contactId"
         :k="contactId"
         class="pa-3 pl-6 chat-list-item text-left"

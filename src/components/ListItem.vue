@@ -35,16 +35,16 @@ const active = computed(() => {
 
 <template>
   <div
-      v-ripple
+      :v-ripple="true"
       v-bind="$attrs"
       @click="handleClick"
       class="pa-3 d-flex flex-row justify-start align-center rounded-lg list-item"
       :class="{'v-list-item--active': active, 'picked-color-list-item': active}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
-      <v-img :src="props.prependAvatar" cover/>
+      <v-img :src="props.prependAvatar" :cover="true"/>
     </v-avatar>
-    <div v-if="prependIcon" style="position: relative">
+    <div v-if="prependIcon" style="position: relative;">
       <div class="badge" v-if="badgeValue">
         {{ badgeValue }}
       </div>
