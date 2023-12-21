@@ -49,6 +49,7 @@ import {createGroup, groupAddMember} from "../core/groups/send.ts";
 import GroupSearchMessage from "./GroupSearchMessage.vue";
 import * as SpeechSDK from 'microsoft-cognitiveservices-speech-sdk';
 import {token} from "../auth.ts";
+import {speech2text} from "../utils/audio.ts";
 
 const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
 watch(localMessageFlow, (value) => {
@@ -301,33 +302,6 @@ const translateMessage = async (message: Message) => {
 const handleForwardGroupMessage = () => {
   shareMessageDialog.value = true;
 }
-
-const speech2text = async (message: Message) => {
-  if (typeof message.content !== 'string') {
-    return;
-  } else callSnackbar('Recognizing speech...', 'green');
-
-  const blob = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
-    responseType: 'blob',
-    headers: {
-      Authorization: token.value,
-    }
-  }).then(response => response.data)
-      .catch(err => {
-        callSnackbar(err.response.data.message, 'error');
-      });
-
-  const audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(new File([blob], 'audio.wav'));
-  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
-  speechConfig.speechRecognitionLanguage = LANGUAGE;
-  const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-
-  recognizer.recognizeOnceAsync(result => {
-    callSnackbar(result.text, 'green', true);
-    message.info = result.text;
-  });
-}
-
 
 const messageItemDispatcher: { [key: string]: (msg: Message) => void } = {
   "Copy": (msg: Message) => {

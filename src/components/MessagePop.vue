@@ -253,7 +253,8 @@ if (DEBUG) console.log("message", props.message);
           :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
           v-if="!forward"
       >
-        <span class="text-grey mr-1" style="font-size: 0.7em" v-if="message.m_type === MessageType.AUDIO && message.info !== ''">
+        <span class="text-grey mr-1" style="font-size: 0.7em"
+              v-if="message.m_type === MessageType.AUDIO && message.info !== ''">
         {{ message.info }}
       </span>
 

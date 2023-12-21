@@ -1,4 +1,11 @@
 // 将 AudioBuffer 转换为 WAV 格式
+import {callSnackbar} from "./snackbar.ts";
+import {AZURE_REGION, AZURE_SPEECH_KEY, BASE_API_URL, LANGUAGE} from "../constants.ts";
+import axios from "axios";
+import {token} from "../auth.ts";
+import * as SpeechSDK from "microsoft-cognitiveservices-speech-sdk";
+import {Message} from "./structs.ts";
+
 export function bufferToWave(abuffer, len) {
     const numOfChan = abuffer.numberOfChannels;
     const length = len * numOfChan * 2 + 44;
@@ -56,3 +63,44 @@ export function bufferToWave(abuffer, len) {
     return buffer;
 }
 
+export const speech2text = async (message: Message) => {
+    if (typeof message.content !== 'string') {
+        return;
+    } else callSnackbar('Recognizing speech...', 'green');
+
+    try {
+        const response = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
+            responseType: 'blob',
+            headers: {
+                Authorization: token.value,
+            }
+        });
+        const blob = response.data;
+
+        // 检查音频格式
+        if (blob.type === 'audio/webm') {
+            // 转换为 WAV 格式
+            const audioBuffer = await new AudioContext().decodeAudioData(await blob.arrayBuffer());
+            const wavBuffer = bufferToWave(audioBuffer, audioBuffer.length);
+            const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+            processAudio(new File([wavBlob], 'audio.wav'), message);
+        } else {
+            processAudio(new File([blob], 'audio.wav'), message);
+        }
+    } catch (err) {
+        callSnackbar(err.response?.data.message || err.message, 'error');
+    }
+};
+
+// 使用 Microsoft Azure Speech SDK 进行语音识别
+const processAudio = (file: File, message: Message) => {
+    const audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(file);
+    const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
+    speechConfig.speechRecognitionLanguage = LANGUAGE;
+    const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+
+    recognizer.recognizeOnceAsync(result => {
+        callSnackbar(result.text, 'green', true);
+        message.info = result.text;
+    });
+};
