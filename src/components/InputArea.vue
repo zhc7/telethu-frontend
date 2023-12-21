@@ -10,6 +10,7 @@ import selectMember from "./SelectMember.vue";
 import MessageBrief from "./MessageBrief.vue";
 import {DEBUG} from "../constants.ts";
 import {sendFiles, sendMessage} from "../core/messages/send.ts";
+import {bufferToWave} from "../utils/audio.ts";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -54,37 +55,35 @@ const triggerFileInput = () => {
 };
 
 const recorder = ref<MediaRecorder | null>(null);
-const newAudio = ref<null | Blob>(null);
 const triggerAudioInput = async () => {
   if (recorder.value) {
     recorder.value.stop();
     recorder.value = null;
   } else {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false
-    });
-
-    const options = {mimeType: "audio/webm"};
-    const recordedChunks: Array<BlobPart> = [];
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    const options = { mimeType: 'audio/webm' };
+    const recordedChunks: BlobPart[] = [];
     recorder.value = new MediaRecorder(stream, options);
-    recorder.value.addEventListener("dataavailable", e => {
-      if (e.data.size > 0) {
-        recordedChunks.push(e.data);
-      }
+
+    recorder.value.addEventListener('dataavailable', e => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
     });
 
-    recorder.value.addEventListener("stop", () => {
-      newAudio.value = new Blob(recordedChunks);
-      console.log(newAudio.value);
-      const file = new File([newAudio.value], "voice message.mp3");
+    recorder.value.addEventListener('stop', async () => {
+      const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const audioBuffer = await new AudioContext().decodeAudioData(await audioBlob.arrayBuffer());
+
+      const wavBuffer = bufferToWave(audioBuffer, audioBuffer.length);
+      const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+
+      const file = new File([wavBlob], 'voice message.wav');
       uploadingFiles.value = [file];
       handleSendFiles();
     });
 
     recorder.value.start();
   }
-}
+};
 
 const processFilesForPreview = (files: FileList | File[]) => {
   for (let file of files) {
