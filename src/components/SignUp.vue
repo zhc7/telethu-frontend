@@ -97,6 +97,9 @@ const keydown = (event: KeyboardEvent) => {
       next();
     }
   }
+  if (event.key === "Escape") {
+    cancel();
+  }
 }
 
 const cancel = () => {
