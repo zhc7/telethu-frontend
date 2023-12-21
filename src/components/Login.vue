@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SignUp from "./SignUp.vue";
+import ForgetPassword from "./ForgetPassword.vue";
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {login} from "../auth.ts";
@@ -56,7 +57,6 @@ const submit = () => {
             variant="outlined"
             :error="hint !== ''"
         ></v-text-field>
-
         <v-text-field
             label="Password"
             v-model="password"
@@ -85,6 +85,7 @@ const submit = () => {
           </v-col>
           <v-col cols="8">
             <SignUp/>
+            <ForgetPassword />
           </v-col>
         </v-row>
       </v-col>
