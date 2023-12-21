@@ -5,6 +5,7 @@ import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
 import {token} from "../auth.ts";
 import {stringMd5} from "../utils/hash.ts";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 const emit = defineEmits(['update:showDialog']);
 const password = ref("");
@@ -14,14 +15,14 @@ const cancelDeleteAccount = () => {
 }
 const deleteAccount = async () => {
   emit('update:showDialog', false);
-  const result = await axios.delete(BASE_API_URL + 'users/delete_user', {
-    body: {
-      password: stringMd5(password.value),
-    },
+  const result = await axios.post(BASE_API_URL + 'users/delete_user', {
+    password: stringMd5(password.value),
+  }, {
     headers: {
       Authorization: token.value,
     }
   });
+  callSnackbar('Account deleted', 'green');
   console.log(result);
   // router.push('/login');
   // logout();
