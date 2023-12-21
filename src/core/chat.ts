@@ -32,6 +32,7 @@ import {getUser} from "./data.ts";
 import {updateUserProfile} from "./users/profile.ts";
 import {initMessageBlock, messageBlocks} from "./blocks.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
+import {type} from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/SpeechServiceConfig";
 
 
 const searchResult = ref();
@@ -156,7 +157,15 @@ const chatManager: {
         const blocks = messageBlocks.value[target];
         const block = blocks[blocks.length - 1];
         block.messages.push(message.message_id);
-        block.messages.sort();
+        block.messages.sort((a, b) => {
+            if (typeof a === "string") {
+                if (typeof b === "string") return 0;    // stable
+                return 1;
+            } else {
+                if (typeof b === "string") return -1;
+                return a - b;
+            }
+        });
         block.messages = block.messages.filter((number, index, array) => index === 0 || number !== array[index - 1]);
         messageDict.value[message.message_id] = message;
     },
