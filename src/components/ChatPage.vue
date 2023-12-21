@@ -307,8 +307,8 @@ const speech2text = async (message: Message) => {
     return;
   } else callSnackbar('Recognizing speech...', 'green');
 
-  const arrayBuffer = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
-    responseType: 'arraybuffer',
+  const blob = await axios.get(BASE_API_URL + 'files/' + message.content + '/', {
+    responseType: 'blob',
     headers: {
       Authorization: token.value,
     }
@@ -317,13 +317,10 @@ const speech2text = async (message: Message) => {
         callSnackbar(err.response.data.message, 'error');
       });
 
-  const pushStream = SpeechSDK.AudioInputStream.createPushStream();
-  pushStream.write(arrayBuffer);
-  pushStream.close();
-
+  const audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(new File([blob], 'audio.wav'));
   const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
   speechConfig.speechRecognitionLanguage = LANGUAGE;
-  const audioConfig = SpeechSDK.AudioConfig.fromStreamInput(pushStream);
+  console.log('audioConfig', audioConfig);
   const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
   recognizer.recognizeOnceAsync(result => {
