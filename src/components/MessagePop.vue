@@ -255,15 +255,19 @@ const showRecognizedText = ref(true);
           :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
           v-if="!forward"
       >
-        <span class="text-grey mr-1" style="font-size: 0.7em; cursor: pointer"
-              v-if="message.m_type === MessageType.AUDIO && recognizedText.has(message.message_id as number) && showRecognizedText"
-              @click="showRecognizedText = !showRecognizedText">
-        {{ recognizedText.get(message.message_id as number) }}
+        <span
+            class="text-grey mr-1" style="font-size: 0.7em; cursor: pointer"
+            v-if="message.m_type === MessageType.AUDIO && recognizedText.has(message.message_id as number) && showRecognizedText"
+            @click="showRecognizedText = !showRecognizedText"
+        >
+          {{ recognizedText.get(message.message_id as number) }}
         </span>
-        <span class="text-grey mr-1" style="font-size: 0.7em"
-              :style="recognizedText.has(message.message_id as number)?'cursor: pointer':''"
-              v-else-if="message.m_type === MessageType.AUDIO" @click="showRecognizedText = !showRecognizedText">
-        {{ message.info.slice(0, -2) }}
+        <span
+            class="text-grey mr-1" style="font-size: 0.7em"
+            :style="recognizedText.has(message.message_id as number)?'cursor: pointer':''"
+            v-else-if="message.m_type === MessageType.AUDIO" @click="showRecognizedText = !showRecognizedText"
+        >
+          {{ message.info.slice(0, -2) }}
         </span>
 
         <span class=" text-grey mr-1" style="font-size: 0.7em">
