@@ -4,7 +4,6 @@ import {ContactsData, Message, Settings, UserData, Users} from "./utils/structs"
 import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
-import {stringMd5} from "./utils/hash.ts";
 import {initMessageBlock, messageBlocks} from "./core/blocks.ts";
 
 
