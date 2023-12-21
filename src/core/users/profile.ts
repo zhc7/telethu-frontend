@@ -20,6 +20,9 @@ export const editProfile = async (newProfile: any, http: boolean = true) => {
             }
         });
         if (DEBUG) console.log('edited profile: ', response);
+        if (response.data.token !== undefined) {
+            token.value = response.data.token;
+        }
         user.value = {
             ...user.value,
             ...response.data,
