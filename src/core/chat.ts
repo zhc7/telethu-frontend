@@ -1,29 +1,28 @@
 import {BASE_API_URL, DEBUG} from "../constants";
-import {
-    hotMessages,
-    messageDict,
-    messages,
-    settings,
-    unreadCounter,
-    user
-} from "../globals"
+import {hotMessages, messageDict, messages, settings, unreadCounter, user} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
 import {sendNotification} from "../utils/notification";
 import {Ack, Message, MessageType, TargetType} from "../utils/structs";
 import {
-    handleAddGroupMember, handleCandidateRejected,
+    handleAddGroupMember,
+    handleCandidateRejected,
     handleCreateGroup,
     handleGroupAdminAdded,
-    handleGroupAdminRemoved, handleGroupDismissed, handleGroupNameChanged, handleGroupOwnerChanged,
+    handleGroupAdminRemoved,
+    handleGroupDismissed,
+    handleGroupNameChanged,
+    handleGroupOwnerChanged,
     handleSomebodyExitGroup,
     handleSomebodyRemovedFromGroup
 } from "./groups/receive.ts";
 import {
-    handleApplicationAccepted, handleBlockFriend,
+    handleApplicationAccepted,
+    handleBlockFriend,
     handleDeleteFriend,
     handleReceiveRequest,
-    handleSearchResult, handleUnblockFriend
+    handleSearchResult,
+    handleUnblockFriend
 } from "./users/receive.ts";
 import axios from "axios";
 import {token} from "../auth.ts";
@@ -32,7 +31,6 @@ import {getUser} from "./data.ts";
 import {updateUserProfile} from "./users/profile.ts";
 import {initMessageBlock, messageBlocks} from "./blocks.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
-import {type} from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/SpeechServiceConfig";
 
 
 const searchResult = ref();
@@ -241,8 +239,8 @@ dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
 dispatcher[MessageType.FUNC_RECALL_SELF_MESSAGE] = handleRecallMessage;
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted;
-dispatcher[MessageType.FUNC_REJECT_FRIEND] = (messsage) => {
-    callSnackbar(`You are rejected by user ${getUser(message.sender).name}`)
+dispatcher[MessageType.FUNC_REJECT_FRIEND] = (message) => {
+    callSnackbar(`You are rejected by user ${getUser(message.sender).name}`, "info");
 };
 dispatcher[MessageType.FUNC_BlOCK_FRIEND] = handleBlockFriend;
 dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
