@@ -3,9 +3,10 @@
 import {ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
-import {token} from "../auth.ts";
+import {logout, token} from "../auth.ts";
 import {stringMd5} from "../utils/hash.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
+import router from "../router.ts";
 
 const emit = defineEmits(['update:showDialog']);
 const password = ref("");
@@ -24,8 +25,8 @@ const deleteAccount = async () => {
   });
   callSnackbar('Account deleted', 'green');
   console.log(result);
-  // router.push('/login');
-  // logout();
+  router.push('/login');
+  logout();
 }
 
 </script>

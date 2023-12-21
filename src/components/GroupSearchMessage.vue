@@ -14,7 +14,7 @@ import {callSnackbar} from "../utils/snackbar.ts";
 
 const props = defineProps<{
   showDialog: boolean,
-  groupId: number,
+  contactId: number,
 }>();
 const emit = defineEmits(['update:showDialog', 'confirm', 'cancel']);
 
@@ -35,7 +35,7 @@ const messageContentInput = ref<string>('');
 
 const searchFromBack = async () => {
   const params = {
-    id: props.groupId,
+    id: props.contactId,
   };
   if (fromTime.value) {
     params.from = +new Date(fromTime.value);
@@ -73,7 +73,7 @@ const zero = ref(0);
   <v-dialog v-model="dialog" max-width="40vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-h5 text-center my-3 ma-4">
-        Search for Message in Group {{ getUser(groupId).name }}
+        Search for Message in Group {{ getUser(contactId).name }}
       </v-card-title>
       <v-card-text class="overflow-y-auto d-flex flex-column">
         <div style="margin-left: 5vw; margin-right: 5vw">

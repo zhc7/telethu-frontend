@@ -433,7 +433,7 @@ const searchMessageDialog = ref<boolean>(false);
           </div>
         </v-toolbar-title>
         <v-btn icon="mdi-plus" @click="createGroupDialog = true;" v-if="category === 'user' || category === 'group'"/>
-        <v-btn icon="mdi-magnify" @click="searchMessageDialog = true;" v-if="category === 'group'"/>
+        <v-btn icon="mdi-magnify" @click="searchMessageDialog = true;"/>
         <v-btn icon="mdi-account-cog-outline" @click.stop="handleDisplayProfile"/>
         <div class="badge" v-if="candidatesList[activeChatId]?.length">{{ candidatesList[activeChatId]?.length }}</div>
       </v-toolbar>
@@ -513,8 +513,8 @@ const searchMessageDialog = ref<boolean>(false);
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <GroupSearchMessage v-model:show-dialog="searchMessageDialog" v-if="selectedChatInfo?.category === 'group'"
-                        :group-id="selectedChatInfo.id"></GroupSearchMessage>
+    <GroupSearchMessage v-model:show-dialog="searchMessageDialog"
+                        :contact-id="selectedChatInfo.id"></GroupSearchMessage>
   </v-row>
   <div
       v-show="show && activeChatId"
