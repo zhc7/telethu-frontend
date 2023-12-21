@@ -127,6 +127,9 @@ const chatManager: {
             time: message.time,
             content: message,
         };
+        if (messages.value[target] === undefined) {
+            messages.value[target] = [];
+        }
         let existing = messages.value[target].find((m: Message) => m.message_id === message.message_id);
         if (existing === undefined) {
             message.pending_status = 'sent';
