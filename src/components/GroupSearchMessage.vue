@@ -73,7 +73,7 @@ const resultMessages = ref<Message []>([]);
   <v-dialog v-model="dialog" max-width="40vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-h5 text-center my-3 ma-4">
-        Search for Message in Group {{ getUser(contactId).name }}
+        Search for Message in Contact {{ getUser(contactId).name }}
       </v-card-title>
       <v-card-text class="overflow-y-auto d-flex flex-column">
         <div style="margin-left: 5vw; margin-right: 5vw">

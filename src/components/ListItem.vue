@@ -10,9 +10,10 @@ const props = defineProps<{
   badgeValue?: number,
   pin?: boolean,
   tight?: boolean,
+  unread?: boolean,
 }>();
 const {selected} = inject<any>("selected");
-const {mode} = inject<{mode: string | undefined}>("mode", {mode: "single"});
+const {mode} = inject<{ mode: string | undefined }>("mode", {mode: "single"});
 const activated = inject("activated", undefined);
 
 const handleClick = () => {
@@ -41,15 +42,16 @@ const active = computed(() => {
   }
 });
 
-// if subtitle starts with [you are mentioned], then make it bold and red
+// if subtitle starts with [@] and the message is not read, then make it bold and red
 const subtitle1 = computed(() => {
-  if (typeof props.subtitle === "string") {
-    if (props.subtitle.startsWith("[@]")) {
-      // only bold the [@] part
-      return `<span style="font-weight: bold; color: red">[@] </span>${props.subtitle.slice(4)}`;
-    } else {
-      return props.subtitle;
+  if (!props.subtitle) return "";
+  if (props.subtitle.startsWith("[@]")) {
+    if (!props.unread) {
+      return props.subtitle.slice(3);
     }
+    return `<span style="font-weight: bold; color: red">[@] </span>${props.subtitle.slice(3)}`;
+  } else {
+    return props.subtitle;
   }
 });
 

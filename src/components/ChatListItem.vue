@@ -35,6 +35,7 @@ const unread = computed<number>(() => {
       rounded="lg"
       :title="contact.name"
       :subtitle="displayHotMessage(hotMessages[contactId]?.content)"
+      :unread="unread > 0"
   >
     <template #prepend>
       <div style="position: relative">
