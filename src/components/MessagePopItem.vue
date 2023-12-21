@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import {activeChatId, messageFlow, messages, nowRef, user} from "../globals";
+import {activeChatId, messages, nowRef, user} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
 import {computed, inject} from "vue";
 import ListItem from "./ListItem.vue";
 import {getUser} from "../core/data.ts";
 import MessagePop from "./MessagePop.vue";
 import {Message} from "../utils/structs.ts";
+import {jumpTo} from "../core/blocks.ts";
 
 const {selected} = inject<any>("selected");
 
@@ -52,8 +53,8 @@ const receiver = computed(() => {
 })
 
 const scrollTo = () => {
-  if (typeof props.messageId === "string") return;
-  messageFlow.value?.jumpTo(props.messageId);
+  if (!props.messageId || typeof props.messageId === "string") return;
+  jumpTo(props.messageId);
 }
 
 </script>
@@ -72,7 +73,7 @@ const scrollTo = () => {
         v-ripple="false"
     >
       <template #append>
-        <a v-if="jump" @click="messageFlow.value?.jumpTo(message.id);">Goto</a>
+        <a v-if="jump" @click="jumpTo(message.message_id as number)">Goto</a>
       </template>
     </ListItem>
     <MessagePop
