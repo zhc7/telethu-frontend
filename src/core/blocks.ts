@@ -128,12 +128,12 @@ export const updateTime = (block: Block) => {
 }
 
 export const loadMoreMessage = (id: number, blockId: number, side: string, done: any) => {
-  startLoading();
-  const block = messageBlocks.value[id][blockId];
-  const {start, end} = side === "start" ? {start: 0, end: block.startTime} : {start: block.endTime, end: Date.now()};
-  const direction = side;
-  const num = 10;
-  axios.get(BASE_API_URL + "chat/history", {
+    startLoading();
+    const block = messageBlocks.value[id][blockId];
+    const {start, end} = side === "start" ? {start: 0, end: block.startTime} : {start: block.endTime, end: Date.now()};
+    const direction = side;
+    const num = 10;
+    axios.get(BASE_API_URL + "chat/history", {
         params: {
             id,
             to: start,
@@ -153,6 +153,9 @@ export const loadMoreMessage = (id: number, blockId: number, side: string, done:
             messageDict.value[message.message_id] = message;
         }
         // update messages
+        if (messages.value[id] === undefined) {
+            messages.value[id] = [];
+        }
         const new_messages = [...messages.value[id], ...pulled_messages];
         // sort
         new_messages.sort((a, b) => a.time - b.time);
@@ -165,13 +168,13 @@ export const loadMoreMessage = (id: number, blockId: number, side: string, done:
         updateTime(block);
         return pulled_length;
     }).then((pulled_length) => {
-    updateTime(block);
-    mergeBlocks(id);
-    if (pulled_length < 10) {
-      done("empty");
-    } else {
-      done("ok");
-    }
-    endLoading();
-  });
+        updateTime(block);
+        mergeBlocks(id);
+        if (pulled_length < 10) {
+            done("empty");
+        } else {
+            done("ok");
+        }
+        endLoading();
+    });
 }
