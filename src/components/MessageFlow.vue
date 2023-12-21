@@ -43,7 +43,7 @@ const selected = computed({
 const getMessage = (messageId: number | string) => {
   const hit = messageDict.value[messageId];
   if (hit) return hit;
-  const existing = messages.value[activeChatId.value].find((msg: Message) => msg.message_id === messageId);
+  const existing = messages.value[activeChatId.value]?.find((msg: Message) => msg.message_id === messageId);
   if (existing) {
     messageDict.value[messageId] = existing;
     return existing;
