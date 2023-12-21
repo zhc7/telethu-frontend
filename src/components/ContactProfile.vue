@@ -290,7 +290,7 @@ const tagsIn = computed(() => {
         >
           <v-divider class="ma-4"/>
           <GroupSearchMessage v-model:show-dialog="searchMessageDialog"
-                              :group-id="displayContactInfo.id"></GroupSearchMessage>
+                              :contact-id="displayContactInfo.id"></GroupSearchMessage>
           <v-btn @click="searchMessageDialog = true">Search</v-btn>
           <v-divider class="ma-4"/>
 

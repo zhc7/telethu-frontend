@@ -25,8 +25,9 @@ const deleteAccount = async () => {
   });
   callSnackbar('Account deleted', 'green');
   console.log(result);
-  router.push('/login');
-  logout();
+  router.push('/login').then(() => {
+    logout();
+  });
 }
 
 </script>

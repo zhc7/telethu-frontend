@@ -52,6 +52,7 @@ const searchFromBack = async () => {
   if (params.m_type === -1) {
     delete params.m_type;
   }
+  console.log(params)
   const result = await axios.get(BASE_API_URL + 'chat/filter', {
     params,
     headers: {
