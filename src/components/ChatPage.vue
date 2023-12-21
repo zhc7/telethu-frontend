@@ -320,12 +320,11 @@ const speech2text = async (message: Message) => {
   const audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(new File([blob], 'audio.wav'));
   const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
   speechConfig.speechRecognitionLanguage = LANGUAGE;
-  console.log('audioConfig', audioConfig);
   const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
   recognizer.recognizeOnceAsync(result => {
-    console.log(result);
     callSnackbar(result.text, 'green', true);
+    message.info = result.text;
   });
 }
 
