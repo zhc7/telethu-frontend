@@ -27,14 +27,14 @@ const dialog = computed({
 
 const fromTime = ref<number>(0);
 const toTime = ref<number>(0);
-const messageTypes = ['text', 'image', 'video', 'audio', 'file'];
+const messageTypes = ['text', 'image', 'audio', 'video', 'file'];
 const selectedMessageType = ref<string>('text');
 
 const messageContentInput = ref<string>('');
 
 
 const searchFromBack = async () => {
-  const params = {
+  const params: any = {
     id: props.contactId,
   };
   if (fromTime.value) {
@@ -66,7 +66,6 @@ const searchFromBack = async () => {
 }
 
 const resultMessages = ref<Message []>([]);
-const zero = ref(0);
 
 </script>
 
