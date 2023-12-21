@@ -9,6 +9,7 @@ import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 import MessageBrief from "./MessageBrief.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
+import {recognizedText} from "../utils/audio.ts";
 
 const props = defineProps<{
   message: Message,
@@ -116,6 +117,7 @@ onMounted(addMentionEventListeners);
 onUpdated(addMentionEventListeners);
 
 if (DEBUG) console.log("message", props.message);
+const showRecognizedText = ref(true);
 </script>
 
 <template>
@@ -253,13 +255,19 @@ if (DEBUG) console.log("message", props.message);
           :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
           v-if="!forward"
       >
+        <span class="text-grey mr-1" style="font-size: 0.7em; cursor: pointer"
+              v-if="message.m_type === MessageType.AUDIO && recognizedText.has(message.message_id as number) && showRecognizedText"
+              @click="showRecognizedText = !showRecognizedText">
+        {{ recognizedText.get(message.message_id as number) }}
+        </span>
         <span class="text-grey mr-1" style="font-size: 0.7em"
-              v-if="message.m_type === MessageType.AUDIO && message.info !== ''">
-        {{ message.info }}
-      </span>
+              :style="recognizedText.has(message.message_id as number)?'cursor: pointer':''"
+              v-else-if="message.m_type === MessageType.AUDIO" @click="showRecognizedText = !showRecognizedText">
+        {{ message.info.slice(0, -2) }}
+        </span>
 
-        <span class="text-grey mr-1" style="font-size: 0.7em">
-          {{ formatChatMessageTime(nowRef, message.time) }}
+        <span class=" text-grey mr-1" style="font-size: 0.7em">
+        {{ formatChatMessageTime(nowRef, message.time) }}
         </span>
         <v-menu v-if="message.who_reply && message.who_reply.length">
           <template v-slot:activator="{props}">

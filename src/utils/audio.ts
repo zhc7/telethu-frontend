@@ -93,6 +93,8 @@ export const speech2text = async (message: Message) => {
 };
 
 // 使用 Microsoft Azure Speech SDK 进行语音识别
+// 储存所有的识别结果，与message.id对应
+export const recognizedText = new Map<number, string>();
 const processAudio = (file: File, message: Message) => {
     const audioConfig = SpeechSDK.AudioConfig.fromWavFileInput(file);
     const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
@@ -101,6 +103,6 @@ const processAudio = (file: File, message: Message) => {
 
     recognizer.recognizeOnceAsync(result => {
         callSnackbar(result.text, 'green', true);
-        message.info = result.text;
+        recognizedText.set(message.message_id as number, result.text);
     });
 };
