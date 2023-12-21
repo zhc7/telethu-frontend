@@ -48,7 +48,7 @@ export const displayHotMessage = (message: Message | undefined): string => {
         if (Array.isArray(message.content)) {
             return "[chat history]";
         }
-        if ((message.content as string).includes("@" + userId.value)) {
+        if ((message.content as string).includes("@" + userId.value) && !(message.content as string).startsWith("*Forwarded from")) {
             return "[@]" + message.content as string;
         }
         return message.content as string;
