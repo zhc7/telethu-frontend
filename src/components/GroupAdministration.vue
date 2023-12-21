@@ -35,7 +35,7 @@ watch(props, () => {
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="60vw" max-height="90vh">
+  <v-dialog v-model="dialog" max-width="40vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-center">
         Group Administration

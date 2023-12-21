@@ -44,14 +44,17 @@ const active = computed(() => {
 
 // if subtitle starts with [@] and the message is not read, then make it bold and red
 const subtitle1 = computed(() => {
-  if (!props.subtitle) return "";
-  if (props.subtitle.startsWith("[@]")) {
-    if (!props.unread) {
-      return props.subtitle.slice(3);
+  if (props.subtitle && props.subtitle.length > 0) {
+    if (props.subtitle.startsWith("[@]")) {
+      if (!props.unread) {
+        return props.subtitle.slice(3);
+      }
+      return `<span style="font-weight: bold; color: red">[@] </span>${props.subtitle.slice(3)}`;
+    } else {
+      return props.subtitle;
     }
-    return `<span style="font-weight: bold; color: red">[@] </span>${props.subtitle.slice(3)}`;
   } else {
-    return props.subtitle;
+    return "";
   }
 });
 
