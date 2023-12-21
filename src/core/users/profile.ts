@@ -27,6 +27,9 @@ export const editProfile = async (newProfile: any, http: boolean = true) => {
             ...user.value,
             ...response.data,
         };
+        if (response.data.token) {
+            token.value = response.data.token;
+        }
         if (DEBUG) console.log('new info:', user.value);
     } else {
         postSettings().then(() => {
