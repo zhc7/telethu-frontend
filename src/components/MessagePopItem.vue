@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {activeChatId, messages, nowRef, user} from "../globals";
+import {activeChatId, messageDict, messages, nowRef, user} from "../globals";
 import {formatChatMessageTime} from "../utils/datetime";
 import {computed, inject} from "vue";
 import ListItem from "./ListItem.vue";
@@ -25,6 +25,8 @@ const message = computed(() => {
   if (props.fullMessage) {
     return props.fullMessage;
   }
+  if (!props.messageId) return;
+  if (messageDict.value[props.messageId]) return messageDict.value[props.messageId];
   for (const msgs of Object.values(messages.value)) {
     for (const msg of msgs) {
       if (msg.message_id === props.messageId) {

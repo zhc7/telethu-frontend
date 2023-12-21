@@ -1,5 +1,5 @@
 import {getAsyncMessage} from "./messages/receive.ts";
-import {computed, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 import {activeChatId, activeMessages, messageDict, messages, user} from "../globals.ts";
 import {Block, Message, TargetType} from "../utils/structs.ts";
 import axios from "axios";
@@ -75,7 +75,7 @@ export const jumpTo = (messageId: number) => {
         }, 700);
     }
     if (activeBlock.value.messages.includes(messageId)) {
-        scrollTo();
+        nextTick().then(() => setTimeout(scrollTo, 50));
         return;
     }
     getAsyncMessage(messageId).then(message => {

@@ -14,7 +14,6 @@ import {
   users
 } from "../globals.ts";
 import List from "./List.vue";
-import list from "./List.vue";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
@@ -22,6 +21,7 @@ import MessagePopItem from "./MessagePopItem.vue";
 import {Message, MessageType} from "../utils/structs.ts";
 import Avatar from "./Avatar.vue";
 import {DEBUG} from "../constants.ts";
+import {createGroup} from "../core/groups/send.ts";
 
 const createGroupDialog = ref(false);
 
