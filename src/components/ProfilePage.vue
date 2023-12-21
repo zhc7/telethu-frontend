@@ -33,10 +33,12 @@ const handleUploadAvatar = (event: any) => {
     }
   }).then((response) => {
     if (DEBUG) console.log("HTTP upload avatar successful -> ", response);
+    callSnackbar('Avatar uploaded!', 'green');
   }).then(() => {
     getUser(user.value.id, true);
   }).catch((error) => {
     if (DEBUG) console.log(error);
+    callSnackbar('Failed uploading avatar: ' + error.response.data.info, 'red');
   })
 };
 

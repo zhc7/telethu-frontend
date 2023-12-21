@@ -11,6 +11,7 @@ import MessageBrief from "./MessageBrief.vue";
 import {DEBUG} from "../constants.ts";
 import {sendFiles, sendMessage} from "../core/messages/send.ts";
 import {bufferToWave} from "../utils/audio.ts";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -57,31 +58,45 @@ const triggerFileInput = () => {
 const recorder = ref<MediaRecorder | null>(null);
 const triggerAudioInput = async () => {
   if (recorder.value) {
+    // 如果正在录音，停止录音
     recorder.value.stop();
     recorder.value = null;
   } else {
+    // 获取音频输入流
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     const options = { mimeType: 'audio/webm' };
     const recordedChunks: BlobPart[] = [];
     recorder.value = new MediaRecorder(stream, options);
 
+    let recordingDuration = 0;
+    const recordingLimit = 60;
+    let recordingInterval = 0;
+
     recorder.value.addEventListener('dataavailable', e => {
       if (e.data.size > 0) recordedChunks.push(e.data);
     });
 
-    recorder.value.addEventListener('stop', async () => {
+    recorder.value.addEventListener('stop', () => {
+      clearInterval(recordingInterval);
+      callSnackbar(`Recording stopped.`, 'info');
+
       const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
-      const audioBuffer = await new AudioContext().decodeAudioData(await audioBlob.arrayBuffer());
-
-      const wavBuffer = bufferToWave(audioBuffer, audioBuffer.length);
-      const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
-
-      const file = new File([wavBlob], 'voice message.wav');
+      const file = new File([audioBlob], 'voice message.webm');
       uploadingFiles.value = [file];
       handleSendFiles();
     });
 
     recorder.value.start();
+
+    recordingInterval = setInterval(() => {
+      recordingDuration++;
+      callSnackbar(`Recording... ${recordingDuration} second(s)`, 'info', true);
+
+      if (recordingDuration >= recordingLimit) {
+        callSnackbar(`Recording limit reached.`, 'error');
+        recorder.value.stop();
+      }
+    }, 1000);
   }
 };
 

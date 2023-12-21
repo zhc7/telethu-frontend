@@ -31,6 +31,7 @@ const getFileType = (filename: string) => {
         case 'mp3':
         case 'wav':
         case 'flac':
+        case 'webm':
             return MessageType.AUDIO;
         case 'mp4':
         case 'avi':
