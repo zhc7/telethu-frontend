@@ -266,7 +266,7 @@ const tagsIn = computed(() => {
             Tags containing {{ displayContactInfo.name }}
           </v-list-item-title>
           <Tag v-for="tag in tagsIn" :name="tag"></Tag>
-          <v-divider class="ma-4"/>
+          <v-divider class="ma-4" v-if="tagsIn.length"/>
           <div>
             <ProfileRow>
               <template v-slot:title> Location:</template>
@@ -289,11 +289,6 @@ const tagsIn = computed(() => {
             class="overflow-y-auto fill-height"
         >
           <v-divider class="ma-4"/>
-          <GroupSearchMessage v-model:show-dialog="searchMessageDialog"
-                              :contact-id="displayContactInfo.id"></GroupSearchMessage>
-          <v-btn @click="searchMessageDialog = true">Search</v-btn>
-          <v-divider class="ma-4"/>
-
           <v-card-title class="ma-7">Members</v-card-title>
           <div class="overflow-y-auto fill-height d-flex flex-wrap align-items-start member-container">
             <div

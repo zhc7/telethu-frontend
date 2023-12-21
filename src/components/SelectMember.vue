@@ -9,6 +9,7 @@ import {activeTagName, contacts, settings} from "../globals.ts";
 import {DEBUG} from "../constants.ts";
 import TagList from "./TagList.vue";
 import TagDetail from "./TagDetail.vue";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 const props = withDefaults(defineProps<{
   showDialog: boolean,
@@ -85,6 +86,7 @@ const handleImport = () => {
       selectedStuff.value.push(id);
     }
   }
+  callSnackbar('Imported ' + settings.value.tags[activeTagName.value].length + ' members', 'success');
 }
 
 const confirm = () => {
