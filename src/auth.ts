@@ -4,6 +4,7 @@ import {useLocalStorage} from "@vueuse/core"
 import {blacklist, contacts, messageDict, messages, requests, user} from "./globals";
 import router from "./router.ts";
 import {stringMd5} from "./utils/hash.ts";
+import {messageBlocks} from "./core/blocks.ts";
 
 const token = useLocalStorage("token", "");
 
@@ -36,6 +37,7 @@ const login = async (email: string, password: string) => {
 const logout = () => {
     messages.value = [];
     messageDict.value = {};
+    messageBlocks.value = {};
     contacts.value = [];
     requests.value = [];
     blacklist.value = [];
