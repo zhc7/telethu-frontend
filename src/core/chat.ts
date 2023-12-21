@@ -31,6 +31,7 @@ import {handleDeleteMessage, handleRecallMessage, updateMessage} from "./message
 import {getUser} from "./data.ts";
 import {updateUserProfile} from "./users/profile.ts";
 import {initMessageBlock, messageBlocks} from "./blocks.ts";
+import {callSnackbar} from "../utils/snackbar.ts";
 
 
 const searchResult = ref();
@@ -231,13 +232,13 @@ dispatcher[MessageType.FUNC_ADD_GROUP_MEMBER] = handleAddGroupMember;
 dispatcher[MessageType.FUNC_RECALL_SELF_MESSAGE] = handleRecallMessage;
 dispatcher[MessageType.FUNC_APPLY_FRIEND] = handleReceiveRequest;
 dispatcher[MessageType.FUNC_ACCEPT_FRIEND] = handleApplicationAccepted;
-dispatcher[MessageType.FUNC_REJECT_FRIEND] = () => {
+dispatcher[MessageType.FUNC_REJECT_FRIEND] = (messsage) => {
+    callSnackbar(`You are rejected by user ${getUser(message.sender).name}`)
 };
 dispatcher[MessageType.FUNC_BlOCK_FRIEND] = handleBlockFriend;
 dispatcher[MessageType.FUNC_DEL_FRIEND] = handleDeleteFriend;
 dispatcher[MessageType.FUNC_CHANGE_GROUP_OWNER] = handleGroupOwnerChanged;
-dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {
-};
+dispatcher[MessageType.FUNC_UPDATE_SETTINGS] = () => {};
 dispatcher[MessageType.FUNC_UNBLOCK_FRIEND] = handleUnblockFriend;
 dispatcher[MessageType.FUN_SEND_META] = handleSearchResult;
 dispatcher[MessageType.FUNC_READ_MESSAGE] = updateMessage;

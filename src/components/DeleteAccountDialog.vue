@@ -3,6 +3,8 @@
 import {ref} from "vue";
 import axios from "axios";
 import {BASE_API_URL} from "../constants.ts";
+import {token} from "../auth.ts";
+import {stringMd5} from "../utils/hash.ts";
 
 const emit = defineEmits(['update:showDialog']);
 const password = ref("");
@@ -12,9 +14,12 @@ const cancelDeleteAccount = () => {
 }
 const deleteAccount = async () => {
   emit('update:showDialog', false);
-  const result = await axios.delete(BASE_API_URL + 'users/delete', {
+  const result = await axios.delete(BASE_API_URL + 'users/delete_user', {
     body: {
-      password: password.value,
+      password: stringMd5(password.value),
+    },
+    headers: {
+      Authorization: token.value,
     }
   });
   console.log(result);
@@ -45,7 +50,8 @@ const deleteAccount = async () => {
       </v-alert>
       <v-card-text>
         <p class="ma-2 mb-2 mt-0" style="font-size: large; font-weight: bold">Your password</p>
-        <p class="ma-2 mb-6" style="color: #888888; font-size: small">Enter your password to confirm the deletion of your account.</p>
+        <p class="ma-2 mb-6" style="color: #888888; font-size: small">Enter your password to confirm the deletion of
+          your account.</p>
         <v-text-field
             v-model="password"
             label="Password"
