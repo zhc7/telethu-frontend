@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import ListItem from "./ListItem.vue";
 import {computed, ref, watch} from "vue";
-import {createGroup} from "../core/groups/send.ts";
 import {
   activeChatId,
   activeMessageId,
   contacts,
-  hotMessages, messageDict,
+  hotMessages,
+  messageDict,
   messages,
   settings,
   user,
@@ -14,13 +14,13 @@ import {
   users
 } from "../globals.ts";
 import List from "./List.vue";
+import list from "./List.vue";
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data.ts";
 import ChatListItem from "./ChatListItem.vue";
 import MessagePopItem from "./MessagePopItem.vue";
 import {Message, MessageType} from "../utils/structs.ts";
 import Avatar from "./Avatar.vue";
-import list from "./List.vue";
 import {DEBUG} from "../constants.ts";
 
 const createGroupDialog = ref(false);
@@ -80,11 +80,13 @@ const decideRelative = (msg: Message, str: string) => {
 
 const filteredMessages = computed(() => {
   const list = [];
-  for (const id of Object.keys(messages.value)) {
-    for (const msg of messages.value[id]) {
-      if (decideRelative(msg, searchText.value)) {
-        list.push(msg);
-      }
+  for (const id of Object.keys(messageDict.value)) {
+    if (parseInt(id) !== +id) {
+      return [];
+    }
+    const msg = messageDict.value[+id];
+    if (decideRelative(msg, searchText.value)) {
+      list.push(msg);
     }
   }
   return list.sort((a, b) => {
@@ -144,9 +146,10 @@ watch(searchText, () => {
 
     <template v-else>
       <v-list-item ma="6" class="bg-grey-lighten-3" v-if="filteredContact.length">
-        Contacts ({{filteredContact.length}})
+        Contacts ({{ filteredContact.length }})
       </v-list-item>
-      <List @click="activeMessageId=-1" v-if="filteredContact.length" class="overflow-y-auto" v-model="activeChatId" min-height="15vh">
+      <List @click="activeMessageId=-1" v-if="filteredContact.length" class="overflow-y-auto" v-model="activeChatId"
+            min-height="15vh">
         <ListItem v-for="id in filteredContact"
                   :k="id"
                   :title="users[id].name"
@@ -158,7 +161,7 @@ watch(searchText, () => {
         </ListItem>
       </List>
       <v-list-item ma="6" class="bg-grey-lighten-3" v-if="filteredMessages.length">
-        Chats ({{filteredMessages.length}})
+        Chats ({{ filteredMessages.length }})
       </v-list-item>
       <List v-if="filteredMessages.length" class="overflow-y-auto" v-model="activeMessageId" min-height="15vh">
         <MessagePopItem
