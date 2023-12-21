@@ -5,6 +5,7 @@ import {getUser, postSettings} from "./core/data.ts";
 import MessagePop from "./components/MessagePop.vue";
 import MessageFlow from "./components/MessageFlow.vue";
 import {stringMd5} from "./utils/hash.ts";
+import {initMessageBlock, messageBlocks} from "./core/blocks.ts";
 
 
 export const nowRef = ref<number>(Date.now());
@@ -161,15 +162,21 @@ export const hotMessages = computed<{
         } | undefined
     } = {};
     for (const id of contacts.value) {
-        const msgs = messages.value[id];
+        initMessageBlock(id);
+        const blocks = messageBlocks.value[id];
+        const msgs = blocks[blocks.length - 1].messages;
         if (!msgs || msgs.length === 0) {
             obj[id] = undefined;
         } else {
-            const msg = msgs[msgs.length - 1];
-            obj[id] = {
-                sender: msg.sender,
-                time: msg.time,
-                content: msg,
+            const msg = messageDict.value[msgs[msgs.length - 1]];
+            if (msg === undefined) {
+                obj[id] = undefined;
+            } else {
+                obj[id] = {
+                    sender: msg.sender,
+                    time: msg.time,
+                    content: msg,
+                }
             }
         }
     }

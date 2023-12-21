@@ -3,15 +3,7 @@
 import ChatList from "./ChatList.vue";
 import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import ContactProfile from "./ContactProfile.vue";
-import {
-  AZURE_REGION,
-  AZURE_SPEECH_KEY,
-  AZURE_SPEECH_REGION,
-  AZURE_TRANSLATE_KEY,
-  BASE_API_URL,
-  DEBUG,
-  LANGUAGE
-} from "../constants.ts";
+import {AZURE_REGION, AZURE_TRANSLATE_KEY, DEBUG} from "../constants.ts";
 import InputArea from "./InputArea.vue";
 import {
   activeChatId,
@@ -47,9 +39,8 @@ import {messageFlow} from "../globals";
 import {callSnackbar} from "../utils/snackbar.ts";
 import {createGroup, groupAddMember} from "../core/groups/send.ts";
 import GroupSearchMessage from "./GroupSearchMessage.vue";
-import * as SpeechSDK from 'microsoft-cognitiveservices-speech-sdk';
-import {token} from "../auth.ts";
 import {speech2text} from "../utils/audio.ts";
+import {pullHot} from "../core/blocks.ts";
 
 const localMessageFlow = ref<InstanceType<typeof MessageFlow> | null>(null);
 watch(localMessageFlow, (value) => {
@@ -337,7 +328,7 @@ const dispatchFunction = (item: string) => {
 
 watch(contacts, () => {
   for (const id of contacts.value) {
-    getHistoryMessage(id, Date.now(), getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND, 1);
+    pullHot(id, getUser(id).category === "group" ? TargetType.GROUP : TargetType.FRIEND);
   }
 });
 

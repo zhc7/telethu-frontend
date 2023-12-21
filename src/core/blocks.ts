@@ -178,3 +178,39 @@ export const loadMoreMessage = (id: number, blockId: number, side: string, done:
         endLoading();
     });
 }
+
+export const sortBlock = (block: Block) => {
+    block.messages.sort((a, b) => {
+        if (typeof a === "string") {
+            if (typeof b === "string") return 0;    // stable
+            return 1;
+        } else {
+            if (typeof b === "string") return -1;
+            return a - b;
+        }
+    });
+    block.messages = block.messages.filter((number, index, array) => index === 0 || number !== array[index - 1]);
+    updateTime(block);
+}
+
+export const pullHot = (id: number, t_type: TargetType) => {
+    axios.get(BASE_API_URL + "chat/history", {
+        params: {
+            id, from: Date.now(), t_type, num: 1,
+        },
+        headers: {
+            Authorization: token.value,
+        }
+    }).then((response) => {
+        const pulled_messages = response.data as Array<Message>;
+        if (pulled_messages.length === 0) return;
+        initMessageBlock(id);
+        const blocks = messageBlocks.value[id];
+        const block = blocks[blocks.length - 1];
+        for (const msg of pulled_messages) {
+            messageDict.value[msg.message_id] = msg;
+            block.messages.push(msg.message_id);
+        }
+        sortBlock(block);
+    });
+}
