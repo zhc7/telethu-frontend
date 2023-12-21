@@ -112,9 +112,9 @@ const confirm = () => {
             label="Search"
             v-model="searchFriend"
         />
-        <v-list-item class="import-from-tags" v-if="tags" v-ripple @click="showTagsDialog=true">
+        <v-btn v-if="tags" v-ripple @click="showTagsDialog=true" variant="tonal" class="ma-auto">
           Import from Tags
-        </v-list-item>
+        </v-btn>
         <div class="d-flex overflow-x-auto flex-shrink-0">
           <div
               v-for="member in pinned"
@@ -149,6 +149,7 @@ const confirm = () => {
             </template>
           </ListItem>
         </List>
+        <p v-if="possible.length === 0" class="text-center mb-6">No available choice.</p>
       </v-card-text>
       <v-card-actions class="mb-3 mr-4">
         <v-spacer/>
@@ -178,9 +179,5 @@ const confirm = () => {
 </template>
 
 <style scoped>
-
-.import-from-tags:hover {
-  background-color: #eeeeee;
-}
 
 </style>

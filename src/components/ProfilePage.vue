@@ -262,6 +262,7 @@ const deleteAccountDialog = ref(false);
         :title="`${user.name}'s Black List`"
         :possible="blacklist"
         :single="true"
+        positive-button-text="Unblock"
         @confirm="(target, _) => {
           unblockFriend(target);
         }"
