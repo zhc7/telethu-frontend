@@ -3,11 +3,12 @@ import {computed, onMounted, onUpdated, Ref, ref} from "vue";
 import {BASE_API_URL, DEBUG} from "../constants.ts";
 import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
-import {bigImageSource, floatingContactId, showBigImage, showProfileDialog, user, userId} from "../globals.ts";
+import {bigImageSource, floatingContactId, nowRef, showBigImage, showProfileDialog, user, userId} from "../globals.ts";
 import {GroupData, Message, MessageType, TargetType} from "../utils/structs.ts";
 import {getUser} from "../core/data.ts";
 import Avatar from "./Avatar.vue";
 import MessageBrief from "./MessageBrief.vue";
+import {formatChatMessageTime} from "../utils/datetime.ts";
 
 const props = defineProps<{
   message: Message,
@@ -252,10 +253,13 @@ if (DEBUG) console.log("message", props.message);
           :class="message.sender === userId ? 'justify-end mr-3' : 'ml-3'"
           v-if="!forward"
       >
+        <span class="text-grey mr-1" style="font-size: 0.7em">
+          {{ formatChatMessageTime(nowRef, message.time) }}
+        </span>
         <v-menu v-if="message.who_reply && message.who_reply.length">
           <template v-slot:activator="{props}">
             <a style="font-size: 0.7em; text-decoration: underline;" v-bind="props">
-              {{message.who_reply.length}} replies
+              {{ message.who_reply.length }} replies
             </a>
           </template>
           <v-list>
