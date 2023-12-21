@@ -87,10 +87,14 @@ const handleImport = () => {
   }
 }
 
+const confirm = () => {
+  emit('confirm', emitValue.value, groupName.value);
+  selectedStuff.value = [];
+}
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="30vw" max-height="90vh">
+  <v-dialog v-model="dialog" max-width="30vw" max-height="90vh" @keydown.enter="confirm">
     <v-card class="fill-height overflow-y-auto">
       <v-card-title class="text-center">
         {{ title }}
@@ -151,7 +155,7 @@ const handleImport = () => {
         <v-btn @click="dialog=false; selectedStuff = single ? 0 : [];">
           {{ negativeButtonText }}
         </v-btn>
-        <v-btn @click="$emit('confirm', emitValue, groupName); selectedStuff = []">{{ positiveButtonText }}</v-btn>
+        <v-btn @click="confirm">{{ positiveButtonText }}</v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="showTagsDialog" max-width="1200px">
