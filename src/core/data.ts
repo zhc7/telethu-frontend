@@ -28,6 +28,11 @@ const getUser = (id: number, force: boolean = false): ContactsData => {
             for (const key in data) {
                 (users.value[id][key as keyof ContactsData] as any) = data[key];
             }
+            if (data.id === user.value.id) {
+                for (const key in data) {
+                    user.value[key] = data[key];
+                }
+            }
         }).catch((err) => {
             if (DEBUG) console.log(err);
         })

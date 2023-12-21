@@ -13,6 +13,7 @@ import ChangeEmailDialog from "./ChangeEmailDialog.vue";
 import DeleteAccountDialog from "./DeleteAccountDialog.vue";
 import Avatar from "./Avatar.vue";
 import {stringMd5} from "../utils/hash.ts";
+import {getUser} from "../core/data.ts";
 
 const router = useRouter();
 
@@ -33,20 +34,7 @@ const handleUploadAvatar = (event: any) => {
   }).then((response) => {
     if (DEBUG) console.log("HTTP upload avatar successful -> ", response);
   }).then(() => {
-    axios.get(BASE_API_URL + 'users/avatar', {
-      headers: {
-        Authorization: token.value,
-      },
-      responseType: 'blob',
-    }).then((response) => {
-          if (DEBUG) console.log('userAvatar: ', response.data);
-          const reader = new FileReader();
-          reader.readAsDataURL(response.data); // change Blob into Base64
-          reader.onloadend = () => {
-            user.value.avatar = reader.result as string;
-          }
-        }
-    )
+    getUser(user.value.id, true);
   }).catch((error) => {
     if (DEBUG) console.log(error);
   })
