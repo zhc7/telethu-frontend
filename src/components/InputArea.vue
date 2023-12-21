@@ -256,6 +256,7 @@ const handleFocus = () => {
 
 const handleSendSticker = (id: number) => {
   sendSticker(id, activeChatId.value, chat.value.category === 'group' ? 1 : 0);
+  showStickers.value = false;
 }
 </script>
 

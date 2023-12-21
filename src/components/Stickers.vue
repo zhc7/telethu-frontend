@@ -31,23 +31,24 @@ const dialog = ref(false)
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="450">
+  <v-dialog v-model="dialog" max-width="25vw">
     <v-card elevation="2" class="pa-3" no-gutters>
       <v-card-title class="text-h5 text-center">Stickers</v-card-title>
-      <div>
-        <v-row>
-          <v-col
-              v-for="n in stickers.length"
-              :key="n"
-              cols="3"
-              style="padding: 10px;"
-          >
-            <div class="image-container">
-              <img :src="stickers[n - 1]" alt="sticker" @click="emitStickerClick(n)" class="sticker-image"/>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
+      <v-card-text>
+      <v-row>
+        <v-col
+            v-for="n in stickers.length"
+            :key="n"
+            cols="3"
+            style="padding: 10px;"
+        >
+          <div class="image-container">
+            <v-img :src="stickers[n - 1]" alt="sticker" @click="emitStickerClick(n)" class="sticker-image"
+                   :cover="true"/>
+          </div>
+        </v-col>
+      </v-row>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
