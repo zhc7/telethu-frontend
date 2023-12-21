@@ -21,12 +21,12 @@ export const handleRecallMessage = (message: Message) => {
     if (targetMessage !== undefined) {
         targetMessage.content = "*message recalled*";
         targetMessage.status = 3;
+        callSnackbar("message recalled", "info");
     }
     const anotherTarget = messageDict.value[mid];
     if (anotherTarget === undefined) return;
     anotherTarget.content = "*message recalled*";
     anotherTarget.status = 3;
-    callSnackbar("message recalled", "info");
 }
 
 export const handleDeleteMessage = (message: Message) => {
