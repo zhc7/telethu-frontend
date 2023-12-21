@@ -286,7 +286,7 @@ const handleSendSticker = (id: number) => {
         :clearable="true"
         @keydown="handleTextareaKeydown"
         @focusin="handleFocus"
-        :append-inner-icon="'mdi-emoticon-kiss-outline'"
+        append-inner-icon="mdi-google-downasaur"
         @click:append-inner="showStickers = !showStickers"
         @paste="handlePaste"
         @input="handleInput"
