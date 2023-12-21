@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import {computed, inject} from 'vue'
-const props = defineProps(['k', 'prependIcon', 'prependAvatar', 'title', 'subtitle', 'badgeValue', 'pin']);
+
+const props = defineProps<{
+  k?: any,
+  prependIcon?: string,
+  prependAvatar?: string,
+  title?: string,
+  subtitle?: string,
+  badgeValue?: number,
+  pin?: boolean,
+  tight?: boolean,
+}>();
 const {selected} = inject<any>("selected");
 const {mode} = inject<{mode: string | undefined}>("mode", {mode: "single"});
 const activated = inject("activated", undefined);
@@ -50,8 +60,8 @@ const subtitle1 = computed(() => {
       :v-ripple="true"
       v-bind="$attrs"
       @click="handleClick"
-      class="pa-3 d-flex flex-row justify-start align-center rounded-lg list-item"
-      :class="{'v-list-item--active': active, 'picked-color-list-item': active}"
+      class="d-flex flex-row justify-start align-center rounded-lg list-item"
+      :class="{'v-list-item--active': active, 'picked-color-list-item': active, 'pa-3': !tight}"
   >
     <v-avatar v-if="props.prependAvatar" class="mr-1" size="small">
       <v-img :src="props.prependAvatar" :cover="true"/>

@@ -66,8 +66,10 @@ onMounted(() => {
           :key="item"
           :k="item"
           @click="$emit('choose', item)"
-          class="context-menu-item"
+          class="context-menu-item pt-1 pb-2 pl-1 pr-3 text-grey-darken-3"
+          style="font-size: 0.9em; display: inline;"
           :title="item"
+          tight
       />
     </List>
   </v-scale-transition>
@@ -76,9 +78,7 @@ onMounted(() => {
 <style scoped>
 .context-menu {
   position: absolute;
-  background: #C9FFBF; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #FFAFBD, #C9FFBF); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #FFAFBD, #C9FFBF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #C9FFBF;
   z-index: 10000;
 }
 
