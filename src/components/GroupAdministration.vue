@@ -37,18 +37,20 @@ watch(props, () => {
 <template>
   <v-dialog v-model="dialog" max-width="40vw" max-height="90vh">
     <v-card class="fill-height overflow-y-auto">
-      <v-card-title class="text-center">
+      <v-card-title class="text-center" style="font-size: 20px; font-weight: bold; color: #333;">
         Group Administration
       </v-card-title>
-      <v-card-text class="overflow-y-auto d-flex flex-column">
+      <v-card-text class="overflow-y-auto d-flex flex-column py-4">
         <List class="overflow-y-auto flex-1-1">
-          <v-list-item-title>Group Candidates</v-list-item-title>
-          <v-divider class="ma-3"></v-divider>
+          <v-list-item-title class="mb-3" style="font-weight: bold; color: #555;">Group Candidates
+          </v-list-item-title>
+          <v-divider class="my-4"></v-divider>
           <ListItem
               v-for="entry in entryList"
               :title="getUser(entry).name"
-              :subtitle="entry"
+              :subtitle="'@' + entry"
               :k="entry"
+              class="mb-2"
           >
             <template #prepend>
               <Avatar :contact-id="entry"/>
@@ -63,13 +65,18 @@ watch(props, () => {
               </v-list-item>
             </template>
           </ListItem>
+          <!-- no result -->
+          <v-list-item v-if="!entryList.length" class="text-center">
+            No candidates
+          </v-list-item>
         </List>
-        <v-list-item-action class="justify-center">
+        <v-list-item-action class="justify-center mt-5">
           <div class="d-flex flex-column">
             <v-btn
                 v-if="isOwner(user.id, groupId)"
                 color="primary"
                 variant="tonal"
+                class="mb-2"
                 @click="$emit('changeOwnership')"
             >Change Ownership
             </v-btn>
@@ -77,19 +84,20 @@ watch(props, () => {
                 v-if="isOwner(user.id, groupId)"
                 color="indigo"
                 variant="tonal"
+                class="mb-2"
                 @click="$emit('renameGroup')"
             >Rename Group
             </v-btn>
             <v-btn color="red-darken-4" v-if="isOwner(user.id, groupId)"
                    variant="tonal"
-                   @click="$emit('dismissGroup')">Dismiss
+                   @click="$emit('dismissGroup')"
+            >Dismiss
             </v-btn>
           </div>
         </v-list-item-action>
       </v-card-text>
-      <v-card-actions class="mb-3 mr-4">
-        <v-spacer/>
-        <v-btn @click="dialog=false">
+      <v-card-actions class="mt-3 mr-4 justify-end">
+        <v-btn color="grey darken-1" @click="dialog = false">
           Close
         </v-btn>
       </v-card-actions>
