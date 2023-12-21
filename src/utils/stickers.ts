@@ -28,7 +28,7 @@ export const sendSticker = (id: number, chatId: number, t_type: TargetType) => {
     }
     const newMessage: Message = {
         message_id: generateMessageId(id, user.value.id, Date.now()),
-        m_type: MessageType.IMAGE,
+        m_type: MessageType.STICKER,
         t_type: t_type,
         content: stickersHash[id],
         receiver: chatId,

@@ -227,6 +227,11 @@ const showRecognizedText = ref(true);
               :src="blobSrc"
               style="min-width: 20vw; max-width: 50vw; max-height: 50vh; border: 1px solid darkgrey; border-radius: 7px"
           ></video>
+          <v-img
+              v-else-if="message.m_type === MessageType.STICKER"
+              :src="blobSrc"
+              style="width: 100px; height: 100px;"
+          ></v-img>
           <v-list-item
               v-else
               ref="messagePop"
