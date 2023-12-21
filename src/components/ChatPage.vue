@@ -22,7 +22,6 @@ import {
 import SelectMember from "./SelectMember.vue";
 import {getUser} from "../core/data";
 import {ContextMenuSubject, GroupData, Message, MessageType, TargetType} from "../utils/structs";
-import {getHistoryMessage} from "../core/chat.ts";
 import MessageContextMenu from "./MessageContextMenu.vue";
 import {
   deleteMessage,
@@ -418,13 +417,13 @@ const searchMessageDialog = ref<boolean>(false);
       <InputArea/>
     </v-col>
     <SelectMember
-        :name="selectedChatInfo.category === 'user'"
+        :name="selectedChatInfo?.category === 'user'"
         v-model:show-dialog="createGroupDialog"
         :pinned="category === 'user' ? [user.id, activeChatId] : (selectedChatInfo as GroupData).members"
         :possible="userContacts"
         :title="category === 'user' ? `Create a group with ${selectedChatInfo!.name}` : `Add member to group ${selectedChatInfo!.name}`"
         @confirm="handleConfirmPlus"
-        :label="selectedChatInfo.category === 'user' ? 'Group Name' : undefined"
+        :label="selectedChatInfo?.category === 'user' ? 'Group Name' : undefined"
         tags
     />
     <SelectMember
@@ -475,7 +474,7 @@ const searchMessageDialog = ref<boolean>(false);
       </v-card>
     </v-dialog>
     <GroupSearchMessage v-model:show-dialog="searchMessageDialog"
-                        :contact-id="selectedChatInfo.id"></GroupSearchMessage>
+                        :contact-id="selectedChatInfo!.id"></GroupSearchMessage>
   </v-row>
   <div
       v-show="show && activeChatId"
