@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
-import {getUser} from "../core/data";
+import {computed, nextTick, ref, watch} from "vue";
+import {getAsyncUser, getUser} from "../core/data";
 import {bigImageSource, cache, showBigImage} from "../globals";
 import axios from "axios";
 import {token} from "../auth";
@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   displayBigAvatar: false
 });
 
-let contact = computed(() => getUser(props.contactId));
+const contact = computed(() => getUser(props.contactId));
 const avatar = ref<string>("/Logo.png");
 
 const avatarUrl = (md5: string) => {
@@ -49,6 +49,7 @@ const getAvatar = async (hash: string): Promise<string> => {
 
 const handleClick = () => {
   if (!avatar.value) return;
+  getUser(props.contactId, true);
   bigImageSource.value = avatar.value;
   if (props.displayBigAvatar) {
     showBigImage.value = true;
@@ -59,7 +60,7 @@ watch(contact, () => {
   getAvatar(contact.value.avatar).then((result) => {
     avatar.value = result;
   });
-}, {immediate: true});
+}, {immediate: true, deep: true});
 </script>
 
 <template>
