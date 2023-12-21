@@ -12,6 +12,7 @@ import {DEBUG} from "../constants.ts";
 import {sendFiles, sendMessage} from "../core/messages/send.ts";
 import {bufferToWave} from "../utils/audio.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
+import {sendSticker} from "../utils/stickers.ts";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -63,8 +64,8 @@ const triggerAudioInput = async () => {
     recorder.value = null;
   } else {
     // 获取音频输入流
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-    const options = { mimeType: 'audio/webm' };
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+    const options = {mimeType: 'audio/webm'};
     const recordedChunks: BlobPart[] = [];
     recorder.value = new MediaRecorder(stream, options);
 
@@ -80,7 +81,7 @@ const triggerAudioInput = async () => {
       clearInterval(recordingInterval);
       callSnackbar(`Recording stopped.`, 'info');
 
-      const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const audioBlob = new Blob(recordedChunks, {type: 'audio/webm'});
       const file = new File([audioBlob], 'voice message.webm');
       uploadingFiles.value = [file];
       handleSendFiles();
@@ -252,11 +253,15 @@ const handleFocus = () => {
     }
   }
 }
+
+const handleSendSticker = (id: number) => {
+  sendSticker(id, activeChatId.value, chat.value.category === 'group' ? 1 : 0);
+}
 </script>
 
 <template>
-  <v-row no-gutters class="d-flex" style="width: 100%">
-    <Stickers v-if="showStickers" class="ml-4" @sticker-click="handleSendMessage"/>
+  <v-row no-gutters class="d-flex justify-center" style="width: 100%">
+    <Stickers v-if="showStickers" class="sticker-card ml-4" @sticker-click="handleSendSticker"/>
   </v-row>
   <v-alert
       :model-value="referencingMessageId >= 0"
@@ -355,5 +360,8 @@ const handleFocus = () => {
 </template>
 
 <style scoped>
-
+.sticker-card {
+  max-width: 50%; /* 控制 v-card 的最大宽度 */
+  /* 无需设置 margin: auto 因为父元素已经使用 justify-center 居中了 */
+}
 </style>
