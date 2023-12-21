@@ -260,9 +260,6 @@ const handleSendSticker = (id: number) => {
 </script>
 
 <template>
-  <v-row no-gutters class="d-flex justify-center" style="width: 100%">
-    <Stickers v-if="showStickers" class="sticker-card ml-4" @sticker-click="handleSendSticker"/>
-  </v-row>
   <v-alert
       :model-value="referencingMessageId >= 0"
       border="start"
@@ -281,7 +278,7 @@ const handleSendSticker = (id: number) => {
         max-rows="4"
         variant="outlined"
         label="Message here..."
-        class="ma-2 ml-4 message-input"
+        class="ma-2 ml-4"
         v-model="message"
         hide-details
         :flat="true"
@@ -300,6 +297,7 @@ const handleSendSticker = (id: number) => {
         <v-icon @click="triggerAudioInput" :class="{'text-green': recorder}">mdi-microphone</v-icon>
       </template>
     </v-textarea>
+    <Stickers v-model="showStickers" @sticker-click="handleSendSticker" />
     <input
         type="file"
         ref="fileInput"
@@ -360,8 +358,5 @@ const handleSendSticker = (id: number) => {
 </template>
 
 <style scoped>
-.sticker-card {
-  max-width: 50%; /* 控制 v-card 的最大宽度 */
-  /* 无需设置 margin: auto 因为父元素已经使用 justify-center 居中了 */
-}
+
 </style>
