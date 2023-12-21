@@ -77,7 +77,7 @@ const showTagsDialog = ref<boolean>(false);
 
 const handleImport = () => {
   if (!activeTagName.value) return;
-  if (!selectedStuff.value instanceof Array) {
+  if (!(selectedStuff.value instanceof Array)) {
     selectedStuff.value = [];
   }
   for (const id of settings.value.tags[activeTagName.value]) {
