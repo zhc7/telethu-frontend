@@ -38,19 +38,19 @@ const unread = computed<number>(() => {
   >
     <template #prepend>
       <div style="position: relative">
-        <div class="badge" v-if="unreadCounter[contactId] && !settings.muted.includes(contactId)">{{ unreadCounter[contactId] }}</div>
+        <div class="badge" v-if="unreadCounter[contactId] && !settings.muted.includes(contactId)">
+          {{ unreadCounter[contactId] }}
+        </div>
         <Avatar :contact-id="contactId"/>
       </div>
 
     </template>
-    <div class="chat-time fill-height">
-      <p>{{ hotMessages[contactId] ? formatChatMessageTime(nowRef, hotMessages[contactId]?.time) : '' }}</p>
-    </div>
     <template #append>
+      <div class="chat-time fill-height text-right">
+        <p>{{ hotMessages[contactId] ? formatChatMessageTime(nowRef, hotMessages[contactId]?.time) : '' }}</p>
+      </div>
       <v-icon v-if="pin" size="xs">mdi-pin</v-icon>
-      <v-icon v-else size="xs"></v-icon>
       <v-icon v-if="mute" size="xs">mdi-bell-off</v-icon>
-      <v-icon v-else size="xs"></v-icon>
     </template>
   </ListItem>
 </template>
@@ -62,9 +62,6 @@ const unread = computed<number>(() => {
 
 .chat-time {
   font-size: 0.75em;
-  position: absolute;
-  right: 4em;
-  top: 2em;
   color: #888
 }
 
