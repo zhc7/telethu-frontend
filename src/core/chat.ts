@@ -173,43 +173,6 @@ const chatManager: {
     },
 }
 
-const getHistoryMessage = async (id: number, from: number, t_type: TargetType, num: number) => {
-    if (DEBUG) console.log("pulling from: ", from, id);
-    return axios.get(BASE_API_URL + "chat/history", {
-        params: {
-            id, from, t_type, num,
-        },
-        headers: {
-            Authorization: token.value,
-        }
-    }).then((response) => {
-        const pulled_messages = response.data as Array<Message>;
-        const pulled_length = pulled_messages.length;
-        // sort and merge
-        pulled_messages.push(...messages.value[id]);
-        pulled_messages.sort((a: Message, b: Message) => (a.time - b.time));
-        // deduplicate
-        let last_time = 0;
-        const new_msg: Array<Message> = [];
-        for (let msg of response.data) {
-            if (last_time !== msg.time) {
-                new_msg.push(msg);
-                last_time = msg.time;
-            }
-        }
-        if (DEBUG) console.log(id, "got", new_msg);
-        messages.value[id] = new_msg;
-        if (new_msg.length) {
-            hotMessages.value[id] = {
-                sender: id,
-                time: messages.value[id][messages.value[id].length - 1].time,
-                content: messages.value[id][messages.value[id].length - 1],
-            };
-        }
-        return pulled_length;
-    });
-}
-
 const updateReceiverInfo = (msg: Message) => {
     const updated = getUser(msg.receiver, true);
     if (DEBUG) console.log("updated receiver info", updated);

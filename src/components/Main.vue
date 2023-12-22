@@ -27,7 +27,6 @@ import Purchase from "./Purchase.vue";
 import BigImage from "./BigImage.vue";
 import {useTheme} from 'vuetify'
 import {DEBUG} from "../constants.ts";
-import {killSocket} from "../core/users/send.ts";
 import Avatar from "./Avatar.vue";
 
 const router = useRouter();
