@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {getVerifyCode, login, token} from "../auth.ts";
+import {getVerifyCode, login} from "../auth.ts";
 import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
 import axios from "axios";
 import {BASE_API_URL, DEBUG} from "../constants.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
 import {stringMd5} from "../utils/hash.ts";
-import {snackbar} from "../globals.ts";
 
 
 const dialog = ref(false);
@@ -44,7 +43,7 @@ const next = async () => {
       callSnackbar("Account doesn't exist", "red");
       return;
     }
-    await applyForVerifyCode();
+    applyForVerifyCode();
     currentPage.value += 1;
   } else if (currentPage.value === 2) {
     if (newPassword.value !== confirmPassword.value || newPassword.value === "") {
@@ -94,7 +93,6 @@ const cancel = () => {
   dialog.value = false;
   currentPage.value = 1;
   signupAccount.value = "";
-  signupName.value = "";
   newPassword.value = "";
   confirmPassword.value = "";
   $v.value.signupAccount.$reset();
@@ -207,9 +205,6 @@ const cancel = () => {
           </v-btn>
           <v-btn color="blue-darken-1" variant="text" @click="next" v-if="currentPage < 4">
             Next
-          </v-btn>
-          <v-btn color="blue-darken-1" variant="text" @click="submitRegister" v-if="currentPage === 4">
-            Verify
           </v-btn>
         </v-card-actions>
       </v-card>
