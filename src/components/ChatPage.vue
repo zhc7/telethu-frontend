@@ -202,6 +202,7 @@ const handleShareMessages = (target: Array<number>) => {
     for (const id of selected.value) {
       forwardContent.push(messageDict.value[id]);
     }
+    forwardContent.sort((a, b) => a.time - b.time);
   } else {
     forwardContent = messageDict.value[selected.value[0]];
   }
