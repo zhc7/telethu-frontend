@@ -22,6 +22,7 @@ import {activeBlock, activeBlockId, blocks, loadMoreMessage} from "../core/block
 
 const props = defineProps<{
   showContextMenu: boolean,
+  contextMenuSubject: any,
   selectionMode: boolean,
   selected: Array<number>,
 }>();
@@ -101,8 +102,6 @@ const category = computed(() => {
   return getUser(activeChatId.value).category;
 });
 
-const contextMenuSubject = ref<ContextMenuSubject>("blank");
-
 
 const openBlankContextMenu = (event: MouseEvent) => {
   emits("openContextMenu", event.clientX, event.clientY, "blank");
@@ -113,7 +112,7 @@ const messageSelected = (msg: Message) => {
     return false;
   }
   if (props.selectionMode) return selected.value.includes(msg.message_id);
-  return props.showContextMenu && contextMenuSubject.value === msg;
+  return props.showContextMenu && props.contextMenuSubject === msg;
 }
 
 const handleSelectMessage = (msg: Message) => {

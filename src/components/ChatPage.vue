@@ -402,6 +402,7 @@ const searchMessageDialog = ref<boolean>(false);
           :key="activeChatId"
           ref="localMessageFlow"
           :show-context-menu="showContextMenu"
+          :context-menu-subject="contextMenuSubject"
           :selection-mode="selectionMode"
           v-model:selected="selected"
           @open-context-menu="openContextMenu"
