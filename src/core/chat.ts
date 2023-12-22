@@ -1,4 +1,4 @@
-import {BASE_API_URL, DEBUG} from "../constants";
+import {DEBUG} from "../constants";
 import {hotMessages, messageDict, messages, settings, unreadCounter, user} from "../globals"
 import {reactive, ref} from "vue";
 import {socket} from "./socket";
@@ -24,8 +24,6 @@ import {
     handleSearchResult,
     handleUnblockFriend
 } from "./users/receive.ts";
-import axios from "axios";
-import {token} from "../auth.ts";
 import {handleDeleteMessage, handleRecallMessage, updateMessage} from "./messages/receive.ts";
 import {getUser} from "./data.ts";
 import {updateUserProfile} from "./users/profile.ts";
@@ -215,5 +213,4 @@ export {
     searchResult,
     chatManager,
     dispatcher,
-    getHistoryMessage,
 }
