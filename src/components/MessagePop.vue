@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, onMounted, onUpdated, Ref, ref} from "vue";
 import {BASE_API_URL, DEBUG} from "../constants.ts";
-import {downloadFile, getFileExtension, triggerDownload} from "../core/files.ts";
+import {downloadFile, getFileExtension, triggerDownload, uploadFiles} from "../core/files.ts";
 import {emojisLoaded, markdown2Html} from "../markdown.ts"
 import {bigImageSource, floatingContactId, nowRef, showBigImage, showProfileDialog, user, userId} from "../globals.ts";
 import {GroupData, Message, MessageType, TargetType} from "../utils/structs.ts";
@@ -10,6 +10,7 @@ import Avatar from "./Avatar.vue";
 import MessageBrief from "./MessageBrief.vue";
 import {formatChatMessageTime} from "../utils/datetime.ts";
 import {recognizedText} from "../utils/audio.ts";
+import {sendStickerFromHash} from "../utils/stickers.ts";
 
 const props = defineProps<{
   message: Message,
@@ -67,8 +68,11 @@ const download = (retry: number) => {
   if (DEBUG) console.log('filename: ', props.message.content);
   downloadFile(props.message.content as string).then((url) => {
     blobSrc.value = url;
-  }).catch((e) => {
+  }).catch(async (e) => {
     if (DEBUG) console.log("an error occurred when fetching data", e);
+    if (props.message.m_type === MessageType.STICKER) {
+      await sendStickerFromHash(props.message.content as string);
+    }
     setTimeout(() => {
       download(retry + 1);
     }, 200 + retry * 500);

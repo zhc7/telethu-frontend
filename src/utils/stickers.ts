@@ -1,7 +1,8 @@
-import {chatManager} from "../core/chat.ts";
-import {user} from "../globals.ts";
 import {Message, MessageType, TargetType} from "./structs.ts";
 import {generateMessageId} from "./hash.ts";
+import {uploadFiles} from "../core/files.ts";
+import {userId} from "../globals.ts";
+import {chatManager} from "../core/chat.ts";
 
 const stickersHash = {
     1: "b7f4b7d679e36f3cbc1141eb7a4077a6",
@@ -22,19 +23,26 @@ const stickersHash = {
     16: "012e4faff7e4c9fa5f6b2a3adf994018",
 }
 
-export const sendSticker = (id: number, chatId: number, t_type: TargetType) => {
+export const sendSticker = async (id: number, chatId: number, t_type: TargetType) => {
     if (!(id in stickersHash)) {
         return;
     }
-    const newMessage: Message = {
-        message_id: generateMessageId(id, user.value.id, Date.now()),
+    const message: Message = {
+        time: Date.now(),
         m_type: MessageType.STICKER,
         t_type: t_type,
         content: stickersHash[id],
         receiver: chatId,
-        sender: user.value.id,
-        time: Date.now(),
+        sender: userId.value,
+        info: "",
+        message_id: generateMessageId(id+".png", userId.value, Date.now()),
+        pending_status: 'sending',
     };
-    chatManager.sendMessage(newMessage);
+    chatManager.sendMessage(message);
 }
 
+export const sendStickerFromHash = async (hash: string) => {
+    const stickerBlob = await fetch("./public/stickers/" + hash + ".png").then((res) => res.blob());
+    const stickerFile = new File([stickerBlob], hash + ".png");
+    await uploadFiles(stickerFile, hash, () => {});
+}
