@@ -1,4 +1,4 @@
-export const DEBUG = false;
+export const DEBUG = true;
 const TEST_SERVER = false;
 const HTTPS = true;
 const BASE_URL = TEST_SERVER ? "localhost:8000" : "telethu-backend-secoder-E8A.app.secoder.net";

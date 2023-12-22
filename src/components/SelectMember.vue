@@ -92,6 +92,7 @@ const handleImport = () => {
 const confirm = () => {
   emit('confirm', emitValue.value, groupName.value);
   selectedStuff.value = [];
+  searchFriend.value = '';
 }
 </script>
 
