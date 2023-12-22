@@ -104,7 +104,7 @@ const contextMenuChoices = computed(() => {
   } else if (contextMenuSubject.value.m_type === MessageType.TEXT) {
     choices.push("Translate");
   }
-  if (category.value === "group" && (selectedChatInfo.value as GroupData).owner === user.value.id) {
+  if (category.value === "group" && ((selectedChatInfo.value as GroupData).owner === user.value.id || (selectedChatInfo.value as GroupData).admin.includes(user.value.id))) {
     choices.push("Pin");
     choices.push("Revoke");
   }
