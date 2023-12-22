@@ -5,7 +5,7 @@ import {callSnackbar} from "../utils/snackbar.ts";
 import {useVuelidate} from "@vuelidate/core";
 import {email, required} from "@vuelidate/validators";
 import axios from "axios";
-import {BASE_API_URL} from "../constants.ts";
+import {BASE_API_URL, DEBUG} from "../constants.ts";
 import {stringMd5} from "../utils/hash.ts";
 import {editProfile} from "../core/users/profile.ts";
 
@@ -76,7 +76,7 @@ const changeEmailDialogNext = async () => {
         email,
       });
     } catch(e) {
-      console.log(e)
+      if (DEBUG) console.log(e);
       callSnackbar(e.response.data.info, 'red');
       return;
     }
