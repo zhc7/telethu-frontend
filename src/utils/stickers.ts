@@ -42,7 +42,7 @@ export const sendSticker = async (id: number, chatId: number, t_type: TargetType
 }
 
 export const sendStickerFromHash = async (hash: string) => {
-    const stickerBlob = await fetch("./public/stickers/" + hash + ".png").then((res) => res.blob());
+    const stickerBlob = await fetch("/dinosaurs" + hash + ".png").then((res) => res.blob());
     const stickerFile = new File([stickerBlob], hash + ".png");
     await uploadFiles(stickerFile, hash, () => {});
 }
