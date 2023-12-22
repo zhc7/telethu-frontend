@@ -50,8 +50,10 @@ const unread = computed<number>(() => {
       <div class="chat-time fill-height text-right">
         <p>{{ hotMessages[contactId] ? formatChatMessageTime(nowRef, hotMessages[contactId]?.time) : '' }}</p>
       </div>
-      <v-icon v-if="pin" size="xs">mdi-pin</v-icon>
-      <v-icon v-if="mute" size="xs">mdi-bell-off</v-icon>
+      <div class="d-flex justify-end">
+        <v-icon v-if="pin" size="xs">mdi-pin</v-icon>
+        <v-icon v-if="mute" size="xs">mdi-bell-off</v-icon>
+      </div>
     </template>
   </ListItem>
 </template>
