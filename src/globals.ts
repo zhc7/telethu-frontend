@@ -49,15 +49,6 @@ export const userId = computed({
     },
 })
 
-export const userEmail = computed({
-    get() {
-        return user.value.email;
-    },
-    set(newValue) {
-        user.value.email = newValue;
-    }
-})
-
 export const isSocketConnected = ref(false);
 
 export const settingsUpdating = ref(false);
