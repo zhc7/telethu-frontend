@@ -10,9 +10,9 @@ import selectMember from "./SelectMember.vue";
 import MessageBrief from "./MessageBrief.vue";
 import {DEBUG} from "../constants.ts";
 import {sendFiles, sendMessage} from "../core/messages/send.ts";
-import {bufferToWave} from "../utils/audio.ts";
 import {callSnackbar} from "../utils/snackbar.ts";
 import {sendSticker} from "../utils/stickers.ts";
+import Emoji from "./Emoji.vue";
 
 
 const chat = computed(() => getUser(activeChatId.value));
@@ -258,6 +258,12 @@ const handleSendSticker = (id: number) => {
   sendSticker(id, activeChatId.value, chat.value.category === 'group' ? 1 : 0);
   showStickers.value = false;
 }
+
+const showEmoji = ref(false);
+const handleEmojiClick = (emoji: string) => {
+  message.value += emoji;
+  showEmoji.value = false;
+}
 </script>
 
 <template>
@@ -288,6 +294,8 @@ const handleSendSticker = (id: number) => {
         @focusin="handleFocus"
         append-inner-icon="mdi-google-downasaur"
         @click:append-inner="showStickers = !showStickers"
+        @click:prepend-inner="showEmoji = !showEmoji"
+        prepend-inner-icon="mdi-emoticon-outline"
         @paste="handlePaste"
         @input="handleInput"
         @compositionstart="handleCompositionStart"
@@ -299,6 +307,7 @@ const handleSendSticker = (id: number) => {
       </template>
     </v-textarea>
     <Stickers v-model="showStickers" @sticker-click="handleSendSticker" />
+    <Emoji v-model="showEmoji" @emoji-click="handleEmojiClick" />
     <input
         type="file"
         ref="fileInput"

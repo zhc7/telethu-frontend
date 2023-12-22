@@ -12,24 +12,16 @@ const dialog = ref<boolean>(false);
 </script>
 
 <template>
-  <span class="tag pa-2" @click="dialog = true">
+  <v-chip class="ma-1" @click="dialog = true" label>
     {{ name }}
     <SelectMember
         :title="`Members in ${name}`"
         :possible="settings.tags[name]"
         v-model:show-dialog="dialog"
     ></SelectMember>
-  </span>
+  </v-chip>
 </template>
 
 <style scoped>
-
-.tag {
-  color: grey;
-}
-
-.tag:hover {
-  background-color: #eeeeee;
-}
 
 </style>

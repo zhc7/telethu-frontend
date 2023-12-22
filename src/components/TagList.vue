@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import ListItem from "./ListItem.vue";
 import List from "./List.vue";
-import {createNewTag, requests, settings, userContacts, activeTagName} from "../globals.ts";
-import Avatar from "./Avatar.vue";
-import {getUser} from "../core/data.ts";
+import {createNewTag, settings, userContacts, activeTagName} from "../globals.ts";
 import {computed, ref} from "vue";
 import SelectMember from "./SelectMember.vue";
 import {callSnackbar} from "../utils/snackbar.ts";
@@ -18,7 +16,11 @@ const newTagDialog = ref<boolean>(false);
 
 const handleNewTag = (target: number [], name: string) => {
   if (name === '') {
-    callSnackbar('Cannot use empty name for a tag');
+    callSnackbar('Cannot use empty name for a tag', 'error');
+    return;
+  }
+  if (tags.value.includes(name)) {
+    callSnackbar('Tag already exists', 'error');
     return;
   }
   createNewTag(name, target);
