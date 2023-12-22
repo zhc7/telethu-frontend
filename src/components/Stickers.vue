@@ -9,22 +9,22 @@ const emitStickerClick = (stickerData: number) => {
 }
 
 const stickers = ref([
-  "/public/dinosaurs/1.png",
-  "/public/dinosaurs/2.png",
-  "/public/dinosaurs/3.png",
-  "/public/dinosaurs/4.png",
-  "/public/dinosaurs/5.png",
-  "/public/dinosaurs/6.png",
-  "/public/dinosaurs/7.png",
-  "/public/dinosaurs/8.png",
-  "/public/dinosaurs/9.png",
-  "/public/dinosaurs/10.png",
-  "/public/dinosaurs/11.png",
-  "/public/dinosaurs/12.png",
-  "/public/dinosaurs/13.png",
-  "/public/dinosaurs/14.png",
-  "/public/dinosaurs/15.png",
-  "/public/dinosaurs/16.png",
+  "/dinosaurs/1.png",
+  "/dinosaurs/2.png",
+  "/dinosaurs/3.png",
+  "/dinosaurs/4.png",
+  "/dinosaurs/5.png",
+  "/dinosaurs/6.png",
+  "/dinosaurs/7.png",
+  "/dinosaurs/8.png",
+  "/dinosaurs/9.png",
+  "/dinosaurs/10.png",
+  "/dinosaurs/11.png",
+  "/dinosaurs/12.png",
+  "/dinosaurs/13.png",
+  "/dinosaurs/14.png",
+  "/dinosaurs/15.png",
+  "/dinosaurs/16.png",
 ]);
 
 const dialog = ref(false)
