@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {computed, nextTick, ref, watch} from "vue";
-import {getAsyncUser, getUser} from "../core/data";
+import {computed, ref, watch} from "vue";
+import {getUser} from "../core/data";
 import {bigImageSource, cache, showBigImage} from "../globals";
 import axios from "axios";
 import {token} from "../auth";
