@@ -68,6 +68,7 @@ const next = async () => {
     }
     if (signupPassword.value.length < 6) {
       callSnackbar('Password too short', 'red');
+      return;
     }
     applyForVerifyCode();
   }
