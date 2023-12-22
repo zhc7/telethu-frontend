@@ -42,7 +42,7 @@ const dialog = ref(false)
             cols="3"
             style="padding: 10px;"
         >
-          <div class="image-container">
+          <div class="sticker-container">
             <v-img :src="stickers[n - 1]" alt="sticker" @click="emitStickerClick(n)" class="sticker-image"
                    :cover="true"/>
           </div>
@@ -55,7 +55,7 @@ const dialog = ref(false)
 
 <style>
 
-.image-container {
+.sticker-container {
   width: 80px;
   height: 80px;
   overflow: hidden;

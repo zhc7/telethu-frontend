@@ -25,7 +25,7 @@ const emitEmojiClick = (emoji: string) => {
               cols="2"
               style="padding: 3px;"
           >
-            <div class="image-container ma-auto">
+            <div class="emoji-container ma-auto">
               <p @click="emitEmojiClick(emojis[n - 1])" class="emoji-image">{{ emojis[n - 1] }}</p>
             </div>
           </v-col>
@@ -37,7 +37,7 @@ const emitEmojiClick = (emoji: string) => {
 
 <style>
 
-.image-container {
+.emoji-container {
   width: 30px;
   height: 30px;
   overflow: hidden;
